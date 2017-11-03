@@ -1,5 +1,6 @@
 package com.slt;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -35,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     private Button mBtChangePassword;
     private Button mBtLogout;
 
+
     private ProgressBar mProgressbar;
 
     private SharedPreferences mSharedPreferences;
@@ -66,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mBtLogout.setOnClickListener(view -> logout());
     }
 
+
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -88,11 +91,13 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
         Bundle bundle = new Bundle();
         bundle.putString(Constants.EMAIL, mEmail);
-        bundle.putString(Constants.TOKEN,mToken);
+        bundle.putString(Constants.TOKEN, mToken);
         fragment.setArguments(bundle);
 
         fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
     }
+
+
 
     private void loadProfile() {
 

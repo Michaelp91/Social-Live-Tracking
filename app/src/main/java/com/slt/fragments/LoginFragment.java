@@ -1,5 +1,6 @@
 package com.slt.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.ProfileActivity;
 import com.slt.R;
+import com.slt.ViewStatistics;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
 import com.slt.utils.Constants;
@@ -41,6 +44,7 @@ public class LoginFragment extends Fragment {
 
     private EditText mEtEmail;
     private EditText mEtPassword;
+    private Button mBtViewStatistics;
     private Button mBtLogin;
     private TextView mTvRegister;
     private TextView mTvForgotPassword;
@@ -65,6 +69,7 @@ public class LoginFragment extends Fragment {
 
     private void initViews(View v) {
 
+        mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
         mEtPassword = (EditText) v.findViewById(R.id.et_password);
         mBtLogin = (Button) v.findViewById(R.id.btn_login);
@@ -74,6 +79,7 @@ public class LoginFragment extends Fragment {
         mTvRegister = (TextView) v.findViewById(R.id.tv_register);
         mTvForgotPassword = (TextView) v.findViewById(R.id.tv_forgot_password);
 
+        mBtViewStatistics.setOnClickListener(view -> viewStatistics());
         mBtLogin.setOnClickListener(view -> login());
         mTvRegister.setOnClickListener(view -> goToRegister());
         mTvForgotPassword.setOnClickListener(view -> showDialog());
@@ -82,6 +88,13 @@ public class LoginFragment extends Fragment {
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    }
+
+    private void viewStatistics() {
+        Intent intent = new Intent( getActivity()  , ViewStatistics.class);
+
+        startActivity(intent);
+
     }
 
     private void login() {
