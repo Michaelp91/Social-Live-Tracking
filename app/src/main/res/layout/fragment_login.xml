@@ -24,19 +24,7 @@
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/logo2"/>
 
-            <Button
-                android:id="@+id/btn_statistics"
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/btn_change_password"
-                android:layout_marginTop="@dimen/button_margin"
-                android:background="@android:color/holo_blue_dark"
-                android:backgroundTint="@android:color/holo_blue_dark"
-                android:paddingLeft="@dimen/button_padding"
-                android:text="View statistics"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/cardview_dark_background" />
+
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/ti_email"
@@ -44,6 +32,20 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/img_logo"
                 android:layout_marginTop="@dimen/child_margin_top">
+
+                <Button
+                    android:id="@+id/btn_statistics"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btn_change_password"
+                    android:layout_marginTop="@dimen/button_margin"
+                    android:background="@android:color/holo_blue_dark"
+                    android:backgroundTint="@android:color/holo_blue_dark"
+                    android:paddingLeft="@dimen/button_padding"
+                    android:text="View statistics"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/cardview_dark_background" />
 
                 <EditText
                     android:id="@+id/et_email"
@@ -72,6 +74,7 @@
                     android:inputType="textPassword" />
 
             </android.support.design.widget.TextInputLayout>
+
 
             <Button
                 android:id="@+id/btn_login"
