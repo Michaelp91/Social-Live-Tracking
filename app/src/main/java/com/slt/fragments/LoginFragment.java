@@ -28,10 +28,13 @@ import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
 import com.slt.utils.Constants;
 
+import android.view.View.OnClickListener;
+
 import java.io.IOException;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -79,10 +82,70 @@ public class LoginFragment extends Fragment {
         mTvRegister = (TextView) v.findViewById(R.id.tv_register);
         mTvForgotPassword = (TextView) v.findViewById(R.id.tv_forgot_password);
 
-        mBtViewStatistics.setOnClickListener(view -> viewStatistics());
-        mBtLogin.setOnClickListener(view -> login());
-        mTvRegister.setOnClickListener(view -> goToRegister());
-        mTvForgotPassword.setOnClickListener(view -> showDialog());
+        mBtViewStatistics.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent( getActivity()  , ViewStatistics.class);
+
+                startActivity(intent);
+            }
+        });
+
+        mBtLogin.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+
+                setError();
+
+                String email = mEtEmail.getText().toString();
+                String password = mEtPassword.getText().toString();
+
+                int err = 0;
+
+                if (!validateEmail(email)) {
+
+                    err++;
+                    mTiEmail.setError("Email should be valid !");
+                }
+
+                if (!validateFields(password)) {
+
+                    err++;
+                    mTiPassword.setError("Password should not be empty !");
+                }
+
+                if (err == 0) {
+
+                    loginProcess(email,password);
+                    mProgressBar.setVisibility(View.VISIBLE);
+
+                } else {
+
+                    showSnackBarMessage("Enter Valid Details !");
+                }
+            }
+        });
+
+
+        mTvRegister.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                RegisterFragment fragment = new RegisterFragment();
+                ft.replace(R.id.fragmentFrame,fragment,RegisterFragment.TAG);
+                ft.commit();
+            }
+        });
+
+
+
+        mTvForgotPassword.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                ResetPasswordDialog fragment = new ResetPasswordDialog();
+
+                fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
+            }
+        });
+
+
+
     }
 
     private void initSharedPreferences() {
@@ -140,7 +203,49 @@ public class LoginFragment extends Fragment {
         mSubscriptions.add(NetworkUtil.getRetrofit(email, password).login()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+         .subscribe(new Action1<Response>() {
+            @Override
+            public void call(Response response) {
+                mProgressBar.setVisibility(View.GONE);
+
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.putString(Constants.TOKEN,response.getToken());
+                editor.putString(Constants.EMAIL,response.getMessage());
+                editor.apply();
+
+                mEtEmail.setText(null);
+                mEtPassword.setText(null);
+
+                Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                startActivity(intent);
+
+            }
+        }, new Action1<Throwable>(){
+            @Override
+            public void call(Throwable error) {
+
+                mProgressBar.setVisibility(View.GONE);
+
+                if (error instanceof HttpException) {
+
+                    Gson gson = new GsonBuilder().create();
+
+                    try {
+
+                        String errorBody = ((HttpException) error).response().errorBody().string();
+                        Response response = gson.fromJson(errorBody,Response.class);
+                        showSnackBarMessage(response.getMessage());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+
+                    showSnackBarMessage("Network Error !");
+                }
+
+            }
+        } ));
     }
 
     private void handleResponse(Response response) {

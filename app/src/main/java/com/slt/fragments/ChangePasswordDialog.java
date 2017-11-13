@@ -26,6 +26,7 @@ import java.io.IOException;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -92,8 +93,45 @@ public class ChangePasswordDialog extends DialogFragment {
         mBtCancel = (Button) v.findViewById(R.id.btn_cancel);
         mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
 
-        mBtChangePassword.setOnClickListener(view -> changePassword());
-        mBtCancel.setOnClickListener(view -> dismiss());
+        mBtChangePassword.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                setError();
+
+                String oldPassword = mEtOldPassword.getText().toString();
+                String newPassword = mEtNewPassword.getText().toString();
+
+                int err = 0;
+
+                if (!validateFields(oldPassword)) {
+
+                    err++;
+                    mTiOldPassword.setError("Password should not be empty !");
+                }
+
+                if (!validateFields(newPassword)) {
+
+                    err++;
+                    mTiNewPassword.setError("Password should not be empty !");
+                }
+
+                if (err == 0) {
+
+                    User user = new User();
+                    user.setPassword(oldPassword);
+                    user.setNewPassword(newPassword);
+                    changePasswordProgress(user);
+                    mProgressBar.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
+
+        mBtCancel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
     private void changePassword() {
@@ -139,7 +177,43 @@ public class ChangePasswordDialog extends DialogFragment {
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changePassword(mEmail,user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+
+         .subscribe(new Action1<Response>() {
+            @Override
+            public void call(Response response) {
+                mProgressBar.setVisibility(View.GONE);
+                mListener.onPasswordChanged();
+                dismiss();
+
+            }
+        }, new Action1<Throwable>(){
+            @Override
+            public void call(Throwable error) {
+                mProgressBar.setVisibility(View.GONE);
+
+                if (error instanceof HttpException) {
+
+                    Gson gson = new GsonBuilder().create();
+
+                    try {
+
+                        String errorBody = ((HttpException) error).response().errorBody().string();
+                        Response response = gson.fromJson(errorBody,Response.class);
+                        showMessage(response.getMessage());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+
+                    showMessage("Network Error !");
+                }
+
+            }
+        } ));
+
+
+
     }
 
     private void handleResponse(Response response) {
