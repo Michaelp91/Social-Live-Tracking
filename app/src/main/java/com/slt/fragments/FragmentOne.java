@@ -2,9 +2,11 @@ package com.slt.fragments;
 
 import android.app.ListActivity;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,8 +71,6 @@ public class FragmentOne extends Fragment {
             list.add(new LineChartItem(generateDataLine(i + 1), getActivity().getApplicationContext()));
         }
 
-        //MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(getActivity().getApplicationContext(), values);
-        //l.setAdapter(adapter);
 
 
         ChartDataAdapter cda = new ChartDataAdapter(getActivity().getApplicationContext(), list);
@@ -96,9 +96,18 @@ public class FragmentOne extends Fragment {
 
         LineDataSet d1 = new LineDataSet(e1, "New DataSet " + cnt + ", (1)");
         d1.setLineWidth(2.5f);
-        d1.setCircleRadius(4.5f);
-        d1.setHighLightColor(Color.rgb(244, 117, 117));
+
+        d1.setColor(Color.rgb(0, 153, 204));
+        d1.setDrawCircles(false);
+        //d1.setCircleRadius(4.5f);
+       // d1.setHighLightColor(Color);
         d1.setDrawValues(false);
+        d1.setDrawFilled(true);
+
+
+        // gradient color under the linechart
+        Drawable drawable = ContextCompat.getDrawable(getContext().getApplicationContext(), R.drawable.fade_red);
+        d1.setFillDrawable(drawable);
 
         ArrayList<Entry> e2 = new ArrayList<Entry>();
 
@@ -116,7 +125,7 @@ public class FragmentOne extends Fragment {
 
         ArrayList<ILineDataSet> sets = new ArrayList<ILineDataSet>();
         sets.add(d1);
-        sets.add(d2);
+       // sets.add(d2);
 
         LineData cd = new LineData(sets);
         return cd;
