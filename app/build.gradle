@@ -49,6 +49,8 @@ dependencies {
     compile 'io.reactivex:rxjava:1.2.0'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.jjoe64:graphview:4.2.1'
+    compile project(':MPChartLib')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:support-v4:24.2.1'
     testCompile 'junit:junit:4.12'
 }

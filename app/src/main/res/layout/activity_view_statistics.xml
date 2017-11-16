@@ -1,17 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewStatistics">
+    android:orientation="vertical">
 
 
-    <com.jjoe64.graphview.GraphView
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="200dip"
-        android:id="@+id/graph" />
+        android:layout_height="wrap_content"
+        app:tabMode="fixed"
+        android:background="@color/colorDarkGrey"
+        android:minHeight="?attr/actionBarSize"
+        app:tabGravity="fill"
+        app:tabTextColor="#0DF"
+        app:tabSelectedTextColor="#0DF"
+        />
 
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

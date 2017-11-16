@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart1"
+        android:layout_width="200dip"
+        android:layout_height="70dip"
+         />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="60dip"
+        android:layout_height="50dip"
+        android:src="@drawable/logo2" >
+    </ImageView>
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@+id/label"
+        android:textSize="50px" >
+    </TextView>
+
+</LinearLayout>
+

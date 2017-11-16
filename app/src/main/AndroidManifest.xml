@@ -33,7 +33,7 @@
         <activity
             android:name=".ProfileActivity"
             android:theme="@style/AppTheme.Profile" />
-        <activity android:name=".ViewStatistics"></activity>
+        <activity android:name=".statistics.ViewStatistics"></activity>
     </application>
 
 </manifest>
