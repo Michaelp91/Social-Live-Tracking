@@ -2,12 +2,14 @@ package com.slt;
 
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.slt.fragments.LoginFragment;
 import com.slt.fragments.ResetPasswordDialog;
+import com.slt.statistics.ViewStatistics;
 
 public class MainActivity extends AppCompatActivity implements ResetPasswordDialog.Listener {
 
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         if (savedInstanceState == null) {
 
