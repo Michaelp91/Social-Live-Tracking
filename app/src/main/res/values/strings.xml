@@ -9,4 +9,7 @@
     <string name="Fragment2">This is Fragment 2</string>
     <string name="Fragment3">This is Fragment 3</string>
 
+    <string name="data_provider_notification">Location fixed by GPS</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBYDCD1tmcSTSHdB2LhYU-aIYE-C-hjNeQ</string>
+
 </resources>

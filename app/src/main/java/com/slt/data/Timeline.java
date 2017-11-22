@@ -1,0 +1,18 @@
+package com.slt.data;
+
+import java.util.LinkedList;
+
+/**
+ * Created by Thorsten on 06.11.2017.
+ */
+
+public class Timeline {
+    private LinkedList<TimelineSegment> mySegments;
+    private TimelineSegment myCurrentSegment;
+
+
+
+    public Timeline(){
+        mySegments = new LinkedList<TimelineSegment>();
+    }
+}
