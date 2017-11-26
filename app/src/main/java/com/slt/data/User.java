@@ -7,6 +7,11 @@ import java.util.LinkedList;
  */
 
 public class User {
+    /*
+    * Tag for the Logger
+    */
+    private static final String TAG = "User";
+
     private LinkedList<Achievement> myAchievements;
     private Timeline myTimeline;
 

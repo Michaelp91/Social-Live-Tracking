@@ -179,8 +179,12 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
                             placeLikelihood.getPlace().getLatLng().longitude, distance));
                 }
 
-                //Store the first, most likely place we found
-                myPlace = (String) likelyPlaces.get(0).getPlace().getName();
+                //Store the first, most likely place we found if it is likely at all
+                if(0 > likelyPlaces.get(0).getLikelihood()) {
+                    myPlace = (String) likelyPlaces.get(0).getPlace().getName();
+                }else {
+                    myPlace = "Unknown";
+                }
 
                 //Store the result in the TimelineSegment
                 myTimelineSegment.setPlace(myPlace);

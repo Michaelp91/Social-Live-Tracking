@@ -38,6 +38,7 @@ public class DataProvider implements ServiceInterface{
     public int updateActivity(DetectedActivity activity, Date timestamp){
         int result = 0;
 
+
         //   Intent locationIntent = new Intent();
         //    locationIntent.setAction(LOACTION_ACTION);
         //   locationIntent.putExtra(LOCATION_MESSAGE, sbLocationData);
@@ -49,18 +50,7 @@ public class DataProvider implements ServiceInterface{
     public int updatePosition(Location location, Date timestamp){
         int result = 0;
         Date now = new Date();
-        LocationEntry loc = new LocationEntry(myCurrentLocation, now , null, null);
-        TimelineSegment mySegment = new TimelineSegment(loc, myCurrentActivity);
 
-        Object[] ResolutionData = new Object[2];
-        ResolutionData[0] = mySegment;
-        ResolutionData[1] = location;
-
-        AddressResolver addressResolver = new AddressResolver();
-        addressResolver.execute(ResolutionData);
-
-        PlacesResolver placesResolver = new PlacesResolver();
-        placesResolver.execute(ResolutionData);
 
         return result;
     }
