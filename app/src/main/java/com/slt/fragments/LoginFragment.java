@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.ProfileActivity;
 import com.slt.R;
+import com.slt.TimelineActivity;
 import com.slt.network.RetrofitInterface;
 import com.slt.statistics.ViewStatistics;
 import com.slt.model.Response;
@@ -63,6 +64,10 @@ public class LoginFragment extends Fragment {
         mSubscriptions = new CompositeSubscription();
         initViews(view);
         initSharedPreferences();
+
+        Intent intent = new Intent(getActivity(), TimelineActivity.class);
+        startActivity(intent);
+
         return view;
     }
 
@@ -204,6 +209,11 @@ public class LoginFragment extends Fragment {
         ResetPasswordDialog fragment = new ResetPasswordDialog();
 
         fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override

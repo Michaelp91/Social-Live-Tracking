@@ -34,6 +34,8 @@
             android:name=".ProfileActivity"
             android:theme="@style/AppTheme.Profile" />
         <activity android:name=".statistics.ViewStatistics"></activity>
+        <activity android:name=".TimelineActivity"></activity>
+        <activity android:name=".TimelineDetailsActivity"></activity>
     </application>
 
 </manifest>
