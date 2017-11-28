@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Test
 
         if (savedInstanceState == null) {
 

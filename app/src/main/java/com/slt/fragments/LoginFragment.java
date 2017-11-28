@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.ProfileActivity;
 import com.slt.R;
+import com.slt.network.RetrofitInterface;
 import com.slt.statistics.ViewStatistics;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
@@ -135,6 +136,7 @@ public class LoginFragment extends Fragment {
 
     private void loginProcess(String email, String password) {
 
+        RetrofitInterface interfaceObj = NetworkUtil.getRetrofit(email, password);
         mSubscriptions.add(NetworkUtil.getRetrofit(email, password).login()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
