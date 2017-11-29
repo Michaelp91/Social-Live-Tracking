@@ -12,13 +12,37 @@ public class User {
     */
     private static final String TAG = "User";
 
-    private LinkedList<Achievement> myAchievements;
     private Timeline myTimeline;
+    private String userName;
+    private String email;
+    private String foreName;
+    private String lastName;
 
+    public User(String userName, String email, String foreName, String lastName) {
+         this.myTimeline = new Timeline();
+        this.userName = userName;
+        this.email = email;
+        this.foreName = foreName;
+        this.lastName = lastName;
+    }
 
-    public User(){
-        myAchievements = new LinkedList<Achievement>();
-        myTimeline = new Timeline();
+    public Timeline getMyTimeline() {
+        return myTimeline;
+    }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getForeName() {
+        return foreName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 }

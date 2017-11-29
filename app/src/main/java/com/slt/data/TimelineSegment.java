@@ -8,6 +8,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
+import com.slt.control.AchievementCalculator;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -69,8 +70,13 @@ public class TimelineSegment {
      */
     private String startAddress;
 
-    //TODO add achievement calculation
-    //TODO Change to protected
+
+    public void calculateAchievements(){
+        LinkedList<Achievement> achievements = AchievementCalculator.calculateSegmentAchievements(
+                this.activeDistance,this.inactiveDistance,this.activeTime, this.inactiveTime, this.myAchievements);
+
+        this.myAchievements.addAll(achievements);
+    }
 
     public TimelineSegment(Location location, Date date, DetectedActivity activity){
         myLocationPoints = new LinkedList<>();
@@ -98,6 +104,7 @@ public class TimelineSegment {
         this.activeTime += newEntry.getMyDuration();
 
         this.myLocationPoints.add(newEntry);
+        this.calculateAchievements();;
     }
 
     public boolean compareActivities(DetectedActivity activity){
@@ -135,12 +142,11 @@ public class TimelineSegment {
             default:
                 this.inactiveDistance = segment.getActiveDistance() + segment.getInactiveDistance();
                 this.inactiveTime = segment.getActiveTime() + segment.getInactiveTime();
-                Log.i(TAG, "Adding inactive time: " +( segment.getActiveTime()+ segment.getInactiveTime()));
-
-                Log.i(TAG, "Adding inactive distance: " +( segment.getActiveTime()+ segment.getInactiveTime()));
+                Log.i(TAG, "Adding inactive time: " +(  segment.getInactiveTime()));
+                Log.i(TAG, "Adding inactive distance: " +(  segment.getInactiveDistance()));
         }
 
-        //TODO change to correct method
+        this.calculateAchievements();
         return result;
     }
 

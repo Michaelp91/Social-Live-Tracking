@@ -50,15 +50,17 @@ public class LocationEntry {
 
 
     private double calculateDistance(Location last, Location next){
-        if (last == null)
+        if (last == null) {
             return 0.0;
+        }
 
         return next.distanceTo(last);
     }
 
     private long calculateTimeDifference(Date last, Date current){
-        if (last == null)
+        if (last == null) {
             return 0;
+        }
 
         if(last.compareTo(current) == 0)
             return 0;
