@@ -4,8 +4,12 @@ import android.util.Base64;
 
 import com.slt.utils.Constants;
 
+import java.io.IOException;
+
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -28,17 +32,18 @@ public class NetworkUtil {
     public static RetrofitInterface getRetrofit(String email, String password) {
 
         String credentials = email + ":" + password;
-        String basic = "Basic " + Base64.encodeToString(credentials.getBytes(),Base64.NO_WRAP);
+        final String basic = "Basic " + Base64.encodeToString(credentials.getBytes(),Base64.NO_WRAP);
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        httpClient.addInterceptor(chain -> {
-
-            Request original = chain.request();
-            Request.Builder builder = original.newBuilder()
-                    .addHeader("Authorization", basic)
-                    .method(original.method(),original.body());
-            return  chain.proceed(builder.build());
-
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+                Request.Builder builder = original.newBuilder()
+                        .addHeader("Authorization", basic)
+                        .method(original.method(), original.body());
+                return chain.proceed(builder.build());
+            }
         });
 
         RxJavaCallAdapterFactory rxAdapter = RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
@@ -51,18 +56,19 @@ public class NetworkUtil {
                 .build().create(RetrofitInterface.class);
     }
 
-    public static RetrofitInterface getRetrofit(String token) {
+    public static RetrofitInterface getRetrofit(final String token) {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        httpClient.addInterceptor(chain -> {
-
-            Request original = chain.request();
-            Request.Builder builder = original.newBuilder()
-                    .addHeader("x-access-token", token)
-                    .method(original.method(),original.body());
-            return  chain.proceed(builder.build());
-
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+                Request.Builder builder = original.newBuilder()
+                        .addHeader("x-access-token", token)
+                        .method(original.method(), original.body());
+                return chain.proceed(builder.build());
+            }
         });
 
         RxJavaCallAdapterFactory rxAdapter = RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
