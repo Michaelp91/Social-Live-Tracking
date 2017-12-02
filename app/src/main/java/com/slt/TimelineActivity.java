@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ExpandableListView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.slt.data.User;
 import com.slt.timelineres.ExpandableListAdapter_Timeline;
 import com.slt.timelineres.Node;
 import com.slt.timelineres.Route;
@@ -21,6 +24,8 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
     ExpandableListView expListView;
     List<TimelineHeader> listDataHeader;
     HashMap<TimelineHeader, List<Route>> listDataChild;
+    private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
+    private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,17 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
         expListView.setAdapter(listAdapter);
 
         expListView.setOnChildClickListener(this);
+
+        GsonTest();
+    }
+
+    //Test: What If I serialize Location Object?
+    private void GsonTest() {
+        Gson gson = new Gson();
+        User user = new User();
+
+        String json = gson.toJson(user);
+        String debug = "true";
     }
 
     private void prepareListData() {
