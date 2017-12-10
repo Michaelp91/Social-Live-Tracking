@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private static final int PERMISSION_REQUEST_FINE_LOCATION = 2;
 
-
+    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 1000;
     private Activity myActivity;
 
     private LoginFragment mLoginFragment;
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
             Toast.makeText(this, "GoogleApiClient not yet connected", Toast.LENGTH_SHORT).show();
         } else {
             //Add request for activity updates to the client
-            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(SharedResources.getInstance().getMyGoogleApiClient(), 0, getActivityDetectionPendingIntent()).setResultCallback(this);
+            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(SharedResources.getInstance().getMyGoogleApiClient(), ACTIVITY_UPDATE_INTERVAL_MILLISECONDS, getActivityDetectionPendingIntent()).setResultCallback(this);
         }
 
     }

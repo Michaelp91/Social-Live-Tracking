@@ -34,6 +34,11 @@ public class TimelineDay {
     /**
      *
      */
+    private static final long MIN_SEGMENT_DURATION_IN_SECONDS  = 120;
+
+    /**
+     *
+     */
     private Date myDate;
 
     /**
@@ -171,17 +176,8 @@ public class TimelineDay {
 
     public void addUserStatus(Location location, Date date, DetectedActivity activity){
 
-        if(this.mySegments.size() == 0){
+        if(this.mySegments.isEmpty()){
             this.mySegments.add(new TimelineSegment(location, date, activity));
-            return;
-        }
-
-        this.mySegments.getLast().addLocationPoint(location, date);
-
-        if(!this.mySegments.getLast().compareActivities(activity)){
-
-            this.mySegments.add(new TimelineSegment(location, date, activity));
-
             Object[] ResolutionData = new Object[2];
             ResolutionData[0] = this.mySegments.getLast();
             ResolutionData[1] = location;
@@ -191,6 +187,47 @@ public class TimelineDay {
 
             PlacesResolver placesResolver = new PlacesResolver();
             placesResolver.execute(ResolutionData);
+            return;
+        }
+
+        this.mySegments.getLast().addLocationPoint(location, date);
+
+        if(!this.mySegments.getLast().compareActivities(activity)){
+
+            //TODO CHECK IF IT WORKS
+
+
+
+            if(this.mySegments.size() >= 3) {
+                int lastSegmentIndex = this.mySegments.size() -2;
+
+                if(this.mySegments.get(lastSegmentIndex).getDuration()
+                        >= MIN_SEGMENT_DURATION_IN_SECONDS && (
+                        this.mySegments.peekLast().getMyActivity().getType()
+                                == DetectedActivity.STILL ||  this.mySegments.peekLast().getMyActivity().getType()
+                                == DetectedActivity.TILTING ||  this.mySegments.peekLast().getMyActivity().getType()
+                                == DetectedActivity.UNKNOWN) ){
+                    TimelineSegment lastSegment = this.mySegments.pop();
+                    this.mySegments.peekLast().mergeTimelineSegments(lastSegment);
+                }
+
+            }
+
+
+            if(this.mySegments.peekLast().getMyActivity().getType() != activity.getType()) {
+                TimelineSegment nextSegment = new TimelineSegment(location, date, activity);
+                this.mySegments.add(nextSegment);
+
+                Object[] ResolutionData = new Object[2];
+                ResolutionData[0] = this.mySegments.getLast();
+                ResolutionData[1] = location;
+
+                AddressResolver addressResolver = new AddressResolver();
+                addressResolver.execute(ResolutionData);
+
+                PlacesResolver placesResolver = new PlacesResolver();
+                placesResolver.execute(ResolutionData);
+            }
         }
 
         this.calculateAchievements();

@@ -5,6 +5,7 @@ package com.slt.data;
  */
 
 import android.location.Location;
+import android.media.Image;
 import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
@@ -70,17 +71,22 @@ public class TimelineSegment {
      */
     private String startAddress;
 
+    /**
+     *
+     */
+    private LinkedList<Image> myImages;
 
-    public void calculateAchievements(){
-        LinkedList<Achievement> achievements = AchievementCalculator.calculateSegmentAchievements(
-                this.activeDistance,this.inactiveDistance,this.activeTime, this.inactiveTime, this.myAchievements);
 
-        this.myAchievements.addAll(achievements);
-    }
-
+    /**
+     *
+     * @param location
+     * @param date
+     * @param activity
+     */
     public TimelineSegment(Location location, Date date, DetectedActivity activity){
         myLocationPoints = new LinkedList<>();
         myAchievements = new LinkedList<>();
+        myImages = new LinkedList<>();
         myActivity = activity;
         userComments = new LinkedList<>();
         activeDistance = 0.0;
@@ -90,6 +96,21 @@ public class TimelineSegment {
         this.addLocationPoint(location, date);
     }
 
+    /**
+     *
+     */
+    public void calculateAchievements(){
+        LinkedList<Achievement> achievements = AchievementCalculator.calculateSegmentAchievements(
+                this.activeDistance,this.inactiveDistance,this.activeTime, this.inactiveTime, this.myAchievements);
+
+        this.myAchievements.addAll(achievements);
+    }
+
+    /**
+     *
+     * @param location
+     * @param date
+     */
     public void addLocationPoint(Location location, Date date) {
         Location lastLocation = null;
         Date lastDate = null;
@@ -107,8 +128,17 @@ public class TimelineSegment {
         this.calculateAchievements();;
     }
 
+    public long getDuration(){
+        return activeTime + inactiveTime;
+    }
+
+    /**
+     *
+     * @param activity
+     * @return
+     */
     public boolean compareActivities(DetectedActivity activity){
-        return this.myActivity != activity;
+        return this.myActivity.getType() == activity.getType();
     }
 
     public void setUserComment(String userComment, String user) {
@@ -116,10 +146,19 @@ public class TimelineSegment {
         this.userComments = userComments;
     }
 
+    /**
+     *
+     * @param achievement
+     */
     public void addAchievement(Achievement achievement) {
         this.myAchievements.add(achievement);
     }
 
+    /**
+     *
+     * @param segment
+     * @return
+     */
     public int mergeTimelineSegments(TimelineSegment segment){
         int result = 0;
         this.myLocationPoints.addAll(segment.getLocationPoints());
@@ -150,62 +189,152 @@ public class TimelineSegment {
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
+    public LinkedList<Image> getMyImages() {
+        return myImages;
+    }
+
+    /**
+     *
+      * @param index
+     */
+    public void deleteImage(int index){
+        if(index < 0 || index >= this.myImages.size()){
+            return;
+        }
+
+        this.myImages.remove(index);
+    }
+
+    /**
+     *
+     * @param image
+     */
+    public void setMyImages(Image image) {
+        if(image != null) {
+            this.myImages.add(image);
+        }
+    }
+
+    /**
+     *
+     * @param startPlace
+     */
     public void setPlace(String startPlace) {
         this.startPlace = startPlace;
     }
 
+    /**
+     *
+     * @param startAddress
+     */
     public void setAddress(String startAddress) {
         this.startAddress = startAddress;
     }
 
+    /**
+     *
+     * @return
+     */
     public LinkedList<LocationEntry> getMyLocationPoints() {
         return myLocationPoints;
     }
 
+    /**
+     *
+     * @return
+     */
     public DetectedActivity getMyActivity() {
         return myActivity;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getInactiveDistance() {
         return inactiveDistance;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getStartPlace() {
         return startPlace;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getStartAddress() {
         return startAddress;
     }
 
+    /**
+     *
+     * @return
+     */
     public LinkedList<UserComment> getUserComments() {
         return new LinkedList<>(userComments);
     }
 
+    /**
+     *
+     * @return
+     */
     public double getActiveDistance() {
         return activeDistance;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getActiveTime() {
         return activeTime;
     }
 
+    /**
+     *
+     * @return
+     */
     public LinkedList<Achievement> getMyAchievements() {
         return new LinkedList<>(myAchievements);
     }
 
+    /**
+     *
+     * @return
+     */
     public long getInactiveTime() {
         return inactiveTime;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAddress() {
         return startAddress;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPlace() {
         return startPlace;
     }
 
+    /**
+     *
+     * @return
+     */
     public LinkedList<LocationEntry> getLocationPoints() {
         return new LinkedList<>(this.myLocationPoints);
     }
