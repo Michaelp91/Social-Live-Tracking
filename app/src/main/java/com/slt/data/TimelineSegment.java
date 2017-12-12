@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.control.AchievementCalculator;
+import com.slt.control.StepSensor;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -57,22 +58,32 @@ public class TimelineSegment {
     private long activeTime;
 
     /*
-     *stores time user has been standing during the activity
+     * Stores time user has been standing during the activity
      */
     private long inactiveTime;
 
     /**
-     *
+     * Step Sensor
+     */
+    private StepSensor myStepSensor;
+
+    /**
+     * The Steps of the user if the segment is a walking segment
+     */
+    private int userSteps;
+
+    /**
+     * Start location that was detected for the Segment
      */
     private String startPlace;
 
     /**
-     *
+     * Start address that was detected for the segment
      */
     private String startAddress;
 
     /**
-     *
+     * Linked list with images for the segment
      */
     private LinkedList<Image> myImages;
 
@@ -89,11 +100,17 @@ public class TimelineSegment {
         myImages = new LinkedList<>();
         myActivity = activity;
         userComments = new LinkedList<>();
+        userSteps = 0;
         activeDistance = 0.0;
         activeTime = 0;
         inactiveTime = 0;
         startAddress = "";
         this.addLocationPoint(location, date);
+
+
+        if(DetectedActivity.WALKING == activity.getType() || DetectedActivity.ON_FOOT == activity.getType()){
+            this.myStepSensor = new StepSensor();
+        }
     }
 
     /**
@@ -119,10 +136,15 @@ public class TimelineSegment {
             lastLocation = this.myLocationPoints.getLast().getMyLocation();
             lastDate = this.myLocationPoints.getLast().getMyEntryDate();
         }
+
         LocationEntry newEntry = new LocationEntry(location, date, lastLocation, lastDate);
 
         this.activeDistance += newEntry.getMyTrackDistance();
         this.activeTime += newEntry.getMyDuration();
+
+        if(DetectedActivity.WALKING == this.myActivity.getType() || DetectedActivity.ON_FOOT == this.myActivity.getType()) {
+            this.userSteps = myStepSensor.getSteps();
+        }
 
         this.myLocationPoints.add(newEntry);
         this.calculateAchievements();;
@@ -176,17 +198,24 @@ public class TimelineSegment {
                 this.inactiveTime += segment.getInactiveTime();
                 this.activeDistance += segment.getActiveDistance();
                 this.inactiveDistance += segment.getInactiveDistance();
+                this.userSteps += segment.getUserSteps();
                 Log.i(TAG, "Adding all values.");
 
             default:
                 this.inactiveDistance = segment.getActiveDistance() + segment.getInactiveDistance();
                 this.inactiveTime = segment.getActiveTime() + segment.getInactiveTime();
+                this.userSteps += segment.getUserSteps();
                 Log.i(TAG, "Adding inactive time: " +(  segment.getInactiveTime()));
                 Log.i(TAG, "Adding inactive distance: " +(  segment.getInactiveDistance()));
         }
 
         this.calculateAchievements();
         return result;
+    }
+
+
+    public int getUserSteps() {
+        return userSteps;
     }
 
     /**

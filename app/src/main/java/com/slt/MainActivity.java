@@ -120,6 +120,21 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
     }
 
 
+    /**
+     * Check if the os version supports step sensing
+     *
+     * @return True if the device has support for Step Sensing
+     */
+    private boolean isVersionWithStepSensor() {
+        // BEGIN_INCLUDE(iskitkatsensor)
+        // Require at least Android KitKat
+        int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+        // Check that the device supports the step counter and detector sensors
+        PackageManager packageManager = this.getPackageManager();
+        return currentApiVersion >= android.os.Build.VERSION_CODES.KITKAT
+                && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)
+                && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR);
+    }
 
 
     private void loadFragment(){

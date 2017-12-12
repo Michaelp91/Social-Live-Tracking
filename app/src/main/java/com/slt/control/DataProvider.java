@@ -92,6 +92,12 @@ public class DataProvider implements ServiceInterface{
             return 1;
         }
 
+        if(myCurrentActivity == null){
+            myCurrentActivity = activity;
+
+            userTimeline.addUserStatus(myCurrentLocation, timestamp, myCurrentActivity);
+            Log.i(TAG, "updateActivity, init current Activity, location set, add point.");
+        }
 
         if(myCurrentActivity.getType() != activity.getType() && nextActivity == null){
             nextActivity = activity;
