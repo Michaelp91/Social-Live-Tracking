@@ -1,8 +1,5 @@
 package com.slt.data;
 
-/**
- * Created by Thorsten on 06.11.2017.
- */
 
 import android.location.Location;
 import android.media.Image;
@@ -15,6 +12,9 @@ import com.slt.control.StepSensor;
 import java.util.Date;
 import java.util.LinkedList;
 
+/**
+ * A TimelineSegment stores all location points and statistics for a single activity
+ */
 public class TimelineSegment {
 
     /*
@@ -23,42 +23,42 @@ public class TimelineSegment {
     private static final String TAG = "TimelineSegment";
 
     /*
-     *
+     * The location points detected by GPS for the activity
      */
     private LinkedList<LocationEntry> myLocationPoints;
 
     /*
-     *
+     * The activity of the segment
      */
     private DetectedActivity myActivity;
 
     /*
-     *
+     * The user comments in regard to the segment
      */
     private LinkedList<UserComment> userComments;
 
     /**
-     *
+     * The distance a user spend with the activity
      */
     private double activeDistance;
 
     /**
-     *
+     * The distance the user was inactive during f.e. driving
      */
     private double inactiveDistance;
 
     /**
-     *
+     * The achievements the users has accomplished
      */
     private LinkedList<Achievement> myAchievements;
 
     /**
-     *
+     * The time a user was active during
      */
     private long activeTime;
 
     /*
-     * Stores time user has been standing during the activity
+     * Stores time user has been inactive (f.e. standing) during the activity
      */
     private long inactiveTime;
 
@@ -89,12 +89,12 @@ public class TimelineSegment {
 
 
     /**
-     *
-     * @param location
-     * @param date
-     * @param activity
+     * Constructor to initialize all data
+     * @param location The location for a new Segment
+     * @param date The date the location was detected
+     * @param activity The activity the segment was created for
      */
-    public TimelineSegment(Location location, Date date, DetectedActivity activity){
+    TimelineSegment(Location location, Date date, DetectedActivity activity){
         myLocationPoints = new LinkedList<>();
         myAchievements = new LinkedList<>();
         myImages = new LinkedList<>();
@@ -105,43 +105,49 @@ public class TimelineSegment {
         activeTime = 0;
         inactiveTime = 0;
         startAddress = "";
+
+        //add a new location point
         this.addLocationPoint(location, date);
 
-
+        // check if the activity is walking or on foot, if yes start a step counter
         if(DetectedActivity.WALKING == activity.getType() || DetectedActivity.ON_FOOT == activity.getType()){
             this.myStepSensor = new StepSensor();
         }
     }
 
     /**
-     *
+     * Calculate if new achievements were finished
      */
-    public void calculateAchievements(){
+    private void calculateAchievements(){
         LinkedList<Achievement> achievements = AchievementCalculator.calculateSegmentAchievements(
-                this.activeDistance,this.inactiveDistance,this.activeTime, this.inactiveTime, this.myAchievements);
+                this.activeDistance,this.inactiveDistance,this.activeTime, this.inactiveTime, this.userSteps, this.myAchievements);
 
         this.myAchievements.addAll(achievements);
     }
 
     /**
-     *
-     * @param location
-     * @param date
+     *  Method to add a new location point to the segment
+     * @param location The new location that should be added to the segment
+     * @param date The date the new location was detected
      */
     public void addLocationPoint(Location location, Date date) {
         Location lastLocation = null;
         Date lastDate = null;
 
+        //check if we already have a location point added to the list
         if(!this.myLocationPoints.isEmpty()) {
             lastLocation = this.myLocationPoints.getLast().getMyLocation();
             lastDate = this.myLocationPoints.getLast().getMyEntryDate();
         }
 
+        //create a new location Entry
         LocationEntry newEntry = new LocationEntry(location, date, lastLocation, lastDate);
 
+        //calculate the statistics
         this.activeDistance += newEntry.getMyTrackDistance();
         this.activeTime += newEntry.getMyDuration();
 
+        //if we have a step sensor update the statistics
         if(DetectedActivity.WALKING == this.myActivity.getType() || DetectedActivity.ON_FOOT == this.myActivity.getType()) {
             this.userSteps = myStepSensor.getSteps();
         }
@@ -150,45 +156,91 @@ public class TimelineSegment {
         this.calculateAchievements();;
     }
 
+    /**
+     * Get the Duration of the segment
+     * @return The duration of the segment
+     */
     public long getDuration(){
         return activeTime + inactiveTime;
     }
 
     /**
-     *
-     * @param activity
-     * @return
+     * Compare if our current activity is the same
+     * @param activity The activity to compare to
+     * @return True if the activites are the same, False if not
      */
     public boolean compareActivities(DetectedActivity activity){
         return this.myActivity.getType() == activity.getType();
     }
 
-    public void setUserComment(String userComment, String user) {
-        UserComment newComment = new UserComment(user, userComment);
-        this.userComments = userComments;
+    /**
+     * Add a new user and a comment
+     * @param userComment The comment of the user
+     * @param user The user that made the comment
+     */
+    public void addUserComment(String userComment, String user) {
+        UserComment newComment = null;
+
+        //check if we have a comment from the user
+        for(UserComment com : this.userComments){
+            if(com.getUserName().equals(user)){
+                newComment = com;
+            }
+        }
+
+        //check if we have to create a new comment
+        if(newComment == null){
+            newComment = new UserComment(user, userComment);
+            this.userComments.add(newComment);
+        } else {
+            newComment.addUserComment(userComment);
+        }
     }
 
     /**
-     *
-     * @param achievement
+     * Get the comments for a specific user
+     * @param user The user we want to get the comments for
+     * @return The comments for the user, null if none are found
+     */
+    public UserComment getUserComment(String user){
+        UserComment comment = null;
+
+        //check if we have a comment from the user
+        for(UserComment com : this.userComments){
+            if(com.getUserName().equals(user)){
+                comment = com;
+            }
+        }
+
+        return comment;
+    }
+
+
+
+    /**
+     * Add a achievement to our list
+     * @param achievement The achievement we want to add
      */
     public void addAchievement(Achievement achievement) {
         this.myAchievements.add(achievement);
     }
 
     /**
-     *
-     * @param segment
+     * Merge two segments
+     * @param segment The segment we want to merge into our segment
      * @return
      */
-    public int mergeTimelineSegments(TimelineSegment segment){
-        int result = 0;
+    public void mergeTimelineSegments(TimelineSegment segment){
+
+        //TODO remove points that are in both segments
         this.myLocationPoints.addAll(segment.getLocationPoints());
         this.myAchievements.addAll(segment.getMyAchievements());
         this.userComments.addAll(segment.getUserComments());
 
+        //check which activity type our activity is
         switch(segment.getMyActivity().getType())
         {
+            //if we they are active activities simply add statistics
             case DetectedActivity.ON_BICYCLE:
             case DetectedActivity.ON_FOOT:
             case DetectedActivity.WALKING:
@@ -202,6 +254,7 @@ public class TimelineSegment {
                 Log.i(TAG, "Adding all values.");
 
             default:
+                //if it is a inactive activity add to the inactive times
                 this.inactiveDistance = segment.getActiveDistance() + segment.getInactiveDistance();
                 this.inactiveTime = segment.getActiveTime() + segment.getInactiveTime();
                 this.userSteps += segment.getUserSteps();
@@ -210,7 +263,6 @@ public class TimelineSegment {
         }
 
         this.calculateAchievements();
-        return result;
     }
 
 
@@ -219,18 +271,19 @@ public class TimelineSegment {
     }
 
     /**
-     *
-     * @return
+     * Get the images that are associated with the segment
+     * @return A list containing all the images
      */
     public LinkedList<Image> getMyImages() {
         return myImages;
     }
 
     /**
-     *
-      * @param index
+     * Delete an image from the list
+     * @param index The index of the image that should be deleted
      */
     public void deleteImage(int index){
+        //check if the index is valid
         if(index < 0 || index >= this.myImages.size()){
             return;
         }
@@ -239,130 +292,130 @@ public class TimelineSegment {
     }
 
     /**
-     *
-     * @param image
+     * Add am image to the segment
+     * @param image The image to add to the list
      */
-    public void setMyImages(Image image) {
+    public void addImages(Image image) {
         if(image != null) {
             this.myImages.add(image);
         }
     }
 
     /**
-     *
-     * @param startPlace
+     * Set the start place of the segment
+     * @param startPlace The start place that should be set
      */
     public void setPlace(String startPlace) {
         this.startPlace = startPlace;
     }
 
     /**
-     *
-     * @param startAddress
+     * Set the start address of the segment
+     * @param startAddress The start address that should be set
      */
     public void setAddress(String startAddress) {
         this.startAddress = startAddress;
     }
 
     /**
-     *
-     * @return
+     * Get the locations of the segment
+     * @return A list containing all segments of the segment
      */
     public LinkedList<LocationEntry> getMyLocationPoints() {
         return myLocationPoints;
     }
 
     /**
-     *
-     * @return
+     * Get the activity of the segment
+     * @return The activity
      */
     public DetectedActivity getMyActivity() {
         return myActivity;
     }
 
     /**
-     *
-     * @return
+     * Get the inactive distance, so the distance the user was inactive of the segment
+     * @return The inactive distance
      */
     public double getInactiveDistance() {
         return inactiveDistance;
     }
 
     /**
-     *
-     * @return
+     * Get the start place for the segment
+     * @return The start place
      */
     public String getStartPlace() {
         return startPlace;
     }
 
     /**
-     *
-     * @return
+     * Get the start address of the segment
+     * @return The start address
      */
     public String getStartAddress() {
         return startAddress;
     }
 
     /**
-     *
-     * @return
+     *  Get all user comments associated with the segment
+     * @return A list containing all user comments
      */
     public LinkedList<UserComment> getUserComments() {
         return new LinkedList<>(userComments);
     }
 
     /**
-     *
-     * @return
+     * Get the active distance, so the distance the user was actively doing something
+     * @return The active distance
      */
     public double getActiveDistance() {
         return activeDistance;
     }
 
     /**
-     *
-     * @return
+     * Get the active time of the segment
+     * @return The active time
      */
     public long getActiveTime() {
         return activeTime;
     }
 
     /**
-     *
-     * @return
+     * Get all the achievements of the segment
+     * @return A list containing all achievements
      */
     public LinkedList<Achievement> getMyAchievements() {
         return new LinkedList<>(myAchievements);
     }
 
     /**
-     *
-     * @return
+     * Get the inactive time of the segment
+     * @return The inactive time
      */
     public long getInactiveTime() {
         return inactiveTime;
     }
 
     /**
-     *
-     * @return
+     * Get the Address that was detected for the segment
+     * @return The address the segment started
      */
     public String getAddress() {
         return startAddress;
     }
 
     /**
-     *
-     * @return
+     * Get the place that was detected for the segment
+     * @return The place the segment started
      */
     public String getPlace() {
         return startPlace;
     }
 
     /**
-     *
-     * @return
+     * Get the location points of the segment
+     * @return A list containing all segments
      */
     public LinkedList<LocationEntry> getLocationPoints() {
         return new LinkedList<>(this.myLocationPoints);
