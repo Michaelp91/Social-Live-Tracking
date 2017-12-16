@@ -64,6 +64,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         super.onCreate();
     }
 
+
     /***
      *  Overwritten onStartCommand Method that also starts our GoogleAPI Callbacks
      * @param intent Intent to start the Service with, currently unused

@@ -55,7 +55,7 @@ public class AddressResolver extends AsyncTask<Object, String, String> {
     /**
      * Constructor, initializes the needed attributes
      */
-    AddressResolver(){
+    public AddressResolver(){
         //Create a new geo coder
         myGeocoder = new Geocoder(ApplicationController.getContext(), Locale.getDefault());
         myAddress = "";

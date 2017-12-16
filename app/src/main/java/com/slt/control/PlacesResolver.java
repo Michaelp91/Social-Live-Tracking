@@ -14,7 +14,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 
@@ -161,26 +160,33 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
         result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
             @Override
             public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
-                //Loop over the found places and write the to the Log
-                for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                    //Create a Location from the place
-                    Location targetLocation = new Location("");
-                    targetLocation.setLatitude(placeLikelihood.getPlace().getLatLng().latitude);
-                    targetLocation.setLongitude(placeLikelihood.getPlace().getLatLng().longitude);
 
-                    //Calculate distance between last detected location and the place
-                    float distance = myLocation.distanceTo(targetLocation);
 
-                    Log.i(TAG, String.format("Place '%s' with " +
-                                    "likelihood: %g, Latitude: %g, Longitude: %g, Distance: %g",
-                            placeLikelihood.getPlace().getName(),
-                            placeLikelihood.getLikelihood(),
-                            placeLikelihood.getPlace().getLatLng().latitude,
-                            placeLikelihood.getPlace().getLatLng().longitude, distance));
+                //Store the first, most likely place we found if it is likely at all
+                if(likelyPlaces.getCount() > 0) {
+
+                    if (0 > likelyPlaces.get(0).getLikelihood()) {
+
+                        //Create a Location from the place
+                        Location targetLocation = new Location("");
+                        targetLocation.setLatitude(likelyPlaces.get(0).getPlace().getLatLng().latitude);
+                        targetLocation.setLongitude(likelyPlaces.get(0).getPlace().getLatLng().longitude);
+
+                        //Calculate distance between last detected location and the place
+                        float distance = myLocation.distanceTo(targetLocation);
+
+                        Log.i(TAG, String.format("Place '%s' with " +
+                                        "likelihood: %g, Latitude: %g, Longitude: %g, Distance: %g",
+                                likelyPlaces.get(0).getPlace().getName(),
+                                likelyPlaces.get(0).getLikelihood(),
+                                likelyPlaces.get(0).getPlace().getLatLng().latitude,
+                                likelyPlaces.get(0).getPlace().getLatLng().longitude, distance));
+
+                        myPlace = (String) likelyPlaces.get(0).getPlace().getName();
+                    } else {
+                        myPlace = "Unknown";
+                    }
                 }
-
-                //Store the first, most likely place we found
-                myPlace = (String) likelyPlaces.get(0).getPlace().getName();
 
                 //Store the result in the TimelineSegment
                 myTimelineSegment.setPlace(myPlace);
