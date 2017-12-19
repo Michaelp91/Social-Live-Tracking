@@ -32,17 +32,8 @@ public interface UpdateTimeline {
     @POST("timelineday/new")
     Call<TimeLineDay> createTimeLineDay(@Body TimeLineSegment timeLineDay);
 
-
-    @GET("timeline/{userid}")
-    Call<User> getCompleteTimeLine(@Body String userid);
-
-    @GET("locationpoint/{timelinesegmentId}")
-    Call<LocationEntry> getLocationEntry(@Body String timelinesegmentId);
-
-    @GET("timelinesegment/{timelinedayId}")
-    Call<TimeLineSegment> getTimeLineSegment(@Body String timelinedayId);
-
-    @GET("timelineday/{userid}")
-    Call<TimeLineSegment> getTimeLineDay(@Body String userId);
+    //Maybe for merging Timeline Segments in Tracking
+    @PUT("timelinesegment/{timelinesegmentId}")
+    Call<TimeLineSegment> updateTimelineSegment(@Body String timelinesegmentId);
 
 }
