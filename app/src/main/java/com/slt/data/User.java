@@ -50,8 +50,8 @@ public class User {
      * @param image The image the user has set
      */
     public User(String userName, String email, String foreName, String lastName, Image image) {
-         this.myTimeline = new Timeline();
-         this.myImage = image;
+        this.myTimeline = new Timeline();
+        this.myImage = image;
         this.userName = userName;
         this.email = email;
         this.foreName = foreName;

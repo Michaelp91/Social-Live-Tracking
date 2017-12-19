@@ -50,11 +50,11 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
 
     //Test: What If I serialize Location Object?
     private void GsonTest() {
-        Gson gson = new Gson();
-        User user = new User();
+        //Gson gson = new Gson();
+        //User user = new User();
 
-        String json = gson.toJson(user);
-        String debug = "true";
+        //String json = gson.toJson(user);
+        //String debug = "true";
     }
 
     private void prepareListData() {
