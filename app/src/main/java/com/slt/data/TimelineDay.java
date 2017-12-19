@@ -149,6 +149,21 @@ public class TimelineDay {
     }
 
     /**
+     * Get the Steps of the days
+     * @return The steps of the user
+     */
+    public int getSteps() {
+        int steps = 0;
+
+        //loop over all segments to count all steps
+        for(TimelineSegment segment : this.mySegments){
+            steps += segment.getUserSteps();
+        }
+
+        return steps;
+    }
+
+    /**
      * Get the total distance for a activity of the day
      * @param activity The activity we want to have the total distance for
      * @return The total distance
@@ -227,6 +242,14 @@ public class TimelineDay {
         Date truncatedDate = calendar.getTime();
 
         return myDate.compareTo(truncatedDate) == 0;
+    }
+
+    /**
+     * Get all Timeline Segments
+     * @return The Timeline Segments
+     */
+    public LinkedList<TimelineSegment> getMySegments() {
+        return mySegments;
     }
 
     /**

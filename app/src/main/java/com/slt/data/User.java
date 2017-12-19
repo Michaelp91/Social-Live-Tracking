@@ -1,6 +1,8 @@
 package com.slt.data;
 
+import android.location.Location;
 import android.media.Image;
+import java.util.Date;
 
 /**
  *
@@ -42,6 +44,43 @@ public class User {
     private Image myImage;
 
     /**
+     * The age of the user
+     */
+    private int myAge;
+
+    /**
+     * The city of the user
+     */
+    private String myCity;
+
+    /**
+     * The last known location of the user
+     */
+    private Location lastLocation;
+
+    /**
+     * The last update date of the location
+     */
+    private Date lastLocationUpdateDate;
+
+    /**
+     * Constructor to initialize the minimal data data
+     * @param userName The username of the user
+     */
+    public User(String userName) {
+        this.myTimeline = new Timeline();
+        this.myImage = null;
+        this.userName = userName;
+        this.email = "";
+        this.foreName = "";
+        this.lastName = "";
+        this.myAge = 0;
+        this.myCity = "";
+        this.lastLocationUpdateDate = null;
+        this.lastLocation = null;
+    }
+
+    /**
      * Constructor to initialize all the data
      * @param userName The username of the user
      * @param email The email address of the user
@@ -49,15 +88,41 @@ public class User {
      * @param lastName The last name of the user
      * @param image The image the user has set
      */
-    public User(String userName, String email, String foreName, String lastName, Image image) {
+    public User(String userName, String email, String foreName, String lastName, Image image, int age, String city) {
          this.myTimeline = new Timeline();
          this.myImage = image;
         this.userName = userName;
         this.email = email;
         this.foreName = foreName;
         this.lastName = lastName;
+        this.myAge = age;
+        this.myCity = city;
     }
 
+    /**
+     * Get the last known location of the user
+     * @return The last known location
+     */
+    public Location getLastLocation() {
+        return lastLocation;
+    }
+
+    /**
+     * Set the current location of the user
+     * @param lastLocation The current location of the user
+     */
+    public void setLastLocation(Location lastLocation, Date timestamp) {
+        this.lastLocation = lastLocation;
+        this.lastLocationUpdateDate = timestamp;
+    }
+
+    /**
+     * Get the date the last location update was performed
+     * @return
+     */
+    public Date getLastLocationUpdateDate() {
+        return lastLocationUpdateDate;
+    }
     /**
      * Get the timeline of the user
      * @return The timeline
@@ -144,5 +209,37 @@ public class User {
      */
     public void setMyImage(Image myImage) {
         this.myImage = myImage;
+    }
+
+    /**
+     * Get the age of the user
+     * @return The age of the user
+     */
+    public int getMyAge() {
+        return myAge;
+    }
+
+    /**
+     * Set the age of the user
+     * @param myAge The new age of the user
+     */
+    public void setMyAge(int myAge) {
+        this.myAge = myAge;
+    }
+
+    /**
+     * Get the city the user has entered
+     * @return The city
+     */
+    public String getMyCity() {
+        return myCity;
+    }
+
+    /**
+     * Set the city of the user
+     * @param myCity The new city of the user
+     */
+    public void setMyCity(String myCity) {
+        this.myCity = myCity;
     }
 }
