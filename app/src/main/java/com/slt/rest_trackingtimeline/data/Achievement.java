@@ -5,7 +5,10 @@ package com.slt.rest_trackingtimeline.data;
  */
 
 public class Achievement {
-    private int achievement;
-    private TimeLineDay timelineDay;
-    private TimeLineSegment timelineSegment;
+    public int achievement;
+    public String _id;
+
+    public Achievement(int achievement) {
+        this.achievement = achievement;
+    }
 }

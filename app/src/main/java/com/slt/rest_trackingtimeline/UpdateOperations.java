@@ -1,7 +1,11 @@
 package com.slt.rest_trackingtimeline;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.slt.rest_trackingtimeline.data.LocationEntry;
+import com.slt.rest_trackingtimeline.data.TimeLine;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
+import com.slt.rest_trackingtimeline.data.TimeLineSegment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -13,66 +17,92 @@ import retrofit2.Response;
 
 public class UpdateOperations {
 
-    public void createTimeLineDay(TimeLineDay timeLineDay) {
-        String userJSON = new Gson().toJson(timeLineDay);
-
+    public static void createTimeLine(TimeLine timeline) {
 
         Endpoints api = RetroClient.getApiService();
-        String jsonBody = new Gson().toJson(timeLineDay);
-        Call<String> call = api.createTimeLineDay(jsonBody);
+        Call<JsonObject> call = api.createTimeLine(timeline);
 
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if(response.isSuccessful()) {
-
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if(response.isSuccessful()){
+                    Singleton test = null;
+                    try {
+                        test = new Gson().fromJson(response.body().toString(), Singleton.class);
+                    }catch(Exception e) {
+                        boolean debug = true;
+                    }
+                    Singleton.getInstance().setResponse_timeLine(test.getResponse_timeLine());
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<JsonObject> call, Throwable t) {
 
             }
         });
     }
 
-    public void createTimeLineSegment(String timelineSegment) {
-
-
+    public static void createTimeLineDay(TimeLineDay timeLineDay) {
         Endpoints api = RetroClient.getApiService();
-        String jsonBody = new Gson().toJson(timelineSegment);
-        Call<String> call = api.createTimeLineDay(jsonBody);
+        Call<JsonObject> call = api.createTimeLineDay(timeLineDay);
 
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if(response.isSuccessful()) {
-
+                    Singleton obj = null;
+                    obj = new Gson().fromJson(response.body().toString(), Singleton.class);
+                    Singleton.getInstance().setResponse_timelineDay(obj.getResponse_timelineDay());
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<JsonObject> call, Throwable t) {
 
             }
         });
     }
 
-    public void createLocationEntry(String locationEntry) {
+    public static void createTimeLineSegment(TimeLineSegment timelineSegment) {
+
+
         Endpoints api = RetroClient.getApiService();
-        String jsonBody = new Gson().toJson(locationEntry);
-        Call<String> call = api.createTimeLineDay(jsonBody);
+        Call<JsonObject> call = api.createTimeLineSegment(timelineSegment);
 
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if(response.isSuccessful()) {
-
+                    Singleton obj = null;
+                    obj = new Gson().fromJson(response.body().toString(), Singleton.class);
+                    Singleton.getInstance().setResponse_timelineSegment(obj.getResponse_timelineSegment());
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public static void createLocationEntry(LocationEntry locationEntry) {
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.createLocationEntry(locationEntry);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if(response.isSuccessful()) {
+                    Singleton obj = null;
+                    obj = new Gson().fromJson(response.body().toString(), Singleton.class);
+                    Singleton.getInstance().setResponse_locationEntry(obj.getResponse_locationEntry());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
 
             }
         });

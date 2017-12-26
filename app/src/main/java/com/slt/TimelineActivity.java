@@ -3,20 +3,36 @@ package com.slt;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.view.View;
 import android.widget.ExpandableListView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.slt.data.User;
+import com.slt.rest_trackingtimeline.RetrieveOperations;
+import com.slt.rest_trackingtimeline.Singleton;
+import com.slt.rest_trackingtimeline.UpdateOperations;
+import com.slt.rest_trackingtimeline.data.Achievement;
+import com.slt.rest_trackingtimeline.data.Location;
+import com.slt.rest_trackingtimeline.data.LocationEntry;
+import com.slt.rest_trackingtimeline.data.Test;
+import com.slt.rest_trackingtimeline.data.TimeLine;
+import com.slt.rest_trackingtimeline.data.TimeLineDay;
+import com.slt.rest_trackingtimeline.data.TimeLineSegment;
 import com.slt.timelineres.ExpandableListAdapter_Timeline;
 import com.slt.timelineres.Node;
 import com.slt.timelineres.Route;
 import com.slt.timelineres.TimelineHeader;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.slt.rest_trackingtimeline.UpdateOperations.createTimeLine;
 
 public class TimelineActivity extends AppCompatActivity implements ExpandableListView.OnChildClickListener {
 
@@ -45,16 +61,32 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
 
         expListView.setOnChildClickListener(this);
 
-        GsonTest();
-    }
 
-    //Test: What If I serialize Location Object?
-    private void GsonTest() {
-        //Gson gson = new Gson();
-        //User user = new User();
+            Test t = new Test("Hello World");
+            Achievement newAchievement = new Achievement(0);
+            ArrayList<Achievement> myAchievements = new ArrayList<>();
+            myAchievements.add(newAchievement);
+            TimeLine obj = new TimeLine("5a196bf8d17b7926882f5413", myAchievements);
+            String json = new Gson().toJson(obj);
 
-        //String json = gson.toJson(user);
-        //String debug = "true";
+            //UpdateOperations.createTimeLine(obj);
+            //TimeLine timeline = Singleton.getInstance().getResponse_timeLine();
+            //TimeLineDay timelineday = new TimeLineDay(new Date(), myAchievements, "5a429f34ef946d3b30d71358");
+            //json = new Gson().toJson(timelineday);
+            //UpdateOperations.createTimeLineDay(timelineday);
+            //RetrieveOperations.getTestData2(t);
+          //  TimeLineSegment timeLineSegment = new TimeLineSegment
+          //          ("Teststr. 84, 6442 Testhausen", "3", 2.4 ,
+          //                  2.0, "5a42b1e52026a72bd8632eb0", myAchievements);
+
+          //UpdateOperations.createTimeLineSegment(timeLineSegment);
+
+        Location location = new Location(2.3, 4.2);
+        LocationEntry locationentry = new LocationEntry(new Date(), 2.1, 2.0,
+                location, "5a42c40b6deb772de0c9f67e");
+
+        UpdateOperations.createLocationEntry(locationentry);
+
     }
 
     private void prepareListData() {
@@ -104,7 +136,7 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
         List<Route> contents = listDataChild.get(key);
         Node c = contents.get(childPosition);
 
-        Singleton.getInstance().setTimelinecontent(c);
+
 
         Intent i = new Intent(this, Activity_TimelineDetails.class);
         startActivity(i);

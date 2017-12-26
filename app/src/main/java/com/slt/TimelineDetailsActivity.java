@@ -64,7 +64,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
 
         /*
 
-        Node c = Singleton.getInstance().getTimelinecontent();
+
 
         tvDauer.setText("12 min 06 s");
         tvAktivitaet.setText(c.getActivity());

@@ -1,5 +1,6 @@
 package com.slt.rest_trackingtimeline.data;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -7,6 +8,13 @@ import java.util.Date;
  */
 
 public class TimeLineDay {
-    private Date myDate;
+    public Date myDate;
+    public ArrayList<Achievement> myAchievements;
+    public String timeline; //timelineID
 
+    public TimeLineDay(Date myDate, ArrayList<Achievement> myAchievements, String timeline) {
+        this.myDate = myDate;
+        this.myAchievements = myAchievements;
+        this.timeline = timeline;
+    }
 }

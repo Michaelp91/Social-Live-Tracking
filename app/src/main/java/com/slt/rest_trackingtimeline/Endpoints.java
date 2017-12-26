@@ -1,13 +1,21 @@
 package com.slt.rest_trackingtimeline;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.slt.data.User;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
+import com.slt.rest_trackingtimeline.data.Test;
+import com.slt.rest_trackingtimeline.data.TimeLine;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
 import com.slt.rest_trackingtimeline.data.TimeLineSegment;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 
@@ -16,6 +24,13 @@ import retrofit2.http.PUT;
  */
 
 public interface Endpoints {
+
+    @POST("fetchTest")
+    Call<JsonObject> getTest2(@Body Test json);
+
+    @POST("tests")
+    Call<JsonObject> getTest(@Body Test json);
+
     @GET("timeline/{userid}")
     Call<User> getCompleteTimeLine(@Body String userid);
 
@@ -28,14 +43,17 @@ public interface Endpoints {
     @GET("timelineday/{userid}")
     Call<TimeLineDay> getTimeLineDay(@Body String userId);
 
-    @POST("locationpoint/new")
-    Call<String> createLocationPoint(@Body String locationEntry);
+    @POST("locationentry/new")
+    Call<JsonObject> createLocationEntry(@Body LocationEntry locationEntry);
 
     @POST("timelinesegment/new")
-    Call<String> createTimeLineSegment(@Body String timeLineSegment);
+    Call<JsonObject> createTimeLineSegment(@Body TimeLineSegment timeLineSegment);
 
     @POST("timelineday/new")
-    Call<String> createTimeLineDay(@Body String timeLineDay);
+    Call<JsonObject> createTimeLineDay(@Body TimeLineDay timeLineDay);
+
+    @POST("timeline/new")
+    Call<JsonObject> createTimeLine(@Body TimeLine timeLine);
 
     //Maybe for merging Timeline Segments in Tracking
     @PUT("timelinesegment/{timelinesegmentId}")
