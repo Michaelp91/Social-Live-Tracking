@@ -20,7 +20,7 @@ public class UserRanker {
      * @return The rank of the user in comparison to their friends
      */
     public static int ownWeekRank(Timeline myTimeline, LinkedList<User> friends, DetectedActivity activity){
-
+        //TODO add code
         return -1;
     }
 

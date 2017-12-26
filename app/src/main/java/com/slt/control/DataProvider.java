@@ -102,6 +102,8 @@ public class DataProvider implements ServiceInterface{
         this.ownUser = new User("DEFAULT");
     }
 
+    //TODO add function for getting other user data and calculation of users in the vicinity
+
     /**
      * The method used to react on a change of the activity
      * @param activity The activity that should be processed

@@ -97,6 +97,24 @@ public class LocationEntry {
     }
 
     /**
+     * Update with a new Position and recalculate the distance to the last location
+     * @param newLocation The new location we want to set
+     * @param lastLocation Last location used to calculate Distance, might be null
+     */
+    void updateLocation(Location newLocation, @Nullable Location lastLocation){
+        this.myLocation = newLocation;
+        this.myTrackDistance = calculateDistance(lastLocation, newLocation);
+    }
+
+    /**
+     * Only update the distance to a last location
+     * @param lastLocation The last location used for the calculation
+     */
+    void updateDistance(Location lastLocation){
+        this.myTrackDistance = calculateDistance(lastLocation, this.myLocation);
+    }
+
+    /**
      * Get the latitude of the location
      * @return The latitude of the location
      */
