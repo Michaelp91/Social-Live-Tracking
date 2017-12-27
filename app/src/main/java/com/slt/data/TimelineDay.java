@@ -72,7 +72,7 @@ public class TimelineDay {
     public void calculateAchievements(){
         LinkedList<Achievement> achievements = AchievementCalculator
                 .calculateDayAchievements(this.mySegments, this.myAchievements);
-
+        Log.i(TAG, "calculateAchievements: In method.");
         this.myAchievements.addAll(achievements);
     }
 
@@ -83,6 +83,7 @@ public class TimelineDay {
      */
     public long getActiveTime(DetectedActivity activity){
         long time = 0;
+        Log.i(TAG, "getActiveTime: In method.");
 
         //loop over all segments to find all data for the selected activity
         for(TimelineSegment segment : this.mySegments){
@@ -101,6 +102,7 @@ public class TimelineDay {
      */
     public long getInactiveTime(DetectedActivity activity){
         long time = 0;
+        Log.i(TAG, "getInactiveTime: In method.");
 
         //loop over all segments to find all data for the selected activity
         for(TimelineSegment segment : this.mySegments){
@@ -119,6 +121,7 @@ public class TimelineDay {
      */
     public double getActiveDistance(DetectedActivity activity) {
         double distance = 0;
+        Log.i(TAG, "getActiveDistance: In method.");
 
         //loop over all segments to find all data for the selected activity
         for(TimelineSegment segment : this.mySegments){
@@ -137,6 +140,7 @@ public class TimelineDay {
      */
     public double getInactiveDistance(DetectedActivity activity) {
         double distance = 0;
+        Log.i(TAG, "getInactiveDistance: In method.");
 
         //loop over all segments to find all data for the selected activity
         for(TimelineSegment segment : this.mySegments){
@@ -146,6 +150,22 @@ public class TimelineDay {
         }
 
         return distance;
+    }
+
+    /**
+     * Get the Steps of the days
+     * @return The steps of the user
+     */
+    public int getSteps() {
+        int steps = 0;
+        Log.i(TAG, "getSteps: In method.");
+
+        //loop over all segments to count all steps
+        for(TimelineSegment segment : this.mySegments){
+            steps += segment.getUserSteps();
+        }
+
+        return steps;
     }
 
     /**
@@ -230,6 +250,59 @@ public class TimelineDay {
     }
 
     /**
+     * Get all Timeline Segments
+     * @return The Timeline Segments
+     */
+    public LinkedList<TimelineSegment> getMySegments() {
+        return mySegments;
+    }
+
+    /**
+     * Change the Segment with the defined index to the activity. Also checks if the activity before
+     * or after is of the same activity type and merge if that is the case
+     * @param activity The activity that should be set
+     * @param index The index of the TimelineSegment we want to set
+     */
+    public void changeActivity(DetectedActivity activity, int index){
+        //check if index is out of bounds
+        if(index < 0 || index >= this.mySegments.size()){
+            Log.i(TAG, "changeActivity: Out of bounds.");
+            return;
+        }
+
+        //set the new activity
+        Log.i(TAG, "changeActivity: Change Activity: " + activity);
+        this.mySegments.get(index).setMyActivity(activity);
+
+        //if we have only one segment there is nothing to do
+        if(this.mySegments.size() == 1){
+            Log.i(TAG, "changeActivity: Only one element, nothing to do.");
+            return;
+        }
+
+        //check if elements before the index exist, then merge the segments
+        if(index-1 >= 0){
+            if(this.mySegments.get(index-1).getMyActivity().getType() == activity.getType()){
+                Log.i(TAG, "changeActivity: Merge with previous element.");
+                TimelineSegment mergeSegment = this.mySegments.get(index);
+                this.mySegments.get(index-1).mergeTimelineSegments(mergeSegment);
+                this.mySegments.remove(index);
+                index--;
+            }
+        }
+
+        //check if elements after the index exist, if yes then merge the segments
+        if(index+1 < this.mySegments.size()){
+            if(this.mySegments.get(index+1).getMyActivity().getType() == activity.getType()){
+                Log.i(TAG, "changeActivity: Merge with next element.");
+                TimelineSegment mergeSegment = this.mySegments.get(index+1);
+                this.mySegments.get(index).mergeTimelineSegments(mergeSegment);
+                this.mySegments.remove(index+1);
+            }
+        }
+    }
+
+    /**
      * Add a user status to the
      * @param location The location that should be added
      * @param date The date the location/activity was detected
@@ -239,6 +312,7 @@ public class TimelineDay {
 
         //check if we have segments in the history, if not add and start place and address resolution
         if(this.mySegments.isEmpty()){
+            Log.i(TAG, "addUserStatus: Segements empty, create new Segment, location resolution.");
             this.mySegments.add(new TimelineSegment(location, date, activity));
             Object[] ResolutionData = new Object[2];
             ResolutionData[0] = this.mySegments.getLast();
@@ -249,6 +323,7 @@ public class TimelineDay {
 
             PlacesResolver placesResolver = new PlacesResolver();
             placesResolver.execute(ResolutionData);
+            this.calculateAchievements();
             return;
         }
 
@@ -257,31 +332,40 @@ public class TimelineDay {
 
         //if it is a new activity
         if(!this.mySegments.getLast().compareActivities(activity)){
+            Log.i(TAG, "addUserStatus: New activity detected.");
 
-            //TODO CHECK IF IT WORKS
+            if(this.mySegments.getLast().getDuration()
+                    < MIN_SEGMENT_DURATION_IN_SECONDS ) {
+                Log.i(TAG, "addUserStatus: Last segment too short.");
 
-            //if we have at least 3 segments in history
-            if(this.mySegments.size() >= 3) {
-                int lastSegmentIndex = this.mySegments.size() -2;
+                if(this.mySegments.size() == 1) {
+                    //if we only have a single activity the detection might have been wrong at the
+                    // beginning, so simply reset it to the new one
+                    Log.i(TAG, "addUserStatus: Only 1 element in history, change activity.");
+                    this.mySegments.getLast().setMyActivity(activity);
+                }
 
-                //TODO what to do with same activities - merge?
-                //check if last segment has a min duration and is a specific activity
-                if(this.mySegments.get(lastSegmentIndex).getDuration()
-                        >= MIN_SEGMENT_DURATION_IN_SECONDS && (
-                        this.mySegments.peekLast().getMyActivity().getType()
-                                == DetectedActivity.STILL ||
-                                this.mySegments.peekLast().getMyActivity().getType()
-                                == DetectedActivity.TILTING ||
-                                this.mySegments.peekLast().getMyActivity().getType()
-                                == DetectedActivity.UNKNOWN) ){
-                    TimelineSegment lastSegment = this.mySegments.pop();
-                    this.mySegments.peekLast().mergeTimelineSegments(lastSegment);
+                if(this.mySegments.size() > 2){
+                    int lastSegmentIndex = this.mySegments.size() -2;
+                    if(this.mySegments.get(lastSegmentIndex).compareActivities(activity)){
+                        //if the previous one is the same as the current one merge all thre
+                        Log.i(TAG, "addUserStatus: Previous activity same as current merge segments.");
+                        TimelineSegment segment = this.mySegments.getLast();
+                        this.mySegments.removeLast();
+                        this.mySegments.getLast().mergeTimelineSegments(segment);
+                    } else {
+                        //if they are not the same simply change activity since something has
+                        //changed since the previous element
+                        Log.i(TAG, "addUserStatus: New activity not same as previous one, change activity.");
+                        this.mySegments.getLast().setMyActivity(activity);
+                    }
                 }
 
             }
 
             //check if new activity, if yes add and start place/address resolution
             if(this.mySegments.peekLast().getMyActivity().getType() != activity.getType()) {
+                Log.i(TAG, "addUserStatus: new Activity, new Segment created, create new Segment.");
                 TimelineSegment nextSegment = new TimelineSegment(location, date, activity);
                 this.mySegments.add(nextSegment);
 
@@ -298,14 +382,6 @@ public class TimelineDay {
         }
 
         this.calculateAchievements();
-    }
-
-    /**
-     * Get the size of the segment history
-     * @return The size of the segment list
-     */
-    public int getSegmentSize(){
-        return mySegments.size();
     }
 
     /**

@@ -109,10 +109,9 @@ public class TimelineSegment {
         //add a new location point
         this.addLocationPoint(location, date);
 
-        // check if the activity is walking or on foot, if yes start a step counter
-        if(DetectedActivity.WALKING == activity.getType() || DetectedActivity.ON_FOOT == activity.getType()){
-            this.myStepSensor = new StepSensor();
-        }
+        //start a step counter, might not be needed, but want to have the data in case the user
+        // changes the type of activity later
+        this.myStepSensor = new StepSensor();
     }
 
     /**
@@ -147,10 +146,8 @@ public class TimelineSegment {
         this.activeDistance += newEntry.getMyTrackDistance();
         this.activeTime += newEntry.getMyDuration();
 
-        //if we have a step sensor update the statistics
-        if(DetectedActivity.WALKING == this.myActivity.getType() || DetectedActivity.ON_FOOT == this.myActivity.getType()) {
-            this.userSteps = myStepSensor.getSteps();
-        }
+        // update the statistics for the steps
+        this.userSteps = myStepSensor.getSteps();
 
         this.myLocationPoints.add(newEntry);
         this.calculateAchievements();;
@@ -215,8 +212,6 @@ public class TimelineSegment {
         return comment;
     }
 
-
-
     /**
      * Add a achievement to our list
      * @param achievement The achievement we want to add
@@ -232,10 +227,14 @@ public class TimelineSegment {
      */
     public void mergeTimelineSegments(TimelineSegment segment){
 
-        //TODO remove points that are in both segments
+        //Remove the last location point since it is double in both segments
+        this.myLocationPoints.removeLast();
+
+        //merge all the remaining data
         this.myLocationPoints.addAll(segment.getLocationPoints());
         this.myAchievements.addAll(segment.getMyAchievements());
         this.userComments.addAll(segment.getUserComments());
+
 
         //check which activity type our activity is
         switch(segment.getMyActivity().getType())
@@ -265,7 +264,10 @@ public class TimelineSegment {
         this.calculateAchievements();
     }
 
-
+    /**
+     * Get the Steps of the user
+     * @return The User Steps
+     */
     public int getUserSteps() {
         return userSteps;
     }
@@ -299,6 +301,78 @@ public class TimelineSegment {
         if(image != null) {
             this.myImages.add(image);
         }
+    }
+
+    /**
+     * Used in Case the user wants to change the activity, can only be called from the TimelineDay
+     * since we might have to merge
+     * @param myActivity The activity we want to set
+     */
+    void setMyActivity(DetectedActivity myActivity) {
+        Log.i(TAG, "setMyActivity: Set activity to: " + myActivity.getType());
+        //if new activity is not a sport set the active counters to 0
+        if(myActivity.getType() == DetectedActivity.STILL ||
+                myActivity.getType() == DetectedActivity.UNKNOWN ||
+                myActivity.getType() == DetectedActivity.IN_VEHICLE){
+            this.inactiveTime += this.activeTime;
+            this.inactiveDistance += this.activeDistance;
+            this.activeDistance = 0;
+            this.activeTime = 0;
+        }
+
+        //if old activity is not a sport one correct the counters
+        if(this.myActivity.getType() == DetectedActivity.STILL ||
+                this.myActivity.getType() == DetectedActivity.UNKNOWN ||
+                this.myActivity.getType() == DetectedActivity.IN_VEHICLE){
+            this.activeTime += this.inactiveTime;
+            this.activeDistance += this.inactiveDistance;
+            this.inactiveDistance = 0;
+            this.inactiveTime = 0;
+        }
+
+        this.myActivity = myActivity;
+    }
+
+    public void updateLocation(Location newLocation, int index){
+        if(index < 0 || index >= this.myLocationPoints.size()){
+            Log.i(TAG, "Update location: Index out of bounds.");
+            return;
+        }
+
+        if(this.myLocationPoints.size() == 1){
+            Log.i(TAG, "Update location: Only one element, nothing to do.");
+            return;
+        }
+
+        Log.i(TAG, "Update location: Set new values.");
+
+        //subtract distance from the point
+        this.activeDistance -= this.myLocationPoints.get(index).getMyTrackDistance();
+
+        //check if elements before the index exist, then update newLocation
+        if(index-1 >= 0){
+            Log.i(TAG, "Update location: element before last index exist, recalculate.");
+            Location last = this.myLocationPoints.get(index-1).getMyLocation();
+            this.myLocationPoints.get(index).updateLocation(newLocation, last);
+        } else {
+            Log.i(TAG, "Update location: no element before last index.");
+            this.myLocationPoints.get(index).updateLocation(newLocation, null);
+        }
+
+        //add new distance
+        this.activeDistance += this.myLocationPoints.get(index).getMyTrackDistance();
+
+        //check if elements after the index exist, if yes update the distance
+        if(index+1 < this.myLocationPoints.size()){
+            Log.i(TAG, "Update location: element before last index exist, recalculate.");
+            this.activeDistance -= this.myLocationPoints.get(index+1).getMyTrackDistance();
+            this.myLocationPoints.get(index+1).updateDistance(newLocation);
+            this.activeDistance += this.myLocationPoints.get(index+1).getMyTrackDistance();
+        }
+
+        //update achievements in case something changed
+        this.myAchievements = new LinkedList<>();
+        this.calculateAchievements();
     }
 
     /**

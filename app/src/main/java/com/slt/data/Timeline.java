@@ -117,6 +117,21 @@ public class Timeline {
     }
 
     /**
+     * Get the Steps of the timeline
+     * @return The steps of the user
+     */
+    public int getSteps() {
+        int steps = 0;
+
+        //loop over all segments to count all steps
+        for(TimelineDay day : this.myHistory){
+            steps += day.getSteps();
+        }
+
+        return steps;
+    }
+
+    /**
      * Get total distance of a certain activity and day
      * @param activity Activity we want to retrieve the total distance for
      * @param checkDay Day we want to retrieve the total distance for
@@ -137,16 +152,78 @@ public class Timeline {
     }
 
     /**
-     * Calculate the achievements to see if we have any new achievements
+     * Get all Timeline Days for the selected month or week
+     * @param referenceDate The date for the week we want the data for
+     * @param mode The mode of the method, 0 returns all days of the week, 1 for the month
+     * @return A linked list containing all TimelineDays
      */
-    public void calculateAchievements(){
+    private  LinkedList<TimelineDay> getDaysOfWeekOrMonth(Date referenceDate, int mode) {
+
+        //Set the calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(referenceDate);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        //choose if we need all days of the week or month
+        if( 0 == mode) {
+            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        } else {
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        LinkedList<TimelineDay> daysOfWeek = new LinkedList<>();
+
+        //get the TimelineDays
+        for (int i = 0; i < calendar.getActualMaximum(Calendar.DATE); i++) {
+            for(TimelineDay day: this.myHistory) {
+                if(day.isSameDay(calendar.getTime())) {
+                    daysOfWeek.add(day);
+                }
+            }
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return daysOfWeek;
+    }
+
+    /**
+     * Get the date of the current TimelineDay
+     * @return The date
+     */
+    private Date getLastDate(){
+        return this.myHistory.getLast().getMyDate();
+    }
+
+    /**
+     * Get the Month or Week Achievements
+     * @return The achivements
+     */
+    public LinkedList<Achievement> getMyAchievements() {
+        return myAchievements;
+    }
+
+    /**
+     * Calculate the achievements to see if we have any new achievements
+     * @param day A day of the week we want to calculate achievements for
+     */
+    public void calculateAchievements(Date day){
+
+        //Set the calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(day);
+
+        int monthLength = calendar.getActualMaximum(Calendar.DATE);
+
         LinkedList<Achievement> achievements = AchievementCalculator
-                .calculateWeekAchievements(this.myHistory, this.myAchievements);
+                .calculateWeekAchievements(this.getDaysOfWeekOrMonth(day, 0), this.myAchievements);
 
         this.myAchievements.addAll(achievements);
 
-        achievements = AchievementCalculator.calculateMonthAchievements(this.myHistory,
-                this.myAchievements);
+        achievements = AchievementCalculator.calculateMonthAchievements(
+                this.getDaysOfWeekOrMonth(day, 1),
+                this.myAchievements, monthLength);
         this.myAchievements.addAll(achievements);
     }
 
@@ -168,7 +245,7 @@ public class Timeline {
         }
 
         this.myHistory.getLast().addUserStatus(location, date, activity);
-        this.calculateAchievements();
+        this.calculateAchievements(date);
     }
 
     /**

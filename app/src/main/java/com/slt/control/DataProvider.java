@@ -74,10 +74,14 @@ public class DataProvider implements ServiceInterface{
     private Timeline userTimeline;
 
     /**
-     * All users for which we also hold data
+     * All users for which we also hold data, ao our friend list
      */
     private LinkedList<User> userList;
 
+    /**
+     * our own user's data
+     */
+    private User ownUser;
 
 
     /**
@@ -93,7 +97,12 @@ public class DataProvider implements ServiceInterface{
         //TODO init the user timeline and the other users with stored data
         userTimeline = new Timeline();
         userList = new LinkedList<>();
+
+        //TODO load real data
+        this.ownUser = new User("DEFAULT");
     }
+
+    //TODO add function for getting other user data and calculation of users in the vicinity
 
     /**
      * The method used to react on a change of the activity
@@ -174,10 +183,11 @@ public class DataProvider implements ServiceInterface{
      * location
      */
     public int updatePosition(Location location, Date timestamp){
+
         //if we do not have an activity yet, store location
         if(myCurrentActivity == null){
             myCurrentLocation = location;
-
+            this.ownUser.setLastLocation(location, timestamp);
             Log.i(TAG, "updatePosition, init current Activity, no location set.");
             return 1;
         }
@@ -194,6 +204,7 @@ public class DataProvider implements ServiceInterface{
         //add the location to the timeline
         myCurrentLocation = location;
         userTimeline.addUserStatus(myCurrentLocation, timestamp, myCurrentActivity);
+        this.ownUser.setLastLocation(location, timestamp);
         Log.i(TAG, "updatePosition, add new location point.");
         return 2;
     }
@@ -212,5 +223,52 @@ public class DataProvider implements ServiceInterface{
      */
     public void addUser(User user) {
         this.userList.add(user);
+    }
+
+
+    /**
+     * Get the Rank of the user in relation to its friends list for a week
+     * @param activity - The activity we want to compare for, if null will return a comparison of
+     *                 the sum of all sport activities
+     * @return The rank of the user in comparison to their friends
+     */
+    public int ownWeekRank(Timeline myTimeline, LinkedList<User> friends, DetectedActivity activity){
+
+        return UserRanker.ownWeekRank(this.userTimeline, this.userList,activity);
+    }
+
+    /**
+     * Get a list of all users in order of their rank in relation to all friends for a week
+     * @param activity - The activity we want to compare for, if null will return a comparison of
+     *                 the sum of all sport activities
+     * @return A linked list containing the usernames of all users with the rank, the user itself is
+     * shown as "Own"
+     */
+    public LinkedList<LinkedList<User>> userWeekRanking(DetectedActivity activity){
+
+        return UserRanker.userWeekRanking(this.userTimeline, this.userList,activity);
+    }
+
+    /**
+     * Get the Steps/Distance Rank of the user in relation to its friends list for a month
+     * @param activity  - The activity we want to compare for, if null will return a comparison of
+     *                 the sum of all sport activities
+     * @return The rank of the user in comparison to their friends
+     */
+    public int ownMonthRank(Timeline myTimeline, LinkedList<User> friends, DetectedActivity activity){
+
+        return UserRanker.ownMonthRank(this.userTimeline, this.userList,activity);
+    }
+
+    /**
+     * Get a list of all users in order of their rank in relation to all friends for a month
+     * @param activity - The activity we want to compare for, if null will return a comparison of
+     *                 the sum of all sport activities
+     * @return A linked list containing the usernames of all users with the rank, the user itself is
+     * shown as "Own"
+     */
+    public LinkedList<LinkedList<User>> userMonthRanking(DetectedActivity activity){
+
+        return UserRanker.userMonthRanking(this.userTimeline, this.userList,activity);
     }
 }
