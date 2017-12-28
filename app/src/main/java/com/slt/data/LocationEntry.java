@@ -40,6 +40,11 @@ public class LocationEntry {
     private long myDuration;
 
     /**
+     * Database ID
+     */
+    private String ID;
+
+    /**
      * The constructor to initialize the data, add a last location and date to calculate statistics
      * @param newLocation The location to store.
      * @param newDate The date the new location was detected
@@ -49,6 +54,7 @@ public class LocationEntry {
     public LocationEntry(Location newLocation, Date newDate, @Nullable Location lastLocation, @Nullable Date lastDate){
         myLocation = newLocation;
         myEntryDate = newDate;
+        this.ID = null;
 
         //calculate the statistics
         myTrackDistance = calculateDistance(lastLocation, newLocation);
@@ -170,5 +176,21 @@ public class LocationEntry {
      */
     public long getMyDuration() {
         return myDuration;
+    }
+
+    /**
+     * Retrieve the database ID
+     * @return The database ID
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * Set the Datatbase ID
+     * @param ID The new Database ID
+     */
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

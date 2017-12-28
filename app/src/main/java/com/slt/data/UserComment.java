@@ -23,6 +23,11 @@ public class UserComment {
     private LinkedList<String> userComments;
 
     /**
+     * Database ID
+     */
+    private String ID;
+
+    /**
      * Constructor initializes the data
      * @param user The user that made the comment
      * @param comment The first comment the user made
@@ -31,6 +36,7 @@ public class UserComment {
         this.userName = user;
         this.userComments = new LinkedList<>();
         this.userComments.add(comment);
+        this.ID = null;
     }
 
     /**
@@ -83,5 +89,21 @@ public class UserComment {
             throw new Exception("Index out of bounds");
 
         this.userComments.remove(index);
+    }
+
+    /**
+     * Retrieve the database ID
+     * @return The database ID
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * Set the Datatbase ID
+     * @param ID The new Database ID
+     */
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

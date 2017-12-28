@@ -64,6 +64,11 @@ public class User {
     private Date lastLocationUpdateDate;
 
     /**
+     * Database ID
+     */
+    private String ID;
+
+    /**
      * Constructor to initialize the minimal data data
      * @param userName The username of the user
      */
@@ -78,6 +83,7 @@ public class User {
         this.myCity = "";
         this.lastLocationUpdateDate = null;
         this.lastLocation = null;
+        this.ID = null;
     }
 
     /**
@@ -88,7 +94,7 @@ public class User {
      * @param lastName The last name of the user
      * @param image The image the user has set
      */
-    public User(String userName, String email, String foreName, String lastName, Image image, int age, String city) {
+    public User(String userName, String email, String foreName, String lastName, Image image, int age, String city, String ID) {
          this.myTimeline = new Timeline();
          this.myImage = image;
         this.userName = userName;
@@ -97,6 +103,7 @@ public class User {
         this.lastName = lastName;
         this.myAge = age;
         this.myCity = city;
+        this.ID = ID;
     }
 
     /**
@@ -241,5 +248,21 @@ public class User {
      */
     public void setMyCity(String myCity) {
         this.myCity = myCity;
+    }
+
+    /**
+     * Retrieve the database ID
+     * @return The database ID
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * Set the Datatbase ID
+     * @param ID The new Database ID
+     */
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

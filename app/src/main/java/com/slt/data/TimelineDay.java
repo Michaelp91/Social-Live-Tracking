@@ -47,11 +47,17 @@ public class TimelineDay {
     private LinkedList<Achievement> myAchievements;
 
     /**
+     * Database ID
+     */
+    private String ID;
+
+    /**
      *  Constructor initializes the data
      * @param myDate The day of the TimelineDay
      */
     public TimelineDay(Date myDate) {
         this.mySegments = new LinkedList<>();
+        this.ID = null;
 
         //Truncate date to the day
         Calendar calendar = Calendar.getInstance();
@@ -313,7 +319,7 @@ public class TimelineDay {
         //check if we have segments in the history, if not add and start place and address resolution
         if(this.mySegments.isEmpty()){
             Log.i(TAG, "addUserStatus: Segements empty, create new Segment, location resolution.");
-            this.mySegments.add(new TimelineSegment(location, date, activity));
+            this.mySegments.add(new TimelineSegment(location, date, activity, date));
             Object[] ResolutionData = new Object[2];
             ResolutionData[0] = this.mySegments.getLast();
             ResolutionData[1] = location;
@@ -366,7 +372,7 @@ public class TimelineDay {
             //check if new activity, if yes add and start place/address resolution
             if(this.mySegments.peekLast().getMyActivity().getType() != activity.getType()) {
                 Log.i(TAG, "addUserStatus: new Activity, new Segment created, create new Segment.");
-                TimelineSegment nextSegment = new TimelineSegment(location, date, activity);
+                TimelineSegment nextSegment = new TimelineSegment(location, date, activity, date);
                 this.mySegments.add(nextSegment);
 
                 Object[] ResolutionData = new Object[2];
@@ -412,5 +418,21 @@ public class TimelineDay {
      */
     public LinkedList<Achievement> getMyAchievements() {
         return new LinkedList<>(myAchievements);
+    }
+
+    /**
+     * Retrieve the database ID
+     * @return The database ID
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * Set the Datatbase ID
+     * @param ID The new Database ID
+     */
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

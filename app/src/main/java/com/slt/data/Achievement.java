@@ -17,6 +17,11 @@ public class Achievement {
     private Date timestamp;
 
     /**
+     * Database ID
+     */
+    private String ID;
+
+    /**
      * Constructor to initialize the Class
      * @param achievement The achievement that has to be stored
      * @param timestamp The Date the achievement was achieved
@@ -24,6 +29,7 @@ public class Achievement {
     public Achievement(int achievement, Date timestamp) {
         this.achievement = achievement;
         this.timestamp = timestamp;
+        this.ID = null;
     }
 
     /**
@@ -43,4 +49,19 @@ public class Achievement {
         return timestamp;
     }
 
+    /**
+     * Retrieve the database ID
+     * @return The database ID
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * Set the Datatbase ID
+     * @param ID The new Database ID
+     */
+    public void setID(String ID) {
+        this.ID = ID;
+    }
 }

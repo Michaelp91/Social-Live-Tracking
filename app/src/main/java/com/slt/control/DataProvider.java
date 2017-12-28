@@ -1,6 +1,7 @@
 package com.slt.control;
 
 import android.location.Location;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.slt.data.User;
@@ -83,6 +84,15 @@ public class DataProvider implements ServiceInterface{
      */
     private User ownUser;
 
+    /**
+     * Defines the max. distance for nearby users
+     */
+    private static final double NEARBY_PEOPLE_DISTANCE = 2000;
+
+    /*
+     *  Stores all users including all that are friends
+     */
+    private LinkedList<User> allUsers;
 
     /**
      * Constructor to initialize the data
@@ -97,6 +107,7 @@ public class DataProvider implements ServiceInterface{
         //TODO init the user timeline and the other users with stored data
         userTimeline = new Timeline();
         userList = new LinkedList<>();
+        this.allUsers = new LinkedList<>();
 
         //TODO load real data
         this.ownUser = new User("DEFAULT");
@@ -111,7 +122,7 @@ public class DataProvider implements ServiceInterface{
      * @return 0 if nothing was changed, 1 if we initialized the data, 2 if a new activity was
      * detected but not used, 3 if the data was entered
      */
-    public int updateActivity(DetectedActivity activity, Date timestamp){
+    public synchronized int updateActivity(DetectedActivity activity, Date timestamp){
 
         //if we do not have a location yet, store the activity and do nothing
         if(myCurrentLocation == null){
@@ -176,13 +187,97 @@ public class DataProvider implements ServiceInterface{
     }
 
     /**
+     * Method looks for users by their last name and returns them
+     * @param name The last name of the user to look for
+     * @return A list containing all users with that name, might be empty
+     */
+    public LinkedList<User> getUserByName(String name){
+        LinkedList<User> result = new LinkedList<>();
+        //TODO implement updating the userList
+
+        //check for users with that name
+        for(User check : this.allUsers){
+            if(check.getLastName().compareTo(name) == 0){
+                result.add(check);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Method to look for a specific user by his username
+     * @param username The username we look for
+     * @return The user with the username if he exists, null if not
+     */
+    public User getUserByUsername(String username){
+        User result = null;
+        //TODO implement updating the userList
+
+        //check for user that has this username
+        for(User check : this.allUsers){
+            if(check.getUserName().compareTo(username) == 0){
+                result = check;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Method checks for all users with a specific email address and returns them
+     * @param email The email address we look for
+     * @return A list containing all users with that email, might be empty
+     */
+    public LinkedList<User> getUserByEMail(String email){
+        LinkedList<User> result = new LinkedList<>();
+        //TODO implement updating the userList
+
+        //check for users with that email address
+        for(User check : this.allUsers){
+            if(check.getEmail().compareTo(email) == 0){
+                result.add(check);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Method used to find users in the nearby distance
+     * @param distance Distance in which to look for users, if set to 0 the default distance will be
+     *                 Used
+     * @return A list containing all nearby users, might be empty
+     */
+    public LinkedList<User> getNearbyUsers(double distance){
+        double checkDistance = DataProvider.NEARBY_PEOPLE_DISTANCE;
+
+        //check if parameter is used
+        if(distance > 0){
+            checkDistance = distance;
+        }
+        LinkedList<User> result = new LinkedList<>();
+        //TODO implement updating the userList
+
+        //check for users in nearby distance
+        for(User check : this.allUsers){
+            if(check.getLastLocation().distanceTo(this.myCurrentLocation) <= checkDistance){
+                result.add(check);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * The method used to react on a change of the location
      * @param location The location that was detected
      * @param timestamp The timestamp the location was detected
      * @return 0 if do nothing with the data, 1 if we initialized the data, 2 if we added the
      * location
      */
-    public int updatePosition(Location location, Date timestamp){
+    public synchronized  int updatePosition(Location location, Date timestamp){
 
         //if we do not have an activity yet, store location
         if(myCurrentActivity == null){
@@ -230,45 +325,53 @@ public class DataProvider implements ServiceInterface{
      * Get the Rank of the user in relation to its friends list for a week
      * @param activity - The activity we want to compare for, if null will return a comparison of
      *                 the sum of all sport activities
+     * @param method Parameter  which values the user wants to compare, possible methods are defined
+     *               in UserRanker.METHODS
      * @return The rank of the user in comparison to their friends
      */
-    public int ownWeekRank(Timeline myTimeline, LinkedList<User> friends, DetectedActivity activity){
+    public int ownWeekRank( DetectedActivity activity, int method){
 
-        return UserRanker.ownWeekRank(this.userTimeline, this.userList,activity);
+        return UserRanker.ownWeekRank(this.userTimeline, this.userList, activity, method);
     }
 
     /**
      * Get a list of all users in order of their rank in relation to all friends for a week
      * @param activity - The activity we want to compare for, if null will return a comparison of
      *                 the sum of all sport activities
+     * @param method Parameter  which values the user wants to compare, possible methods are defined
+     *               in UserRanker.METHODS
      * @return A linked list containing the usernames of all users with the rank, the user itself is
      * shown as "Own"
      */
-    public LinkedList<LinkedList<User>> userWeekRanking(DetectedActivity activity){
+    public LinkedList<LinkedList<User>> userWeekRanking(DetectedActivity activity, int method){
 
-        return UserRanker.userWeekRanking(this.userTimeline, this.userList,activity);
+        return UserRanker.userWeekRanking(this.userTimeline, this.userList, activity, method);
     }
 
     /**
      * Get the Steps/Distance Rank of the user in relation to its friends list for a month
      * @param activity  - The activity we want to compare for, if null will return a comparison of
      *                 the sum of all sport activities
+     * @param method Parameter  which values the user wants to compare, possible methods are defined
+     *               in UserRanker.METHODS
      * @return The rank of the user in comparison to their friends
      */
-    public int ownMonthRank(Timeline myTimeline, LinkedList<User> friends, DetectedActivity activity){
+    public int ownMonthRank( DetectedActivity activity, int method){
 
-        return UserRanker.ownMonthRank(this.userTimeline, this.userList,activity);
+        return UserRanker.ownMonthRank(this.userTimeline, this.userList, activity, method);
     }
 
     /**
      * Get a list of all users in order of their rank in relation to all friends for a month
      * @param activity - The activity we want to compare for, if null will return a comparison of
      *                 the sum of all sport activities
+     * @param method Parameter  which values the user wants to compare, possible methods are defined
+     *               in UserRanker.METHODS
      * @return A linked list containing the usernames of all users with the rank, the user itself is
      * shown as "Own"
      */
-    public LinkedList<LinkedList<User>> userMonthRanking(DetectedActivity activity){
+    public LinkedList<LinkedList<User>> userMonthRanking(DetectedActivity activity , int method){
 
-        return UserRanker.userMonthRanking(this.userTimeline, this.userList,activity);
+        return UserRanker.userMonthRanking(this.userTimeline, this.userList, activity, method);
     }
 }

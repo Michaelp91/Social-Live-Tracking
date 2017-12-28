@@ -30,11 +30,17 @@ public class Timeline {
     private LinkedList<Achievement> myAchievements;
 
     /**
+     * Database ID
+     */
+    private String ID;
+
+    /**
      * Constructor, initializes the list
      */
     public Timeline(){
         myHistory = new LinkedList<TimelineDay>();
         myAchievements = new LinkedList<>();
+        this.ID = null;
     }
 
     /**
@@ -277,5 +283,21 @@ public class Timeline {
         }
 
         return this.myHistory.get(index);
+    }
+
+    /**
+     * Retrieve the database ID
+     * @return The database ID
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * Set the Datatbase ID
+     * @param ID The new Database ID
+     */
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

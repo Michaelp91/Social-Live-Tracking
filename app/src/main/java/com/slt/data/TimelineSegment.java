@@ -87,6 +87,16 @@ public class TimelineSegment {
      */
     private LinkedList<Image> myImages;
 
+    /**
+     * Start time of the segment
+     */
+    private Date startTime;
+
+    /**
+     * Database ID
+     */
+    private String ID;
+
 
     /**
      * Constructor to initialize all data
@@ -94,17 +104,19 @@ public class TimelineSegment {
      * @param date The date the location was detected
      * @param activity The activity the segment was created for
      */
-    TimelineSegment(Location location, Date date, DetectedActivity activity){
+    TimelineSegment(Location location, Date date, DetectedActivity activity, Date startTime){
         myLocationPoints = new LinkedList<>();
         myAchievements = new LinkedList<>();
         myImages = new LinkedList<>();
         myActivity = activity;
+        this.startTime = startTime;
         userComments = new LinkedList<>();
         userSteps = 0;
         activeDistance = 0.0;
         activeTime = 0;
         inactiveTime = 0;
         startAddress = "";
+        this.ID = null;
 
         //add a new location point
         this.addLocationPoint(location, date);
@@ -223,7 +235,6 @@ public class TimelineSegment {
     /**
      * Merge two segments
      * @param segment The segment we want to merge into our segment
-     * @return
      */
     public void mergeTimelineSegments(TimelineSegment segment){
 
@@ -339,7 +350,7 @@ public class TimelineSegment {
             return;
         }
 
-        if(this.myLocationPoints.size() == 1){
+        if(1 == this.myLocationPoints.size()){
             Log.i(TAG, "Update location: Only one element, nothing to do.");
             return;
         }
@@ -350,7 +361,7 @@ public class TimelineSegment {
         this.activeDistance -= this.myLocationPoints.get(index).getMyTrackDistance();
 
         //check if elements before the index exist, then update newLocation
-        if(index-1 >= 0){
+        if(0 <= index - 1){
             Log.i(TAG, "Update location: element before last index exist, recalculate.");
             Location last = this.myLocationPoints.get(index-1).getMyLocation();
             this.myLocationPoints.get(index).updateLocation(newLocation, last);
@@ -493,6 +504,30 @@ public class TimelineSegment {
      */
     public LinkedList<LocationEntry> getLocationPoints() {
         return new LinkedList<>(this.myLocationPoints);
+    }
+
+    /**
+     * Get the start time of the first point
+     * @return The start time of the first segment
+     */
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Retrieve the database ID
+     * @return The database ID
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * Set the Datatbase ID
+     * @param ID The new Database ID
+     */
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }
 
