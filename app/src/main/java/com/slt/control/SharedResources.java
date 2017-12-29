@@ -6,6 +6,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
  * Stores the instance of the Google API so every activity can acess it as needed
  */
 public class SharedResources {
+    /*
+    * Tag for the Logger
+    */
+    private static final String TAG = "SharedResources";
+
     /**
      * Stores the instance of the shared resources
      */

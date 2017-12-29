@@ -69,11 +69,29 @@ public class User {
     private String ID;
 
     /**
-     * Constructor to initialize the minimal data data
+     * Constructor to initialize the minimal data
      * @param userName The username of the user
      */
     public User(String userName) {
         this.myTimeline = new Timeline();
+        this.myImage = null;
+        this.userName = userName;
+        this.email = "";
+        this.foreName = "";
+        this.lastName = "";
+        this.myAge = 0;
+        this.myCity = "";
+        this.lastLocationUpdateDate = null;
+        this.lastLocation = null;
+        this.ID = null;
+    }
+
+    /**
+     * Constructor to initialize the data
+     * @param userName The username of the user
+     */
+    public User(String userName, Timeline timeline) {
+        this.myTimeline = timeline;
         this.myImage = null;
         this.userName = userName;
         this.email = "";

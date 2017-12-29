@@ -15,6 +15,11 @@ import java.util.LinkedList;
 public class AchievementCalculator {
 
     /**
+     * Tag for the Logger
+     */
+    private static final String TAG = "Achievement Calculator";
+
+    /**
      * Checks if the achievement is already in the list
      * @param achievement The achievement we want to compare to
      * @param achievements The list we check against

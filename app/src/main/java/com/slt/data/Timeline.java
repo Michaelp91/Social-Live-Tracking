@@ -64,6 +64,60 @@ public class Timeline {
     }
 
     /**
+     * Get the active time for the current month
+     * @return The active distance
+     */
+    public long getActiveTimeForMonth(){
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 1);
+
+        long time = 0;
+        DetectedActivity biking = new DetectedActivity(DetectedActivity.ON_BICYCLE, 100);
+        DetectedActivity walking = new DetectedActivity(DetectedActivity.WALKING, 100);
+        DetectedActivity foot = new DetectedActivity(DetectedActivity.ON_FOOT, 100);
+        DetectedActivity running = new DetectedActivity(DetectedActivity.RUNNING, 100);
+
+        //loop over all week days to count all times
+        for(TimelineDay day : week){
+            time += day.getActiveTime(biking);
+            time += day.getActiveTime(walking);
+            time+= day.getActiveTime(foot);
+            time += day.getActiveTime(running);
+        }
+
+        return time;
+    }
+
+    /**
+     * Get the active time for the current week
+     * @return The active distance
+     */
+    public long getActiveTimeForWeek(){
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
+
+        long time = 0;
+        DetectedActivity biking = new DetectedActivity(DetectedActivity.ON_BICYCLE, 100);
+        DetectedActivity walking = new DetectedActivity(DetectedActivity.WALKING, 100);
+        DetectedActivity foot = new DetectedActivity(DetectedActivity.ON_FOOT, 100);
+        DetectedActivity running = new DetectedActivity(DetectedActivity.RUNNING, 100);
+
+        //loop over all week days to count all times
+        for(TimelineDay day : week){
+            time += day.getActiveTime(biking);
+            time += day.getActiveTime(walking);
+            time += day.getActiveTime(foot);
+            time += day.getActiveTime(running);
+        }
+
+        return time;
+    }
+
+    /**
      * Get inactive time of a certain activity and day
      * @param activity Activity we want to retrieve the inactive time for
      * @param checkDay Day we want to retrieve the inactive time for
@@ -103,6 +157,60 @@ public class Timeline {
     }
 
     /**
+     * Get the active distance for the current month
+     * @return The active distance
+     */
+    public double getActiveDistanceForMonth(){
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 1);
+
+        double distance = 0;
+        DetectedActivity biking = new DetectedActivity(DetectedActivity.ON_BICYCLE, 100);
+        DetectedActivity walking = new DetectedActivity(DetectedActivity.WALKING, 100);
+        DetectedActivity foot = new DetectedActivity(DetectedActivity.ON_FOOT, 100);
+        DetectedActivity running = new DetectedActivity(DetectedActivity.RUNNING, 100);
+
+        //loop over all week days to count all steps
+        for(TimelineDay day : week){
+            distance += day.getActiveDistance(biking);
+            distance += day.getActiveDistance(walking);
+            distance += day.getActiveDistance(foot);
+            distance += day.getActiveDistance(running);
+        }
+
+        return distance;
+    }
+
+    /**
+     * Get the active distance for the current week
+     * @return The active distance
+     */
+    public double getActiveDistanceForWeek(){
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
+
+        double distance = 0;
+        DetectedActivity biking = new DetectedActivity(DetectedActivity.ON_BICYCLE, 100);
+        DetectedActivity walking = new DetectedActivity(DetectedActivity.WALKING, 100);
+        DetectedActivity foot = new DetectedActivity(DetectedActivity.ON_FOOT, 100);
+        DetectedActivity running = new DetectedActivity(DetectedActivity.RUNNING, 100);
+
+        //loop over all week days to count all steps
+        for(TimelineDay day : week){
+            distance += day.getActiveDistance(biking);
+            distance += day.getActiveDistance(walking);
+            distance += day.getActiveDistance(foot);
+            distance += day.getActiveDistance(running);
+        }
+
+        return distance;
+    }
+
+    /**
      *
      * Get inactive distance of a certain activity and day
      * @param activity Activity we want to retrieve the inactive distance for
@@ -124,18 +232,62 @@ public class Timeline {
 
     /**
      * Get the Steps of the timeline
+     * @param checkDay Day we want to retrieve the inactive distance for
      * @return The steps of the user
      */
-    public int getSteps() {
+    public int getSteps(Date checkDay) {
         int steps = 0;
 
-        //loop over all segments to count all steps
+        //loop over all days to count all steps
         for(TimelineDay day : this.myHistory){
+            if(day.isSameDay(checkDay)){
+                steps += day.getSteps();
+            }
+        }
+
+        return steps;
+    }
+
+    /**
+     * Get the steps in the last week
+     * @return The steps in the last week
+     */
+    public int getStepsForWeek(){
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
+
+        int steps = 0;
+
+        //loop over all week days to count all steps
+        for(TimelineDay day : week){
+           steps += day.getSteps();
+        }
+
+        return steps;
+    }
+
+    /**
+     * Get the Steps for the last month
+     * @return The steps in the last month
+     */
+    public int getStepsForMonth(){
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 1);
+
+        int steps = 0;
+
+        //loop over all week days to count all steps
+        for(TimelineDay day : week){
             steps += day.getSteps();
         }
 
         return steps;
     }
+
 
     /**
      * Get total distance of a certain activity and day

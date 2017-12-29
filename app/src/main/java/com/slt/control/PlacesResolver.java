@@ -52,7 +52,7 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
     /**
      * Google API Client we use to get the current place from
      */
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient myGoogleApiClient;
 
     /**
      *  Overwritten doInBackground Method, extracts the parameters and starts the place resolving
@@ -64,11 +64,11 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
     @Override
     protected String doInBackground(Object... objects) {
         //Create an API Client for places detection
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+        myGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addApi(Places.PLACE_DETECTION_API)
                 .addOnConnectionFailedListener(this)
                 .build();
-        mGoogleApiClient.connect();
+        myGoogleApiClient.connect();
 
         //Check and wait for network connection
         while(!isNetworkAvailable()) {
@@ -89,7 +89,7 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
             myLocation = (Location) objects[1];
 
             //Check and wait for the API to be connected
-            while(!mGoogleApiClient.isConnected()) {
+            while(!myGoogleApiClient.isConnected()) {
                 synchronized (this) {
                     try {
                         wait(200);
@@ -154,7 +154,7 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
     private void callPlaceDetectionApi() throws SecurityException {
         //Get the current place of the device
         PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-                .getCurrentPlace(mGoogleApiClient, null);
+                .getCurrentPlace(myGoogleApiClient, null);
 
         //Set the result callback
         result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {

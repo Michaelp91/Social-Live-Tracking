@@ -110,7 +110,7 @@ public class DataProvider implements ServiceInterface{
         this.allUsers = new LinkedList<>();
 
         //TODO load real data
-        this.ownUser = new User("DEFAULT");
+        this.ownUser = new User("DEFAULT", this.userTimeline);
     }
 
     //TODO add function for getting other user data and calculation of users in the vicinity
@@ -320,20 +320,6 @@ public class DataProvider implements ServiceInterface{
         this.userList.add(user);
     }
 
-
-    /**
-     * Get the Rank of the user in relation to its friends list for a week
-     * @param activity - The activity we want to compare for, if null will return a comparison of
-     *                 the sum of all sport activities
-     * @param method Parameter  which values the user wants to compare, possible methods are defined
-     *               in UserRanker.METHODS
-     * @return The rank of the user in comparison to their friends
-     */
-    public int ownWeekRank( DetectedActivity activity, int method){
-
-        return UserRanker.ownWeekRank(this.userTimeline, this.userList, activity, method);
-    }
-
     /**
      * Get a list of all users in order of their rank in relation to all friends for a week
      * @param activity - The activity we want to compare for, if null will return a comparison of
@@ -346,19 +332,6 @@ public class DataProvider implements ServiceInterface{
     public LinkedList<LinkedList<User>> userWeekRanking(DetectedActivity activity, int method){
 
         return UserRanker.userWeekRanking(this.userTimeline, this.userList, activity, method);
-    }
-
-    /**
-     * Get the Steps/Distance Rank of the user in relation to its friends list for a month
-     * @param activity  - The activity we want to compare for, if null will return a comparison of
-     *                 the sum of all sport activities
-     * @param method Parameter  which values the user wants to compare, possible methods are defined
-     *               in UserRanker.METHODS
-     * @return The rank of the user in comparison to their friends
-     */
-    public int ownMonthRank( DetectedActivity activity, int method){
-
-        return UserRanker.ownMonthRank(this.userTimeline, this.userList, activity, method);
     }
 
     /**

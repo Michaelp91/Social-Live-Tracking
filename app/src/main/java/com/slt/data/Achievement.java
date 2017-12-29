@@ -6,6 +6,11 @@ import java.util.Date;
  * Class to store a achievement of the user
  */
 public class Achievement {
+    /*
+    * Tag for the Logger
+    */
+    private static final String TAG = "Achievement";
+
     /**
      * Stores our achievement as an Integer
      */
