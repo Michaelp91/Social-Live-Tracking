@@ -386,6 +386,29 @@ public class Timeline {
     }
 
     /**
+     * Manually starts a new segment if the user wants to
+     * @param location The location that should be added
+     * @param date The date the location/activity was detected
+     * @param activity The activity that was detected
+     */
+    public void manualStartNewSegment(Location location, Date date, DetectedActivity activity){
+        Log.i(TAG, "ManualAddUserStatus:  create new Segment, location resolution.");
+        this.myHistory.getLast().manualStartNewSegment(location, date, activity);
+    }
+
+    /**
+     * End a manually created segment by user choice
+     * @param location The location that should be added
+     * @param date The date the location/activity was detected
+     */
+    public void manualEndSegment(Date date, Location location){
+        Log.i(TAG, "ManualEndSegment:  create new Segment, end last one.");
+        this.myHistory.getLast().manualEndSegment(date, location);
+    }
+
+
+
+    /**
      *
      * Get total time of a certain activity and day
      * @param activity Activity we want to retrieve the total time for
@@ -494,6 +517,15 @@ public class Timeline {
 
         this.myHistory.getLast().addUserStatus(location, date, activity);
         this.calculateAchievements(date);
+    }
+
+    /**
+     * Add a new location point to a manual segment
+     * @param location The location that should be added
+     * @param date The date the location/activity was detected
+     */
+    public void manualAddLocation(Date date, Location location){
+        this.myHistory.getLast().manualAddLocation(date, location);
     }
 
     /**

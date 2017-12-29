@@ -96,6 +96,11 @@ public class DataProvider implements ServiceInterface{
     private LinkedList<User> allUsers;
 
     /**
+     * Determines whether the user started a manual activity
+     */
+    private Boolean manualMode;
+
+    /**
      * Constructor to initialize the data
      */
     private DataProvider() {
@@ -103,6 +108,7 @@ public class DataProvider implements ServiceInterface{
         myCurrentActivity = null;
         myCurrentLocation = null;
         this.changeDate = new Date();
+        this.manualMode = false;
         //TODO do we have to load data for the current position as well from the server?
 
         //TODO init the user timeline and the other users with stored data
@@ -124,6 +130,11 @@ public class DataProvider implements ServiceInterface{
      * detected but not used, 3 if the data was entered
      */
     public synchronized int updateActivity(DetectedActivity activity, Date timestamp){
+
+        // if we are in manual mode ignore the change since the user now has the control
+        if(manualMode){
+            return 0;
+        }
 
         //if we do not have a location yet, store the activity and do nothing
         if(myCurrentLocation == null){
@@ -280,6 +291,20 @@ public class DataProvider implements ServiceInterface{
      */
     public synchronized  int updatePosition(Location location, Date timestamp){
 
+        // if we are in manual mode update the values
+        if(manualMode){
+            // if location did not really change
+            if(location.distanceTo(myCurrentLocation) < MIN_CHANGE_LOCATION_DISTANCE){
+                Log.i(TAG, "updatePosition, manual mode, traveled distance < defined change value, ignore update: " + location.distanceTo(myCurrentLocation));
+                return 0;
+            }
+
+            this.myCurrentLocation = location;
+            this.userTimeline.manualAddLocation(timestamp,location);
+            return 0;
+        }
+
+
         //if we do not have an activity yet, store location
         if(myCurrentActivity == null){
             myCurrentLocation = location;
@@ -343,5 +368,29 @@ public class DataProvider implements ServiceInterface{
     public HashMap<User, Integer> userMonthRanking( int method){
         UserRanker ranker = new UserRanker();
         return ranker.userMonthRanking(this.ownUser, this.userList,  method);
+    }
+
+    /**
+     * Allows to get if the user has added an activity manually
+     * @return A Boolean showing if the manual mode is active or not
+     */
+    public Boolean getManualMode() {
+        return manualMode;
+    }
+
+    /**
+     * Allows to activate the manual mode
+     * @param manualMode The mode we want to set
+     * @param activity The activity the user wants to start
+     */
+    public void setManualMode(Boolean manualMode, DetectedActivity activity) {
+        this.manualMode = manualMode;
+        this.myCurrentActivity = activity;
+
+        if(manualMode){
+            this.userTimeline.manualStartNewSegment(this.myCurrentLocation, new Date(), activity);
+        } else {
+            this.userTimeline.manualEndSegment(new Date(), this.myCurrentLocation);
+        }
     }
 }

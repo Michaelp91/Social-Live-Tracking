@@ -309,7 +309,48 @@ public class TimelineDay {
     }
 
     /**
-     * Add a user status to the
+     * Manually starts a new segment if the user wants to
+     * @param location The location that should be added
+     * @param date The date the location/activity was detected
+     * @param activity The activity that was detected
+     */
+    public void manualStartNewSegment(Location location, Date date, DetectedActivity activity){
+        Log.i(TAG, "ManualAddUserStatus:  create new Segment, location resolution.");
+        this.mySegments.add(new TimelineSegment(location, date, activity, date));
+        Object[] ResolutionData = new Object[2];
+        ResolutionData[0] = this.mySegments.getLast();
+        ResolutionData[1] = location;
+
+        AddressResolver addressResolver = new AddressResolver();
+        addressResolver.execute(ResolutionData);
+
+        PlacesResolver placesResolver = new PlacesResolver();
+        placesResolver.execute(ResolutionData);
+        this.calculateAchievements();
+    }
+
+    /**
+     * Add a new location point to a manual segment
+     * @param location The location that should be added
+     * @param date The date the location/activity was detected
+     */
+    public void manualAddLocation(Date date, Location location){
+        this.mySegments.getLast().addLocationPoint(location, date);
+    }
+
+    /**
+     * End a manually created segment by user choice
+     * @param location The location that should be added
+     * @param date The date the location/activity was detected
+     */
+    public void manualEndSegment(Date date, Location location){
+        DetectedActivity activity = new DetectedActivity(DetectedActivity.UNKNOWN, 100);
+        Log.i(TAG, "ManualEndSegment:  create new Segment, end last one.");
+        this.mySegments.add(new TimelineSegment(location, date, activity, date));
+    }
+
+    /**
+     * Add a user status to the segment or create a new segment if needed
      * @param location The location that should be added
      * @param date The date the location/activity was detected
      * @param activity The activity that was detected
