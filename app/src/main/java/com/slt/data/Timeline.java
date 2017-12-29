@@ -83,11 +83,97 @@ public class Timeline {
         for(TimelineDay day : week){
             time += day.getActiveTime(biking);
             time += day.getActiveTime(walking);
-            time+= day.getActiveTime(foot);
+            time += day.getActiveTime(foot);
             time += day.getActiveTime(running);
         }
 
         return time;
+    }
+
+    /**
+     * Get the number of achievements in the last week
+     * @return The number of achievements
+     */
+    public int getAchievementsForWeek() {
+        int achievementPoints = 0;
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
+
+        //sum up all achievements of the week
+        for(TimelineDay day : week){
+            achievementPoints += day.getMyAchievements().size();
+
+            for(TimelineSegment segment : day.getMySegments()){
+                achievementPoints += segment.getMyAchievements().size();
+            }
+        }
+
+        //Set the calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+         //   calendar.set(Calendar.DAY_OF_MONTH, 1);calendar.getActualMaximum(Calendar.DATE)
+
+        //get the TimelineDays
+        for (int i = 0; i < 7; i++) {
+            for(Achievement achievement: this.myAchievements) {
+                if(achievement.isSameDay(calendar.getTime())) {
+                   achievementPoints += 1;
+                }
+            }
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        return achievementPoints;
+    }
+
+    /**
+     * Get the number of achievements in the last month
+     * @return The number of achievements
+     */
+    public int getAchievementsForMonth() {
+        int achievementPoints = 0;
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 1);
+
+        //sum up all achievements of the week
+        for(TimelineDay day : week){
+            achievementPoints += day.getMyAchievements().size();
+
+            for(TimelineSegment segment : day.getMySegments()){
+                achievementPoints += segment.getMyAchievements().size();
+            }
+        }
+
+        //Set the calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+         calendar.set(Calendar.DAY_OF_MONTH, 1);
+
+        //get the TimelineDays
+        for (int i = 0; i < calendar.getActualMaximum(Calendar.DATE); i++) {
+            for(Achievement achievement: this.myAchievements) {
+                if(achievement.isSameDay(calendar.getTime())) {
+                    achievementPoints += 1;
+                }
+            }
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        return achievementPoints;
     }
 
     /**
@@ -325,17 +411,21 @@ public class Timeline {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
+        int maximum = 0;
+
         //choose if we need all days of the week or month
         if( 0 == mode) {
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            maximum = 7;
         } else {
             calendar.set(Calendar.DAY_OF_MONTH, 1);
+            maximum = calendar.getActualMaximum(Calendar.DATE);
         }
 
         LinkedList<TimelineDay> daysOfWeek = new LinkedList<>();
 
         //get the TimelineDays
-        for (int i = 0; i < calendar.getActualMaximum(Calendar.DATE); i++) {
+        for (int i = 0; i < maximum; i++) {
             for(TimelineDay day: this.myHistory) {
                 if(day.isSameDay(calendar.getTime())) {
                     daysOfWeek.add(day);

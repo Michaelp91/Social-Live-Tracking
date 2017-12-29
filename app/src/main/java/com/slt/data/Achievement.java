@@ -1,5 +1,8 @@
 package com.slt.data;
 
+import android.util.Log;
+
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -68,5 +71,29 @@ public class Achievement {
      */
     public void setID(String ID) {
         this.ID = ID;
+    }
+
+    /**
+     * Compare if the date give is on the same day as the TimelineDay
+     * @param date The date we want to use to compare
+     * @return True if it is the same day, false if not
+     */
+    public boolean isSameDay(Date date){
+        //check if we have a day to compare
+        if(date == null){
+            Log.i(TAG, "isSameDay: date is null");
+            return false;
+        }
+
+        //truncate the date to the day
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date truncatedDate = calendar.getTime();
+
+        return timestamp.compareTo(truncatedDate) == 0;
     }
 }

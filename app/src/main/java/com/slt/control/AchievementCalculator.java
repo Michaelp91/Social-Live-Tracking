@@ -6,6 +6,7 @@ import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.definitions.Constants;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -166,6 +167,14 @@ public class AchievementCalculator {
         LinkedList<Achievement> achievements = new LinkedList<>();
         int count = 0;
 
+        //Set the calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
         //calculate how many sport achievements the user has
         for(TimelineDay day : days){
             if(isAchievementInList(Constants.ACHIEVEMENT.SPORT_DAY_DISTANCE, day.getMyAchievements()) ||
@@ -177,7 +186,7 @@ public class AchievementCalculator {
 
         //if it is a whole week
         if(count == 7 && isAchievementInList(Constants.ACHIEVEMENT.SPORT_WEEK_STREAK, achievementList)){
-            achievements.add(new Achievement(Constants.ACHIEVEMENT.SPORT_WEEK_STREAK, new Date()));
+            achievements.add(new Achievement(Constants.ACHIEVEMENT.SPORT_WEEK_STREAK, calendar.getTime()));
         }
 
         return achievements;
@@ -197,6 +206,13 @@ public class AchievementCalculator {
         LinkedList<Achievement> achievements = new LinkedList<>();
         int count = 0;
 
+        //Set the calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         //calculate how many sport achievements the user has
         for(TimelineDay day : days){
             if(isAchievementInList(Constants.ACHIEVEMENT.SPORT_DAY_DISTANCE, day.getMyAchievements()) ||
@@ -208,7 +224,7 @@ public class AchievementCalculator {
 
         //if it is a whole month
         if(count == monthLength && isAchievementInList(Constants.ACHIEVEMENT.SPORT_MONTH_STREAK, achievementList)){
-            achievements.add(new Achievement(Constants.ACHIEVEMENT.SPORT_MONTH_STREAK, new Date()));
+            achievements.add(new Achievement(Constants.ACHIEVEMENT.SPORT_MONTH_STREAK, calendar.getTime()));
         }
 
         return achievements;

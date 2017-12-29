@@ -13,6 +13,7 @@ import com.slt.data.LocationEntry;
 import com.slt.data.inferfaces.ServiceInterface;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -322,29 +323,25 @@ public class DataProvider implements ServiceInterface{
 
     /**
      * Get a list of all users in order of their rank in relation to all friends for a week
-     * @param activity - The activity we want to compare for, if null will return a comparison of
-     *                 the sum of all sport activities
      * @param method Parameter  which values the user wants to compare, possible methods are defined
      *               in UserRanker.METHODS
      * @return A linked list containing the usernames of all users with the rank, the user itself is
      * shown as "Own"
      */
-    public LinkedList<LinkedList<User>> userWeekRanking(DetectedActivity activity, int method){
-
-        return UserRanker.userWeekRanking(this.userTimeline, this.userList, activity, method);
+    public HashMap<User, Integer> userWeekRanking(int method){
+        UserRanker ranker = new UserRanker();
+        return ranker.userWeekRanking(this.ownUser, this.userList, method);
     }
 
     /**
      * Get a list of all users in order of their rank in relation to all friends for a month
-     * @param activity - The activity we want to compare for, if null will return a comparison of
-     *                 the sum of all sport activities
      * @param method Parameter  which values the user wants to compare, possible methods are defined
      *               in UserRanker.METHODS
      * @return A linked list containing the usernames of all users with the rank, the user itself is
      * shown as "Own"
      */
-    public LinkedList<LinkedList<User>> userMonthRanking(DetectedActivity activity , int method){
-
-        return UserRanker.userMonthRanking(this.userTimeline, this.userList, activity, method);
+    public HashMap<User, Integer> userMonthRanking( int method){
+        UserRanker ranker = new UserRanker();
+        return ranker.userMonthRanking(this.ownUser, this.userList,  method);
     }
 }
