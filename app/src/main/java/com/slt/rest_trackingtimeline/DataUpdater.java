@@ -51,43 +51,80 @@ public class DataUpdater implements Runnable{
     }
 
     public void update() throws InterruptedException {
+        boolean requestSuccessful = true;
+
         if (timeline != null) {
-            UpdateOperations_Synchron.createTimeLine(timeline);
-            Log.d("Create", "Timeline is created.");
-            timeline = null;
+            requestSuccessful = UpdateOperations_Synchron.createTimeLine(timeline);
+
+            if(requestSuccessful) {
+                Log.d("Create", "Timeline is created.");
+                timeline = null;
+            } else {
+                Log.d("Create", "Timeline is not created.");
+            }
         }
 
         TimeLine timeLine = Singleton.getInstance().getResponse_timeLine();
 
-        for(TimeLineDay t_d: queue_timelineDays ) {
-            t_d.timeline = timeLine._id;
-            UpdateOperations_Synchron.createTimeLineDay(t_d);
-            Log.d("Create", "Timeline Day is created.");
-            queue_timelineDays.remove(t_d);
+        if(timeLine != null) {
+
+            for (TimeLineDay t_d : queue_timelineDays) {
+                t_d.timeline = timeLine._id;
+                requestSuccessful = UpdateOperations_Synchron.createTimeLineDay(t_d);
+
+                if (requestSuccessful) {
+                    Log.d("Create", "Timeline Day is created.");
+                    queue_timelineDays.remove(t_d);
+                } else {
+                    Log.d("Create", "Timeline Day is not created.");
+                }
+            }
+
+            for (TimeLineSegment t_s : queue_timeLineSegments) {
+                TimeLineDay timeLineDayToFind = t_s.timeLineDayObject;
+                TimeLineDay timeLineDay = TemporaryDB.getInstance().findTimeLineDayByObject(timeLineDayToFind);
+
+                if(timeLineDay != null) {
+                    t_s.timeLineDay = timeLineDay.timeline;
+                    requestSuccessful = UpdateOperations_Synchron.createTimeLineSegment(t_s);
+
+                    if (requestSuccessful) {
+                        Log.d("Create", "Timeline Segment is created.");
+                        queue_timeLineSegments.remove(t_s);
+                    } else {
+                        Log.d("Create", "Timeline Segment is not created.");
+                    }
+
+                } else {
+                    Log.d("Create", "Timeline Segment is not Created.");
+                }
+            }
+
+            for (LocationEntry l_e : queue_locationEntries) {
+                TimeLineSegment search = l_e.timelinesegmentObject;
+                TimeLineSegment timeLineSegment = TemporaryDB.getInstance().findTimeLineSegmentByObject(search);
+
+                if(timeLineSegment != null) {
+                    l_e.timelinesegment = timeLineSegment._id;
+                    requestSuccessful = UpdateOperations_Synchron.createLocationEntry(l_e);
+
+                    if (requestSuccessful) {
+
+                        Log.d("Create", "Location Entry is created.");
+                        queue_locationEntries.remove(l_e);
+                    } else {
+                        Log.d("Create", "Location Entry is not created.");
+                    }
+                } else {
+                    Log.d("Create", "Location Entry is not created.");
+                }
+            }
+
+            Log.d("Create", "End");
+
         }
 
-        for(TimeLineSegment t_s: queue_timeLineSegments ) {
-            TimeLineDay timeLineDayToFind = t_s.timeLineDayObject;
-            TimeLineDay timeLineDay = TemporaryDB.getInstance().findTimeLineDayByObject(timeLineDayToFind);
-            t_s.timeLineDay = timeLineDay.timeline;
-            UpdateOperations_Synchron.createTimeLineSegment(t_s);
-            Log.d("Create", "Timeline Segment is created.");
-            queue_timeLineSegments.remove(t_s);
-        }
-
-        for(LocationEntry l_e: queue_locationEntries) {
-            TimeLineSegment search = l_e.timelinesegmentObject;
-            TimeLineSegment timeLineSegment = TemporaryDB.getInstance().findTimeLineSegmentByObject(search);
-            l_e.timelinesegment = timeLineSegment._id;
-            UpdateOperations_Synchron.createLocationEntry(l_e);
-
-            Log.d("Create", "Location Entry is created.");
-            queue_locationEntries.remove(l_e);
-        }
-
-        Log.d("Create", "End");
-
-        if(queue_timelineDays.isEmpty() || queue_timeLineSegments.isEmpty() || queue_locationEntries.isEmpty()) {
+        if(queue_timelineDays.isEmpty() && queue_timeLineSegments.isEmpty() && queue_locationEntries.isEmpty()) {
             Locks.getInstance().lock.wait();
         }
 

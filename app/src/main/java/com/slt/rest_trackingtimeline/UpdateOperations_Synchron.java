@@ -23,58 +23,64 @@ import retrofit2.Response;
 
 public class UpdateOperations_Synchron {
 
-    public static void createTimeLine(TimeLine timeline) {
+    public static boolean createTimeLine(TimeLine timeline) {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createTimeLine(timeline);
         JsonObject jsonObject = null;
         try {
-            jsonObject = call.execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
+            jsonObject =  call.execute().body();
+        } catch (Exception e) {
+            return false; //Request is not Successfull
         }
+
         Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
         Singleton.getInstance().setResponse_timeLine(test.getResponse_timeLine());
         TemporaryDB.getInstance().setTimeline(test.getResponse_timeLine());
+
+        return true;
     }
 
-    public static void createTimeLineDay(TimeLineDay timeLineDay)  {
+    public static boolean createTimeLineDay(TimeLineDay timeLineDay)  {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createTimeLineDay(timeLineDay);
         JsonObject jsonObject = null;
         try {
             jsonObject = call.execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            return false;
         }
+
         Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
         TimeLineDay response = test.getResponse_timelineDay();
         response.TAG = timeLineDay.TAG;
         Singleton.getInstance().setResponse_timelineDay(response);
         TemporaryDB.getInstance().addTimelineDay(response);
+
+        return true;
     }
 
-    public static void createTimeLineSegment(TimeLineSegment timelineSegment) {
+    public static boolean createTimeLineSegment(TimeLineSegment timelineSegment) {
 
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createTimeLineSegment(timelineSegment);
         JsonObject jsonObject = null;
         try {
             jsonObject = call.execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            return false;
         }
 
         Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
 
-
         TimeLineSegment response = test.getResponse_timelineSegment();
         response.TAG = timelineSegment.TAG;
-
         Singleton.getInstance().setResponse_timelineSegment(test.getResponse_timelineSegment());
         TemporaryDB.getInstance().addTimeLineSegment(response);
+
+        return true;
     }
 
-    public static void createLocationEntry(LocationEntry locationEntry) {
+    public static boolean createLocationEntry(LocationEntry locationEntry) {
 
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createLocationEntry(locationEntry);
@@ -82,8 +88,7 @@ public class UpdateOperations_Synchron {
         try {
             jsonObject = call.execute().body();
         } catch (Exception e) {
-            String test = "";
-            e.printStackTrace();
+            return false;
         }
 
         Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
@@ -93,5 +98,6 @@ public class UpdateOperations_Synchron {
         Singleton.getInstance().setResponse_locationEntry(test.getResponse_locationEntry());
         TemporaryDB.getInstance().addLocationEntry(response);
 
+        return true;
     }
 }

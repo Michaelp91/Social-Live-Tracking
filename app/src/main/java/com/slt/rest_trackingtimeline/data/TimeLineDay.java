@@ -20,7 +20,7 @@ public class TimeLineDay implements Model{
     public TimeLineDay(Date myDate, ArrayList<Achievement> myAchievements, TimeLine timeLineObject) {
         this.myDate = myDate;
         this.myAchievements = myAchievements;
-        this.timeline = timeline;
+        this.timeline = null;
         this.timeLineObject = timeLineObject;
         this.TAG = Singleton_General.getInstance().counter;
         Singleton_General.getInstance().counter++;
