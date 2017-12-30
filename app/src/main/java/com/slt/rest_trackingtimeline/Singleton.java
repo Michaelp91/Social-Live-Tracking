@@ -4,6 +4,7 @@ import com.slt.rest_trackingtimeline.data.LocationEntry;
 import com.slt.rest_trackingtimeline.data.Test;
 import com.slt.rest_trackingtimeline.data.TimeLine;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
+import com.slt.rest_trackingtimeline.data.TimeLineSegment;
 import com.slt.timelineres.TimelineSegment;
 
 import java.lang.reflect.Array;
@@ -19,7 +20,7 @@ public class Singleton {
     private ArrayList<Test> response;
     private TimeLine response_timeLine;
     private TimeLineDay response_timelineDay;
-    private TimelineSegment response_timelineSegment;
+    private TimeLineSegment response_timelineSegment;
     private LocationEntry response_locationEntry;
 
     public static Singleton getInstance() {
@@ -47,11 +48,11 @@ public class Singleton {
         this.response_timelineDay = response_timelineDay;
     }
 
-    public TimelineSegment getResponse_timelineSegment() {
+    public TimeLineSegment getResponse_timelineSegment() {
         return response_timelineSegment;
     }
 
-    public void setResponse_timelineSegment(TimelineSegment response_timelineSegment) {
+    public void setResponse_timelineSegment(TimeLineSegment response_timelineSegment) {
         this.response_timelineSegment = response_timelineSegment;
     }
 

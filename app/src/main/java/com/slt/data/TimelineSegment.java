@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.control.AchievementCalculator;
 import com.slt.control.StepSensor;
+import com.slt.rest_trackingtimeline.UpdateOperations;
 
 import java.util.Date;
 import java.util.LinkedList;

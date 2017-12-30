@@ -15,7 +15,8 @@ import retrofit2.Response;
  * Created by Usman Ahmad on 19.12.2017.
  */
 
-public class UpdateOperations {
+public class UpdateOperations extends Thread {
+    private static Object lock = new Object();
 
     public static void createTimeLine(TimeLine timeline) {
 
@@ -88,24 +89,28 @@ public class UpdateOperations {
     }
 
     public static void createLocationEntry(LocationEntry locationEntry) {
-        Endpoints api = RetroClient.getApiService();
-        Call<JsonObject> call = api.createLocationEntry(locationEntry);
 
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if(response.isSuccessful()) {
-                    Singleton obj = null;
-                    obj = new Gson().fromJson(response.body().toString(), Singleton.class);
-                    Singleton.getInstance().setResponse_locationEntry(obj.getResponse_locationEntry());
+            Endpoints api = RetroClient.getApiService();
+            Call<JsonObject> call = api.createLocationEntry(locationEntry);
+
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        Singleton obj = null;
+                        obj = new Gson().fromJson(response.body().toString(), Singleton.class);
+                        Singleton.getInstance().setResponse_locationEntry(obj.getResponse_locationEntry());
+                        notify();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+
+
     }
 
 

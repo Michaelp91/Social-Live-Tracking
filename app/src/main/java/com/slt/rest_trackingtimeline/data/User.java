@@ -8,4 +8,5 @@ public class User {
     public TimeLine myTimeline;
     public String myName;
     public String myEmail;
+
 }

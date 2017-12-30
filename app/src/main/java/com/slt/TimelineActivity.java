@@ -10,12 +10,16 @@ import android.widget.ExpandableListView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.slt.data.User;
+import com.slt.rest_trackingtimeline.DataUpdater;
 import com.slt.rest_trackingtimeline.RetrieveOperations;
 import com.slt.rest_trackingtimeline.Singleton;
+import com.slt.rest_trackingtimeline.TrackingSimulator;
 import com.slt.rest_trackingtimeline.UpdateOperations;
+import com.slt.rest_trackingtimeline.UpdateOperations_Synchron;
 import com.slt.rest_trackingtimeline.data.Achievement;
 import com.slt.rest_trackingtimeline.data.Location;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
+import com.slt.rest_trackingtimeline.data.Model;
 import com.slt.rest_trackingtimeline.data.Test;
 import com.slt.rest_trackingtimeline.data.TimeLine;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
@@ -62,12 +66,27 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
         expListView.setOnChildClickListener(this);
 
 
+        /*
             Test t = new Test("Hello World");
             Achievement newAchievement = new Achievement(0);
             ArrayList<Achievement> myAchievements = new ArrayList<>();
             myAchievements.add(newAchievement);
             TimeLine obj = new TimeLine("5a196bf8d17b7926882f5413", myAchievements);
-            String json = new Gson().toJson(obj);
+            TimeLineDay timelineday = new TimeLineDay(new Date(), myAchievements, obj);
+            TimeLineSegment timeLineSegment = new TimeLineSegment
+                 ("Teststr. 84, 6442 Testhausen", "3", 2.4 ,
+                              2.0, myAchievements, timelineday);
+            Location location = new Location(2.3, 4.2);
+            LocationEntry locationentry = new LocationEntry(new Date(), 2.1, 2.0,
+                location, timeLineSegment);
+
+            DataUpdater.getInstance().setTimeline(obj);
+            DataUpdater.getInstance().addTimelineDay(timelineday);
+            DataUpdater.getInstance().addTimeLineSegment(timeLineSegment);
+            DataUpdater.getInstance().addLocationEntry(locationentry);
+
+            DataUpdater.getInstance().Start();
+
 
             //UpdateOperations.createTimeLine(obj);
             //TimeLine timeline = Singleton.getInstance().getResponse_timeLine();
@@ -80,12 +99,44 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
           //                  2.0, "5a42b1e52026a72bd8632eb0", myAchievements);
 
           //UpdateOperations.createTimeLineSegment(timeLineSegment);
+          */
 
+
+        Thread t = new Thread(new TrackingSimulator());
+        t.start();
+
+
+/*
         Location location = new Location(2.3, 4.2);
         LocationEntry locationentry = new LocationEntry(new Date(), 2.1, 2.0,
                 location, "5a42c40b6deb772de0c9f67e");
 
-        UpdateOperations.createLocationEntry(locationentry);
+        Thread thread = new Thread(new UpdateOperations_Synchron());
+        thread.start();
+
+
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            String test = "";
+        }
+
+        */
+
+
+        /*
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            String test = "";
+        }
+        */
+
+        //UpdateOperations_Synchron.createLocationEntry(locationentry);
 
     }
 
