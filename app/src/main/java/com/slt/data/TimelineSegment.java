@@ -1,13 +1,19 @@
 package com.slt.data;
 
 
+import android.content.Intent;
 import android.location.Location;
 import android.media.Image;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.control.AchievementCalculator;
+import com.slt.control.ApplicationController;
 import com.slt.control.StepSensor;
+import com.slt.definitions.Constants;
+
+import org.w3c.dom.Comment;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -118,12 +124,12 @@ public class TimelineSegment {
         startAddress = "";
         this.ID = null;
 
-        //add a new location point
-        this.addLocationPoint(location, date);
-
         //start a step counter, might not be needed, but want to have the data in case the user
         // changes the type of activity later
         this.myStepSensor = new StepSensor();
+
+        //add a new location point
+        this.addLocationPoint(location, date);
     }
 
     /**
@@ -134,7 +140,18 @@ public class TimelineSegment {
                 this.activeDistance,this.inactiveDistance,this.activeTime, this.inactiveTime, this.userSteps, this.myAchievements);
 
         this.myAchievements.addAll(achievements);
+
+        //if new achievements -> send intent
+        if(!achievements.isEmpty()){
+
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_ACHIEVEMENT_UPDATE);
+            intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+        }
     }
+
+
 
     /**
      *  Method to add a new location point to the segment
@@ -163,6 +180,57 @@ public class TimelineSegment {
 
         this.myLocationPoints.add(newEntry);
         this.calculateAchievements();;
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_LOCATIONPOINTS_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
+    /**
+     * Used for add Location Entries based on DB updates
+     * @param locationEntry The location entry to add
+     * @param userID The DB ID of the user
+     */
+    public void addLocationEntry(LocationEntry locationEntry, String userID){
+        this.myLocationPoints.add(locationEntry);
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_LOCATIONPOINTS_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, userID);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
+    /**
+     * Used for add Location Entries based on DB updates
+     * @param id The location entry to delete
+     * @param userID The DB ID of the user
+     */
+    public void deleteLocationEntry(String id, String userID){
+        LocationEntry entry = null;
+
+        //find entry in history
+        for(LocationEntry location : this.myLocationPoints){
+            if(id == this.getID()){
+                entry = location;
+            }
+        }
+
+        //if not null delete
+        if(null == entry)
+            return;
+
+        this.myLocationPoints.remove(entry);
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_LOCATIONPOINTS_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, userID);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -207,6 +275,22 @@ public class TimelineSegment {
     }
 
     /**
+     * Add a comment from the DB
+     * @param comment The comment
+     * @param id  The DB ID of the owning user
+     */
+    public void addUserComment(UserComment comment, String id) {
+        this.userComments.add(comment);
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
+    /**
      * Get the comments for a specific user
      * @param user The user we want to get the comments for
      * @return The comments for the user, null if none are found
@@ -227,9 +311,19 @@ public class TimelineSegment {
     /**
      * Add a achievement to our list
      * @param achievement The achievement we want to add
+     * @param userID The DB ID of the user
      */
-    public void addAchievement(Achievement achievement) {
+    public void addAchievement(Achievement achievement, String userID) {
+
         this.myAchievements.add(achievement);
+
+        //Send intent to inform about update, since this method should only be used for DB based updates
+        //add the DB ID
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_ACHIEVEMENT_UPDATE);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, userID);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -273,6 +367,12 @@ public class TimelineSegment {
         }
 
         this.calculateAchievements();
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -302,7 +402,30 @@ public class TimelineSegment {
         }
 
         this.myImages.remove(index);
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
+
+    /**
+     * Add an image from the DB
+     * @param image The image to add
+     * @param id  The DB ID of the owning user
+     */
+    public void addImage(Image image, String id) {
+        this.myImages.add(image);
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
 
     /**
      * Add am image to the segment
@@ -311,6 +434,12 @@ public class TimelineSegment {
     public void addImages(Image image) {
         if(image != null) {
             this.myImages.add(image);
+
+            //Send intent to inform about update
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_INFO_CHANGED);
+            intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
         }
     }
 
@@ -342,6 +471,50 @@ public class TimelineSegment {
         }
 
         this.myActivity = myActivity;
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
+
+    /**
+     * Set the activity from the DB
+     * @param myActivity The activity to set
+     * @param id The DB ID of the owning user
+     */
+    public void setActivity(DetectedActivity myActivity, String id) {
+        //if new activity is not a sport set the active counters to 0
+        if(myActivity.getType() == DetectedActivity.STILL ||
+                myActivity.getType() == DetectedActivity.UNKNOWN ||
+                myActivity.getType() == DetectedActivity.IN_VEHICLE){
+            this.inactiveTime += this.activeTime;
+            this.inactiveDistance += this.activeDistance;
+            this.activeDistance = 0;
+            this.activeTime = 0;
+        }
+
+        //if old activity is not a sport one correct the counters
+        if(this.myActivity.getType() == DetectedActivity.STILL ||
+                this.myActivity.getType() == DetectedActivity.UNKNOWN ||
+                this.myActivity.getType() == DetectedActivity.IN_VEHICLE){
+            this.activeTime += this.inactiveTime;
+            this.activeDistance += this.inactiveDistance;
+            this.inactiveDistance = 0;
+            this.inactiveTime = 0;
+        }
+
+        this.myActivity = myActivity;
+
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     public void updateLocation(Location newLocation, int index){
@@ -384,6 +557,12 @@ public class TimelineSegment {
         //update achievements in case something changed
         this.myAchievements = new LinkedList<>();
         this.calculateAchievements();
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_LOCATIONPOINTS_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -391,7 +570,31 @@ public class TimelineSegment {
      * @param startPlace The start place that should be set
      */
     public void setPlace(String startPlace) {
+
         this.startPlace = startPlace;
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
+
+    /**
+     * Change the Place from the DB
+     * @param place The place to set
+     * @param id  The DB ID of the owning user
+     */
+    public void setPlace(String place, String id) {
+        this.startPlace = place;
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -399,7 +602,31 @@ public class TimelineSegment {
      * @param startAddress The start address that should be set
      */
     public void setAddress(String startAddress) {
+
         this.startAddress = startAddress;
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
+
+    /**
+     * Set the address from the DB
+     * @param address The address to set
+     * @param id  The DB ID of the owning user
+     */
+    public void setAddress(String address, String id) {
+        this.startAddress = address;
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_INFO_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**

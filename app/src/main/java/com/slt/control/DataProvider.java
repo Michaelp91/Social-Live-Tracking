@@ -1,7 +1,9 @@
 package com.slt.control;
 
+import android.content.Intent;
 import android.location.Location;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.slt.data.User;
@@ -11,6 +13,7 @@ import com.slt.data.Timeline;
 import com.slt.data.TimelineSegment;
 import com.slt.data.LocationEntry;
 import com.slt.data.inferfaces.ServiceInterface;
+import com.slt.definitions.Constants;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -76,11 +79,6 @@ public class DataProvider implements ServiceInterface{
     private Timeline userTimeline;
 
     /**
-     * All users for which we also hold data, ao our friend list
-     */
-    private LinkedList<User> userList;
-
-    /**
      * our own user's data
      */
     private User ownUser;
@@ -94,6 +92,11 @@ public class DataProvider implements ServiceInterface{
      *  Stores all users including all that are friends
      */
     private LinkedList<User> allUsers;
+
+    /**
+     * All users for which we also hold data, ao our friend list
+     */
+    private LinkedList<User> userList;
 
     /**
      * Determines whether the user started a manual activity
@@ -117,7 +120,7 @@ public class DataProvider implements ServiceInterface{
         this.allUsers = new LinkedList<>();
 
         //TODO load real data
-        this.ownUser = new User("DEFAULT", this.userTimeline);
+        this.ownUser = new User("DEFAULT", this.userTimeline, this.userList);
     }
 
     //TODO add function for getting other user data and calculation of users in the vicinity
@@ -171,11 +174,6 @@ public class DataProvider implements ServiceInterface{
                 nextActivity = null;
                 changeDate = null;
 
-                //TODO send intent here?
-                //   Intent locationIntent = new Intent();
-                //    locationIntent.setAction(LOACTION_ACTION);
-                //   locationIntent.putExtra(LOCATION_MESSAGE, sbLocationData);
-                //   LocalBroadcastManager.getInstance(this).sendBroadcast(locationIntent);
                 return 3;
             }
             //if not enough time has passed and the activity is not the same
@@ -196,6 +194,32 @@ public class DataProvider implements ServiceInterface{
         //TODO Really do nothing, or update something to show a change in user data -> timestamp
         Log.i(TAG, "updateActivity, no change, nothing to do.");
         return 0;
+    }
+
+    /**
+     * Used to add a user to the friends List
+     * @param user The user to add
+     */
+     public void addUserAsFriend(User user) {
+
+        this.userList.add(user);
+         //Send intent to inform about update
+         Intent intent = new Intent();
+         intent.setAction(Constants.INTENT.DATA_PROVIDER_INTENT_FRIENDS_CHANGED);
+         LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+     }
+
+    /**
+     * Used to remove a user from the friends list
+     * @param user The user to remove
+     */
+    public void deleteUserAsFriend(User user) {
+        this.userList.remove(user);
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.DATA_PROVIDER_INTENT_FRIENDS_CHANGED);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**

@@ -4,11 +4,15 @@ import android.location.Location;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.control.AchievementCalculator;
+import com.slt.control.ApplicationController;
+import com.slt.definitions.Constants;
 
 import android.util.Log;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 
 /**
  * A Timeline contains all data of a
@@ -374,7 +378,6 @@ public class Timeline {
         return steps;
     }
 
-
     /**
      * Get total distance of a certain activity and day
      * @param activity Activity we want to retrieve the total distance for
@@ -405,8 +408,6 @@ public class Timeline {
         Log.i(TAG, "ManualEndSegment:  create new Segment, end last one.");
         this.myHistory.getLast().manualEndSegment(date, location);
     }
-
-
 
     /**
      *
@@ -496,6 +497,29 @@ public class Timeline {
                 this.getDaysOfWeekOrMonth(day, 1),
                 this.myAchievements, monthLength);
         this.myAchievements.addAll(achievements);
+
+        //if new achievements -> send intent
+        if(!achievements.isEmpty()){
+
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT.TIMELINE_INTENT_OWN_ACHIEVEMENT_UPDATE);
+            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+        }
+    }
+
+    /**
+     * Method can be used to update the achievements in case there was a change from the Database
+     * @param achievement The new achievement we want to add
+     */
+    public void addAchievement(Achievement achievement) {
+        this.myAchievements.add(achievement);
+
+        //Send intent to inform about update, since this method should only be used for DB based updates
+        //add the DB ID
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_INTENT_OTHER_ACHIEVEMENT_UPDATE);
+        intent.putExtra(Constants.INTENT_EXTRAS.ID, this.ID);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -508,15 +532,42 @@ public class Timeline {
         //check if we have a day already
         if (this.myHistory.size() == 0){
             this.myHistory.add(new TimelineDay(date));
+
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT.TIMELINE_INTENT_DAY_OWN_INSERT);
+            intent.putExtra(Constants.INTENT_EXTRAS.ID, this.ID);
+            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
         }
 
         //check if we still have the same day
         if(!this.myHistory.getLast().isSameDay(date)) {
             this.myHistory.add(new TimelineDay(date));
+
+
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT.TIMELINE_INTENT_DAY_OWN_INSERT);
+            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
         }
 
         this.myHistory.getLast().addUserStatus(location, date, activity);
         this.calculateAchievements(date);
+    }
+
+    /**
+     * Method can be used to add a timeline day in case there was a change from the Database
+     * @param day The Timeline Day we want to add
+     * @param userid The DB ID of the user the timeline is from
+     */
+    public void setMyHistory(TimelineDay day, String userid) {
+        this.myHistory.add(day);
+
+        //Send intent to inform about update, since this method should only be used for DB based updates
+        //add the DB ID
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_INTENT_DAY_OTHER_INSERT);
+        intent.putExtra(Constants.INTENT_EXTRAS.ID, this.ID);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, userid);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
