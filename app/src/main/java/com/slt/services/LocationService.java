@@ -100,9 +100,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-
-
-
         //start the foreground service so we have no limitations for update with later android
         // versions
         startForeground(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, SharedResources.getInstance().getForegroundNotification());

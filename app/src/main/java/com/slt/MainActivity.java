@@ -120,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
     }
 
 
+
+
+
     /**
      * Check if the os version supports step sensing
      *
