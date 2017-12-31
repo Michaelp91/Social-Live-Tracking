@@ -6,8 +6,10 @@ import android.util.Log;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
+import com.slt.control.SharedResources;
 import com.slt.data.inferfaces.ServiceInterface;
 import com.slt.control.DataProvider;
+import com.slt.definitions.Constants;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -23,6 +25,14 @@ public class ActivityService extends IntentService {
      */
     private static final String TAG = "ActivityService";
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        //start the foreground service so we have no limitations for update with later android
+        // versions
+        startForeground(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, SharedResources.getInstance().getForegroundNotification());
+    }
 
     /**
      * Interface to the DataProvider
@@ -37,6 +47,8 @@ public class ActivityService extends IntentService {
 
         //create connection to DataProvider
         myDataProvider = DataProvider.getInstance();
+
+
     }
 
     /**
