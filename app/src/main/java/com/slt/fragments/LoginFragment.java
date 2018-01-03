@@ -21,9 +21,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.ProfileActivity;
 import com.slt.R;
-import com.slt.statistics.ViewStatistics;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
+import com.slt.statistics.GeneralViewOfStatistics;
+import com.slt.statistics.ViewStatistics;
 import com.slt.utils.Constants;
 
 import java.io.IOException;
@@ -89,7 +90,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void viewStatistics() {
-        Intent intent = new Intent( getActivity()  , ViewStatistics.class);
+        Intent intent = new Intent( getActivity()  , GeneralViewOfStatistics.class);
 
         startActivity(intent);
 

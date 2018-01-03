@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+    <ListView
+        android:id="@+id/list_in_Frag"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ListView android:id="@+id/list_in_Frag"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorDarkGrey"
-            android:layout_weight="1"
-            android:drawSelectorOnTop="false"/>
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/colorDarkGrey"
+        android:drawSelectorOnTop="false" />
 
 
-    </LinearLayout>
+</LinearLayout>
 
 

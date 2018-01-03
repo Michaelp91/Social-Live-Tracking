@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.slt.fragments.LoginFragment;
 import com.slt.fragments.ResetPasswordDialog;
-import com.slt.statistics.ViewStatistics;
 
 public class MainActivity extends AppCompatActivity implements ResetPasswordDialog.Listener {
 

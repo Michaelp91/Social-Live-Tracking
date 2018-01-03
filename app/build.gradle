@@ -19,6 +19,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        incremental false
     }
 
     buildTypes {
@@ -40,6 +41,7 @@ dependencies {
 
 
 
+    compile project(':MPChartLib')
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:cardview-v7:24.2.1'
@@ -49,7 +51,6 @@ dependencies {
     compile 'io.reactivex:rxjava:1.2.0'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.jjoe64:graphview:4.2.1'
-    compile project(':MPChartLib')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:support-v4:24.2.1'
     testCompile 'junit:junit:4.12'

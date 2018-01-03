@@ -5,5 +5,5 @@ package com.slt.statistics;
  */
 
 public enum Sport {
-    WALKING, RUNNING, BIKING
+    WALKING, RUNNING, BIKING, NONE
 }
