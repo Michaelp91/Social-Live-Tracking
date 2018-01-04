@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_timeline"
+            android:icon="@drawable/ic_directions_run_black_24dp"
+            android:title="Timeline"/>
+        <item
+            android:id="@+id/nav_summaries"
+            android:icon="@drawable/ic_equalizer_black_24dp"
+            android:title="Summaries" />
+        <item
+            android:id="@+id/nav_friends"
+            android:icon="@drawable/ic_face_black_24dp"
+            android:title="Friends and Co." />
+        <item
+            android:id="@+id/nav_achievements"
+            android:icon="@drawable/ic_all_inclusive_black_24dp"
+            android:title="My Achievements" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+    <item android:title="Others">
+        <menu>
+            <item
+                android:id="@+id/nav_edit"
+                android:icon="@drawable/ic_edit_black_24dp"
+                android:title="Edit Profile" />
+            <item
+                android:id="@+id/nav_btn_logout"
+                android:icon="@drawable/ic_subdirectory_arrow_right_black_24dp"
+                android:title="Logout" />
+
+        </menu>
+    </item>
+</menu>

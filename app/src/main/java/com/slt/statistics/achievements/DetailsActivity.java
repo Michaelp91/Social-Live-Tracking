@@ -1,4 +1,7 @@
-package com.slt.statistics.achievements;
+// Funktioniert momentan bei mir (Guven gar nicht) wegen
+// --> import android.support.v7.app.ActionBarActivity;
+
+/*package com.slt.statistics.achievements;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -25,3 +28,4 @@ public class DetailsActivity extends ActionBarActivity {
         imageView.setImageBitmap(bitmap);
     }
 }
+*/

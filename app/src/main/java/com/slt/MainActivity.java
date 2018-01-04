@@ -15,8 +15,8 @@ import android.util.Log;
 
 import com.slt.fragments.LoginFragment;
 import com.slt.fragments.ResetPasswordDialog;
-
 import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -29,22 +29,14 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 
-import com.slt.services.LocationService;
-import com.slt.services.ActivityService;
-import com.slt.control.SharedResources;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-
 /**
  * The Main Activity
  */
 public class MainActivity extends AppCompatActivity implements ResetPasswordDialog.Listener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
-
     /**
      * Tag for logger
      */
-        public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = MainActivity.class.getSimpleName();
     /**
      * Definitions for the permissions that have to be requested by the user
      */
@@ -53,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
 
     private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 1000;
     private Activity myActivity;
-
     private LoginFragment mLoginFragment;
     private ResetPasswordDialog mResetPasswordDialog;
 

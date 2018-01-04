@@ -69,7 +69,18 @@
     <string name="scroll_bottom">Bottom</string>
     <string name="menu_search">Search</string>
 
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main_profile">MainProfile</string>
+    <string name="title_activity_edit_settings">EditSettings</string>
+
+
     <string name="data_provider_notification">GPS Position and Activity Detection active"</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBYDCD1tmcSTSHdB2LhYU-aIYE-C-hjNeQ</string>
+
+
 
 </resources>

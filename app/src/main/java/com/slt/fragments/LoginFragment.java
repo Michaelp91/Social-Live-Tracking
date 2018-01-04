@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.ProfileActivity;
+import com.slt.MainActivity;
+import com.slt.MainProfile;
 import com.slt.R;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
@@ -259,7 +261,7 @@ public class LoginFragment extends Fragment {
         mEtEmail.setText(null);
         mEtPassword.setText(null);
 
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        Intent intent = new Intent(getActivity(), MainProfile.class);
         startActivity(intent);
 
     }
@@ -296,18 +298,30 @@ public class LoginFragment extends Fragment {
     }
 
     private void goToRegister(){
+        //Fragment Transactions, if the back button is pressed, we want to come back
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        RegisterFragment fragment = new RegisterFragment();
-        ft.replace(R.id.fragmentFrame,fragment,RegisterFragment.TAG);
-        ft.commit();
+        Fragment newFragment = new RegisterFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragmentFrame, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+
     }
 
     private void showDialog(){
+        //Fragment Transactions, if the back button is pressed, we want to come back
 
-        ResetPasswordDialog fragment = new ResetPasswordDialog();
+        Fragment newFragment = new ResetPasswordFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-        fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
+        transaction.replace(R.id.fragmentFrame, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+        //ResetPasswordDialog fragment = new ResetPasswordDialog();
+        //fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
     }
 
     @Override
