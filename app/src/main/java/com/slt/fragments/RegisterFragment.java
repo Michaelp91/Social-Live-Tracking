@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -69,8 +70,59 @@ public class RegisterFragment extends Fragment {
         mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
         mProgressbar = (ProgressBar) v.findViewById(R.id.progress);
 
-        mBtRegister.setOnClickListener(view -> register());
-        mTvLogin.setOnClickListener(view -> goToLogin());
+        mBtRegister.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                setError();
+
+                String name = mEtName.getText().toString();
+                String email = mEtEmail.getText().toString();
+                String password = mEtPassword.getText().toString();
+
+                int err = 0;
+
+                if (!validateFields(name)) {
+
+                    err++;
+                    mTiName.setError("Name should not be empty !");
+                }
+
+                if (!validateEmail(email)) {
+
+                    err++;
+                    mTiEmail.setError("Email should be valid !");
+                }
+
+                if (!validateFields(password)) {
+
+                    err++;
+                    mTiPassword.setError("Password should not be empty !");
+                }
+
+                if (err == 0) {
+
+                    User user = new User();
+                    user.setName(name);
+                    user.setEmail(email);
+                    user.setPassword(password);
+
+                    mProgressbar.setVisibility(View.VISIBLE);
+                    registerProcess(user);
+
+                } else {
+
+                    showSnackBarMessage("Enter Valid Details !");
+                }
+            }
+        });
+        mTvLogin.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                LoginFragment fragment = new LoginFragment();
+                ft.replace(R.id.fragmentFrame, fragment, LoginFragment.TAG);
+                ft.commit();
+            }
+        });
     }
 
     private void register() {
@@ -129,7 +181,37 @@ public class RegisterFragment extends Fragment {
         mSubscriptions.add(NetworkUtil.getRetrofit().register(user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+         .subscribe(new Action1<Response>() {
+            @Override
+            public void call(Response response) {
+                mProgressbar.setVisibility(View.GONE);
+                showSnackBarMessage(response.getMessage());
+            }
+        }, new Action1<Throwable>(){
+            @Override
+            public void call(Throwable error) {
+                mProgressbar.setVisibility(View.GONE);
+
+                if (error instanceof HttpException) {
+
+                    Gson gson = new GsonBuilder().create();
+
+                    try {
+
+                        String errorBody = ((HttpException) error).response().errorBody().string();
+                        Response response = gson.fromJson(errorBody,Response.class);
+                        showSnackBarMessage(response.getMessage());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+
+                    showSnackBarMessage("Network Error !");
+                }
+
+            }
+        } ));
     }
 
     private void handleResponse(Response response) {
