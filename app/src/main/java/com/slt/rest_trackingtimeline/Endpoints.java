@@ -2,12 +2,12 @@ package com.slt.rest_trackingtimeline;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.slt.data.User;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
 import com.slt.rest_trackingtimeline.data.Test;
 import com.slt.rest_trackingtimeline.data.TimeLine;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
 import com.slt.rest_trackingtimeline.data.TimeLineSegment;
+import com.slt.rest_trackingtimeline.data.User;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -31,8 +31,8 @@ public interface Endpoints {
     @POST("tests")
     Call<JsonObject> getTest(@Body Test json);
 
-    @GET("timeline/{userid}")
-    Call<User> getCompleteTimeLine(@Body String userid);
+    @POST("timeline/")
+    Call<JsonObject> getCompleteTimeLine(@Body User user);
 
     @GET("locationpoint/{timelinesegmentId}")
     Call<LocationEntry> getLocationEntry(@Body String timelinesegmentId);

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_marginLeft="1dp"
+        android:id="@+id/ll_locationpoint"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/shape"
+        android:orientation="vertical"/>
+
+
+    <TextView
+        android:textColor="#000000"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/ll_locationpoint"
+        android:id="@+id/tv_placeAndaddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="City Gallerie"/>
+
+    <TextView
+        android:textColor="#000000"
+        android:id="@+id/tv_myEntryDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="01.01.2017"/>
+
+
+
+</RelativeLayout>

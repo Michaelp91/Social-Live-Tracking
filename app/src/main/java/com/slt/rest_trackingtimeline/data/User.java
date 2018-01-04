@@ -5,8 +5,11 @@ package com.slt.rest_trackingtimeline.data;
  */
 
 public class User {
+    public String _id;
     public TimeLine myTimeline;
     public String myName;
     public String myEmail;
+
+
 
 }

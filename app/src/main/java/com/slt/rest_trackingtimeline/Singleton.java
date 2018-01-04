@@ -1,15 +1,13 @@
 package com.slt.rest_trackingtimeline;
 
+import com.slt.rest_trackingtimeline.data.FullTimeLine;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
 import com.slt.rest_trackingtimeline.data.Test;
 import com.slt.rest_trackingtimeline.data.TimeLine;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
 import com.slt.rest_trackingtimeline.data.TimeLineSegment;
-import com.slt.timelineres.TimelineSegment;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Usman Ahmad on 25.12.2017.
@@ -18,6 +16,7 @@ import java.util.List;
 public class Singleton {
     private static Singleton singleton;
     private ArrayList<Test> response;
+    private FullTimeLine responses;
     private TimeLine response_timeLine;
     private TimeLineDay response_timelineDay;
     private TimeLineSegment response_timelineSegment;
@@ -62,5 +61,9 @@ public class Singleton {
 
     public void setResponse_locationEntry(LocationEntry response_locationEntries) {
         this.response_locationEntry = response_locationEntries;
+    }
+
+    public FullTimeLine getResponses() {
+        return responses;
     }
 }

@@ -3,68 +3,49 @@ package com.slt;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.JsonReader;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.Gson;
-import com.slt.data.User;
-import com.slt.rest_trackingtimeline.DataUpdater;
+import com.google.android.gms.vision.text.Line;
 import com.slt.rest_trackingtimeline.RetrieveOperations;
-import com.slt.rest_trackingtimeline.Singleton;
-import com.slt.rest_trackingtimeline.TrackingSimulator;
-import com.slt.rest_trackingtimeline.UpdateOperations;
-import com.slt.rest_trackingtimeline.UpdateOperations_Synchron;
-import com.slt.rest_trackingtimeline.data.Achievement;
+import com.slt.rest_trackingtimeline.TemporaryDB;
 import com.slt.rest_trackingtimeline.data.Location;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
-import com.slt.rest_trackingtimeline.data.Model;
-import com.slt.rest_trackingtimeline.data.Test;
-import com.slt.rest_trackingtimeline.data.TimeLine;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
 import com.slt.rest_trackingtimeline.data.TimeLineSegment;
-import com.slt.timelineres.ExpandableListAdapter_Timeline;
-import com.slt.timelineres.Node;
-import com.slt.timelineres.Route;
-import com.slt.timelineres.TimelineHeader;
 
-import java.io.IOException;
-import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.slt.rest_trackingtimeline.UpdateOperations.createTimeLine;
+public class TimelineActivity extends AppCompatActivity implements View.OnClickListener {
 
-public class TimelineActivity extends AppCompatActivity implements ExpandableListView.OnChildClickListener {
-
-    ExpandableListAdapter_Timeline listAdapter;
-    ExpandableListView expListView;
-    List<TimelineHeader> listDataHeader;
-    HashMap<TimelineHeader, List<Route>> listDataChild;
     private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
     private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
+
+
+    private TimeLineDay choosedTimelineDay;
+    private ArrayList<LinearLayout> list_TimelineDays;
+    private ArrayList<LinearLayout> list_TimelineSegments;
+    private LinearLayout view_timelineDays;
+    private LinearLayout choosedChildren;
+    private int counter_timelinedays;
+    private int counter_timelinechildren;
+    private final String TAG_TIMELINEDAY = "timelineday";
+    private final String TAG_TIMELINESEGMENT = "timelinesegment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-
-        // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.lvExp);
-
-        // preparing list data
-        prepareListData();
-
-        listAdapter = new ExpandableListAdapter_Timeline(this, listDataHeader, listDataChild);
-
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-
-        expListView.setOnChildClickListener(this);
-
+        view_timelineDays = (LinearLayout) findViewById(R.id.timeline_days);
 
         /*
             Test t = new Test("Hello World");
@@ -102,10 +83,6 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
           */
 
 
-        Thread t = new Thread(new TrackingSimulator());
-        t.start();
-
-
 /*
         Location location = new Location(2.3, 4.2);
         LocationEntry locationentry = new LocationEntry(new Date(), 2.1, 2.0,
@@ -138,42 +115,102 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
 
         //UpdateOperations_Synchron.createLocationEntry(locationentry);
 
+
+        //Thread t = new Thread(new TrackingSimulator());
+        //t.start();
+
+        com.slt.rest_trackingtimeline.data.User user = new com.slt.rest_trackingtimeline.data.User();
+        user._id = "5a196bf8d17b7926882f5413";
+        RetrieveOperations.getInstance().context = this;
+        RetrieveOperations.getInstance().getCompleteTimeline(user);
+
     }
 
-    private void prepareListData() {
-        listDataHeader = new ArrayList<TimelineHeader>();
-        listDataChild = new HashMap<TimelineHeader, List<Route>>();
+    public void initTimelineDays() {
+        LayoutInflater inflater = LayoutInflater.from(this);
 
-        ArrayList<Integer> tmp = new ArrayList<>();
-        tmp.add(1);
-        tmp.add(2);
+        list_TimelineDays = new ArrayList<>();
+        ArrayList<TimeLineDay> timeLineDays = TemporaryDB.getInstance().getTimelineDays();
+        counter_timelinedays = 0;
+        view_timelineDays.removeAllViews();
+        for(TimeLineDay t_d: timeLineDays) {
+            LinearLayout row = (LinearLayout)inflater.inflate(R.layout.timeline_day, null);
+            TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
+            Date date = t_d.myDate;
 
-        TimelineHeader th = new TimelineHeader("Mo, 06.11.2017", tmp);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+            String strDate = sdf.format(date);
 
-        Node start = new Node(1, 1.f , 3.f, "Frohsinnstraße 8", "63739 Aschaffenburg");
-        Node end = new Node(2, 2.f , 3.f, "City Gallerie", "Goldbacherstr. 8, 63739 Aschaffenburg");
-        Route r1 = new Route(1, start, end, 2.3f, 30.4f, th);
-        Route r2 = new Route(2, end, start, 2.3f, 30.4f, th);
+            myDate.setText(strDate);
 
-        r1.setNextRoute(r2);
-        r1.setPreviousRoute(null);
-        r2.setNextRoute(null);
-        r2.setPreviousRoute(r1);
+            row.setTag(TAG_TIMELINEDAY);
+            row.setId(counter_timelinedays);
+            row.setOnClickListener(this);
 
-        // Adding child data
-        listDataHeader.add(th);
+            view_timelineDays.addView(row);
+            list_TimelineDays.add(row);
+        }
 
-        // Adding child data
-        List<Route> content = new ArrayList<Route>();
-
-        //TODO: Alle Routes durch nach der routeid aus dem TMP filtern
-
-        content.add(r1);
-        content.add(r2);
-
-        listDataChild.put(listDataHeader.get(0), content); // Header, Child data
     }
 
+    public void initTimelineView() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        choosedChildren.removeAllViews();
+        list_TimelineSegments = new ArrayList<>();
+
+        ArrayList<TimeLineSegment> timeLineSegments = TemporaryDB.getInstance().
+                                                findTimelineSegmentsByTDayId(choosedTimelineDay._id);
+        boolean firstLoop = true;
+
+        //TODO: Ask Thorsten: How many Locationpoints per Segments
+        for(TimeLineSegment tSegment: timeLineSegments) {
+            ArrayList<LocationEntry> locationEntries = TemporaryDB.getInstance()
+                                                        .findLocationEntriesByTSegmentId(tSegment._id);
+
+            RelativeLayout view_FirstPoint = null;
+            RelativeLayout view_segment = null;
+            RelativeLayout view_LastPoint = null;
+
+            if(!locationEntries.isEmpty()) {
+                LocationEntry fstPoint = (firstLoop)? locationEntries.get(0): null;
+                LocationEntry sndPoint = locationEntries.get(locationEntries.size() - 1);
+
+                if(fstPoint != null) {
+                    view_FirstPoint = (RelativeLayout)inflater.inflate(R.layout.timeline_locationpoint, null);
+                    TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeAndaddress);
+                    TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                    String strDate = sdf.format(fstPoint.myEntryDate);
+
+
+                    myEntryDate.setText(strDate);
+                    placeAndaddress.setText(tSegment.startAddress);
+
+                    if(fstPoint != sndPoint) { //Draw Segment and the Endpoint
+                        view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
+                        TextView activeTime = (TextView) view_segment.findViewById(R.id.tv_activeTime);
+                        TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
+                        activeTime.setText(Double.toString(tSegment.duration));
+                        activeDistance.setText(Double.toString(tSegment.activeDistance));
+
+                        view_LastPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
+
+                    }
+
+
+                }
+
+                else { //Draw a Segment and a Location Point
+
+                }
+            }
+        }
+
+
+
+    }
+/*
     @Override
     public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long id) {
 
@@ -193,6 +230,19 @@ public class TimelineActivity extends AppCompatActivity implements ExpandableLis
         startActivity(i);
         */
 
-        return false;
+       //return false;
+   // }
+
+
+    @Override
+    public void onClick(View view) {
+        switch ((String)view.getTag()) {
+            case TAG_TIMELINEDAY:
+                LinearLayout tday = list_TimelineDays.get(view.getId());
+                choosedChildren = (LinearLayout) tday.findViewById(R.id.ll_all_locations);
+                initTimelineView();
+                break;
+
+        }
     }
 }

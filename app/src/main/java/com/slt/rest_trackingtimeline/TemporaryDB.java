@@ -29,6 +29,18 @@ public class TemporaryDB {
         timeLineSegments = new ArrayList<>();
     }
 
+    public void setLocationEntries(ArrayList<LocationEntry> locationEntries) {
+        this.locationEntries = locationEntries;
+    }
+
+    public void setTimelineDays(ArrayList<TimeLineDay> timelineDays) {
+        this.timelineDays = timelineDays;
+    }
+
+    public void setTimeLineSegments(ArrayList<TimeLineSegment> timeLineSegments) {
+        this.timeLineSegments = timeLineSegments;
+    }
+
     public void addLocationEntry(LocationEntry l) {
         this.locationEntries.add(l);
     }
@@ -47,6 +59,30 @@ public class TemporaryDB {
 
     public void addTimelineDay(TimeLineDay t) {
         this.timelineDays.add(t);
+    }
+
+
+    public ArrayList<TimeLineSegment> findTimelineSegmentsByTDayId(String tId) {
+        ArrayList<TimeLineSegment> choosedSegments = new ArrayList<>();
+        for(TimeLineSegment t: timeLineSegments) {
+            if(t.timeLineDay == tId) {
+                choosedSegments.add(t);
+            }
+        }
+
+        return choosedSegments;
+    }
+
+
+    public ArrayList<LocationEntry> findLocationEntriesByTSegmentId(String segmentId) {
+        ArrayList<LocationEntry> choosedEntries = new ArrayList<>();
+        for(LocationEntry l: locationEntries) {
+            if(l.timelinesegment == segmentId) {
+                choosedEntries.add(l);
+            }
+        }
+
+        return choosedEntries;
     }
 
     public TimeLineDay findTimeLineDayByObject(TimeLineDay search) {

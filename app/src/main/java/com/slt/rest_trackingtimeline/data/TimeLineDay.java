@@ -11,6 +11,7 @@ import java.util.Date;
  */
 
 public class TimeLineDay implements Model{
+    public String _id;
     public String TAG;
     public int int_TAG;
     public Date myDate;

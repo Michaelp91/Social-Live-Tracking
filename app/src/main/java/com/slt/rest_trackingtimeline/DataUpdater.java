@@ -85,7 +85,7 @@ public class DataUpdater implements Runnable{
                 TimeLineDay timeLineDay = TemporaryDB.getInstance().findTimeLineDayByObject(timeLineDayToFind);
 
                 if(timeLineDay != null) {
-                    t_s.timeLineDay = timeLineDay.timeline;
+                    t_s.timeLineDay = timeLineDay._id;
                     requestSuccessful = UpdateOperations_Synchron.createTimeLineSegment(t_s);
 
                     if (requestSuccessful) {

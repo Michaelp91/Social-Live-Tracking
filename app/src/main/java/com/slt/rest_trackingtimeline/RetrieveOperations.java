@@ -1,13 +1,18 @@
 package com.slt.rest_trackingtimeline;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.slt.TimelineActivity;
+import com.slt.rest_trackingtimeline.data.FullTimeLine;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
 import com.slt.rest_trackingtimeline.data.Test;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
 import com.slt.rest_trackingtimeline.data.TimeLineSegment;
+import com.slt.rest_trackingtimeline.data.User;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -23,6 +28,42 @@ import retrofit2.Response;
  */
 
 public class RetrieveOperations {
+    public TimelineActivity context;
+    private static final RetrieveOperations ourInstance = new RetrieveOperations();
+    public static RetrieveOperations getInstance() {
+        return ourInstance;
+    }
+
+    public void getCompleteTimeline(User user) {
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.getCompleteTimeLine(user);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                String json = response.body().toString();
+                //Type listType = new TypeToken<List<Test>>() {}.getType();
+                Singleton test = new Gson().fromJson(json, Singleton.class);
+                FullTimeLine responses = test.getResponses();
+                TemporaryDB.getInstance().setLocationEntries(responses.locationEntries);
+                TemporaryDB.getInstance().setTimelineDays(responses.timelinedays);
+                TemporaryDB.getInstance().setTimeline(responses.timeline);
+                TemporaryDB.getInstance().setTimeLineSegments(responses.timelinesegments);
+
+                if(context != null)
+                  context.initTimelineDays();
+                else
+                    Log.e("ERROR", "Application Context is null.");
+                boolean debug = true;
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                boolean debug = true;
+            }
+        });
+    }
 
     public static void getTestData2(Test test) throws IOException {
 
