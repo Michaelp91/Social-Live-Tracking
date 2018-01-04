@@ -1,5 +1,13 @@
 package com.slt;
 
+
+import com.slt.services.LocationService;
+import com.slt.services.ActivityService;
+import com.slt.control.SharedResources;
+
+
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;

@@ -31,6 +31,7 @@ import java.io.IOException;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -65,7 +66,12 @@ public class ResetPasswordFragment extends Fragment {
         mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_email);
         mProgressbar = (ProgressBar) v.findViewById(R.id.progress);
 
-        mBtReset.setOnClickListener(view -> reset());
+        mBtReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reset();
+            }
+        });
     }
 
     private void reset() {
@@ -109,7 +115,18 @@ public class ResetPasswordFragment extends Fragment {
         mSubscriptions.add(NetworkUtil.getRetrofit().register(user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+                .subscribe(new Action1<Response>() {
+                    @Override
+                    public void call(Response response) {
+                        handleResponse(response);
+                    }
+                }, new Action1<Throwable>(){
+                    @Override
+                    public void call(Throwable error) {
+                        handleError(error);
+                    }
+                } ));
+
     }
 
     private void handleResponse(Response response) {
