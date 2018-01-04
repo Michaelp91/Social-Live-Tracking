@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.slt">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission
+        android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-feature android:name="android.hardware.sensor.stepcounter" android:required="false"/>
 
     <application
+        android:name="com.slt.control.ApplicationController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
@@ -19,6 +32,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -27,7 +41,8 @@
 
                 <data
                     android:host="Admin"
-                    android:scheme="http" />
+                    android:scheme="http"
+                    tools:ignore="AppLinkUrlError" />
             </intent-filter>
         </activity>
         <activity
@@ -35,6 +50,13 @@
             android:theme="@style/AppTheme.Profile" />
         <activity android:name=".statistics.GeneralViewOfStatistics"></activity>
         <activity android:name=".statistics.ViewStatistics"></activity>
+
+
+        <service android:name="com.slt.services.ActivityService" />
+        <service
+            android:name="com.slt.services.LocationService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

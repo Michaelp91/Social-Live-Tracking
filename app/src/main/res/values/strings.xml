@@ -69,4 +69,7 @@
     <string name="scroll_bottom">Bottom</string>
     <string name="menu_search">Search</string>
 
+    <string name="data_provider_notification">GPS Position and Activity Detection active"</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBYDCD1tmcSTSHdB2LhYU-aIYE-C-hjNeQ</string>
+
 </resources>
