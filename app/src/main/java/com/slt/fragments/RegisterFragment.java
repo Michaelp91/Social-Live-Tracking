@@ -171,10 +171,14 @@ public class RegisterFragment extends Fragment {
 
     private void goToLogin(){
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        LoginFragment fragment = new LoginFragment();
-        ft.replace(R.id.fragmentFrame, fragment, LoginFragment.TAG);
-        ft.commit();
+        Fragment newFragment = new LoginFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragmentFrame, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+
     }
 
     @Override

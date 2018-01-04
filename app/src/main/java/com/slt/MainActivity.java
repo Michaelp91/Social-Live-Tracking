@@ -10,7 +10,7 @@ import android.util.Log;
 import com.slt.fragments.LoginFragment;
 import com.slt.fragments.ResetPasswordDialog;
 
-public class MainActivity extends AppCompatActivity implements ResetPasswordDialog.Listener {
+public class  MainActivity extends AppCompatActivity implements ResetPasswordDialog.Listener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 

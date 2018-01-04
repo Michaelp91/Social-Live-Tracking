@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.ProfileActivity;
+import com.slt.MainActivity;
+import com.slt.MainProfile;
 import com.slt.R;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
@@ -43,7 +45,7 @@ public class LoginFragment extends Fragment {
 
     private EditText mEtEmail;
     private EditText mEtPassword;
-    private Button mBtViewStatistics;
+    //private Button mBtViewStatistics;
     private Button mBtLogin;
     private TextView mTvRegister;
     private TextView mTvForgotPassword;
@@ -68,7 +70,7 @@ public class LoginFragment extends Fragment {
 
     private void initViews(View v) {
 
-        mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
+        //mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
         mEtPassword = (EditText) v.findViewById(R.id.et_password);
         mBtLogin = (Button) v.findViewById(R.id.btn_login);
@@ -78,7 +80,7 @@ public class LoginFragment extends Fragment {
         mTvRegister = (TextView) v.findViewById(R.id.tv_register);
         mTvForgotPassword = (TextView) v.findViewById(R.id.tv_forgot_password);
 
-        mBtViewStatistics.setOnClickListener(view -> viewStatistics());
+        //mBtViewStatistics.setOnClickListener(view -> viewStatistics());
         mBtLogin.setOnClickListener(view -> login());
         mTvRegister.setOnClickListener(view -> goToRegister());
         mTvForgotPassword.setOnClickListener(view -> showDialog());
@@ -89,12 +91,12 @@ public class LoginFragment extends Fragment {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
 
-    private void viewStatistics() {
+    /*private void viewStatistics() {
         Intent intent = new Intent( getActivity()  , GeneralViewOfStatistics.class);
 
         startActivity(intent);
 
-    }
+    }*/
 
     private void login() {
 
@@ -154,7 +156,7 @@ public class LoginFragment extends Fragment {
         mEtEmail.setText(null);
         mEtPassword.setText(null);
 
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        Intent intent = new Intent(getActivity(), MainProfile.class);
         startActivity(intent);
 
     }
@@ -191,18 +193,30 @@ public class LoginFragment extends Fragment {
     }
 
     private void goToRegister(){
+        //Fragment Transactions, if the back button is pressed, we want to come back
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        RegisterFragment fragment = new RegisterFragment();
-        ft.replace(R.id.fragmentFrame,fragment,RegisterFragment.TAG);
-        ft.commit();
+        Fragment newFragment = new RegisterFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragmentFrame, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+
     }
 
     private void showDialog(){
+        //Fragment Transactions, if the back button is pressed, we want to come back
 
-        ResetPasswordDialog fragment = new ResetPasswordDialog();
+        Fragment newFragment = new ResetPasswordFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-        fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
+        transaction.replace(R.id.fragmentFrame, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+        //ResetPasswordDialog fragment = new ResetPasswordDialog();
+        //fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
     }
 
     @Override

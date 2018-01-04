@@ -25,7 +25,8 @@ import com.github.mikephil.charting.data.LineData;
 import com.slt.MainActivity;
 import com.slt.R;
 import com.slt.statistics.ViewStatistics;
-import com.slt.statistics.achievements.DetailsActivity;
+// macht momentan Fehler bei mir:
+//import com.slt.statistics.achievements.DetailsActivity;
 import com.slt.statistics.achievements.GridViewAdapter;
 import com.slt.statistics.achievements.ImageItem;
 import com.slt.statistics.data.DataObjectsCollection;

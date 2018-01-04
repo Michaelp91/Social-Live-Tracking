@@ -1,67 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@drawable/gradientbackground">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/activity_vertical_margin">
 
-
             <ImageView
                 android:id="@+id/img_logo"
                 android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/logo2"/>
 
+            <!-- Title -->
+            <TextView
+                android:text="@string/app_name"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="cursive"
+                android:textSize="45dp"
+                android:textStyle="bold">
+            </TextView>
 
-
+            <!-- E-Mail field-->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/ti_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/img_logo"
                 android:layout_marginTop="@dimen/child_margin_top">
-
-                <Button
-                    android:id="@+id/btn_statistics"
-                    style="@style/Widget.AppCompat.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/btn_change_password"
-                    android:layout_marginTop="@dimen/button_margin"
-                    android:background="@android:color/holo_blue_dark"
-                    android:backgroundTint="@android:color/holo_blue_dark"
-                    android:paddingLeft="@dimen/button_padding"
-                    android:text="View statistics"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:textColor="@color/cardview_dark_background" />
 
                 <EditText
                     android:id="@+id/et_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_email"
-                    android:hint="Email"
-                    android:inputType="textEmailAddress" />
-
+                    android:inputType="textEmailAddress"
+                    android:ems="10"
+                    android:drawablePadding="12dp"
+                    android:padding="8dp"
+                    android:hint="E-Mail"
+                    android:text=""
+                    android:textColorHint="#fff"
+                    android:maxLines="1"
+                    android:background="@android:color/transparent"
+                    android:layout_marginTop="4dp"
+                    android:drawableStart="@drawable/ic_email"
+                    android:textColor="#FFFFFF"
+                    android:imeOptions="actionNext" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#f9d7db" />
             </android.support.design.widget.TextInputLayout>
 
+            <!-- Password field-->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/ti_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ti_email"
                 android:layout_marginTop="@dimen/child_margin_top"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@android:color/white">
@@ -70,43 +80,68 @@
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:drawablePadding="12dp"
+                    android:padding="8dp"
                     android:hint="Password"
-                    android:inputType="textPassword" />
-
+                    android:text=""
+                    android:textColorHint="#fff"
+                    android:maxLines="1"
+                    android:background="@android:color/transparent"
+                    android:layout_marginTop="4dp"
+                    android:drawableStart="@drawable/ic_lock"
+                    android:inputType="textPassword"
+                    android:textColor="#FFFFFF"
+                    android:imeOptions="actionDone"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#f9d7db" />
             </android.support.design.widget.TextInputLayout>
 
+            <!-- TODO: Eingegebene Login-Daten speichern, wenn moeglich, habs leider nicht hinbekommen -->
+            <!-- Save Login-->
+            <CheckBox
+                android:id="@+id/saveLoginCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="#fff"
+                android:text="Save Login?"
+                android:padding="12dp"/>
 
+            <!-- Login Button-->
             <Button
                 android:id="@+id/btn_login"
-                style="@style/Widget.AppCompat.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ti_password"
-                android:layout_marginTop="@dimen/button_margin"
-                android:background="@android:color/holo_blue_dark"
-                android:backgroundTint="@android:color/holo_blue_dark"
-                android:drawableRight="@drawable/ic_arrow_forward"
-                android:paddingLeft="@dimen/button_padding"
-                android:shadowColor="@color/cardview_dark_background"
+                android:background="@drawable/background_login"
                 android:text="Login"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/cardview_dark_background" />
+                android:textColor="#000000"
+                android:textAllCaps="false"
+                android:padding="16dp"
+                android:clickable="true"
+                style="@style/Base.TextAppearance.AppCompat.Body1"
+                android:layout_marginTop="24dp"
+                android:textSize="24sp"/>
 
             <TextView
                 android:id="@+id/tv_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/btn_login"
                 android:layout_marginTop="@dimen/button_margin"
                 android:text="Not Registered ? Register Now !"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18dp"
+                android:textColor="#FFFFFF"/>
 
+            <!-- Forgot Password-->
             <TextView
                 android:id="@+id/tv_forgot_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_register"
-                android:layout_marginTop="@dimen/button_margin"
+                android:layout_marginTop="24dp"
+                android:textSize="18dp"
                 android:text="Forgot Password ?"
                 android:textAlignment="center" />
 
@@ -114,12 +149,24 @@
                 android:id="@+id/progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_forgot_password"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/button_margin"
                 android:layout_marginBottom="@dimen/button_margin"
                 android:visibility="gone"/>
 
-        </RelativeLayout>
-    </LinearLayout>
-</ScrollView>
+            <!-- View Statisics -->
+            <!--
+            <Button
+                android:id="@+id/btn_statistics"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/button_margin"
+                android:background="@android:color/holo_blue_dark"
+                android:backgroundTint="@android:color/holo_blue_dark"
+                android:paddingLeft="@dimen/button_padding"
+                android:text="View statistics"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/cardview_dark_background" />-->
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
