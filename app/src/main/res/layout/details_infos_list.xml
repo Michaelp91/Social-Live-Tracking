@@ -5,11 +5,11 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/activity_name"
+
         android:textAllCaps="true"
         android:textColor="@android:color/holo_blue_dark"
         android:textStyle="bold"
-        android:background="@color/colorDarkGrey"
+        android:text="Activity Details:"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -17,15 +17,12 @@
         android:textSize="15dp">
     </TextView>
 
-    <ListView
-        android:id="@+id/list_in_Frag"
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/listview_infos"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/colorDarkGrey"
-        android:drawSelectorOnTop="false" />
+        android:layout_height="110dp" />
+
 
 
 </LinearLayout>
-
-

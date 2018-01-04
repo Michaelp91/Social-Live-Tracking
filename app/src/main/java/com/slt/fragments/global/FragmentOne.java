@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
@@ -46,6 +47,9 @@ public class FragmentOne extends Fragment {
         ListView l = (ListView) viewGroup.findViewById(R.id.list_in_Frag);
         //String[] values = new String[] { "Walking", "Running", "Biking" };
 
+        // activity name:
+        TextView activityName_TextView = (TextView) viewGroup.findViewById(R.id.activity_name);
+        activityName_TextView.setText("Activity name todo");
 
         ArrayList<Object> list = new ArrayList<>();
 
