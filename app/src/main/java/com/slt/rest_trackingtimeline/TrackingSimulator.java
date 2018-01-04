@@ -3,6 +3,7 @@ package com.slt.rest_trackingtimeline;
 import com.slt.rest_trackingtimeline.data.Achievement;
 import com.slt.rest_trackingtimeline.data.Location;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
+import com.slt.rest_trackingtimeline.data.MyActivity;
 import com.slt.rest_trackingtimeline.data.Test;
 import com.slt.rest_trackingtimeline.data.TimeLine;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
@@ -28,7 +29,7 @@ public class TrackingSimulator implements Runnable{
         TimeLineDay timelineday = new TimeLineDay(new Date(), myAchievements, obj);
         TimeLineSegment timeLineSegment = new TimeLineSegment
                 ("Teststr. 84, 6442 Testhausen", "3", 2.4 ,
-                        2.0, myAchievements, timelineday);
+                        2.0, 2.5, myAchievements, timelineday, MyActivity.RUNNING, 2, 1, 0, 1.2, new Date());
         Location location = new Location(2.3, 4.2);
         LocationEntry locationentry = new LocationEntry(new Date(), 2.1, 2.0,
                 location, timeLineSegment);

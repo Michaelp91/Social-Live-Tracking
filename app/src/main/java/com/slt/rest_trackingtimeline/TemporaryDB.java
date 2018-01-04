@@ -52,7 +52,7 @@ public class TemporaryDB {
     public TimeLineDay findTimeLineDayByObject(TimeLineDay search) {
 
         for(TimeLineDay result: timelineDays) {
-            if(result.TAG == search.TAG) {
+            if(result.int_TAG == search.int_TAG) {
                 return result;
             }
         }
@@ -71,7 +71,7 @@ public class TemporaryDB {
 
     public TimeLineSegment findTimeLineSegmentByObject(TimeLineSegment search) {
         for(TimeLineSegment result: timeLineSegments) {
-            if(result.TAG == search.TAG) {
+            if(result.int_TAG == search.int_TAG) {
                 return result;
             }
         }

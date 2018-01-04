@@ -52,7 +52,7 @@ public class UpdateOperations_Synchron {
 
         Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
         TimeLineDay response = test.getResponse_timelineDay();
-        response.TAG = timeLineDay.TAG;
+        response.int_TAG = timeLineDay.int_TAG;
         Singleton.getInstance().setResponse_timelineDay(response);
         TemporaryDB.getInstance().addTimelineDay(response);
 
@@ -73,7 +73,7 @@ public class UpdateOperations_Synchron {
         Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
 
         TimeLineSegment response = test.getResponse_timelineSegment();
-        response.TAG = timelineSegment.TAG;
+        response.int_TAG = timelineSegment.int_TAG;
         Singleton.getInstance().setResponse_timelineSegment(test.getResponse_timelineSegment());
         TemporaryDB.getInstance().addTimeLineSegment(response);
 
@@ -93,7 +93,7 @@ public class UpdateOperations_Synchron {
 
         Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
         LocationEntry response = test.getResponse_locationEntry();
-        response.TAG = locationEntry.TAG;
+        response.int_TAG = locationEntry.int_TAG;
 
         Singleton.getInstance().setResponse_locationEntry(test.getResponse_locationEntry());
         TemporaryDB.getInstance().addLocationEntry(response);

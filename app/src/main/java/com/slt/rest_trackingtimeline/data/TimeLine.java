@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 
 public class TimeLine implements Model{
+    public String TAG;
     public String _id;
     public String user; //UserID
     public ArrayList<Achievement> myAchievements;
@@ -14,6 +15,7 @@ public class TimeLine implements Model{
     public TimeLine(String user, ArrayList<Achievement> myAchievements) {
         this.user = user;
         this.myAchievements = myAchievements;
+        this.TAG = "Timeline";
     }
 
     public TimeLine() {

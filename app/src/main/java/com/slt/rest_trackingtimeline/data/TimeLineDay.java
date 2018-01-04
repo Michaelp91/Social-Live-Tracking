@@ -11,18 +11,22 @@ import java.util.Date;
  */
 
 public class TimeLineDay implements Model{
-    public int TAG;
+    public String TAG;
+    public int int_TAG;
     public Date myDate;
     public ArrayList<Achievement> myAchievements;
     public String timeline; //timelineID
     public TimeLine timeLineObject;
+    public int MIN_SEGMENT_DURATION_IN_SECONDS;
 
     public TimeLineDay(Date myDate, ArrayList<Achievement> myAchievements, TimeLine timeLineObject) {
         this.myDate = myDate;
         this.myAchievements = myAchievements;
         this.timeline = null;
         this.timeLineObject = timeLineObject;
-        this.TAG = Singleton_General.getInstance().counter;
+        this.int_TAG = Singleton_General.getInstance().counter;
+        this.TAG = "TimelineDay";
+        this.MIN_SEGMENT_DURATION_IN_SECONDS = 120;
         Singleton_General.getInstance().counter++;
     }
 }

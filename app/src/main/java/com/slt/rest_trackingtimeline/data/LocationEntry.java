@@ -11,7 +11,9 @@ import java.util.Date;
  */
 
 public class LocationEntry implements Model{
-    public int TAG;
+    public String TAG;
+    public int int_TAG;
+
     public String _id;
     public Date myEntryDate;
     public double myTrackDistance;
@@ -29,7 +31,8 @@ public class LocationEntry implements Model{
         this.myLocation = myLocation;
         this.timelinesegment = timelinesegment;
         this.timelinesegmentObject = timelinesegmentObject;
-        this.TAG = Singleton_General.getInstance().counter;
+        this.int_TAG = Singleton_General.getInstance().counter;
+        this.TAG = "LocationEntry";
         Singleton_General.getInstance().counter++;
     }
 }
