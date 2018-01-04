@@ -61,6 +61,9 @@ public class Constants {
      */
     public interface NOTIFICATION_ID {
         public static int DATA_PROVIDER_SERVICE = 101;
+        public static  String id = "my_channel_101";
+        public static  String visibleID = "GPS & Activity Channel";
+        public static  String description = "GPS & Activity  Notifications";
     }
 
     /**
