@@ -170,6 +170,9 @@ public class LoginFragment extends Fragment {
 
         int err = 0;
 
+        //TODO remove later
+        loginProcess(email,password);
+
         if (!validateEmail(email)) {
 
             err++;
@@ -243,6 +246,15 @@ public class LoginFragment extends Fragment {
                 } else {
 
                     showSnackBarMessage("Network Error !");
+
+                    //TODO remove later
+                    Fragment newFragment = new FragmentEditSettings();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                    transaction.replace(R.id.fragmentFrame, newFragment);
+                    transaction.addToBackStack(null);
+
+                    transaction.commit();
                 }
 
             }

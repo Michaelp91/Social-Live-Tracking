@@ -68,6 +68,10 @@ public class ChangePasswordDialog extends DialogFragment {
         return view;
     }
 
+    public void setListener(ChangePasswordDialog.Listener listener){
+        this.mListener = listener;
+    }
+
     private void getData() {
 
         Bundle bundle = getArguments();
@@ -79,7 +83,7 @@ public class ChangePasswordDialog extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (ProfileActivity)context;
+     //   mListener = (FragmentEditSettings) context;
     }
 
     private void initViews(View v) {

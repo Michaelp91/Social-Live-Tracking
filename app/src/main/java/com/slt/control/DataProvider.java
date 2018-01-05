@@ -1,11 +1,14 @@
 package com.slt.control;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.slt.R;
 import com.slt.data.User;
 
 import com.google.android.gms.location.DetectedActivity;
@@ -121,6 +124,9 @@ public class DataProvider implements ServiceInterface{
 
         //TODO load real data
         this.ownUser = new User("DEFAULT", this.userTimeline, this.userList);
+        Bitmap img = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.biking);
+        this.ownUser = new User("userName", "email", "foreName", "lastName", img, 23, "city", "ID");
+
     }
 
     //TODO add function for getting other user data and calculation of users in the vicinity
@@ -240,6 +246,24 @@ public class DataProvider implements ServiceInterface{
 
         return result;
     }
+
+    /**
+     * Get the own user
+     * @return The own user
+     */
+    public User getOwnUser() {
+        return ownUser;
+    }
+
+    /**
+     * Set the own user
+     * @param ownUser The user to set
+     */
+    public void setOwnUser(User ownUser) {
+        this.ownUser = ownUser;
+    }
+
+
 
     /**
      * Method to look for a specific user by his username

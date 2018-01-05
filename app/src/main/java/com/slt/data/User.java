@@ -2,7 +2,7 @@ package com.slt.data;
 
 import android.content.Intent;
 import android.location.Location;
-import android.media.Image;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -49,7 +49,7 @@ public class User {
     /**
      * An image of the user
      */
-    private Image myImage;
+    private Bitmap myImage;
 
     /**
      * The age of the user
@@ -130,7 +130,7 @@ public class User {
      * @param lastName The last name of the user
      * @param image    The image the user has set
      */
-    public User(String userName, String email, String foreName, String lastName, Image image, int age, String city, String ID) {
+    public User(String userName, String email, String foreName, String lastName, Bitmap image, int age, String city, String ID) {
         this.myTimeline = new Timeline();
         this.userList = new LinkedList<>();
         this.myImage = image;
@@ -208,7 +208,7 @@ public class User {
      * @param image The image we want to set
      * @param userID The DB ID of the user
      */
-    public void updateImage(Image image, String userID) {
+    public void updateImage(Bitmap image, String userID) {
         this.myImage = image;
 
         //Send intent to inform about update
@@ -352,7 +352,7 @@ public class User {
      *
      * @return The image the user has added
      */
-    public Image getMyImage() {
+    public Bitmap getMyImage() {
         return myImage;
     }
 
@@ -397,7 +397,7 @@ public class User {
      *
      * @param myImage The new image to set for the user
      */
-    public void setMyImage(Image myImage) {
+    public void setMyImage(Bitmap myImage) {
         this.myImage = myImage;
     }
 
