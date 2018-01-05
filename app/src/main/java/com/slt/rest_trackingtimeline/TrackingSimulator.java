@@ -22,6 +22,9 @@ public class TrackingSimulator implements Runnable{
     @Override
     public void run() {
         Test t = new Test("Hello World");
+
+
+
         Achievement newAchievement = new Achievement(0);
         ArrayList<Achievement> myAchievements = new ArrayList<>();
         myAchievements.add(newAchievement);
@@ -29,7 +32,10 @@ public class TrackingSimulator implements Runnable{
         TimeLineDay timelineday = new TimeLineDay(new Date(), myAchievements, obj);
         TimeLineSegment timeLineSegment = new TimeLineSegment
                 ("Teststr. 84, 6442 Testhausen", "3", 2.4 ,
-                        2.0, 2.5, myAchievements, timelineday, MyActivity.RUNNING, 2, 1, 0, 1.2, new Date());
+                        2.0, 2.5, myAchievements, timelineday, MyActivity.RUNNING,
+                        2, 1, 0, 1.2, new Date());
+
+
         Location location = new Location(2.3, 4.2);
         LocationEntry locationentry = new LocationEntry(new Date(), 2.1, 2.0,
                 location, timeLineSegment);

@@ -51,6 +51,8 @@ public class TimeLineSegment implements Model{
         Singleton_General.getInstance().counter++;
     }
 
+
+
     public void setTimeLineDay(String timeLineDay) {
         this.timeLineDay = timeLineDay;
     }
