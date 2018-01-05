@@ -100,7 +100,7 @@ public class SharedResources {
 
                 // The user-visible description of the channel.
                 String description = Constants.NOTIFICATION_ID.description;
-                int importance = NotificationManager.IMPORTANCE_HIGH;
+                int importance = NotificationManager.IMPORTANCE_MIN;
                 NotificationChannel mChannel = new NotificationChannel(id, name, importance);
 
                 // Configure the notification channel.

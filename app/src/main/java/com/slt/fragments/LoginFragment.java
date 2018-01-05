@@ -171,7 +171,7 @@ public class LoginFragment extends Fragment {
         int err = 0;
 
         //TODO remove later
-        loginProcess(email,password);
+      //  loginProcess(email,password);
 
         if (!validateEmail(email)) {
 
@@ -248,13 +248,13 @@ public class LoginFragment extends Fragment {
                     showSnackBarMessage("Network Error !");
 
                     //TODO remove later
-                    Fragment newFragment = new FragmentEditSettings();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                //    Fragment newFragment = new FragmentEditSettings();
+                 //   FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                    transaction.replace(R.id.fragmentFrame, newFragment);
-                    transaction.addToBackStack(null);
+                //    transaction.replace(R.id.fragmentFrame, newFragment);
+                 //   transaction.addToBackStack(null);
 
-                    transaction.commit();
+                //    transaction.commit();
                 }
 
             }
