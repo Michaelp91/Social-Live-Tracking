@@ -65,7 +65,7 @@ public class TemporaryDB {
     public ArrayList<TimeLineSegment> findTimelineSegmentsByTDayId(String tId) {
         ArrayList<TimeLineSegment> choosedSegments = new ArrayList<>();
         for(TimeLineSegment t: timeLineSegments) {
-            if(t.timeLineDay == tId) {
+            if(t.timeLineDay.equals(tId) ) {
                 choosedSegments.add(t);
             }
         }
@@ -77,7 +77,7 @@ public class TemporaryDB {
     public ArrayList<LocationEntry> findLocationEntriesByTSegmentId(String segmentId) {
         ArrayList<LocationEntry> choosedEntries = new ArrayList<>();
         for(LocationEntry l: locationEntries) {
-            if(l.timelinesegment == segmentId) {
+            if(l.timelinesegment.equals(segmentId) ) {
                 choosedEntries.add(l);
             }
         }

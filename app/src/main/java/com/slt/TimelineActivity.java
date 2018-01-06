@@ -40,6 +40,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
     private int counter_timelinechildren;
     private final String TAG_TIMELINEDAY = "timelineday";
     private final String TAG_TIMELINESEGMENT = "timelinesegment";
+    private ArrayList<TimeLineDay> timeLineDays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +131,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         LayoutInflater inflater = LayoutInflater.from(this);
 
         list_TimelineDays = new ArrayList<>();
-        ArrayList<TimeLineDay> timeLineDays = TemporaryDB.getInstance().getTimelineDays();
+        timeLineDays = TemporaryDB.getInstance().getTimelineDays();
         counter_timelinedays = 0;
         view_timelineDays.removeAllViews();
         for(TimeLineDay t_d: timeLineDays) {
@@ -149,6 +150,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
 
             view_timelineDays.addView(row);
             list_TimelineDays.add(row);
+            counter_timelinedays++;
         }
 
     }
@@ -162,7 +164,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
                                                 findTimelineSegmentsByTDayId(choosedTimelineDay._id);
         boolean firstLoop = true;
 
-        //TODO: Ask Thorsten: How many Locationpoints per Segments
+
         for(TimeLineSegment tSegment: timeLineSegments) {
             ArrayList<LocationEntry> locationEntries = TemporaryDB.getInstance()
                                                         .findLocationEntriesByTSegmentId(tSegment._id);
@@ -172,10 +174,8 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
             RelativeLayout view_LastPoint = null;
 
             if(!locationEntries.isEmpty()) {
-                LocationEntry fstPoint = (firstLoop)? locationEntries.get(0): null;
-                LocationEntry sndPoint = locationEntries.get(locationEntries.size() - 1);
+                LocationEntry fstPoint = locationEntries.get(0);
 
-                if(fstPoint != null) {
                     view_FirstPoint = (RelativeLayout)inflater.inflate(R.layout.timeline_locationpoint, null);
                     TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeAndaddress);
                     TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
@@ -187,27 +187,42 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
                     myEntryDate.setText(strDate);
                     placeAndaddress.setText(tSegment.startAddress);
 
-                    if(fstPoint != sndPoint) { //Draw Segment and the Endpoint
+                    if(timeLineSegments.indexOf(tSegment) < timeLineSegments.size() - 1) { //Draw Segment and the Endpoint
+
                         view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
                         TextView activeTime = (TextView) view_segment.findViewById(R.id.tv_activeTime);
                         TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
                         activeTime.setText(Double.toString(tSegment.duration));
                         activeDistance.setText(Double.toString(tSegment.activeDistance));
 
-                        view_LastPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
+                        /*
+                        view_LastPoint = (RelativeLayout)inflater.inflate(R.layout.timeline_locationpoint, null);
+                        TextView placeAndaddress_endlocation = (TextView) view_LastPoint.findViewById(R.id.tv_placeAndaddress);
+                        TextView myEntryDate_endlocation = (TextView) view_LastPoint.findViewById(R.id.tv_myEntryDate);
+
+                        sdf = new SimpleDateFormat("dd.MM.yyyy");
+                        strDate = sdf.format(sndPoint.myEntryDate);
+
+
+                        myEntryDate_endlocation.setText(strDate);
+                        placeAndaddress_endlocation.setText("");
+                        */
 
                     }
 
-
-                }
-
-                else { //Draw a Segment and a Location Point
-
-                }
             }
+
+            if(view_FirstPoint != null)
+              choosedChildren.addView(view_FirstPoint);
+
+
+            if(view_segment != null)
+              choosedChildren.addView(view_segment);
         }
 
+        LinearLayout whiteSpace = (LinearLayout) inflater.inflate(R.layout.timeline_whitespace, null);
 
+        choosedChildren.addView(whiteSpace);
 
     }
 /*
@@ -240,7 +255,14 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
             case TAG_TIMELINEDAY:
                 LinearLayout tday = list_TimelineDays.get(view.getId());
                 choosedChildren = (LinearLayout) tday.findViewById(R.id.ll_all_locations);
-                initTimelineView();
+                choosedTimelineDay = timeLineDays.get(view.getId());
+
+
+                if(choosedChildren.getChildCount() == 0)
+                  initTimelineView();
+                else {
+                    choosedChildren.removeAllViews();
+                }
                 break;
 
         }
