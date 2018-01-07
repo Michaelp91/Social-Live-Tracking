@@ -68,9 +68,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
     private User ownUser;
 
     private Bitmap bitmap;
-    private File destination = null;
-    private InputStream inputStreamImg;
-    private String imgPath = null;
+
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
 
     private ChangePasswordDialog.Listener mListener;
@@ -92,7 +90,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         this.foreNameEditText = (EditText) view.findViewById(R.id.et_forename);
         this.cityEditText = (EditText) view.findViewById(R.id.et_city);
 
-
+        //TODO change email if we want to should check with server if changed to a unused address
 
         //init for the password change dialog
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationController.getContext());
@@ -141,7 +139,24 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
              }
          });
 
+        Button undo = (Button) view.findViewById(R.id.btn_undo);
+        undo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                undoChanges();
+            }
+        });
         return view;
+    }
+
+
+    private void undoChanges() {
+        this.ageEditText.setText(Integer.toString(ownUser.getMyAge()));
+        this.usernameEditText.setText(ownUser.getUserName());
+        this.lastNameEditText.setText(ownUser.getLastName());
+        this.foreNameEditText.setText(ownUser.getForeName());
+        this.cityEditText.setText(ownUser.getMyCity());
+
+        setProfileImage(ownUser.getMyImage());
     }
 
     /**
@@ -203,7 +218,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        inputStreamImg = null;
+
         if (requestCode == PICK_IMAGE_CAMERA) {
             try {
                 Uri selectedImage = data.getData();
@@ -253,6 +268,9 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Edit Settings");
+
+
+
     }
 
     @Override

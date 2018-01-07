@@ -1,6 +1,7 @@
 package com.slt;
 
 
+import com.slt.fragments.FragmentFriends;
 import com.slt.services.LocationService;
 import com.slt.services.ActivityService;
 import com.slt.control.SharedResources;
@@ -153,6 +154,8 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
             mLoginFragment = new LoginFragment();
         }
         getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,mLoginFragment,LoginFragment.TAG).commit();
+        //TODO Remove later
+       // getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,new FragmentFriends(),LoginFragment.TAG).commit();
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.app.NotificationManager;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.slt.R;
+import com.slt.data.User;
 import com.slt.definitions.Constants;
 
 import static com.slt.R.mipmap.ic_launcher;
@@ -57,6 +58,11 @@ public class SharedResources {
     public GoogleApiClient getMyGoogleApiClient() {
         return myGoogleApiClient;
     }
+
+    /**
+     *
+     */
+    private User myUser;
 
     /**
      * Set the instance of the Google API Client
@@ -128,12 +134,29 @@ public class SharedResources {
         return foregroundNotification;
     }
 
+    /**
+     * Can be used to pass along a User between fragments
+     * @param user The user to set
+     */
+    public synchronized void setUser(User user){
+        this.myUser = user;
+    }
 
+    /**
+     * Returns the user to show further data fpr
+     * @return The user that was set, null if none was set
+     */
+    public synchronized  User getSelectedUser(){
+        return this.myUser;
+    }
 
     /**
      * Private constructor
      */
     private SharedResources() {
         myGoogleApiClient = null;
+        foregroundNotification = null;
+        myUser = null;
+
     }
 }

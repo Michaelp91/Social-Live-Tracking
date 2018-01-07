@@ -97,7 +97,7 @@ public class DataProvider implements ServiceInterface{
     private LinkedList<User> allUsers;
 
     /**
-     * All users for which we also hold data, ao our friend list
+     * All users for which we also hold data, s0 our friend list
      */
     private LinkedList<User> userList;
 
@@ -126,6 +126,11 @@ public class DataProvider implements ServiceInterface{
         this.ownUser = new User("DEFAULT", this.userTimeline, this.userList);
         Bitmap img = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.biking);
         this.ownUser = new User("userName", "email", "foreName", "lastName", img, 23, "city", "ID");
+        User friend1 = new User("friend1", "emailfriend1", "foreName friend1", "lastName friend1 ", img, 24, "cityfr1", "IDf1");
+        this.ownUser.addFriend(friend1);
+        img = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.running);
+        User friend2 = new User("friend2", "emailfriend2", "foreName friend2", "lastName friend2 ", img, 25, "cityfr2", "IDf2");
+        this.ownUser.addFriend(friend2);
 
     }
 

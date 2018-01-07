@@ -13,122 +13,34 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/activity_vertical_margin">
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/activity_vertical_margin">
 
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image"
+                android:id="@+id/friend_detail_profile_image"
                 android:layout_width="128dp"
                 android:layout_height="128dp"
                 android:src="@drawable/profile_pic"
                 android:layout_gravity="center_horizontal"/>
 
-            <Button
-                android:id="@+id/btn_change_photo"
-                style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/background_login"
-                android:clickable="true"
-                android:padding="16dp"
-                android:text="Change Photo"
-                android:textAllCaps="false"
-                android:textColor="#000000"
-                android:textSize="12sp" />
 
-            <Button
-                android:id="@+id/et_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_login"
-                android:text="Change Password"
-                android:textColor="#000000"
-                android:textAllCaps="false"
-                android:padding="16dp"
-                android:clickable="true"
-                style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:layout_marginTop="24dp"
-                android:textSize="24sp"/>
+
 
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tv_age"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/child_margin_top"
-                android:layout_gravity="center_horizontal">
-                <EditText
-                    android:id="@+id/et_age"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:drawablePadding="12dp"
-                    android:padding="8dp"
-                    android:hint="Age"
-                    android:text="25"
-                    android:textColorHint="#fff"
-                    android:maxLines="1"
-                    android:background="@android:color/transparent"
-                    android:layout_marginTop="4dp"
-                    android:drawableStart="@drawable/ic_face_black_24dp"
-                    android:textColor="#FFFFFF"
-                    android:layout_gravity="center_horizontal"
-                    android:imeOptions="actionNext" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#f9d7db"
-                    android:layout_gravity="center_horizontal"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tv_city"
+                android:id="@+id/friend_detail_tv_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/child_margin_top"
                 android:layout_gravity="center_horizontal">
 
                 <EditText
-                    android:id="@+id/et_city"
+                    android:id="@+id/friend_detail_et_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:ems="10"
-                    android:drawablePadding="12dp"
-                    android:padding="8dp"
-                    android:hint="City"
-                    android:text="Darmstadt"
-                    android:textColorHint="#fff"
-                    android:maxLines="1"
-                    android:background="@android:color/transparent"
-                    android:layout_marginTop="4dp"
-                    android:drawableStart="@drawable/ic_exit"
-                    android:textColor="#FFFFFF"
-                    android:layout_gravity="center_horizontal"
-                    android:imeOptions="actionNext" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#f9d7db"
-                    android:layout_gravity="center_horizontal"/>
-            </android.support.design.widget.TextInputLayout>
-
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tv_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/child_margin_top"
-                android:layout_gravity="center_horizontal">
-
-                <EditText
-                    android:id="@+id/et_username"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="none"
+                    android:editable="false"
                     android:ems="10"
                     android:drawablePadding="12dp"
                     android:padding="8dp"
@@ -151,17 +63,18 @@
 
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tv_forename"
+                android:id="@+id/friend_detail_tv_forename"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/child_margin_top"
                 android:layout_gravity="center_horizontal">
 
                 <EditText
-                    android:id="@+id/et_forename"
+                    android:id="@+id/friend_detail_et_forename"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="none"
+                    android:editable="false"
                     android:ems="10"
                     android:drawablePadding="12dp"
                     android:padding="8dp"
@@ -183,45 +96,46 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tv_last_name"
+                android:id="@+id/friend_detail_tv_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/child_margin_top"
                 android:layout_gravity="center_horizontal">
-            <EditText
-                android:id="@+id/et_last_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:ems="10"
-                android:drawablePadding="12dp"
-                android:padding="8dp"
-                android:hint="Last name"
-                android:text="Last name"
-                android:textColorHint="#fff"
-                android:maxLines="1"
-                android:background="@android:color/transparent"
-                android:layout_marginTop="4dp"
-                android:drawableStart="@drawable/ic_person"
-                android:textColor="#FFFFFF"
-                android:layout_gravity="center_horizontal"
-                android:imeOptions="actionNext" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#f9d7db"
-                android:layout_gravity="center_horizontal"/>
-        </android.support.design.widget.TextInputLayout>
+                <EditText
+                    android:id="@+id/friend_detail_et_last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:editable="false"
+                    android:ems="10"
+                    android:drawablePadding="12dp"
+                    android:padding="8dp"
+                    android:hint="Last name"
+                    android:text="Last name"
+                    android:textColorHint="#fff"
+                    android:maxLines="1"
+                    android:background="@android:color/transparent"
+                    android:layout_marginTop="4dp"
+                    android:drawableStart="@drawable/ic_person"
+                    android:textColor="#FFFFFF"
+                    android:layout_gravity="center_horizontal"
+                    android:imeOptions="actionNext" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#f9d7db"
+                    android:layout_gravity="center_horizontal"/>
+            </android.support.design.widget.TextInputLayout>
 
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/ti_email"
+                android:id="@+id/friend_detail_ti_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/child_margin_top">
 
                 <EditText
-                    android:id="@+id/et_email"
+                    android:id="@+id/friend_detail_et_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
@@ -244,12 +158,79 @@
                     android:background="#f9d7db" />
             </android.support.design.widget.TextInputLayout>
 
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/friend_detail_tv_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/child_margin_top"
+                android:layout_gravity="center_horizontal">
+                <EditText
+                    android:id="@+id/friend_detail_et_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:editable="false"
+                    android:ems="10"
+                    android:drawablePadding="12dp"
+                    android:padding="8dp"
+                    android:hint="Age"
+                    android:text="25"
+                    android:textColorHint="#fff"
+                    android:maxLines="1"
+                    android:background="@android:color/transparent"
+                    android:layout_marginTop="4dp"
+                    android:drawableStart="@drawable/ic_face_black_24dp"
+                    android:textColor="#FFFFFF"
+                    android:layout_gravity="center_horizontal"
+                    android:imeOptions="actionNext" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#f9d7db"
+                    android:layout_gravity="center_horizontal"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/friend_detail_tv_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/child_margin_top"
+                android:layout_gravity="center_horizontal">
+
+                <EditText
+                    android:id="@+id/friend_detail_et_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:editable="false"
+                    android:ems="10"
+                    android:drawablePadding="12dp"
+                    android:padding="8dp"
+                    android:hint="City"
+                    android:text="Darmstadt"
+                    android:textColorHint="#fff"
+                    android:maxLines="1"
+                    android:background="@android:color/transparent"
+                    android:layout_marginTop="4dp"
+                    android:drawableStart="@drawable/ic_exit"
+                    android:textColor="#FFFFFF"
+                    android:layout_gravity="center_horizontal"
+                    android:imeOptions="actionNext" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#f9d7db"
+                    android:layout_gravity="center_horizontal"/>
+            </android.support.design.widget.TextInputLayout>
+
+
             <Button
-                android:id="@+id/btn_undo"
+                android:id="@+id/friend_detail_btn_statistics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_login"
-                android:text="Undo Changes"
+                android:text="Show Statistics"
                 android:textColor="#000000"
                 android:textAllCaps="false"
                 android:padding="16dp"
@@ -260,11 +241,11 @@
 
 
             <Button
-                android:id="@+id/btn_save"
+                android:id="@+id/friend_detail_btn_show_timeline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_login"
-                android:text="Save Changes"
+                android:text="Show Timeline"
                 android:textColor="#000000"
                 android:textAllCaps="false"
                 android:padding="16dp"
@@ -273,13 +254,20 @@
                 android:layout_marginTop="24dp"
                 android:textSize="24sp"/>
 
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/friend_detail_btn_remove_user"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/button_margin"
-                android:visibility="gone"/>
+                android:background="@drawable/background_login"
+                android:text="Remove User"
+                android:textColor="#000000"
+                android:textAllCaps="false"
+                android:padding="16dp"
+                android:clickable="true"
+                style="@style/Base.TextAppearance.AppCompat.Body1"
+                android:layout_marginTop="24dp"
+                android:textSize="24sp"/>
+
 
         </LinearLayout>
     </ScrollView>
