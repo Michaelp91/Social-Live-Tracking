@@ -155,9 +155,9 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordDial
 
             mLoginFragment = new LoginFragment();
         }
-       // getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,mLoginFragment,LoginFragment.TAG).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,mLoginFragment,LoginFragment.TAG).commit();
         //TODO Remove later
-        getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,new FragmentSearchFriends(),LoginFragment.TAG).commit();
+       // getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,new FragmentSearchFriends(),LoginFragment.TAG).commit();
     }
 
     @Override
