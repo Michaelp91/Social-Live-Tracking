@@ -97,7 +97,7 @@ public class DataProvider implements ServiceInterface{
     private LinkedList<User> allUsers;
 
     /**
-     * All users for which we also hold data, s0 our friend list
+     * All users for which we also hold data, so our friend list
      */
     private LinkedList<User> userList;
 
@@ -117,10 +117,6 @@ public class DataProvider implements ServiceInterface{
         this.manualMode = false;
         //TODO do we have to load data for the current position as well from the server?
 
-        //TODO init the user timeline and the other users with stored data
-        userTimeline = new Timeline();
-        userList = new LinkedList<>();
-        this.allUsers = new LinkedList<>();
 
         //TODO load real data
         this.ownUser = new User("DEFAULT", this.userTimeline, this.userList);
@@ -132,9 +128,18 @@ public class DataProvider implements ServiceInterface{
         User friend2 = new User("friend2", "emailfriend2", "foreName friend2", "lastName friend2 ", img, 25, "cityfr2", "IDf2");
         this.ownUser.addFriend(friend2);
 
+        //TODO init the user timeline and the other users with stored data
+        userTimeline = new Timeline();
+        userList = ownUser.getUserList();
+        this.allUsers = new LinkedList<>();
+
+        this.allUsers.add(friend1);
+        User friend3 = new User("friend3", "emailfriend3", "foreName friend3", "lastName friend3 ", img, 25, "cityfr3", "IDf3");
+        User friend4 = new User("friend4", "42", "foreName friend4", "lastName friend4 ", img, 25, "cityfr4", "IDf4");
+        this.allUsers.add(friend3);
+        this.allUsers.add(friend4);
     }
 
-    //TODO add function for getting other user data and calculation of users in the vicinity
 
     /**
      * The method used to react on a change of the activity
@@ -244,7 +249,7 @@ public class DataProvider implements ServiceInterface{
 
         //check for users with that name
         for(User check : this.allUsers){
-            if(check.getLastName().compareTo(name) == 0){
+            if(check.getLastName().contains(name)){
                 result.add(check);
             }
         }
@@ -271,18 +276,18 @@ public class DataProvider implements ServiceInterface{
 
 
     /**
-     * Method to look for a specific user by his username
+     * Method to look for a  user by his username
      * @param username The username we look for
-     * @return The user with the username if he exists, null if not
+     * @return A list of users with the username if he exists, null if not
      */
-    public User getUserByUsername(String username){
-        User result = null;
+    public LinkedList<User> getUserByUsername(String username){
+        LinkedList<User> result = null;
         //TODO implement updating the userList
 
         //check for user that has this username
         for(User check : this.allUsers){
-            if(check.getUserName().compareTo(username) == 0){
-                result = check;
+            if(check.getUserName().contains(username)){
+                result.add(check);
                 break;
             }
         }
@@ -301,7 +306,7 @@ public class DataProvider implements ServiceInterface{
 
         //check for users with that email address
         for(User check : this.allUsers){
-            if(check.getEmail().compareTo(email) == 0){
+            if(check.getEmail().contains(email)){
                 result.add(check);
             }
         }
