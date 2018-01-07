@@ -1,5 +1,6 @@
 package com.slt.rest_trackingtimeline;
 
+import com.slt.rest_trackingtimeline.data.Achievement;
 import com.slt.rest_trackingtimeline.data.FullTimeLine;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
 import com.slt.rest_trackingtimeline.data.Test;
@@ -17,6 +18,8 @@ public class Singleton {
     private static Singleton singleton;
     private ArrayList<Test> response;
     private FullTimeLine responses;
+    private int request_timelinesegmentId;
+    private ArrayList<Achievement> achievements;
     private TimeLine response_timeLine;
     private TimeLineDay response_timelineDay;
     private TimeLineSegment response_timelineSegment;

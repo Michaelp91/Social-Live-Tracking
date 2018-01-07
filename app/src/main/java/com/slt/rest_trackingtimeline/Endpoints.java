@@ -2,6 +2,7 @@ package com.slt.rest_trackingtimeline;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.slt.rest_trackingtimeline.data.Achievement;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
 import com.slt.rest_trackingtimeline.data.Test;
 import com.slt.rest_trackingtimeline.data.TimeLine;
@@ -24,6 +25,19 @@ import retrofit2.http.PUT;
  */
 
 public interface Endpoints {
+
+    @POST("timelinesegment/update")
+    Call<JsonObject> updateTimelineSegment(@Body TimeLineSegment timeLineSegment);
+
+    @POST("achievement/update")
+    Call<JsonObject> updateAchievement(@Body Achievement achievement);
+
+    @POST("timelinesegment/delete")
+    Call<JsonObject> deleteTimelineSegment(@Body TimeLineSegment timeLineSegment);
+
+    @POST("achievements/new")
+    Call<JsonObject> createAchievments(@Body Singleton request);
+
 
     @POST("fetchTest")
     Call<JsonObject> getTest2(@Body Test json);
