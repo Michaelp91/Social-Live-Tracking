@@ -20,6 +20,14 @@
             android:text="Mo, 06.11.2017"
             android:layout_weight="1"/>
 
+
+        <ImageView
+            android:id="@+id/iv_activity"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/running"
+            android:layout_weight="1"/>
+
     </LinearLayout>
 
     <TextView

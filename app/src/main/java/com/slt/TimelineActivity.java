@@ -1,11 +1,14 @@
 package com.slt;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,11 +17,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.vision.text.Line;
 import com.slt.rest_trackingtimeline.RetrieveOperations;
 import com.slt.rest_trackingtimeline.TemporaryDB;
+import com.slt.rest_trackingtimeline.UsefulMethods;
 import com.slt.rest_trackingtimeline.data.Location;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
 import com.slt.rest_trackingtimeline.data.TimeLineDay;
 import com.slt.rest_trackingtimeline.data.TimeLineSegment;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -137,6 +142,10 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         for(TimeLineDay t_d: timeLineDays) {
             LinearLayout row = (LinearLayout)inflater.inflate(R.layout.timeline_day, null);
             TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
+//            ImageView imageView = (ImageView) row.findViewById(R.id.iv_activity);
+//            UsefulMethods.UploadImageView(imageView);
+
+
             Date date = t_d.myDate;
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");

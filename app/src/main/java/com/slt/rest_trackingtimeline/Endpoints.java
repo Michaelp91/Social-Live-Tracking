@@ -3,6 +3,7 @@ package com.slt.rest_trackingtimeline;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.slt.rest_trackingtimeline.data.Achievement;
+import com.slt.rest_trackingtimeline.data.Image;
 import com.slt.rest_trackingtimeline.data.LocationEntry;
 import com.slt.rest_trackingtimeline.data.Test;
 import com.slt.rest_trackingtimeline.data.TimeLine;
@@ -25,6 +26,9 @@ import retrofit2.http.PUT;
  */
 
 public interface Endpoints {
+
+    @POST("uploadPicture/")
+    Call<JsonObject> uploadPicture(@Body Image image);
 
     @POST("timelinesegment/update")
     Call<JsonObject> updateTimelineSegment(@Body TimeLineSegment timeLineSegment);
