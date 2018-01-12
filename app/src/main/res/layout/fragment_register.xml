@@ -130,6 +130,15 @@
                     android:background="#f9d7db" />
             </android.support.design.widget.TextInputLayout>
 
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/button_margin"
+                android:visibility="gone"/>
+
             <!-- Sign up button-->
             <Button
                 android:id="@+id/btn_register"
@@ -156,13 +165,6 @@
                 android:textSize="18dp"
                 />
 
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/button_margin"
-                android:visibility="gone"/>
 
         </LinearLayout>
     </ScrollView>

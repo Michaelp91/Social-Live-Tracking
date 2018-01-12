@@ -128,10 +128,15 @@ public class LoginFragment extends Fragment {
 
         mTvRegister.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                /*FragmentTransaction ft = getFragmentManager().beginTransaction();
                 RegisterFragment fragment = new RegisterFragment();
                 ft.replace(R.id.fragmentFrame,fragment,RegisterFragment.TAG);
-                ft.commit();
+                ft.commit();*/
+                Fragment newFragment = new RegisterFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragmentFrame, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 
@@ -139,9 +144,14 @@ public class LoginFragment extends Fragment {
 
         mTvForgotPassword.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                ResetPasswordDialog fragment = new ResetPasswordDialog();
-
-                fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
+                //ResetPasswordDialog fragment = new ResetPasswordDialog();
+                //fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
+                Fragment newFragment = new ResetPasswordFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragmentFrame, newFragment);
+                //This way we can press the back button and come one page back:
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 
@@ -310,7 +320,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void goToRegister(){
+    /*private void goToRegister(){
         //Fragment Transactions, if the back button is pressed, we want to come back
 
         Fragment newFragment = new RegisterFragment();
@@ -321,9 +331,9 @@ public class LoginFragment extends Fragment {
 
         transaction.commit();
 
-    }
+    }*/
 
-    private void showDialog(){
+    /*private void showDialog(){
         //Fragment Transactions, if the back button is pressed, we want to come back
 
         Fragment newFragment = new ResetPasswordFragment();
@@ -335,7 +345,7 @@ public class LoginFragment extends Fragment {
         transaction.commit();
         //ResetPasswordDialog fragment = new ResetPasswordDialog();
         //fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
-    }
+    }*/
 
     @Override
     public void onDestroy() {

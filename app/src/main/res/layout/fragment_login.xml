@@ -99,6 +99,15 @@
                     android:background="#f9d7db" />
             </android.support.design.widget.TextInputLayout>
 
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/button_margin"
+                android:visibility="gone"/>
+
             <!-- TODO: Eingegebene Login-Daten speichern, wenn moeglich, habs leider nicht hinbekommen -->
             <!-- Save Login-->
             <CheckBox
@@ -145,28 +154,6 @@
                 android:text="Forgot Password ?"
                 android:textAlignment="center" />
 
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/button_margin"
-                android:visibility="gone"/>
-
-            <!-- View Statisics -->
-            <!--
-            <Button
-                android:id="@+id/btn_statistics"
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/button_margin"
-                android:background="@android:color/holo_blue_dark"
-                android:backgroundTint="@android:color/holo_blue_dark"
-                android:paddingLeft="@dimen/button_padding"
-                android:text="View statistics"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/cardview_dark_background" />-->
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

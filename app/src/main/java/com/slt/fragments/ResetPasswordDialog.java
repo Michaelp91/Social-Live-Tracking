@@ -92,7 +92,7 @@ public class ResetPasswordDialog extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListner = (MainActivity)context;
+        //mListner = (MainActivity)context;
     }
 
     private void setEmptyFields() {

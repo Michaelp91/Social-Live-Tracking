@@ -4,6 +4,7 @@ package com.slt;
 import com.slt.fragments.FragmentEditSettings;
 import com.slt.fragments.FragmentFriends;
 import com.slt.fragments.FragmentSearchFriends;
+import com.slt.fragments.ResetPasswordFragment;
 import com.slt.services.LocationService;
 import com.slt.services.ActivityService;
 import com.slt.control.SharedResources;
@@ -23,6 +24,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DialogTitle;
 import android.util.Log;
 
 import com.slt.fragments.LoginFragment;
@@ -44,7 +46,7 @@ import com.google.android.gms.location.ActivityRecognition;
 /**
  * The Main Activity
  */
-public class MainActivity extends AppCompatActivity implements ResetPasswordDialog.Listener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+public class MainActivity extends AppCompatActivity implements ResetPasswordFragment.Listener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
     /**
      * Tag for logger
      */

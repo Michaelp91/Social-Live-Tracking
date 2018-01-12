@@ -2,6 +2,7 @@ package com.slt.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.slt.MainActivity;
 import com.slt.ProfileActivity;
 import com.slt.R;
 import com.slt.model.Response;
@@ -40,19 +42,34 @@ import static com.slt.utils.Validation.validateFields;
 
 public class ResetPasswordFragment extends Fragment {
 
+    public interface Listener {
+
+        void onPasswordReset(String message);
+    }
+
     public static final String TAG = ResetPasswordFragment.class.getSimpleName();
 
     private EditText mEtEmail;
-    private Button   mBtReset;
+    private EditText mEtToken;
+    private EditText mEtPassword;
+    private Button mBtResetPassword;
+    private TextView mTvMessage;
     private TextInputLayout mTiEmail;
-    private ProgressBar mProgressbar;
+    private TextInputLayout mTiToken;
+    private TextInputLayout mTiPassword;
+    private ProgressBar mProgressBar;
 
     private CompositeSubscription mSubscriptions;
+
+    private String mEmail;
+
+    private boolean isInit = true;
+
+    private Listener mListner;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_reset_password,container,false);
         mSubscriptions = new CompositeSubscription();
         initViews(view);
@@ -62,82 +79,221 @@ public class ResetPasswordFragment extends Fragment {
     private void initViews(View v) {
 
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
-        mBtReset = (Button) v.findViewById(R.id.btn_reset_password);
+        mEtToken = (EditText) v.findViewById(R.id.et_token);
+        mEtPassword = (EditText) v.findViewById(R.id.et_password);
+        mBtResetPassword = (Button) v.findViewById(R.id.btn_reset_password);
+        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
+        mTvMessage = (TextView) v.findViewById(R.id.tv_message);
         mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_email);
-        mProgressbar = (ProgressBar) v.findViewById(R.id.progress);
+        mTiToken = (TextInputLayout) v.findViewById(R.id.ti_token);
+        mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
 
-        mBtReset.setOnClickListener(new View.OnClickListener() {
-            @Override
+        mBtResetPassword.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                reset();
+                if (isInit) resetPasswordInit();
+                else resetPasswordFinish();
             }
         });
     }
 
-    private void reset() {
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListner = (MainActivity)context;
+    }
 
-        setError();
+    private void setEmptyFields() {
 
-        String email = mEtEmail.getText().toString();
+        mTiEmail.setError(null);
+        mTiToken.setError(null);
+        mTiPassword.setError(null);
+        mTvMessage.setText(null);
+    }
+
+    public void setToken(String token) {
+
+        mEtToken.setText(token);
+    }
+
+    private void resetPasswordInit() {
+
+        setEmptyFields();
+
+        mEmail = mEtEmail.getText().toString();
 
         int err = 0;
 
-
-        if (!validateEmail(email)) {
+        if (!validateEmail(mEmail)) {
 
             err++;
-            mTiEmail.setError("Email should be valid !");
+            mTiEmail.setError("Email Should be Valid !");
         }
-
-
 
         if (err == 0) {
 
-            User user = new User();
-            user.setEmail(email);
-
-            mProgressbar.setVisibility(View.VISIBLE);
-            registerProcess(user);
-
-        } else {
-
-            showSnackBarMessage("Enter Valid Details !");
+            mProgressBar.setVisibility(View.VISIBLE);
+            resetPasswordInitProgress(mEmail);
         }
     }
 
-    private void setError() {
+    private void resetPasswordFinish() {
 
-        mTiEmail.setError(null);
+        setEmptyFields();
+
+        String token = mEtToken.getText().toString();
+        String password = mEtPassword.getText().toString();
+
+        int err = 0;
+
+        if (!validateFields(token)) {
+
+            err++;
+            mTiToken.setError("Token Should not be empty !");
+        }
+
+        if (!validateFields(password)) {
+
+            err++;
+            mTiEmail.setError("Password Should not be empty !");
+        }
+
+        if (err == 0) {
+
+            mProgressBar.setVisibility(View.VISIBLE);
+
+            User user = new User();
+            user.setPassword(password);
+            user.setToken(token);
+            resetPasswordFinishProgress(user);
+        }
     }
 
-    private void registerProcess(User user) {
+    private void resetPasswordInitProgress(String email) {
 
-        mSubscriptions.add(NetworkUtil.getRetrofit().register(user)
+        mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordInit(email)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Action1<Response>() {
                     @Override
                     public void call(Response response) {
-                        handleResponse(response);
+
+                        mProgressBar.setVisibility(View.GONE);
+
+                        if (isInit) {
+
+                            isInit = false;
+                            showMessage(response.getMessage());
+                            mTiEmail.setVisibility(View.GONE);
+                            mTiToken.setVisibility(View.VISIBLE);
+                            mTiPassword.setVisibility(View.VISIBLE);
+
+                        } else {
+
+                            mListner.onPasswordReset(response.getMessage());
+                            //dismiss();
+                        }
                     }
                 }, new Action1<Throwable>(){
                     @Override
                     public void call(Throwable error) {
-                        handleError(error);
+
+                        mProgressBar.setVisibility(View.GONE);
+
+                        if (error instanceof HttpException) {
+
+                            Gson gson = new GsonBuilder().create();
+
+                            try {
+
+                                String errorBody = ((HttpException) error).response().errorBody().string();
+                                Response response = gson.fromJson(errorBody,Response.class);
+                                showMessage(response.getMessage());
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+
+                            showMessage("Network Error !");
+                        }
                     }
                 } ));
+    }
 
+    private void resetPasswordFinishProgress(User user) {
+
+        mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordFinish(mEmail,user)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Response>() {
+                    @Override
+                    public void call(Response response) {
+
+                        mProgressBar.setVisibility(View.GONE);
+
+                        if (isInit) {
+
+                            isInit = false;
+                            showMessage(response.getMessage());
+                            mTiEmail.setVisibility(View.GONE);
+                            mTiToken.setVisibility(View.VISIBLE);
+                            mTiPassword.setVisibility(View.VISIBLE);
+
+                        } else {
+
+                            mListner.onPasswordReset(response.getMessage());
+                            //dismiss();
+                        }
+                    }
+                }, new Action1<Throwable>(){
+                    @Override
+                    public void call(Throwable error) {
+
+                        mProgressBar.setVisibility(View.GONE);
+
+                        if (error instanceof HttpException) {
+
+                            Gson gson = new GsonBuilder().create();
+
+                            try {
+
+                                String errorBody = ((HttpException) error).response().errorBody().string();
+                                Response response = gson.fromJson(errorBody,Response.class);
+                                showMessage(response.getMessage());
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+
+                            showMessage("Network Error !");
+                        }
+                    }
+                } ));
     }
 
     private void handleResponse(Response response) {
 
-        mProgressbar.setVisibility(View.GONE);
-        showSnackBarMessage(response.getMessage());
+        mProgressBar.setVisibility(View.GONE);
+
+        if (isInit) {
+
+            isInit = false;
+            showMessage(response.getMessage());
+            mTiEmail.setVisibility(View.GONE);
+            mTiToken.setVisibility(View.VISIBLE);
+            mTiPassword.setVisibility(View.VISIBLE);
+
+        } else {
+
+            mListner.onPasswordReset(response.getMessage());
+            //dismiss();
+        }
     }
 
     private void handleError(Throwable error) {
 
-        mProgressbar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
 
         if (error instanceof HttpException) {
 
@@ -147,34 +303,21 @@ public class ResetPasswordFragment extends Fragment {
 
                 String errorBody = ((HttpException) error).response().errorBody().string();
                 Response response = gson.fromJson(errorBody,Response.class);
-                showSnackBarMessage(response.getMessage());
+                showMessage(response.getMessage());
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
 
-            showSnackBarMessage("Network Error !");
+            showMessage("Network Error !");
         }
     }
 
-    private void showSnackBarMessage(String message) {
+    private void showMessage(String message) {
 
-        if (getView() != null) {
-
-            Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
-        }
-    }
-
-    private void goToLogin(){
-
-        Fragment newFragment = new LoginFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragmentFrame, newFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
+        mTvMessage.setVisibility(View.VISIBLE);
+        mTvMessage.setText(message);
 
     }
 
