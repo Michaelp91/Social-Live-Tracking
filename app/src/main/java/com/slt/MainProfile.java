@@ -72,6 +72,7 @@ public class MainProfile extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        super.setTitle("Social Live Tracking");
         setSupportActionBar(toolbar);
 
         //TODO add setting user information

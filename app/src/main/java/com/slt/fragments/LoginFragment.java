@@ -122,6 +122,7 @@ public class LoginFragment extends Fragment {
 
                     showSnackBarMessage("Enter Valid Details !");
                 }
+
             }
         });
 
@@ -231,7 +232,7 @@ public class LoginFragment extends Fragment {
                 mEtEmail.setText(null);
                 mEtPassword.setText(null);
 
-                Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                Intent intent = new Intent(getActivity(), MainProfile.class);
                 startActivity(intent);
 
             }
