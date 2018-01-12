@@ -21,6 +21,7 @@ import com.google.android.gms.location.LocationServices;
 
 import com.slt.MainActivity;
 import com.slt.control.DataProvider;
+import com.slt.control.SharedResources;
 import com.slt.data.inferfaces.ServiceInterface;
 import com.slt.definitions.Constants;
 
@@ -98,22 +99,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        RemoteViews notificationView = new RemoteViews(this.getPackageName(), R.layout.foreground);
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), ic_launcher);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setContentTitle("Timeline");
-        builder.setTicker("Location Tracking Active");
-        builder.setContentText("Location Tracking");
-        builder.setSmallIcon(ic_launcher);
-        builder.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false));
-        builder.setContent(notificationView);
-        builder.setOngoing(true);
-        Notification notification = builder.build();
 
         //start the foreground service so we have no limitations for update with later android
         // versions
-        startForeground(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, notification);
+        startForeground(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, SharedResources.getInstance().getForegroundNotification());
 
         //return start sticky so the process is restarted automatically
         return START_STICKY;

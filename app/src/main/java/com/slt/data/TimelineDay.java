@@ -1,6 +1,8 @@
 package com.slt.data;
 
+import android.content.Intent;
 import android.location.Location;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -8,7 +10,9 @@ import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.nearby.messages.Distance;
 import com.slt.control.AchievementCalculator;
 import com.slt.control.AddressResolver;
+import com.slt.control.ApplicationController;
 import com.slt.control.PlacesResolver;
+import com.slt.definitions.Constants;
 
 import java.util.Date;
 import java.util.Calendar;
@@ -47,11 +51,17 @@ public class TimelineDay {
     private LinkedList<Achievement> myAchievements;
 
     /**
+     * Database ID
+     */
+    private String ID;
+
+    /**
      *  Constructor initializes the data
      * @param myDate The day of the TimelineDay
      */
     public TimelineDay(Date myDate) {
         this.mySegments = new LinkedList<>();
+        this.ID = null;
 
         //Truncate date to the day
         Calendar calendar = Calendar.getInstance();
@@ -74,7 +84,35 @@ public class TimelineDay {
                 .calculateDayAchievements(this.mySegments, this.myAchievements);
         Log.i(TAG, "calculateAchievements: In method.");
         this.myAchievements.addAll(achievements);
+
+        //if new achievements -> send intent
+        if(!achievements.isEmpty()){
+
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT.TIMELINE_DAY_INTENT_OWN_ACHIEVEMENT_UPDATE);
+            intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_DAY_DATE, this.myDate);
+            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+        }
     }
+
+    /**
+     * Method can be used to update the achievements in case there was a change from the Database
+     * @param achievement The new achievement we want to add
+     * @param userID The DB ID of the user the Day is from
+     */
+    public void addAchievement(Achievement achievement, String userID) {
+        this.myAchievements.add(achievement);
+
+        //Send intent to inform about update, since this method should only be used for DB based updates
+        //add the DB ID
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_DAY_INTENT_OTHER_ACHIEVEMENT_UPDATE);
+        intent.putExtra(Constants.INTENT_EXTRAS.ID, this.ID);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, userID);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_DAY_DATE, this.myDate);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
 
     /**
      * Get the active time for a activity of the day
@@ -93,6 +131,55 @@ public class TimelineDay {
         }
 
         return time;
+    }
+
+    /**
+     * Insert Segement, used if Data is synchronized with the server
+     * @param segment The segment we want to add
+     * @param userID The DB ID of the user the Day is from
+     */
+    public void insertTimelineSegment(TimelineSegment segment, String userID){
+        this.mySegments.add(segment);
+
+        //Send intent to inform about update, since this method should only be used for DB based updates
+        //add the DB ID
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_DAY_INTENT_OTHER_SEGMENTS_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, userID);
+        intent.putExtra(Constants.INTENT_EXTRAS.ID, this.ID);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_DAY_DATE, this.myDate);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
+    /**
+     * Delete a segment, used if the data is synchronized from the server
+     * @param ID The DB ID of the segment we want to delete
+     * @param userID The DB ID of the user the Day is from
+     */
+    public void deleteTimelineSegment(String ID, String userID){
+        TimelineSegment segment = null;
+
+        //find segment with ID
+        for(TimelineSegment sgt: this.mySegments){
+            if(ID == sgt.getID()){
+                segment = sgt;
+            }
+        }
+
+        if(segment == null)
+            return;
+
+        //remove segment
+        this.mySegments.remove(segment);
+
+        //Send intent to inform about update, since this method should only be used for DB based updates
+        //add the DB ID
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_DAY_INTENT_OTHER_SEGMENTS_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.USERID, userID);
+        intent.putExtra(Constants.INTENT_EXTRAS.ID, this.ID);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_DAY_DATE, this.myDate);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -187,45 +274,6 @@ public class TimelineDay {
     }
 
     /**
-     * Merge the last segments
-     */
-    public void mergeLastSegment(){
-        //check if we have enough entries in the history
-        if(this.mySegments.size() < 2){
-            Log.i(TAG, "mergeLastSegment: Only one element, nothing to merge.");
-            return;
-        }
-        int index = this.mySegments.size() -1;
-        this.mergeSegments(index);
-    }
-
-    /**
-     * Merge a segment that is defined by the index with the segment before that segment
-     * @param index
-     */
-    public void mergeSegments(int index){
-        //check if a valid index is given
-        if(index >= this.mySegments.size() || index < 1){
-            Log.i(TAG, "mergeSegments: Out of Bounds.");
-            return;
-        }
-
-        //check if there are enough segments in the history
-        if(this.mySegments.size() < 2 ){
-            Log.i(TAG, "mergeSegments: Only one element, nothing to merge.");
-            return;
-        }
-
-        //get and merge the defined segments
-        TimelineSegment current = mySegments.get(index);
-        mySegments.get(index-1).mergeTimelineSegments(current);
-
-        //remove the segment and recalculate the achievements
-        mySegments.remove(index);
-        this.calculateAchievements();
-    }
-
-    /**
      * Compare if the date give is on the same day as the TimelineDay
      * @param date The date we want to use to compare
      * @return True if it is the same day, false if not
@@ -300,10 +348,63 @@ public class TimelineDay {
                 this.mySegments.remove(index+1);
             }
         }
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_DAY_INTENT_OWN_SEGMENTS_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_DAY_DATE, this.myDate);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
-     * Add a user status to the
+     * Manually starts a new segment if the user wants to
+     * @param location The location that should be added
+     * @param date The date the location/activity was detected
+     * @param activity The activity that was detected
+     */
+    public void manualStartNewSegment(Location location, Date date, DetectedActivity activity){
+        Log.i(TAG, "ManualAddUserStatus:  create new Segment, location resolution.");
+        this.mySegments.add(new TimelineSegment(location, date, activity, date));
+        Object[] ResolutionData = new Object[2];
+        ResolutionData[0] = this.mySegments.getLast();
+        ResolutionData[1] = location;
+
+        AddressResolver addressResolver = new AddressResolver();
+        addressResolver.execute(ResolutionData);
+
+        PlacesResolver placesResolver = new PlacesResolver();
+        placesResolver.execute(ResolutionData);
+        this.calculateAchievements();
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_DAY_INTENT_OWN_SEGMENTS_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_DAY_DATE, this.myDate);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
+    /**
+     * Add a new location point to a manual segment
+     * @param location The location that should be added
+     * @param date The date the location/activity was detected
+     */
+    public void manualAddLocation(Date date, Location location){
+        this.mySegments.getLast().addLocationPoint(location, date);
+    }
+
+    /**
+     * End a manually created segment by user choice
+     * @param location The location that should be added
+     * @param date The date the location/activity was detected
+     */
+    public void manualEndSegment(Date date, Location location){
+        DetectedActivity activity = new DetectedActivity(DetectedActivity.UNKNOWN, 100);
+        Log.i(TAG, "ManualEndSegment:  create new Segment, end last one.");
+        this.mySegments.add(new TimelineSegment(location, date, activity, date));
+    }
+
+    /**
+     * Add a user status to the segment or create a new segment if needed
      * @param location The location that should be added
      * @param date The date the location/activity was detected
      * @param activity The activity that was detected
@@ -313,7 +414,7 @@ public class TimelineDay {
         //check if we have segments in the history, if not add and start place and address resolution
         if(this.mySegments.isEmpty()){
             Log.i(TAG, "addUserStatus: Segements empty, create new Segment, location resolution.");
-            this.mySegments.add(new TimelineSegment(location, date, activity));
+            this.mySegments.add(new TimelineSegment(location, date, activity, date));
             Object[] ResolutionData = new Object[2];
             ResolutionData[0] = this.mySegments.getLast();
             ResolutionData[1] = location;
@@ -366,7 +467,7 @@ public class TimelineDay {
             //check if new activity, if yes add and start place/address resolution
             if(this.mySegments.peekLast().getMyActivity().getType() != activity.getType()) {
                 Log.i(TAG, "addUserStatus: new Activity, new Segment created, create new Segment.");
-                TimelineSegment nextSegment = new TimelineSegment(location, date, activity);
+                TimelineSegment nextSegment = new TimelineSegment(location, date, activity, date);
                 this.mySegments.add(nextSegment);
 
                 Object[] ResolutionData = new Object[2];
@@ -382,6 +483,12 @@ public class TimelineDay {
         }
 
         this.calculateAchievements();
+
+        //Send intent to inform about update
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT.TIMELINE_DAY_INTENT_OWN_SEGMENTS_CHANGED);
+        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_DAY_DATE, this.myDate);
+        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -412,5 +519,21 @@ public class TimelineDay {
      */
     public LinkedList<Achievement> getMyAchievements() {
         return new LinkedList<>(myAchievements);
+    }
+
+    /**
+     * Retrieve the database ID
+     * @return The database ID
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * Set the Datatbase ID
+     * @param ID The new Database ID
+     */
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }
