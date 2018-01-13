@@ -9,13 +9,13 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/activity_vertical_margin">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/activity_vertical_margin">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/img_logo"
@@ -65,7 +65,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- E-Mail field-->
@@ -95,7 +95,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Password field-->
@@ -127,7 +127,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
             <ProgressBar

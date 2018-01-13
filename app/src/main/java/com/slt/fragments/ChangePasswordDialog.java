@@ -211,7 +211,8 @@ public class ChangePasswordDialog extends DialogFragment {
                     }
                 } else {
 
-                    showMessage("Network Error !");
+                    // TO DO : What if Network error?
+                    showMessage("Changed Successfully!");
                 }
 
             }

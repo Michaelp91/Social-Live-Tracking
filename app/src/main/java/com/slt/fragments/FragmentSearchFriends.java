@@ -33,6 +33,8 @@ import java.util.LinkedList;
 
 public class FragmentSearchFriends extends Fragment {
 
+    public static final String TAG = FragmentSearchFriends.class.getSimpleName();
+
     ArrayList<User> dataModels;
     ListView listView;
     private static FriendSearchListAdapter adapter;

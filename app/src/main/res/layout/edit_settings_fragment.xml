@@ -17,8 +17,9 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
                 <!--Profile Photo-->
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -26,27 +27,9 @@
                     android:layout_width="128dp"
                     android:layout_height="128dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/profile_pic" />
-
-                <!-- Account Created Date -->
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp">
-
-                    <EditText
-                        android:id="@+id/tv_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="4dp"
-                        android:background="@android:color/transparent"
-                        android:drawableStart="@drawable/cast_ic_expanded_controller_forward30"
-                        android:inputType="date"
-                        android:maxLines="1"
-                        android:padding="8dp"
-                        android:textColor="#FFFFFF"
-                        android:textColorHint="#fff" />
+                    app:civ_border_width="1dp"
+                    app:civ_border_color="#FF000000"
+                    android:src="@drawable/profile_pic"/>
 
                     <!-- Button Edit Photo -->
                     <Button
@@ -54,17 +37,17 @@
                         style="@style/Base.TextAppearance.AppCompat.Body1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_date"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="@dimen/button_margin"
                         android:background="@drawable/button_1"
                         android:clickable="true"
+                        android:layout_gravity="center"
                         android:padding="16dp"
                         android:text="Edit Photo"
                         android:textAllCaps="false"
                         android:textColor="#000000" />
-                </RelativeLayout>
+
             </LinearLayout>
-            #
+
 
             <!-- Age -->
             <android.support.design.widget.TextInputLayout
@@ -96,7 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- City -->
@@ -129,7 +112,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
             <ProgressBar
@@ -170,7 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Forename -->
@@ -203,7 +186,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- LastName -->
@@ -236,7 +219,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- E-Mail -->
@@ -267,7 +250,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
@@ -316,7 +299,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/button_1"
                 android:clickable="true"
                 android:padding="16dp"

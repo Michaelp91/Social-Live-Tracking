@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.ads.mediation.customevent.CustomEventAdapter;
@@ -18,6 +19,7 @@ import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.fragments.adapters.FriendListAdapter;
+import com.slt.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,9 +27,13 @@ import java.util.LinkedList;
 
 public class FragmentFriends extends Fragment {
 
+    public static final String TAG = FragmentFriends.class.getSimpleName();
+
     ArrayList<User> dataModels;
     ListView listView;
     private static FriendListAdapter adapter;
+
+    private Button SearchButton;
 
 
 
@@ -38,15 +44,29 @@ public class FragmentFriends extends Fragment {
         //change R.layout.yourlayoutfilename for each of your fragments
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
         SharedResources.getInstance().setUser(null);
+        //Change to Search Friends Fragment
+        SearchButton = (Button) view.findViewById(R.id.btn_search_friends);
+        SearchButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Fragment newFragment = new FragmentSearchFriends();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragmentFrame, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+            }});
+
         return view;
+
     }
 
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Friends and Co.");
+
+
 
         LinkedList<User> users = DataProvider.getInstance().getOwnUser().getUserList();
 
@@ -64,13 +84,12 @@ public class FragmentFriends extends Fragment {
                 User dataModel= dataModels.get(position);
                 SharedResources.getInstance().setUser(dataModel);
 
-
                 Fragment newFragment = new FragmentFriendDetails();
-                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-               transaction.replace(R.id.fragmentFrame, newFragment);
-               transaction.addToBackStack(null);
-               transaction.commit();
+                transaction.replace(R.id.fragmentFrame, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 

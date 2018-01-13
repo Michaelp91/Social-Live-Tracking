@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/friends_search_item_image"
@@ -12,7 +12,6 @@
         android:layout_height="71dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/profile_pic" />
-
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

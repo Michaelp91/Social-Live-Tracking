@@ -4,6 +4,7 @@ package com.slt;
 import com.slt.fragments.FragmentEditSettings;
 import com.slt.fragments.FragmentFriends;
 import com.slt.fragments.FragmentSearchFriends;
+import com.slt.fragments.FragmentTimeline;
 import com.slt.fragments.ResetPasswordFragment;
 import com.slt.services.LocationService;
 import com.slt.services.ActivityService;
@@ -11,6 +12,7 @@ import com.slt.control.SharedResources;
 
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordFrag
         }
         getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,mLoginFragment,LoginFragment.TAG).commit();
         //TODO Remove later
-       // getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,new FragmentSearchFriends(),LoginFragment.TAG).commit();
+       //getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,new FragmentFriends(),LoginFragment.TAG).commit();
     }
 
     @Override

@@ -8,15 +8,15 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/activity_vertical_margin">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/activity_vertical_margin">
+            android:layout_height="match_parent">
 
-
+            <!-- Profile Photo -->
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/friend_detail_profile_image"
                 android:layout_width="128dp"
@@ -24,10 +24,7 @@
                 android:src="@drawable/profile_pic"
                 android:layout_gravity="center_horizontal"/>
 
-
-
-
-
+            <!-- Username -->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/friend_detail_tv_username"
                 android:layout_width="match_parent"
@@ -45,7 +42,6 @@
                     android:drawablePadding="12dp"
                     android:padding="8dp"
                     android:hint="Username"
-                    android:text="Username"
                     android:textColorHint="#fff"
                     android:maxLines="1"
                     android:background="@android:color/transparent"
@@ -57,11 +53,12 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db"
+                    android:background="#D3D3D3"
                     android:layout_gravity="center_horizontal"/>
             </android.support.design.widget.TextInputLayout>
 
 
+            <!-- Forename -->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/friend_detail_tv_forename"
                 android:layout_width="match_parent"
@@ -79,7 +76,6 @@
                     android:drawablePadding="12dp"
                     android:padding="8dp"
                     android:hint="Forename"
-                    android:text="Forename"
                     android:textColorHint="#fff"
                     android:maxLines="1"
                     android:background="@android:color/transparent"
@@ -91,10 +87,11 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db"
+                    android:background="#D3D3D3"
                     android:layout_gravity="center_horizontal"/>
             </android.support.design.widget.TextInputLayout>
 
+            <!-- Lastname -->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/friend_detail_tv_last_name"
                 android:layout_width="match_parent"
@@ -111,7 +108,6 @@
                     android:drawablePadding="12dp"
                     android:padding="8dp"
                     android:hint="Last name"
-                    android:text="Last name"
                     android:textColorHint="#fff"
                     android:maxLines="1"
                     android:background="@android:color/transparent"
@@ -123,11 +119,12 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db"
+                    android:background="#D3D3D3"
                     android:layout_gravity="center_horizontal"/>
             </android.support.design.widget.TextInputLayout>
 
 
+            <!-- E-Mail -->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/friend_detail_ti_email"
                 android:layout_width="match_parent"
@@ -144,7 +141,6 @@
                     android:drawablePadding="12dp"
                     android:padding="8dp"
                     android:hint="E-Mail"
-                    android:text="guven-gok@hotmail.com"
                     android:textColorHint="#fff"
                     android:maxLines="1"
                     android:background="@android:color/transparent"
@@ -155,10 +151,10 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db" />
+                    android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>
 
-
+            <!-- Age -->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/friend_detail_tv_age"
                 android:layout_width="match_parent"
@@ -175,7 +171,6 @@
                     android:drawablePadding="12dp"
                     android:padding="8dp"
                     android:hint="Age"
-                    android:text="25"
                     android:textColorHint="#fff"
                     android:maxLines="1"
                     android:background="@android:color/transparent"
@@ -187,10 +182,12 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db"
+                    android:background="#D3D3D3"
                     android:layout_gravity="center_horizontal"/>
             </android.support.design.widget.TextInputLayout>
 
+
+            <!-- City -->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/friend_detail_tv_city"
                 android:layout_width="match_parent"
@@ -208,7 +205,6 @@
                     android:drawablePadding="12dp"
                     android:padding="8dp"
                     android:hint="City"
-                    android:text="Darmstadt"
                     android:textColorHint="#fff"
                     android:maxLines="1"
                     android:background="@android:color/transparent"
@@ -220,54 +216,63 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#f9d7db"
+                    android:background="#D3D3D3"
                     android:layout_gravity="center_horizontal"/>
             </android.support.design.widget.TextInputLayout>
 
-
-            <Button
-                android:id="@+id/friend_detail_btn_statistics"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_login"
-                android:text="Show Statistics"
-                android:textColor="#000000"
-                android:textAllCaps="false"
-                android:padding="16dp"
-                android:clickable="true"
-                style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:layout_marginTop="24dp"
-                android:textSize="24sp"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp">
 
+                <!-- Button Show Statistics -->
+                <Button
+                    android:id="@+id/friend_detail_btn_statistics"
+                    style="@style/Base.TextAppearance.AppCompat.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/background_login"
+                    android:clickable="true"
+                    android:padding="16dp"
+                    android:text="Show Statistics"
+                    android:textAllCaps="false"
+                    android:textColor="#000000" />
 
-            <Button
-                android:id="@+id/friend_detail_btn_show_timeline"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_login"
-                android:text="Show Timeline"
-                android:textColor="#000000"
-                android:textAllCaps="false"
-                android:padding="16dp"
-                android:clickable="true"
-                style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:layout_marginTop="24dp"
-                android:textSize="24sp"/>
+                <!-- Button Show Timeline Changes-->
+                <Button
+                    android:id="@+id/friend_detail_btn_show_timeline"
+                    style="@style/Base.TextAppearance.AppCompat.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/background_login"
+                    android:clickable="true"
+                    android:padding="16dp"
+                    android:text="Show Timeline"
+                    android:textAllCaps="false"
+                    android:textColor="#000000" />
+            </LinearLayout>
 
+            <!-- Button Remove User -->
             <Button
                 android:id="@+id/friend_detail_btn_remove_user"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_login"
-                android:text="Remove User"
-                android:textColor="#000000"
-                android:textAllCaps="false"
-                android:padding="16dp"
-                android:clickable="true"
                 style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:layout_marginTop="24dp"
-                android:textSize="24sp"/>
-
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/background_signup"
+                android:clickable="true"
+                android:padding="16dp"
+                android:text="Remove User"
+                android:textAllCaps="false"
+                android:textColor="#000000" />
 
         </LinearLayout>
     </ScrollView>

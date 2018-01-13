@@ -25,7 +25,7 @@ import com.slt.data.User;
 
 public class FragmentFriendDetails  extends Fragment  {
 
-    private static final String TAG = "EditSettingsFragment";
+    private static final String TAG = "FragmentFriendDetails";
     private EditText usernameEditText;
     private EditText lastNameEditText;
     private EditText foreNameEditText;
