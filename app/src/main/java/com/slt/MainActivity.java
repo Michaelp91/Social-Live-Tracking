@@ -92,10 +92,27 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordFrag
             ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA}, 0);
         }
 
+
         // Check if android 23 or greater for location permission requet
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            //check if user already given permission for location coarse
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+            }
+
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            }
+        }
+
+
+          /*  //check if user already given permission for location coarse
             if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 //if not request permission via a dialog
@@ -130,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordFrag
                 });
                 builder.show();
             }
-        }
+        }*/
     }
 
 
@@ -143,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordFrag
      * @return True if the device has support for Step Sensing
      */
     private boolean isVersionWithStepSensor() {
+        //TODO might want to check
         // BEGIN_INCLUDE(iskitkatsensor)
         // Require at least Android KitKat
         int currentApiVersion = android.os.Build.VERSION.SDK_INT;
