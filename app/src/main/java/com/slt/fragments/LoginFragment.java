@@ -243,7 +243,7 @@ public class LoginFragment extends Fragment {
 
                 User user = new User("");
                 user.setEmail(response.getMessage());
-                OtherRestCalls.retrieveUser_Functionalities(user, context);
+                //TODO: OtherRestCalls.retrieveUser_Functionalities(user, context);
 
                 Intent intent = new Intent(getActivity(), MainProfile.class);
                 startActivity(intent);

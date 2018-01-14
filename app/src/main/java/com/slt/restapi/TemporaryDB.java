@@ -214,7 +214,8 @@ public class TemporaryDB {
     }
 
     public void setAppUser(REST_User_Functionalities appUser) {
-        model_appUser = new User(appUser.userName, appUser.email, appUser.foreName, appUser.lastName, appUser.myImage, appUser.myAge, appUser.myCity, appUser._id);
+        //TODO: :(
+        model_appUser = new User(appUser.userName, appUser.email, appUser.foreName, appUser.lastName, null, appUser.myAge, appUser.myCity, appUser._id);
         this.appUser = appUser;
     }
 

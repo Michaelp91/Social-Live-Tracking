@@ -129,7 +129,8 @@ public class OtherRestCalls {
                             ArrayList<REST_User_Functionalities> rest_user_functionalities = test.getResponse_friends();
 
                             for(REST_User_Functionalities r_u_f: rest_user_functionalities) {
-                                User u = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, r_u_f.myImage, r_u_f.myAge, r_u_f.myCity, r_u_f._id);
+                                //TODO: Bitmap !=null :)
+                                User u = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, r_u_f._id);
 
                                 TemporaryDB.getInstance().h_rest_userResolver.put(r_u_f._id, r_u_f);
                                 TemporaryDB.getInstance().h_userResolver.put(u.getID(), u);
@@ -204,7 +205,7 @@ public class OtherRestCalls {
                             }
 
                             for(REST_TimelineSegment r_t_s: rest_timelinesegments) {
-                                DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, r_t_s.myActivity);
+                                DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, 100);
                                 TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime);
                                 t_s.setID(r_t_s._id);
                                 for(REST_Achievement r_a: r_t_s.myAchievements) {
@@ -275,7 +276,7 @@ public class OtherRestCalls {
         r_u_f.lastLocationUpdateDate = user.getLastLocationUpdateDate();
         r_u_f.myAge = user.getMyAge();
         r_u_f.myCity = user.getMyCity();
-        r_u_f.myImage = user.getMyImage();
+        r_u_f.myImage = null; //TODO: :(
 
         if(r_u_f != null) {
 

@@ -24,7 +24,8 @@ import java.util.Map;
 public class RESTToDatamodel {
 
     public User buildUserObject(REST_User_Functionalities r_u_f) {
-        User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, r_u_f.myImage, r_u_f.myAge, r_u_f.myCity, r_u_f._id);
+        //TODO: :(
+        User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, r_u_f._id);
 
         return user;
     }
@@ -32,7 +33,8 @@ public class RESTToDatamodel {
     public void buildFriendsObject(ArrayList<REST_User_Functionalities> rest_friends) {
         ArrayList<User> friends = new ArrayList<>();
         for(REST_User_Functionalities r_u_f: rest_friends) {
-            User u = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, r_u_f.myImage, r_u_f.myAge, r_u_f.myCity, r_u_f._id);
+            //TODO: :(
+            User u = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, r_u_f._id);
             friends.add(u);
         }
     }
