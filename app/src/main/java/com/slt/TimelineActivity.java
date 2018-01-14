@@ -152,7 +152,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
 
 
         OtherRestCalls.retrieveFriends();
-        OtherRestCalls.retrieveTimelines();
+        OtherRestCalls.retrieveFriendsIncludingTimelines();
     }
 
     @Override
@@ -186,10 +186,9 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void run() {
       /* do what you need to do */
-            REST_User user = new REST_User();
-            user._id = "5a196bf8d17b7926882f5413";
+            User user = new User("");
             RetrieveOperations.getInstance().getCompleteTimeline(user);
-            OtherRestCalls.retrieveTimelines();
+            OtherRestCalls.retrieveFriendsIncludingTimelines();
       /* and here comes the "trick" */
         }
     };

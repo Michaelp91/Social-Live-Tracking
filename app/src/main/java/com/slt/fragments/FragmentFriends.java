@@ -68,12 +68,19 @@ public class FragmentFriends extends Fragment {
 
 
 
+        //TODO: Retrieve Data from Server
         LinkedList<User> users = DataProvider.getInstance().getOwnUser().getUserList();
 
         listView=(ListView) view.findViewById(R.id.friends_listview);
 
         dataModels= new ArrayList<>(users);
 
+
+        //TODO: Friendslist mit Timeline objekten, done
+        //TODO: allUserlist ohne Timeline Objekte done
+        //TODO: Alle retrieve Operations synchron machen, done
+        //TODO: Update Interfaces, asynchron done
+        //TODO: Tracking Simulator verbessern
         adapter= new FriendListAdapter(dataModels, ApplicationController.getContext());
 
         listView.setAdapter(adapter);

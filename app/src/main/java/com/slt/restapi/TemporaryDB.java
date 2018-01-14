@@ -219,6 +219,7 @@ public class TemporaryDB {
         this.appUser = appUser;
     }
 
+    public User setModel_AppUser(User u){return model_appUser;}
     public User getModel_AppUser() {
         return model_appUser;
     }

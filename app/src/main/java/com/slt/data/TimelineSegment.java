@@ -110,7 +110,7 @@ public class TimelineSegment {
      * @param date The date the location was detected
      * @param activity The activity the segment was created for
      */
-    TimelineSegment(Location location, Date date, DetectedActivity activity, Date startTime){
+    public TimelineSegment(Location location, Date date, DetectedActivity activity, Date startTime){
         myLocationPoints = new LinkedList<>();
         myAchievements = new LinkedList<>();
         myImages = new LinkedList<>();
