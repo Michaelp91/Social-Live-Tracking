@@ -94,7 +94,7 @@ public class FragmentFriendDetails  extends Fragment  {
         Fragment newFragment = new FragmentFriends();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragmentFrame, newFragment);
+        transaction.replace(R.id.content_main_frame, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
