@@ -50,7 +50,7 @@ public class FragmentFriends extends Fragment {
             public void onClick(View view) {
                 Fragment newFragment = new FragmentSearchFriends();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragmentFrame, newFragment);
+                transaction.replace(R.id.content_main_frame, newFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
 
@@ -87,7 +87,7 @@ public class FragmentFriends extends Fragment {
                 Fragment newFragment = new FragmentFriendDetails();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.fragmentFrame, newFragment);
+                transaction.replace(R.id.content_main_frame, newFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
