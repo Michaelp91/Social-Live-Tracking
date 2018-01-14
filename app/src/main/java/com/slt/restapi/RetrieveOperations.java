@@ -1,23 +1,14 @@
-package com.slt.rest_trackingtimeline;
+package com.slt.restapi;
 
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.slt.TimelineActivity;
-import com.slt.rest_trackingtimeline.data.FullTimeLine;
-import com.slt.rest_trackingtimeline.data.LocationEntry;
-import com.slt.rest_trackingtimeline.data.Test;
-import com.slt.rest_trackingtimeline.data.TimeLineDay;
-import com.slt.rest_trackingtimeline.data.TimeLineSegment;
-import com.slt.rest_trackingtimeline.data.User;
+import com.slt.restapi.data.*;
+import com.slt.restapi.data.Test;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +25,7 @@ public class RetrieveOperations {
         return ourInstance;
     }
 
-    public void getCompleteTimeline(User user) {
+    public void getCompleteTimeline(REST_User user) {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.getCompleteTimeLine(user);
 
@@ -42,25 +33,42 @@ public class RetrieveOperations {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 String json = response.body().toString();
+                boolean requestSuccessfull = true;
+                Singleton test = null;
                 //Type listType = new TypeToken<List<Test>>() {}.getType();
-                Singleton test = new Gson().fromJson(json, Singleton.class);
-                FullTimeLine responses = test.getResponses();
-                TemporaryDB.getInstance().setLocationEntries(responses.locationEntries);
-                TemporaryDB.getInstance().setTimelineDays(responses.timelinedays);
-                TemporaryDB.getInstance().setTimeline(responses.timeline);
-                TemporaryDB.getInstance().setTimeLineSegments(responses.timelinesegments);
+                try {
+                    test = new Gson().fromJson(json, Singleton.class);
+                }catch(Exception e) {
+                    requestSuccessfull = false;
+                }
 
-                if(context != null)
-                  context.initTimelineDays();
-                else
-                    Log.e("ERROR", "Application Context is null.");
-                boolean debug = true;
+
+
+
+
+                if(requestSuccessfull) {
+                    FullTimeLine responses = test.getResponses();
+
+                    TemporaryDB.getInstance().setLocationEntries(responses.locationEntries);
+                    TemporaryDB.getInstance().setTimelineDays(responses.timelinedays);
+                    TemporaryDB.getInstance().setTimeline(responses.timeline);
+                    TemporaryDB.getInstance().setTimeLineSegments(responses.timelinesegments);
+
+                    if (context != null) {
+                        context.updateTimelineDays();
+                    } else
+                        Log.e("ERROR", "Application Context is null.");
+                    boolean debug = true;
+                }
+
+                context.handler.postDelayed(context.runnable, 2000);
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
 
                 boolean debug = true;
+                context.handler.postDelayed(context.runnable, 2000);
             }
         });
     }
@@ -106,29 +114,29 @@ public class RetrieveOperations {
         });
     }
 
-    public TimeLineDay getTimeLineDay(String userId) throws IOException {
+    public REST_TimelineDay getTimeLineDay(String userId) throws IOException {
 
         Endpoints api = RetroClient.getApiService();
-        Call<TimeLineDay> call = api.getTimeLineDay(userId);
-        TimeLineDay newTimeLineDay = call.execute().body();
+        Call<REST_TimelineDay> call = api.getTimeLineDay(userId);
+        REST_TimelineDay newTimeLineDay = call.execute().body();
 
         return newTimeLineDay;
     }
 
-    public TimeLineSegment getTimelineSegment(String timelineDayId) throws IOException {
+    public REST_TimelineSegment getTimelineSegment(String timelineDayId) throws IOException {
 
         Endpoints api = RetroClient.getApiService();
-        Call<TimeLineSegment> call = api.getTimeLineSegment(timelineDayId);
-        TimeLineSegment newTimeLineSegment = call.execute().body();
+        Call<REST_TimelineSegment> call = api.getTimeLineSegment(timelineDayId);
+        REST_TimelineSegment newTimeLineSegment = call.execute().body();
 
         return newTimeLineSegment;
     }
 
-    public LocationEntry getLocationEntry(String timelineSegmentId) throws IOException {
+    public REST_LocationEntry getLocationEntry(String timelineSegmentId) throws IOException {
 
         Endpoints api = RetroClient.getApiService();
-        Call<LocationEntry> call = api.getLocationEntry(timelineSegmentId);
-        LocationEntry newLocationEntry = call.execute().body();
+        Call<REST_LocationEntry> call = api.getLocationEntry(timelineSegmentId);
+        REST_LocationEntry newLocationEntry = call.execute().body();
 
         return newLocationEntry;
     }

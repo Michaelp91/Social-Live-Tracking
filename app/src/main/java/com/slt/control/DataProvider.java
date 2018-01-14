@@ -2,7 +2,6 @@ package com.slt.control;
 
 import android.content.Intent;
 import android.location.Location;
-import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -10,10 +9,10 @@ import com.slt.data.User;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.data.Timeline;
-import com.slt.data.TimelineSegment;
-import com.slt.data.LocationEntry;
 import com.slt.data.inferfaces.ServiceInterface;
 import com.slt.definitions.Constants;
+import com.slt.restapi.RetrieveOperations;
+import com.slt.restapi.data.REST_User;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -121,6 +120,8 @@ public class DataProvider implements ServiceInterface{
 
         //TODO load real data
         this.ownUser = new User("DEFAULT", this.userTimeline, this.userList);
+        REST_User user = new REST_User();
+        RetrieveOperations.getInstance().getCompleteTimeline(user);
     }
 
     //TODO add function for getting other user data and calculation of users in the vicinity

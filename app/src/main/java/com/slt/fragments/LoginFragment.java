@@ -22,7 +22,11 @@ import com.google.gson.GsonBuilder;
 import com.slt.ProfileActivity;
 import com.slt.R;
 import com.slt.TimelineActivity;
+import com.slt.data.User;
 import com.slt.network.RetrofitInterface;
+import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.TemporaryDB;
+import com.slt.restapi.data.REST_User_Functionalities;
 import com.slt.statistics.ViewStatistics;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
@@ -57,6 +61,7 @@ public class LoginFragment extends Fragment {
 
     private CompositeSubscription mSubscriptions;
     private SharedPreferences mSharedPreferences;
+    private LoginFragment context;
 
 
 
@@ -68,8 +73,8 @@ public class LoginFragment extends Fragment {
         initViews(view);
         initSharedPreferences();
 
-        Intent intent = new Intent(getActivity(), TimelineActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(getActivity(), TimelineActivity.class);
+        //startActivity(intent);
 
         return view;
     }
@@ -203,6 +208,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginProcess(String email, String password) {
+        context = this;
 
         RetrofitInterface interfaceObj = NetworkUtil.getRetrofit(email, password);
         mSubscriptions.add(NetworkUtil.getRetrofit(email, password).login()
@@ -221,8 +227,12 @@ public class LoginFragment extends Fragment {
                 mEtEmail.setText(null);
                 mEtPassword.setText(null);
 
-                Intent intent = new Intent(getActivity(), ProfileActivity.class);
-                startActivity(intent);
+                User user = new User("");
+                user.setEmail(response.getMessage());
+                OtherRestCalls.retrieveUser_Functionalities(user, context);
+
+                //Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                //startActivity(intent);
 
             }
         }, new Action1<Throwable>(){
@@ -251,6 +261,13 @@ public class LoginFragment extends Fragment {
 
             }
         } ));
+    }
+
+    public void openTimelineActivity() {
+        Intent intent = new Intent(getActivity(), TimelineActivity.class);
+        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
+        intent.putExtra(com.slt.restapi.data.Constants.USERID, r_u_f._id);
+        startActivity(intent);
     }
 
     private void handleResponse(Response response) {

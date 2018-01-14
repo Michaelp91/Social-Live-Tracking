@@ -1,4 +1,4 @@
-package com.slt.rest_trackingtimeline;
+package com.slt.restapi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,6 +7,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.slt.utils.Constants.BASE_URL;
+import static com.slt.utils.Constants.BASE_URL_ONLINE_SERVER;
 
 /**
  * Created by Usman Ahmad on 20.12.2017.
@@ -24,7 +25,7 @@ public class RetroClient {
     private static Retrofit getRetrofitInstance() {
         Gson gson = new GsonBuilder().setLenient().create();
         return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BASE_URL_ONLINE_SERVER)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }

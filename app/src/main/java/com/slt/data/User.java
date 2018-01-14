@@ -49,7 +49,7 @@ public class User {
     /**
      * An image of the user
      */
-    private Image myImage;
+    private String myImage;
 
     /**
      * The age of the user
@@ -121,6 +121,8 @@ public class User {
         this.ID = null;
     }
 
+
+
     /**
      * Constructor to initialize all the data
      *
@@ -130,7 +132,7 @@ public class User {
      * @param lastName The last name of the user
      * @param image    The image the user has set
      */
-    public User(String userName, String email, String foreName, String lastName, Image image, int age, String city, String ID) {
+    public User(String userName, String email, String foreName, String lastName, String image, int age, String city, String ID) {
         this.myTimeline = new Timeline();
         this.userList = new LinkedList<>();
         this.myImage = image;
@@ -208,7 +210,7 @@ public class User {
      * @param image The image we want to set
      * @param userID The DB ID of the user
      */
-    public void updateImage(Image image, String userID) {
+    public void updateImage(String image, String userID) {
         this.myImage = image;
 
         //Send intent to inform about update
@@ -352,7 +354,7 @@ public class User {
      *
      * @return The image the user has added
      */
-    public Image getMyImage() {
+    public String getMyImage() {
         return myImage;
     }
 
@@ -397,7 +399,7 @@ public class User {
      *
      * @param myImage The new image to set for the user
      */
-    public void setMyImage(Image myImage) {
+    public void setMyImage(String myImage) {
         this.myImage = myImage;
     }
 

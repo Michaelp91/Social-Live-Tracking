@@ -1,11 +1,9 @@
-package com.slt.rest_trackingtimeline;
+package com.slt.restapi;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.slt.rest_trackingtimeline.data.LocationEntry;
-import com.slt.rest_trackingtimeline.data.TimeLine;
-import com.slt.rest_trackingtimeline.data.TimeLineDay;
-import com.slt.rest_trackingtimeline.data.TimeLineSegment;
+import com.slt.fragments.LoginFragment;
+import com.slt.restapi.data.*;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,7 +16,59 @@ import retrofit2.Response;
 public class UpdateOperations extends Thread {
     private static Object lock = new Object();
 
-    public static void createTimeLine(TimeLine timeline) {
+    public static void createUser_Functionalities(REST_User_Functionalities rest_user_functionalities, LoginFragment loginFragment) {
+
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.createUser_Functionalities(rest_user_functionalities);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if(response.isSuccessful()){
+                    Singleton test = null;
+                    try {
+                        test = new Gson().fromJson(response.body().toString(), Singleton.class);
+                    }catch(Exception e) {
+                        boolean debug = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    public static void retrieveUser_Functionalities(REST_User_Functionalities rest_user_functionalities, LoginFragment loginFragment) {
+
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.getUser_Functionalities(rest_user_functionalities);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if(response.isSuccessful()){
+                    Singleton test = null;
+                    try {
+                        test = new Gson().fromJson(response.body().toString(), Singleton.class);
+                    }catch(Exception e) {
+                        boolean debug = true;
+                    }
+                    TemporaryDB.getInstance().setAppUser(test.getResponse_user_functionalities());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public static void createTimeLine(REST_Timeline timeline) {
 
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createTimeLine(timeline);
@@ -44,7 +94,7 @@ public class UpdateOperations extends Thread {
         });
     }
 
-    public static void createTimeLineDay(TimeLineDay timeLineDay) {
+    public static void createTimeLineDay(REST_TimelineDay timeLineDay) {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createTimeLineDay(timeLineDay);
 
@@ -65,7 +115,7 @@ public class UpdateOperations extends Thread {
         });
     }
 
-    public static void createTimeLineSegment(TimeLineSegment timelineSegment) {
+    public static void createTimeLineSegment(REST_TimelineSegment timelineSegment) {
 
 
         Endpoints api = RetroClient.getApiService();
@@ -88,7 +138,7 @@ public class UpdateOperations extends Thread {
         });
     }
 
-    public static void createLocationEntry(LocationEntry locationEntry) {
+    public static void createLocationEntry(REST_LocationEntry locationEntry) {
 
             Endpoints api = RetroClient.getApiService();
             Call<JsonObject> call = api.createLocationEntry(locationEntry);

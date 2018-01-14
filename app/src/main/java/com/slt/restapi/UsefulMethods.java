@@ -1,14 +1,15 @@
-package com.slt.rest_trackingtimeline;
+package com.slt.restapi;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
+import android.util.Base64;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.slt.rest_trackingtimeline.data.FullTimeLine;
-import com.slt.rest_trackingtimeline.data.Image;
+import com.slt.TimelineActivity;
+import com.slt.restapi.data.FullTimeLine;
+import com.slt.restapi.data.Image;
 
 import java.io.ByteArrayOutputStream;
 
@@ -21,14 +22,42 @@ import retrofit2.Response;
  */
 
 public class UsefulMethods {
+
+    public static void LoadImage(final TimelineActivity context) {
+        Image imageObj = new Image();
+        imageObj.filename = "Test.png";
+
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.downloadPicture(imageObj);
+
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                String json = response.body().toString();
+                Image image = new Gson().fromJson(json, Image.class);
+                byte[] decodedString = Base64.decode(image.string, Base64.DEFAULT);
+                boolean debug = true;
+                context.loadPicture(decodedString);
+                //Type listType = new TypeToken<List<Test>>() {}.getType();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                boolean debug = true;
+            }
+        });
+    }
+
     public static void UploadImageView(ImageView imageView) {
-        BitmapDrawable bitmapDrawable = ((BitmapDrawable) imageView.getDrawable());
+        BitmapDrawable bitmapDrawable = ((BitmapDrawable) imageView.getBackground());
         Bitmap bitmap = bitmapDrawable.getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] imageInByte = baos.toByteArray();
         Image imageObj = new Image();
-        imageObj.imageByteArray = imageInByte;
+        //imageObj.imageByteArray = imageInByte;
+        imageObj.filename = "Test";
 
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.uploadPicture(imageObj);

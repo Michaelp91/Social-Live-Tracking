@@ -132,6 +132,26 @@ public class TimelineSegment {
         this.addLocationPoint(location, date);
     }
 
+    public TimelineSegment(Date date, DetectedActivity activity, Date startTime){
+        myLocationPoints = new LinkedList<>();
+        myAchievements = new LinkedList<>();
+        myImages = new LinkedList<>();
+        myActivity = activity;
+        this.startTime = startTime;
+        userComments = new LinkedList<>();
+        userSteps = 0;
+        activeDistance = 0.0;
+        activeTime = 0;
+        inactiveTime = 0;
+        startAddress = "";
+        this.ID = null;
+
+        //start a step counter, might not be needed, but want to have the data in case the user
+        // changes the type of activity later
+
+        //add a new location point
+    }
+
     /**
      * Calculate if new achievements were finished
      */

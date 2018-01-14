@@ -1,4 +1,4 @@
-package com.slt.rest_trackingtimeline;
+package com.slt.restapi;
 
 /**
  * Created by Usman Ahmad on 30.12.2017.
