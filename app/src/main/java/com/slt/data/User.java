@@ -2,6 +2,7 @@ package com.slt.data;
 
 import android.content.Intent;
 import android.location.Location;
+import android.media.Image;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -141,6 +142,10 @@ public class User {
         this.myAge = age;
         this.myCity = city;
         this.ID = ID;
+    }
+
+    public void setTimeline(Timeline t) {
+        this.myTimeline = t;
     }
 
     /**

@@ -11,17 +11,14 @@ import com.slt.services.ActivityService;
 import com.slt.control.SharedResources;
 
 
-import android.Manifest;
-import android.app.Fragment;
-import android.content.pm.PackageManager;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.pm.ActivityInfoCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,8 +28,9 @@ import android.util.Log;
 
 import com.slt.fragments.LoginFragment;
 import com.slt.fragments.ResetPasswordDialog;
-import android.support.v7.app.AppCompatActivity;
+import com.slt.statistics.ViewStatistics;
 
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;

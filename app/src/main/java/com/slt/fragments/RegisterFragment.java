@@ -20,6 +20,10 @@ import com.slt.R;
 import com.slt.model.Response;
 import com.slt.model.User;
 import com.slt.network.NetworkUtil;
+import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.Singleton;
+import com.slt.restapi.data.REST_User;
+import com.slt.restapi.data.REST_User_Functionalities;
 
 import java.io.IOException;
 
@@ -47,6 +51,7 @@ public class RegisterFragment extends Fragment {
     private ProgressBar mProgressbar;
 
     private CompositeSubscription mSubscriptions;
+    private RegisterFragment context;
 
     @Nullable
     @Override
@@ -178,6 +183,8 @@ public class RegisterFragment extends Fragment {
 
     private void registerProcess(User user) {
 
+        context = this;
+
         mSubscriptions.add(NetworkUtil.getRetrofit().register(user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -185,7 +192,8 @@ public class RegisterFragment extends Fragment {
             @Override
             public void call(Response response) {
                 mProgressbar.setVisibility(View.GONE);
-                showSnackBarMessage(response.getMessage());
+                //showSnackBarMessage(response.getMessage());
+                OtherRestCalls.createUser_Functionalities(response.getMessage(), context);
             }
         }, new Action1<Throwable>(){
             @Override
@@ -243,7 +251,7 @@ public class RegisterFragment extends Fragment {
         }
     }
 
-    private void showSnackBarMessage(String message) {
+    public void showSnackBarMessage(String message) {
 
         if (getView() != null) {
 
