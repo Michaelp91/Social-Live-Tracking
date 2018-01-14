@@ -26,6 +26,8 @@ public class TrackingSimulator implements Runnable{
     @Override
     public void run() {
 
+
+
         Timeline timeline = new Timeline();
         TimelineDay timelineDay = new TimelineDay(new Date());
         Location location = new Location("");
@@ -35,6 +37,7 @@ public class TrackingSimulator implements Runnable{
         TimelineSegment timelineSegment = new TimelineSegment(location, new Date(), myActivity, new Date());
         LocationEntry locationEntry = new LocationEntry(location, new Date(), location, new Date());
 
+        /**Tracking Begins*/
 
         DataUpdater.getInstance().Start();
 
@@ -111,6 +114,8 @@ public class TrackingSimulator implements Runnable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        /**Tracking Ends*/
 
 
 
