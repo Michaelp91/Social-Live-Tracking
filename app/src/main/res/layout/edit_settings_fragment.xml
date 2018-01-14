@@ -28,8 +28,7 @@
                     android:layout_height="128dp"
                     android:layout_gravity="center_horizontal"
                     app:civ_border_width="1dp"
-                    app:civ_border_color="#FF000000"
-                    android:src="@drawable/profile_pic"/>
+                    app:civ_border_color="#FF000000"/>
 
                     <!-- Button Edit Photo -->
                     <Button
@@ -102,7 +101,7 @@
                     android:ems="10"
                     android:hint="City"
                     android:imeOptions="actionNext"
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:maxLines="1"
                     android:padding="8dp"
                     android:textColor="#FFFFFF"
@@ -241,7 +240,7 @@
                     android:ems="10"
                     android:hint="E-Mail"
                     android:imeOptions="actionNext"
-                    android:inputType="none"
+                    android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:padding="8dp"
                     android:textColor="#FFFFFF"

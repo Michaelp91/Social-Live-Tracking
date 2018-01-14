@@ -21,6 +21,7 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <!-- Profile Photo-->
+        <!-- TODO: If possible show the users current profile photo-->
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
             android:layout_width="64dp"
