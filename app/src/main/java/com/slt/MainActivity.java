@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordFrag
     /**
      * Tag for logger
      */
+
+    //TODO:TEST
     public static final String TAG = MainActivity.class.getSimpleName();
     /**
      * Definitions for the permissions that have to be requested by the user
