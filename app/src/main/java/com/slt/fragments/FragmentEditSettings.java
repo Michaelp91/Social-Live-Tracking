@@ -78,73 +78,8 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //returning our layout file
-        //change R.layout.yourlayoutfilename for each of your fragments
-        //return inflater.inflate(R.layout.edit_settings_fragment, container, false);
         view = inflater.inflate(R.layout.edit_settings_fragment, container, false);
-        mProfilePhoto =  (ImageView) view.findViewById(R.id.profile_image);
-        this.mListener = this;
-        this.ageEditText = (EditText) view.findViewById(R.id.et_age);
-        this.usernameEditText = (EditText) view.findViewById(R.id.et_username);
-        this.lastNameEditText = (EditText) view.findViewById(R.id.et_last_name);
-        this.foreNameEditText = (EditText) view.findViewById(R.id.et_forename);
-        this.cityEditText = (EditText) view.findViewById(R.id.et_city);
 
-        //TODO change email if we want to should check with server if changed to a unused address
-
-        //init for the password change dialog
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationController.getContext());
-        mToken = mSharedPreferences.getString(Constants.TOKEN,"");
-        mEmail = mSharedPreferences.getString(Constants.EMAIL,"");
-
-        //initImageLoader();
-
-        this.ownUser = DataProvider.getInstance().getOwnUser();
-
-
-        this.ageEditText.setText(Integer.toString(ownUser.getMyAge()));
-        this.usernameEditText.setText(ownUser.getUserName());
-        this.lastNameEditText.setText(ownUser.getLastName());
-        this.foreNameEditText.setText(ownUser.getForeName());
-        this.cityEditText.setText(ownUser.getMyCity());
-
-        setProfileImage(ownUser.getMyImage());
-
-        Button pwd = (Button) view.findViewById(R.id.et_password);
-        pwd.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                ChangePasswordDialog fragment = new ChangePasswordDialog();
-                fragment.setListener(mListener);
-
-                Bundle bundle = new Bundle();
-                bundle.putString(Constants.EMAIL, mEmail);
-                bundle.putString(Constants.TOKEN, mToken);
-                fragment.setArguments(bundle);
-
-                fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
-
-            }});
-        Button picture =  (Button) view.findViewById(R.id.btn_change_photo);
-
-        picture.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                selectImage();
-            }
-        });
-
-        Button save = (Button) view.findViewById(R.id.btn_save);
-         save.setOnClickListener(new View.OnClickListener() {
-             public void onClick(View view) {
-                 storeChanges();
-             }
-         });
-
-        Button undo = (Button) view.findViewById(R.id.btn_undo);
-        undo.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                undoChanges();
-            }
-        });
         return view;
     }
 
@@ -177,16 +112,10 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
     // Select image from camera and gallery
     private void selectImage() {
         try {
-
-            //TODO Check if this works with a real mobil phone
-
             if(ContextCompat.checkSelfPermission(view.getContext(),
                         Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
-           // PackageManager pm = view.getContext().getPackageManager();
-          //  int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, ApplicationController.getContext().getPackageName());
-         //   if (hasPerm == PackageManager.PERMISSION_GRANTED) {
                 final CharSequence[] options = {"Take Photo", "Choose From Gallery","Cancel"};
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ApplicationController.getContext());
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(view.getContext());
                 builder.setTitle("Select Option");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
@@ -207,8 +136,6 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
                 builder.show();
             } else
                 Toast.makeText(ApplicationController.getContext(), "Camera Permission error", Toast.LENGTH_SHORT).show();
-
-
         } catch (Exception e) {
             Toast.makeText(ApplicationController.getContext(), "Camera Permission error", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -269,7 +196,70 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Edit Settings");
 
+        view = view;
+        mProfilePhoto =  (ImageView) view.findViewById(R.id.profile_image);
+        this.mListener = this;
+        this.ageEditText = (EditText) view.findViewById(R.id.et_age);
+        this.usernameEditText = (EditText) view.findViewById(R.id.et_username);
+        this.lastNameEditText = (EditText) view.findViewById(R.id.et_last_name);
+        this.foreNameEditText = (EditText) view.findViewById(R.id.et_forename);
+        this.cityEditText = (EditText) view.findViewById(R.id.et_city);
 
+        //TODO change email if we want to should check with server if changed to a unused address
+
+        //init for the password change dialog
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationController.getContext());
+        mToken = mSharedPreferences.getString(Constants.TOKEN,"");
+        mEmail = mSharedPreferences.getString(Constants.EMAIL,"");
+
+        //initImageLoader();
+
+        this.ownUser = DataProvider.getInstance().getOwnUser();
+
+
+        this.ageEditText.setText(Integer.toString(ownUser.getMyAge()));
+        this.usernameEditText.setText(ownUser.getUserName());
+        this.lastNameEditText.setText(ownUser.getLastName());
+        this.foreNameEditText.setText(ownUser.getForeName());
+        this.cityEditText.setText(ownUser.getMyCity());
+
+        setProfileImage(ownUser.getMyImage());
+
+        Button pwd = (Button) view.findViewById(R.id.et_password);
+        pwd.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                ChangePasswordDialog fragment = new ChangePasswordDialog();
+                fragment.setListener(mListener);
+
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.EMAIL, mEmail);
+                bundle.putString(Constants.TOKEN, mToken);
+                fragment.setArguments(bundle);
+
+                fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
+
+            }});
+        Button picture =  (Button) view.findViewById(R.id.btn_change_photo);
+
+        picture.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                selectImage();
+            }
+        });
+
+        Button save = (Button) view.findViewById(R.id.btn_save);
+        save.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                storeChanges();
+            }
+        });
+
+        Button undo = (Button) view.findViewById(R.id.btn_undo);
+        undo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                undoChanges();
+            }
+        });
 
     }
 
