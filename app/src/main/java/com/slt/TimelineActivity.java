@@ -146,18 +146,13 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
 
 
 
-        Thread t = new Thread(new TrackingSimulator());
-        t.start();
+        //Thread t = new Thread(new TrackingSimulator());
+        //t.start();
 
 
 
-        //OtherRestCalls.retrieveFriends();
-        //OtherRestCalls.retrieveTimelines();
-
-
-
-
-
+        OtherRestCalls.retrieveFriends();
+        OtherRestCalls.retrieveTimelines();
     }
 
     @Override
@@ -194,6 +189,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
             REST_User user = new REST_User();
             user._id = "5a196bf8d17b7926882f5413";
             RetrieveOperations.getInstance().getCompleteTimeline(user);
+            OtherRestCalls.retrieveTimelines();
       /* and here comes the "trick" */
         }
     };

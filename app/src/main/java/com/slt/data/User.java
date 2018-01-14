@@ -145,6 +145,10 @@ public class User {
         this.ID = ID;
     }
 
+    public void setTimeline(Timeline t) {
+        this.myTimeline = t;
+    }
+
     /**
      * Update the username, used for a update from the DB
      * @param userName The username we want to set

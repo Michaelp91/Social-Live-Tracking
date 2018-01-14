@@ -1,11 +1,13 @@
 package com.slt.restapi;
 
 import com.slt.data.LocationEntry;
+import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 import com.slt.restapi.data.*;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,6 +23,7 @@ public class TemporaryDB {
     private ArrayList<REST_TimelineDay> timelineDays;
     private ArrayList<REST_TimelineSegment> timeLineSegments;
     private REST_User_Functionalities appUser;
+    private User model_appUser;
 
     public HashMap<LocationEntry, REST_LocationEntry> h_locationEntries = new HashMap<>();
     public HashMap<TimelineDay, REST_TimelineDay> h_timelineDays = new HashMap<>();
@@ -33,6 +36,25 @@ public class TemporaryDB {
 
     private HashMap<String, ArrayList<REST_TimelineSegment>> timelineSegmentsByTimelineDayId = new HashMap<>();
     private HashMap<String, ArrayList<REST_LocationEntry>> locationEntriesByTimelineSegmentId = new HashMap<>();
+
+
+    //Identifying Data model object, after that edit this identified object by adding children
+    public HashMap<String, User> h_userResolver = new HashMap<>();
+    public HashMap<String, Timeline> h_timelineResolver = new HashMap<>();
+    public HashMap<String, TimelineDay> h_timelinedayResolver = new HashMap<>();
+    public HashMap<String, TimelineSegment> h_timelinesegmentResolver = new HashMap<>();
+    public HashMap<String, LocationEntry> h_locationentryResolver = new HashMap<>();
+
+    //For loops
+    public HashMap<String, REST_User_Functionalities> h_rest_userResolver = new HashMap<>();
+    public HashMap<String, REST_Timeline> h_rest_timelineResolver = new HashMap<>();
+    public HashMap<String, REST_TimelineDay> h_rest_timelinedayResolver = new HashMap<>();
+    public HashMap<String, REST_TimelineSegment> h_rest_timelinesegmentResolver = new HashMap<>();
+    public HashMap<String, REST_LocationEntry> h_rest_locationentryResolver = new HashMap<>();
+
+
+
+
 
     public static TemporaryDB getInstance() {
         return ourInstance;
@@ -192,6 +214,11 @@ public class TemporaryDB {
     }
 
     public void setAppUser(REST_User_Functionalities appUser) {
+        model_appUser = new User(appUser.userName, appUser.email, appUser.foreName, appUser.lastName, appUser.myImage, appUser.myAge, appUser.myCity, appUser._id);
         this.appUser = appUser;
+    }
+
+    public User getModel_AppUser() {
+        return model_appUser;
     }
 }

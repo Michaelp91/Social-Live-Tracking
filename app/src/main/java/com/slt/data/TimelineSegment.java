@@ -132,7 +132,7 @@ public class TimelineSegment {
         this.addLocationPoint(location, date);
     }
 
-    public TimelineSegment(Date date, DetectedActivity activity, Date startTime){
+    public TimelineSegment(DetectedActivity activity, Date startTime){
         myLocationPoints = new LinkedList<>();
         myAchievements = new LinkedList<>();
         myImages = new LinkedList<>();

@@ -83,7 +83,7 @@ public class TrackingSimulator implements Runnable{
         location.setLongitude(4.2);
         location.setLatitude(2.3);
         DetectedActivity myActivity = new DetectedActivity(3, 3);
-        TimelineSegment timelineSegment = new TimelineSegment(new Date(), myActivity, new Date());
+        TimelineSegment timelineSegment = new TimelineSegment(myActivity, new Date());
         LocationEntry locationEntry = new LocationEntry(location, new Date(), location, new Date());
 
 
