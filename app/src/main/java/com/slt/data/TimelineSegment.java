@@ -12,6 +12,7 @@ import com.slt.control.AchievementCalculator;
 import com.slt.control.ApplicationController;
 import com.slt.control.StepSensor;
 import com.slt.definitions.Constants;
+import com.slt.restapi.DataUpdater;
 
 import org.w3c.dom.Comment;
 
@@ -132,6 +133,11 @@ public class TimelineSegment {
         this.addLocationPoint(location, date);
     }
 
+    /**
+     * Simple Constructor for use in the REST API
+     * @param activity The activity to set
+     * @param startTime The start Time of the segment
+     */
     public TimelineSegment(DetectedActivity activity, Date startTime){
         myLocationPoints = new LinkedList<>();
         myAchievements = new LinkedList<>();
@@ -145,11 +151,6 @@ public class TimelineSegment {
         inactiveTime = 0;
         startAddress = "";
         this.ID = null;
-
-        //start a step counter, might not be needed, but want to have the data in case the user
-        // changes the type of activity later
-
-        //add a new location point
     }
 
     /**
@@ -163,6 +164,8 @@ public class TimelineSegment {
 
         //if new achievements -> send intent
         if(!achievements.isEmpty()){
+            //REST Call to update the changed achievements
+            DataUpdater.getInstance().updateTimelineSegment(this);
 
             Intent intent = new Intent();
             intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_ACHIEVEMENT_UPDATE);
@@ -199,7 +202,10 @@ public class TimelineSegment {
         this.userSteps = myStepSensor.getSteps();
 
         this.myLocationPoints.add(newEntry);
-        this.calculateAchievements();;
+        this.calculateAchievements();
+
+        //REST Call to add the point to the server
+        DataUpdater.getInstance().addLocationEntry(newEntry, this);
 
         //Send intent to inform about update
         Intent intent = new Intent();
@@ -352,13 +358,21 @@ public class TimelineSegment {
      */
     public void mergeTimelineSegments(TimelineSegment segment){
 
-        //Remove the last location point since it is double in both segments
+        //REST Call to remove the last location point
+        DataUpdater.getInstance().deleteLocationEntry(this.myLocationPoints.getLast());
+
+        //Remove the last location point since it is double in both segment
         this.myLocationPoints.removeLast();
 
         //merge all the remaining data
         this.myLocationPoints.addAll(segment.getLocationPoints());
         this.myAchievements.addAll(segment.getMyAchievements());
         this.userComments.addAll(segment.getUserComments());
+
+        //REST Call to add all new location points
+        for(LocationEntry entry : segment.getLocationPoints()){
+            DataUpdater.getInstance().addLocationEntry(entry, this);
+        }
 
 
         //check which activity type our activity is
@@ -387,6 +401,9 @@ public class TimelineSegment {
         }
 
         this.calculateAchievements();
+
+        //REST Call to update our segment
+        DataUpdater.getInstance().updateTimelineSegment(this);
 
         //Send intent to inform about update
         Intent intent = new Intent();
@@ -492,6 +509,13 @@ public class TimelineSegment {
 
         this.myActivity = myActivity;
 
+        //Recalculate Achievements
+        this.myAchievements = new LinkedList<>();
+        this.calculateAchievements();
+
+        //REST Call to update the segment in the DB
+        DataUpdater.getInstance().updateTimelineSegment(this);
+
         //Send intent to inform about update
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_INFO_CHANGED);
@@ -501,97 +525,15 @@ public class TimelineSegment {
 
 
     /**
-     * Set the activity from the DB
-     * @param myActivity The activity to set
-     * @param id The DB ID of the owning user
-     */
-    public void setActivity(DetectedActivity myActivity, String id) {
-        //if new activity is not a sport set the active counters to 0
-        if(myActivity.getType() == DetectedActivity.STILL ||
-                myActivity.getType() == DetectedActivity.UNKNOWN ||
-                myActivity.getType() == DetectedActivity.IN_VEHICLE){
-            this.inactiveTime += this.activeTime;
-            this.inactiveDistance += this.activeDistance;
-            this.activeDistance = 0;
-            this.activeTime = 0;
-        }
-
-        //if old activity is not a sport one correct the counters
-        if(this.myActivity.getType() == DetectedActivity.STILL ||
-                this.myActivity.getType() == DetectedActivity.UNKNOWN ||
-                this.myActivity.getType() == DetectedActivity.IN_VEHICLE){
-            this.activeTime += this.inactiveTime;
-            this.activeDistance += this.inactiveDistance;
-            this.inactiveDistance = 0;
-            this.inactiveTime = 0;
-        }
-
-        this.myActivity = myActivity;
-
-
-        //Send intent to inform about update
-        Intent intent = new Intent();
-        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_INFO_CHANGED);
-        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
-        intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
-        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
-    }
-
-    public void updateLocation(Location newLocation, int index){
-        if(index < 0 || index >= this.myLocationPoints.size()){
-            Log.i(TAG, "Update location: Index out of bounds.");
-            return;
-        }
-
-        if(1 == this.myLocationPoints.size()){
-            Log.i(TAG, "Update location: Only one element, nothing to do.");
-            return;
-        }
-
-        Log.i(TAG, "Update location: Set new values.");
-
-        //subtract distance from the point
-        this.activeDistance -= this.myLocationPoints.get(index).getMyTrackDistance();
-
-        //check if elements before the index exist, then update newLocation
-        if(0 <= index - 1){
-            Log.i(TAG, "Update location: element before last index exist, recalculate.");
-            Location last = this.myLocationPoints.get(index-1).getMyLocation();
-            this.myLocationPoints.get(index).updateLocation(newLocation, last);
-        } else {
-            Log.i(TAG, "Update location: no element before last index.");
-            this.myLocationPoints.get(index).updateLocation(newLocation, null);
-        }
-
-        //add new distance
-        this.activeDistance += this.myLocationPoints.get(index).getMyTrackDistance();
-
-        //check if elements after the index exist, if yes update the distance
-        if(index+1 < this.myLocationPoints.size()){
-            Log.i(TAG, "Update location: element before last index exist, recalculate.");
-            this.activeDistance -= this.myLocationPoints.get(index+1).getMyTrackDistance();
-            this.myLocationPoints.get(index+1).updateDistance(newLocation);
-            this.activeDistance += this.myLocationPoints.get(index+1).getMyTrackDistance();
-        }
-
-        //update achievements in case something changed
-        this.myAchievements = new LinkedList<>();
-        this.calculateAchievements();
-
-        //Send intent to inform about update
-        Intent intent = new Intent();
-        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_LOCATIONPOINTS_CHANGED);
-        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
-        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
-    }
-
-    /**
      * Set the start place of the segment
      * @param startPlace The start place that should be set
      */
     public void setPlace(String startPlace) {
 
         this.startPlace = startPlace;
+
+        //REST Call to update the Segment
+        DataUpdater.getInstance().updateTimelineSegment(this);
 
         //Send intent to inform about update
         Intent intent = new Intent();
@@ -624,6 +566,9 @@ public class TimelineSegment {
     public void setAddress(String startAddress) {
 
         this.startAddress = startAddress;
+
+        //REST Call to update the Segment
+        DataUpdater.getInstance().updateTimelineSegment(this);
 
         //Send intent to inform about update
         Intent intent = new Intent();

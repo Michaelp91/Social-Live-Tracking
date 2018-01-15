@@ -125,10 +125,6 @@ public class TrackingSimulator implements Runnable{
         //Remember: you can access the "non login User" via TemporaryDB.getInstance().getModel_AppUser()
         OtherRestCalls.retrieveUser_Functionalities("max.mustermann@web.de");
 
-
-
-
-
     }
 
     public static void FurtherOperations() {
