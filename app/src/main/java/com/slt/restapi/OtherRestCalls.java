@@ -53,10 +53,7 @@ public class OtherRestCalls {
                     Singleton test = null;
                     try {
                         test = new Gson().fromJson(response.body().toString(), Singleton.class);
-                        context.showSnackBarMessage("Registering successfull.");
-                        REST_User_Functionalities r_u_f = test.getResponse_user_functionalities();
-
-                        TemporaryDB.getInstance().setAppUser(r_u_f);
+                        context.showSnackBarMessage("Register successful");
                     }catch(Exception e) {
                         boolean debug = true;
                     }
@@ -71,7 +68,7 @@ public class OtherRestCalls {
     }
 
 
-    public static void retrieveUser_Functionalities(final String email) {
+    public static User retrieveUser_Functionalities(final String email) {
 
         REST_User_Functionalities r_u_f = new REST_User_Functionalities();
         r_u_f.email = email;
@@ -79,36 +76,25 @@ public class OtherRestCalls {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.getUser_Functionalities(r_u_f);
 
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if(response.isSuccessful()){
-                    Singleton test = null;
-                    try {
-                        test = new Gson().fromJson(response.body().toString(), Singleton.class);
-                    }catch(Exception e) {
-                        boolean debug = true;
-                    }
-                    REST_User_Functionalities r_u_f = new REST_User_Functionalities();
+        JsonObject jsonObject = null;
+        try {
+            jsonObject =  call.execute().body();
+        } catch (Exception e) {
+            return null;
+        }
 
-                    User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, "");
-                    user.setMyImageName(r_u_f.myImage);
+        Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
 
-                    TemporaryDB.getInstance().setAppUser(r_u_f);
-                    TemporaryDB.getInstance().setModel_AppUser(user);
-                    TemporaryDB.getInstance().h_users.put(user, r_u_f);
+        r_u_f = test.getResponse_user_functionalities();
 
-                    TrackingSimulator.FurtherOperations();
+        User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, "");
+        user.setMyImageName(r_u_f.myImage);
 
+        TemporaryDB.getInstance().setAppUser(r_u_f);
+        TemporaryDB.getInstance().setModel_AppUser(user);
+        TemporaryDB.getInstance().h_users.put(user, r_u_f);
 
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-            }
-        });
+        return user;
     }
 
     public static ArrayList<User> retrieveFriends() {
@@ -234,10 +220,11 @@ public class OtherRestCalls {
     }
 
 
-    public static void updateUser(User user) {
+    public static void updateUser() {
 
 
         REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
+        User user = TemporaryDB.getInstance().getModel_AppUser();
         r_u_f.email = user.getEmail();
         r_u_f.foreName = user.getForeName();
         r_u_f.lastName = user.getLastName();
@@ -256,6 +243,11 @@ public class OtherRestCalls {
         r_u_f.friends = ids;
         Location l = user.getLastLocation();
 
+        if(l == null) {
+            l = new Location("");
+          l.setLatitude(0);
+          l.setLongitude(0);
+        }
         REST_Location r_l = new REST_Location(l.getLatitude(), l.getLongitude());
 
         r_u_f.lastLocation = r_l;
@@ -273,7 +265,7 @@ public class OtherRestCalls {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful()) {
-                        TrackingSimulator.FurtherOperations3();
+                        TrackingSimulator.UploadTest(TemporaryDB.getInstance().getModel_AppUser());
                     }
                 }
 

@@ -23,6 +23,7 @@ import com.slt.MainProfile;
 import com.slt.R;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
+import com.slt.restapi.TrackingSimulator;
 import com.slt.utils.Constants;
 
 import java.io.IOException;
@@ -59,6 +60,9 @@ public class FragmentTimeline extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Timeline");
+        Thread t = new Thread(new TrackingSimulator());
+        t.start();
+
     }
 }
 

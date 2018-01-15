@@ -1,5 +1,6 @@
 package com.slt.restapi;
 
+import com.slt.data.Achievement;
 import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
@@ -10,6 +11,7 @@ import com.slt.restapi.data.*;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Created by Usman Ahmad on 30.12.2017.
@@ -214,12 +216,12 @@ public class TemporaryDB {
     }
 
     public void setAppUser(REST_User_Functionalities appUser) {
-        //TODO: :(
-        model_appUser = new User(appUser.userName, appUser.email, appUser.foreName, appUser.lastName, null, appUser.myAge, appUser.myCity, appUser._id);
         this.appUser = appUser;
     }
 
-    public User setModel_AppUser(User u){return model_appUser;}
+    public void setModel_AppUser(User u){
+        this.model_appUser = u;
+    }
     public User getModel_AppUser() {
         return model_appUser;
     }
