@@ -156,10 +156,12 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         //Thread t = new Thread(new TrackingSimulator());
         //t.start();
 
+        //Thread t = new Thread(new TrackingSimulator());
+        //t.start();
 
+        Thread t = new Thread(new TrackingSimulator());
+        t.start();
 
-        OtherRestCalls.retrieveFriends();
-        OtherRestCalls.retrieveFriendsIncludingTimelines();
     }
 
     @Override

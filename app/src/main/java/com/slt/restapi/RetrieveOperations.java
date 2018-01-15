@@ -63,12 +63,14 @@ public class RetrieveOperations {
     public Timeline getCompleteTimeline() {
         User user = TemporaryDB.getInstance().getModel_AppUser();
 
+        TemporaryDB.getInstance().h_rest_timelineResolver = new HashMap<>();
         TemporaryDB.getInstance().h_rest_timelinedayResolver = new HashMap<>();
         TemporaryDB.getInstance().h_timelinedayResolver = new HashMap<>();
         TemporaryDB.getInstance().h_rest_timelinesegmentResolver = new HashMap<>();
         TemporaryDB.getInstance().h_timelinesegmentResolver = new HashMap<>();
         TemporaryDB.getInstance().h_rest_locationentryResolver = new HashMap<>();
         TemporaryDB.getInstance().h_locationentryResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_timelineResolver = new HashMap<>();
 
         REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
         Endpoints api = RetroClient.getApiService();

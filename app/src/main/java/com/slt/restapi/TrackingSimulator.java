@@ -148,6 +148,8 @@ public class TrackingSimulator implements Runnable{
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                //Get Complete Timeline from logged in User
                 Timeline t = RetrieveOperations.getInstance().getCompleteTimeline();
                 TimelineDay timelineDay = new TimelineDay(new Date());
                 Location location = new Location("");

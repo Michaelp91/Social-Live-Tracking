@@ -2,11 +2,13 @@ package com.slt.restapi;
 
 import android.location.Location;
 
+import com.slt.data.Achievement;
 import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
+import com.slt.restapi.data.REST_Achievement;
 import com.slt.restapi.data.REST_LocationEntry;
 import com.slt.restapi.data.REST_Timeline;
 import com.slt.restapi.data.REST_TimelineDay;
@@ -119,12 +121,20 @@ public class RESTToDatamodel {
 
         iterator = TemporaryDB.getInstance().h_rest_timelinedayResolver.entrySet().iterator();
 
+        REST_Timeline r_t = TemporaryDB.getInstance().getTimeline();
+        t = new Timeline();
+
+
+        for(REST_Achievement r_a: r_t.myAchievements) {
+            Achievement a = new Achievement(r_a.achievement, null);
+            t.addAchievement(a);
+        }
+
+
         while(iterator.hasNext()) {
             Map.Entry entry =(Map.Entry) iterator.next();
             REST_TimelineDay r_t_d = (REST_TimelineDay) entry.getValue();
             TimelineDay t_s = TemporaryDB.getInstance().h_timelinedayResolver.get(r_t_d._id);
-
-            t = TemporaryDB.getInstance().h_timelineResolver.get(r_t_d.timeline);
             t.setMyHistory(t_s, null);
         }
 
