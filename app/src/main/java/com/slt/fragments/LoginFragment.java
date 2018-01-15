@@ -2,6 +2,7 @@ package com.slt.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import com.slt.ProfileActivity;
 import com.slt.MainActivity;
 import com.slt.MainProfile;
 import com.slt.R;
+import com.slt.control.SharedResources;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
 import com.slt.statistics.GeneralViewOfStatistics;
@@ -51,6 +54,7 @@ import static com.slt.utils.Validation.validateFields;
 public class LoginFragment extends Fragment {
 
     public static final String TAG = LoginFragment.class.getSimpleName();
+    private static final String SPF_NAME = "timelinelogin";
 
     private EditText mEtEmail;
     private EditText mEtPassword;
@@ -61,6 +65,7 @@ public class LoginFragment extends Fragment {
     private TextInputLayout mTiEmail;
     private TextInputLayout mTiPassword;
     private ProgressBar mProgressBar;
+    private CheckBox checkBox;
 
     private CompositeSubscription mSubscriptions;
     private SharedPreferences mSharedPreferences;
@@ -89,7 +94,32 @@ public class LoginFragment extends Fragment {
         mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
         mTvRegister = (TextView) v.findViewById(R.id.tv_register);
         mTvForgotPassword = (TextView) v.findViewById(R.id.tv_forgot_password);
+        checkBox = (CheckBox) v.findViewById(R.id.saveLoginCheckBox);
+
+
+    try {
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
+        if(sharedPref.contains(Constants.STORE_BOX)){
+            boolean checked = sharedPref.getBoolean(Constants.STORE_BOX, false);
+
+            if(checked){
+                checkBox.setChecked(true);
+                String login = sharedPref.getString(Constants.LOGIN, "");
+                String pwd = sharedPref.getString(Constants.PASSWORD, "");
+                this.mEtEmail.setText(login);
+                this.mEtPassword.setText(pwd);
+
+            }
+        }
+    } catch (Exception e){
+        //first run do nothing
+    }
+
+
+
+
 /*
+
         mBtViewStatistics.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent( getActivity()  , ViewStatistics.class);
@@ -105,6 +135,8 @@ public class LoginFragment extends Fragment {
 
                 String email = mEtEmail.getText().toString();
                 String password = mEtPassword.getText().toString();
+
+
 
                 int err = 0;
 
@@ -238,8 +270,31 @@ public class LoginFragment extends Fragment {
                 editor.putString(Constants.EMAIL,response.getMessage());
                 editor.apply();
 
-                mEtEmail.setText(null);
-                mEtPassword.setText(null);
+
+                String email = mEtEmail.getText().toString();
+                String password = mEtPassword.getText().toString();
+
+                if(checkBox.isChecked()){
+
+
+                    SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor neditor = sharedPref.edit();
+                    neditor.putString( Constants.LOGIN, email);
+                    neditor.putString(Constants.PASSWORD, password);
+                    neditor.putBoolean(Constants.STORE_BOX, true);
+                    neditor.commit();
+                } else {
+                    SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor neditor = sharedPref.edit();
+                    neditor.putString( Constants.LOGIN, null);
+                    neditor.putString(Constants.PASSWORD, null);
+                    neditor.putBoolean(Constants.STORE_BOX, false);
+
+                    mEtEmail.setText(null);
+                    mEtPassword.setText(null);
+                }
+
+
 
                 User user = new User("");
                 user.setEmail(response.getMessage());
@@ -303,8 +358,27 @@ public class LoginFragment extends Fragment {
         editor.putString(Constants.EMAIL,response.getMessage());
         editor.apply();
 
-        mEtEmail.setText(null);
-        mEtPassword.setText(null);
+
+        String email = mEtEmail.getText().toString();
+        String password = mEtPassword.getText().toString();
+
+        if(checkBox.isChecked()){
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor neditor = sharedPref.edit();
+            neditor.putString( Constants.LOGIN, email);
+            neditor.putString(Constants.PASSWORD, password);
+            neditor.putBoolean(Constants.STORE_BOX, true);
+            neditor.commit();
+        } else {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor neditor = sharedPref.edit();
+            neditor.putString( Constants.LOGIN, null);
+            neditor.putString(Constants.PASSWORD, null);
+            neditor.putBoolean(Constants.STORE_BOX, false);
+
+            mEtEmail.setText(null);
+            mEtPassword.setText(null);
+        }
 
         Intent intent = new Intent(getActivity(), MainProfile.class);
         startActivity(intent);
