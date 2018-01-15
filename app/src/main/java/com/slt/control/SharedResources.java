@@ -6,11 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.slt.R;
@@ -42,6 +44,45 @@ public class SharedResources {
      * The notification for the gps and activity services
      */
     private Notification foregroundNotification;
+
+    /**
+     * Username in the nav bar for updates
+     */
+    private TextView navUsername;
+
+    /**
+     * Profile in the nav bar for updates
+     */
+    private ImageView navProfilePhoto;
+
+    /**
+     * Get the nav bar TextView for the username
+     * @return The TextView of the username
+     */
+    public TextView getNavUsername() {
+        return navUsername;
+    }
+
+    /**
+     * Set the TextView of the nav bar for the username
+     * @param navUsername
+     */
+    public void setNavUsername(TextView navUsername) {
+        this.navUsername = navUsername;
+    }
+
+    /**
+     * Get the ImageView for the Profile Photo in the nav bar
+     * @return
+     */
+    public ImageView getNavProfilePhoto() {
+        return this.navProfilePhoto;
+    }
+
+
+    public  void setNavProfilePhoto(ImageView navProfilePhoto) {
+        this.navProfilePhoto = navProfilePhoto;
+    }
 
     /**
      * Get the instance of the shared resources

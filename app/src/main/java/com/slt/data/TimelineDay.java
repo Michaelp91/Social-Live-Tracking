@@ -13,6 +13,8 @@ import com.slt.control.AddressResolver;
 import com.slt.control.ApplicationController;
 import com.slt.control.PlacesResolver;
 import com.slt.definitions.Constants;
+import com.slt.restapi.DataUpdater;
+import com.slt.restapi.UpdateOperations;
 
 import java.util.Date;
 import java.util.Calendar;
@@ -87,6 +89,8 @@ public class TimelineDay {
 
         //if new achievements -> send intent
         if(!achievements.isEmpty()){
+            //REST Call to update the DB
+            DataUpdater.getInstance().updateTimelineDay(this);
 
             Intent intent = new Intent();
             intent.setAction(Constants.INTENT.TIMELINE_DAY_INTENT_OWN_ACHIEVEMENT_UPDATE);
@@ -334,6 +338,10 @@ public class TimelineDay {
                 Log.i(TAG, "changeActivity: Merge with previous element.");
                 TimelineSegment mergeSegment = this.mySegments.get(index);
                 this.mySegments.get(index-1).mergeTimelineSegments(mergeSegment);
+
+                //REST Call to update the DB
+                DataUpdater.getInstance().deleteTimelineSegment(this.mySegments.get(index));
+
                 this.mySegments.remove(index);
                 index--;
             }
@@ -345,6 +353,10 @@ public class TimelineDay {
                 Log.i(TAG, "changeActivity: Merge with next element.");
                 TimelineSegment mergeSegment = this.mySegments.get(index+1);
                 this.mySegments.get(index).mergeTimelineSegments(mergeSegment);
+
+                //REST Call to update the DB
+                DataUpdater.getInstance().deleteTimelineSegment(this.mySegments.get(index+1));
+
                 this.mySegments.remove(index+1);
             }
         }
@@ -365,6 +377,10 @@ public class TimelineDay {
     public void manualStartNewSegment(Location location, Date date, DetectedActivity activity){
         Log.i(TAG, "ManualAddUserStatus:  create new Segment, location resolution.");
         this.mySegments.add(new TimelineSegment(location, date, activity, date));
+
+        //REST Call to add new segment to DB
+        DataUpdater.getInstance().addTimeLineSegment(this.mySegments.getLast(), this);
+
         Object[] ResolutionData = new Object[2];
         ResolutionData[0] = this.mySegments.getLast();
         ResolutionData[1] = location;
@@ -375,6 +391,7 @@ public class TimelineDay {
         PlacesResolver placesResolver = new PlacesResolver();
         placesResolver.execute(ResolutionData);
         this.calculateAchievements();
+
 
         //Send intent to inform about update
         Intent intent = new Intent();
@@ -401,6 +418,9 @@ public class TimelineDay {
         DetectedActivity activity = new DetectedActivity(DetectedActivity.UNKNOWN, 100);
         Log.i(TAG, "ManualEndSegment:  create new Segment, end last one.");
         this.mySegments.add(new TimelineSegment(location, date, activity, date));
+
+        //REST Call to add new segment to DB
+        DataUpdater.getInstance().addTimeLineSegment(this.mySegments.getLast(), this);
     }
 
     /**
@@ -415,6 +435,10 @@ public class TimelineDay {
         if(this.mySegments.isEmpty()){
             Log.i(TAG, "addUserStatus: Segements empty, create new Segment, location resolution.");
             this.mySegments.add(new TimelineSegment(location, date, activity, date));
+
+            //REST Call to add new segment to DB
+            DataUpdater.getInstance().addTimeLineSegment(this.mySegments.getLast(), this);
+
             Object[] ResolutionData = new Object[2];
             ResolutionData[0] = this.mySegments.getLast();
             ResolutionData[1] = location;
@@ -454,6 +478,9 @@ public class TimelineDay {
                         TimelineSegment segment = this.mySegments.getLast();
                         this.mySegments.removeLast();
                         this.mySegments.getLast().mergeTimelineSegments(segment);
+
+                        //REST Call to delete the last segment
+                        DataUpdater.getInstance().deleteTimelineSegment(segment);
                     } else {
                         //if they are not the same simply change activity since something has
                         //changed since the previous element
@@ -469,6 +496,9 @@ public class TimelineDay {
                 Log.i(TAG, "addUserStatus: new Activity, new Segment created, create new Segment.");
                 TimelineSegment nextSegment = new TimelineSegment(location, date, activity, date);
                 this.mySegments.add(nextSegment);
+
+                //REST Call to add new segment to DB
+                DataUpdater.getInstance().addTimeLineSegment(nextSegment, this);
 
                 Object[] ResolutionData = new Object[2];
                 ResolutionData[0] = this.mySegments.getLast();

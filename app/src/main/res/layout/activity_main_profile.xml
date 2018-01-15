@@ -21,10 +21,12 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="#FFFFFF"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main_profile"
-        app:menu="@menu/activity_main_profile_drawer"
-        android:background="#FFFFFF"/>
+        app:itemIconTint="@color/wallet_hint_foreground_holo_dark"
+        app:itemTextColor="@color/wallet_hint_foreground_holo_dark"
+        app:menu="@menu/activity_main_profile_drawer" />
 
 
 </android.support.v4.widget.DrawerLayout>

@@ -227,7 +227,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/child_margin_top">
-
                 <EditText
                     android:id="@+id/et_email"
                     android:layout_width="match_parent"
@@ -240,7 +239,7 @@
                     android:ems="10"
                     android:hint="E-Mail"
                     android:imeOptions="actionNext"
-                    android:inputType="textEmailAddress"
+                    android:inputType="none"
                     android:maxLines="1"
                     android:padding="8dp"
                     android:textColor="#FFFFFF"

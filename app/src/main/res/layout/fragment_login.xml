@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textColor="#fff"
-                android:text="Save Login?"
+                android:text="Remember Login"
                 android:padding="12dp"/>
 
             <!-- Login Button-->

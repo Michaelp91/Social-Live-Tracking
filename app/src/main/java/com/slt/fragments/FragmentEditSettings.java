@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
+import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.utils.Constants;
 import com.slt.utils.UniversalImageLoader;
@@ -65,6 +67,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
     private EditText foreNameEditText;
     private EditText ageEditText;
     private EditText cityEditText;
+    private EditText emailEditText;
     private User ownUser;
 
     private Bitmap bitmap;
@@ -106,10 +109,24 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         this.ownUser.setMyCity(this.cityEditText.getText().toString());
         this.ownUser.setUserName(this.usernameEditText.getText().toString());
         ownUser.setMyImage(bitmap);
+
+
+       SharedResources.getInstance().getNavUsername().setText(DataProvider.getInstance().getOwnUser().getUserName());
+
+        if(bitmap == null) {
+            Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
+            SharedResources.getInstance().getNavProfilePhoto().setImageBitmap(image);
+        }
+        else {
+            SharedResources.getInstance().getNavProfilePhoto().setImageBitmap(DataProvider.getInstance().getOwnUser().getMyImage());
+        }this.setProfileImage(DataProvider.getInstance().getOwnUser().getMyImage());
+
         Toast.makeText(ApplicationController.getContext(), "Userdata updated", Toast.LENGTH_SHORT).show();
     }
 
-    // Select image from camera and gallery
+    /**
+     *  Select image from camera and gallery
+      */
     private void selectImage() {
         try {
             if(ContextCompat.checkSelfPermission(view.getContext(),
@@ -185,9 +202,6 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         else {
             this.mProfilePhoto.setImageBitmap(img);
         }
-
-     //   String imgURL = "www.androidcentral.com/sites/androidcentral.com/files/styles/xlarge/public/article_images/2016/08/ac-lloyd.jpg?itok=bb72IeLf";
-     //   UniversalImageLoader.setImage(imgURL, mProfilePhoto, null, "https://");
     }
 
     @Override
@@ -204,6 +218,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         this.lastNameEditText = (EditText) view.findViewById(R.id.et_last_name);
         this.foreNameEditText = (EditText) view.findViewById(R.id.et_forename);
         this.cityEditText = (EditText) view.findViewById(R.id.et_city);
+        this.emailEditText = (EditText) view.findViewById(R.id.et_email);
 
         //TODO change email if we want to should check with server if changed to a unused address
 
@@ -212,7 +227,6 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         mToken = mSharedPreferences.getString(Constants.TOKEN,"");
         mEmail = mSharedPreferences.getString(Constants.EMAIL,"");
 
-        //initImageLoader();
 
         this.ownUser = DataProvider.getInstance().getOwnUser();
 
@@ -222,6 +236,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         this.lastNameEditText.setText(ownUser.getLastName());
         this.foreNameEditText.setText(ownUser.getForeName());
         this.cityEditText.setText(ownUser.getMyCity());
+        this.emailEditText.setText(ownUser.getEmail());
 
         setProfileImage(ownUser.getMyImage());
 

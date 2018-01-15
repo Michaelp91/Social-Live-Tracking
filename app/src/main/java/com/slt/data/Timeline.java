@@ -6,6 +6,7 @@ import com.google.android.gms.location.DetectedActivity;
 import com.slt.control.AchievementCalculator;
 import com.slt.control.ApplicationController;
 import com.slt.definitions.Constants;
+import com.slt.restapi.DataUpdater;
 
 import android.util.Log;
 
@@ -398,6 +399,34 @@ public class Timeline {
      */
     public void manualStartNewSegment(Location location, Date date, DetectedActivity activity){
         Log.i(TAG, "ManualAddUserStatus:  create new Segment, location resolution.");
+
+        //check if we have a day already
+        if (this.myHistory.size() == 0){
+            this.myHistory.add(new TimelineDay(date));
+
+            //REST Call to add the new Day to the DB
+            DataUpdater.getInstance().addTimelineDay(this.myHistory.getLast());
+
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT.TIMELINE_INTENT_DAY_OWN_INSERT);
+            intent.putExtra(Constants.INTENT_EXTRAS.ID, this.ID);
+            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+        }
+
+        //check if we still have the same day
+        if(!this.myHistory.getLast().isSameDay(date)) {
+            this.myHistory.add(new TimelineDay(date));
+
+            //REST Call to add the new Day to the DB
+            DataUpdater.getInstance().addTimelineDay(this.myHistory.getLast());
+
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT.TIMELINE_INTENT_DAY_OWN_INSERT);
+            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+        }
+
+        this.calculateAchievements(date);
+
         this.myHistory.getLast().manualStartNewSegment(location, date, activity);
     }
 
@@ -502,6 +531,8 @@ public class Timeline {
 
         //if new achievements -> send intent
         if(!achievements.isEmpty()){
+            //REST Call to update Timeline
+            //TODO: Update for achievements of a timeline
 
             Intent intent = new Intent();
             intent.setAction(Constants.INTENT.TIMELINE_INTENT_OWN_ACHIEVEMENT_UPDATE);
@@ -535,6 +566,9 @@ public class Timeline {
         if (this.myHistory.size() == 0){
             this.myHistory.add(new TimelineDay(date));
 
+            //REST Call to add the new Day to the DB
+            DataUpdater.getInstance().addTimelineDay(this.myHistory.getLast());
+
             Intent intent = new Intent();
             intent.setAction(Constants.INTENT.TIMELINE_INTENT_DAY_OWN_INSERT);
             intent.putExtra(Constants.INTENT_EXTRAS.ID, this.ID);
@@ -545,6 +579,8 @@ public class Timeline {
         if(!this.myHistory.getLast().isSameDay(date)) {
             this.myHistory.add(new TimelineDay(date));
 
+            //REST Call to add the new Day to the DB
+            DataUpdater.getInstance().addTimelineDay(this.myHistory.getLast());
 
             Intent intent = new Intent();
             intent.setAction(Constants.INTENT.TIMELINE_INTENT_DAY_OWN_INSERT);
