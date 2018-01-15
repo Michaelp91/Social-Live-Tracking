@@ -25,6 +25,7 @@ import com.slt.restapi.data.REST_User_Functionalities;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import retrofit2.Call;
@@ -70,10 +71,10 @@ public class OtherRestCalls {
     }
 
 
-    public static void retrieveUser_Functionalities(final User user, final LoginFragment context) {
+    public static void retrieveUser_Functionalities(final String email) {
 
         REST_User_Functionalities r_u_f = new REST_User_Functionalities();
-        r_u_f.email = user.getEmail();
+        r_u_f.email = email;
 
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.getUser_Functionalities(r_u_f);
@@ -88,9 +89,16 @@ public class OtherRestCalls {
                     }catch(Exception e) {
                         boolean debug = true;
                     }
-                    TemporaryDB.getInstance().setAppUser(test.getResponse_user_functionalities());
-                    TemporaryDB.getInstance().h_users.put(user, test.getResponse_user_functionalities());
-                    context.openTimelineActivity();
+                    REST_User_Functionalities r_u_f = new REST_User_Functionalities();
+
+                    User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, "");
+                    user.setMyImageName(r_u_f.myImage);
+
+                    TemporaryDB.getInstance().setAppUser(r_u_f);
+                    TemporaryDB.getInstance().setModel_AppUser(user);
+                    TemporaryDB.getInstance().h_users.put(user, r_u_f);
+
+                    TrackingSimulator.FurtherOperations();
 
 
                 }
@@ -103,148 +111,126 @@ public class OtherRestCalls {
         });
     }
 
-    public static void retrieveFriends() {
+    public static ArrayList<User> retrieveFriends() {
+        TemporaryDB.getInstance().h_rest_userResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_userResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_users = new HashMap<>();
 
+        ArrayList<User> friends = new ArrayList<>();
         REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
-        ArrayList<String> friends = new ArrayList<>();
-
-        //TODO: Dynamically add FriendIds
-        friends.add("5a5a4e85a2c2412bf0efa460");
-        friends.add("5a5a4ea4a2c2412bf0efa461");
-        friends.add("5a5a4f65a2c2412bf0efa462");
-        r_u_f.friends = friends;
 
         if(r_u_f != null) {
 
             Endpoints api = RetroClient.getApiService();
             Call<JsonObject> call = api.getFriends(r_u_f);
 
-            call.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (response.isSuccessful()) {
-                        Singleton test = null;
-                        try {
-                            test = new Gson().fromJson(response.body().toString(), Singleton.class);
-                            ArrayList<REST_User_Functionalities> rest_user_functionalities = test.getResponse_friends();
+            JsonObject jsonObject = null;
+            try {
+                jsonObject =  call.execute().body();
+            } catch (Exception e) {
+                return new ArrayList<>();
+            }
 
-                            for(REST_User_Functionalities r_u_f: rest_user_functionalities) {
-                                //TODO: Bitmap !=null :)
-                                User u = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, r_u_f._id);
+            Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
+            ArrayList<REST_User_Functionalities> rest_user_functionalities = test.getResponse_friends();
 
-                                TemporaryDB.getInstance().h_rest_userResolver.put(r_u_f._id, r_u_f);
-                                TemporaryDB.getInstance().h_userResolver.put(u.getID(), u);
-                            }
+            for(REST_User_Functionalities r_user_f: rest_user_functionalities) {
+                //TODO: Bitmap !=null :)
+                User u = new User(r_user_f.userName, r_user_f.email, r_user_f.foreName, r_user_f.lastName, null, r_user_f.myAge, r_user_f.myCity, r_user_f._id);
 
-                            boolean debug = true;
-                        } catch (Exception e) {
-                            boolean debug = true;
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-
-                }
-            });
-
+                TemporaryDB.getInstance().h_rest_userResolver.put(r_u_f._id, r_u_f);
+                TemporaryDB.getInstance().h_userResolver.put(u.getID(), u);
+                TemporaryDB.getInstance().h_users.put(u, r_user_f);
+                friends.add(u);
+            }
         }
+
+        return friends;
     }
 
-    public static void retrieveTimelines() {
+    public static ArrayList<User> retrieveFriendsIncludingTimelines() {
 
+        TemporaryDB.getInstance().h_rest_timelineResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_timelineResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_rest_timelinedayResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_timelinedayResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_rest_timelinesegmentResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_timelinesegmentResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_rest_locationentryResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_locationentryResolver = new HashMap<>();
+
+        ArrayList<User> friends = new ArrayList<>();
         REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
-        ArrayList<String> friends = new ArrayList<>();
-
-        //TODO: Dynamically add FriendIds
-        friends.add("5a5a4e85a2c2412bf0efa460");
-        friends.add("5a5a4ea4a2c2412bf0efa461");
-        friends.add("5a5a4f65a2c2412bf0efa462");
-        r_u_f.friends = friends;
 
         if(r_u_f != null) {
 
             Endpoints api = RetroClient.getApiService();
             Call<JsonObject> call = api.getCompleteTimeLines(r_u_f);
 
-            call.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (response.isSuccessful()) {
-                        Singleton test = null;
-                        try {
-                            test = new Gson().fromJson(response.body().toString(), Singleton.class);
-                            ArrayList<REST_Timeline> rest_timelines = test.getResponses().timelines;
-                            ArrayList<REST_TimelineDay> rest_timelinesdays = test.getResponses().timelinedays;
-                            ArrayList<REST_TimelineSegment> rest_timelinesegments = test.getResponses().timelinesegments;
-                            ArrayList<REST_LocationEntry> rest_locationEntries = test.getResponses().locationEntries;
+            JsonObject jsonObject = null;
+            try {
+                jsonObject =  call.execute().body();
+            } catch (Exception e) {
+                return new ArrayList<>();
+            }
 
-                            for(REST_Timeline r_t: rest_timelines) {
-                                Timeline t = new Timeline();
-                                t.setID(r_t._id);
-                                for(REST_Achievement r_a: r_t.myAchievements) {
-                                    Achievement a = new Achievement(r_a.achievement, null);//TODO: Fill Timestamp
-                                    t.addAchievement(a);
-                                }
+            Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
+            ArrayList<REST_Timeline> rest_timelines = test.getResponses().timelines;
+            ArrayList<REST_TimelineDay> rest_timelinesdays = test.getResponses().timelinedays;
+            ArrayList<REST_TimelineSegment> rest_timelinesegments = test.getResponses().timelinesegments;
+            ArrayList<REST_LocationEntry> rest_locationEntries = test.getResponses().locationEntries;
 
-                                TemporaryDB.getInstance().h_rest_timelineResolver.put(r_t._id, r_t);
-                                TemporaryDB.getInstance().h_timelineResolver.put(t.getID(), t);
-                            }
-
-                            for(REST_TimelineDay r_t_d: rest_timelinesdays) {
-                                TimelineDay t_d = new TimelineDay(r_t_d.myDate);
-                                t_d.setID(r_t_d._id);
-
-                                for(REST_Achievement r_a: r_t_d.myAchievements) {
-                                    Achievement a = new Achievement(r_a.achievement, null);
-                                    t_d.addAchievement(a, null); //TODO: Fill Userid in buildcompleteUserObjects
-                                }
-                                TemporaryDB.getInstance().h_rest_timelinedayResolver.put(r_t_d._id, r_t_d);
-                                TemporaryDB.getInstance().h_timelinedayResolver.put(t_d.getID(), t_d);
-                            }
-
-                            for(REST_TimelineSegment r_t_s: rest_timelinesegments) {
-                                DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, 100);
-                                TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime);
-                                t_s.setID(r_t_s._id);
-                                for(REST_Achievement r_a: r_t_s.myAchievements) {
-                                    Achievement a = new Achievement(r_a.achievement, null);
-                                    t_s.addAchievement(a, null); //TODO: Fill Userid in buildcompleteUserObjects
-                                }
-
-                                TemporaryDB.getInstance().h_rest_timelinesegmentResolver.put(r_t_s._id, r_t_s);
-                                TemporaryDB.getInstance().h_timelinesegmentResolver.put(t_s.getID(), t_s);
-                            }
-
-                            for(REST_LocationEntry r_l_e: rest_locationEntries) {
-                                Location l = new Location(""); //TODO: PROVIDER?
-                                l.setLatitude(r_l_e.myLocation.latitude);
-                                l.setLongitude(r_l_e.myLocation.longitude);
-                                LocationEntry l_e = new LocationEntry(l, r_l_e.myEntryDate, null, null); //TODO:lastLocation, lastDate?
-                                l_e.setID(r_l_e._id);
-                                TemporaryDB.getInstance().h_rest_locationentryResolver.put(r_l_e._id, r_l_e);
-                                TemporaryDB.getInstance().h_locationentryResolver.put(l_e.getID(), l_e);
-                            }
-
-                            RESTToDatamodel.buildCompleteUserObjects();
-
-
-
-                            boolean debug = true;
-                        } catch (Exception e) {
-                            boolean debug = true;
-                        }
-                    }
+            for(REST_Timeline r_t: rest_timelines) {
+                Timeline t = new Timeline();
+                t.setID(r_t._id);
+                for(REST_Achievement r_a: r_t.myAchievements) {
+                    Achievement a = new Achievement(r_a.achievement, null);//TODO: Fill Timestamp
+                    t.addAchievement(a);
                 }
 
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
+                TemporaryDB.getInstance().h_rest_timelineResolver.put(r_t._id, r_t);
+                TemporaryDB.getInstance().h_timelineResolver.put(t.getID(), t);
+            }
 
+            for(REST_TimelineDay r_t_d: rest_timelinesdays) {
+                TimelineDay t_d = new TimelineDay(r_t_d.myDate);
+                t_d.setID(r_t_d._id);
+
+                for(REST_Achievement r_a: r_t_d.myAchievements) {
+                    Achievement a = new Achievement(r_a.achievement, null);
+                    t_d.addAchievement(a, null); //TODO: Fill Userid in buildcompleteUserObjects
                 }
-            });
+                TemporaryDB.getInstance().h_rest_timelinedayResolver.put(r_t_d._id, r_t_d);
+                TemporaryDB.getInstance().h_timelinedayResolver.put(t_d.getID(), t_d);
+            }
 
+            for(REST_TimelineSegment r_t_s: rest_timelinesegments) {
+                DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, 100);
+                TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime);
+                t_s.setID(r_t_s._id);
+                for(REST_Achievement r_a: r_t_s.myAchievements) {
+                    Achievement a = new Achievement(r_a.achievement, null);
+                    t_s.addAchievement(a, null); //TODO: Fill Userid in buildcompleteUserObjects
+                }
+
+                TemporaryDB.getInstance().h_rest_timelinesegmentResolver.put(r_t_s._id, r_t_s);
+                TemporaryDB.getInstance().h_timelinesegmentResolver.put(t_s.getID(), t_s);
+            }
+
+            for(REST_LocationEntry r_l_e: rest_locationEntries) {
+                Location l = new Location(""); //TODO: PROVIDER?
+                l.setLatitude(r_l_e.myLocation.latitude);
+                l.setLongitude(r_l_e.myLocation.longitude);
+                LocationEntry l_e = new LocationEntry(l, r_l_e.myEntryDate, null, null); //TODO:lastLocation, lastDate?
+                l_e.setID(r_l_e._id);
+                TemporaryDB.getInstance().h_rest_locationentryResolver.put(r_l_e._id, r_l_e);
+                TemporaryDB.getInstance().h_locationentryResolver.put(l_e.getID(), l_e);
+            }
+
+            friends = RESTToDatamodel.buildCompleteUserObjects();
         }
+
+        return friends;
     }
 
 
@@ -276,7 +262,7 @@ public class OtherRestCalls {
         r_u_f.lastLocationUpdateDate = user.getLastLocationUpdateDate();
         r_u_f.myAge = user.getMyAge();
         r_u_f.myCity = user.getMyCity();
-        r_u_f.myImage = null; //TODO: :(
+        r_u_f.myImage = user.getMyImageName();
 
         if(r_u_f != null) {
 
@@ -287,15 +273,7 @@ public class OtherRestCalls {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful()) {
-                        Singleton test = null;
-                        try {
-                            test = new Gson().fromJson(response.body().toString(), Singleton.class);
-                        } catch (Exception e) {
-                            boolean debug = true;
-                        }
-
-
-
+                        TrackingSimulator.FurtherOperations3();
                     }
                 }
 

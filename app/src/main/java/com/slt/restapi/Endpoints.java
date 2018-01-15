@@ -60,7 +60,10 @@ public interface Endpoints {
     Call<JsonObject> getTest(@Body Test json);
 
     @POST("timeline/")
-    Call<JsonObject> getCompleteTimeLine(@Body REST_User user);
+    Call<JsonObject> getCompleteTimeLine(@Body REST_User_Functionalities user);
+
+    @POST("user_functionalities/")
+    Call<JsonObject> getAllUsers();
 
     @POST("timelines/")
     Call<JsonObject> getCompleteTimeLines(@Body REST_User_Functionalities user);

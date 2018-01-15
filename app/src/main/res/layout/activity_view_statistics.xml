@@ -4,12 +4,13 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/gradientbackground">
 
 
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabMode="fixed"
@@ -17,12 +18,12 @@
         android:minHeight="?attr/actionBarSize"
         app:tabGravity="fill"
         app:tabTextColor="#0DF"
-        app:tabSelectedTextColor="#0DF"
-        />
+        app:tabSelectedTextColor="#0DF"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent"
+        android:background="@drawable/gradientbackground"/>
+    />
 </LinearLayout>

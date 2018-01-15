@@ -52,6 +52,8 @@ public class User {
      */
     private Bitmap myImage;
 
+    private String myImageName;
+
     /**
      * The age of the user
      */
@@ -359,6 +361,14 @@ public class User {
      */
     public Bitmap getMyImage() {
         return myImage;
+    }
+
+    public String getMyImageName() {
+        return myImageName;
+    }
+
+    public void setMyImageName(String imageName) {
+        this.myImageName = imageName;
     }
 
     /**

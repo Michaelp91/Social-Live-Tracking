@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,7 +33,8 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
     private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
     private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
     public Handler handler = new Handler();
-
+    //@BindView(R.id.toolbar)
+    //public Toolbar toolBar;
 
     private REST_TimelineDay choosedTimelineDay;
     private ArrayList<LinearLayout> list_TimelineDays;
@@ -52,8 +54,13 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         view_timelineDays = (LinearLayout) findViewById(R.id.timeline_days);
         Intent intent = getIntent();
         String userId = intent.getStringExtra(Constants.USERID);
-
-
+        /*//Toolbar toolBar = null;
+        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        //DrawerUtil.getDrawer(this,toolBar);
+        //toolBar.setTitle(getResources().getString(R.string.navigation_item_1));
+        toolBar.setTitle("test");
+        setSupportActionBar(toolBar);
+        DrawerUtil.getDrawer(this,toolBar);*/
         /*
             Test t = new Test("Hello World");
             Achievement newAchievement = new Achievement(0);
@@ -152,7 +159,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
 
 
         OtherRestCalls.retrieveFriends();
-        OtherRestCalls.retrieveTimelines();
+        OtherRestCalls.retrieveFriendsIncludingTimelines();
     }
 
     @Override
@@ -186,10 +193,9 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void run() {
       /* do what you need to do */
-            REST_User user = new REST_User();
-            user._id = "5a196bf8d17b7926882f5413";
+            User user = new User("");
             RetrieveOperations.getInstance().getCompleteTimeline(user);
-            OtherRestCalls.retrieveTimelines();
+            OtherRestCalls.retrieveFriendsIncludingTimelines();
       /* and here comes the "trick" */
         }
     };

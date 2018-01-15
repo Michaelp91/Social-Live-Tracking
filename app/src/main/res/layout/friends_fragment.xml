@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@drawable/gradientbackground"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,6 +29,8 @@
             android:id="@+id/friends_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:dividerHeight="12dp"
+            android:divider="@null"
             android:layout_marginTop="24dp"/>
 
         <!-- Button Search Friends-->

@@ -22,12 +22,19 @@ public class Singleton {
     private REST_LocationEntry response_locationEntry;
     private REST_User_Functionalities response_user_functionalities;
     private ArrayList<REST_User_Functionalities> response_friends;
+    private ArrayList<REST_User_Functionalities> response_allusers;
     private String message;
 
     public static Singleton getInstance() {
         singleton = (singleton == null)?new Singleton():singleton;
         return singleton;
     }
+
+    public ArrayList<REST_User_Functionalities> getResponse_allusers() {
+        return response_allusers;
+    }
+
+
 
     public ArrayList<Test> getTestResponse() {
         return response;

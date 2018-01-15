@@ -21,7 +21,8 @@ public class DataUpdater implements Runnable{
     private Thread updater;
 
     private ArrayList<REST_LocationEntry> queue_locationEntries;
-    private REST_Timeline timeline;
+    private Timeline timeline;
+    private REST_Timeline rest_timeline;
     private ArrayList<REST_TimelineDay> queue_timelineDays;
     private ArrayList<REST_TimelineSegment> queue_timeLineSegments;
     private boolean isAlive;
@@ -80,7 +81,7 @@ public class DataUpdater implements Runnable{
         boolean requestSuccessful = true;
 
         if (timeline != null) {
-            requestSuccessful = UpdateOperations_Synchron.createTimeLine(timeline);
+            requestSuccessful = UpdateOperations_Synchron.createTimeLine(rest_timeline);
 
             if(requestSuccessful) {
                 Log.d("Create", "Timeline is created.");
@@ -303,12 +304,23 @@ public class DataUpdater implements Runnable{
     }
 
     public REST_Timeline getTimeline() {
-        return timeline;
+        return rest_timeline;
     }
 
-    public synchronized void setTimeline(REST_Timeline t) {
+    /**
+     * Create a Timeline for logged in User
+     */
+    public synchronized void setTimeline(Timeline t) {
+        REST_User_Functionalities rest_user = TemporaryDB.getInstance().getAppUser();
+        ArrayList<REST_Achievement> rest_achievements = new ArrayList<>();
+
+        for(Achievement a: t.getAchievements()) {
+            REST_Achievement r_a = new REST_Achievement(a.getAchievement());
+            rest_achievements.add(r_a);
+        }
 
         timeline = t;
+        rest_timeline = new REST_Timeline(rest_user._id, rest_achievements);
         synchronized (Locks.getInstance().lock) {
             Locks.getInstance().lock.notify();
         }
