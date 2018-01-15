@@ -24,6 +24,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.content.Intent;
+
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,9 +41,12 @@ import com.slt.fragments.ResetPasswordDialog;
 import com.slt.model.Response;
 import com.slt.model.User;
 import com.slt.network.NetworkUtil;
+import com.slt.statistics.GeneralViewOfStatistics;
+import com.slt.statistics.ViewStatistics;
 import com.slt.utils.Constants;
 
 import java.io.IOException;
+import java.sql.Time;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
@@ -254,10 +259,15 @@ public class MainProfile extends AppCompatActivity
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_timeline:
-                fragment = new FragmentTimeline();
+                //fragment = new FragmentTimeline();
+                //TODO: Not sure which Activity, please ask Usman/Thorsten; TimelineActivity or TimelineDetailsActivity
+                Intent Timeline = new Intent( MainProfile.this, TimelineActivity.class);
+                startActivity(Timeline);
                 break;
             case R.id.nav_summaries:
-                fragment = new FragmentSummaries();
+                //fragment = new FragmentSummaries();
+                Intent Summaries = new Intent( MainProfile.this, GeneralViewOfStatistics.class);
+                startActivity(Summaries);
                 break;
             case R.id.nav_friends:
                 fragment = new FragmentFriends();

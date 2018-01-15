@@ -1,11 +1,15 @@
 package com.slt.statistics;
 
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
+import com.slt.DrawerUtil;
 import com.slt.R;
 import com.slt.statistics.adapter.ChartDataAdapter;
 import com.slt.statistics.data.DataObjectsCollection;
@@ -24,7 +28,7 @@ public class GeneralViewOfStatistics extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_view_of_statistics);
-
+        super.setTitle("Summaries");
         ListView l = (ListView) findViewById(R.id.list_in_Frag);
 
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
