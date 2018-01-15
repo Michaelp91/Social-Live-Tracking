@@ -8,6 +8,8 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,6 +34,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.content.Intent;
@@ -45,6 +48,8 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.slt.control.ApplicationController;
+import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.fragments.ChangePasswordDialog;
 import com.slt.fragments.FragmentAchievements;
@@ -94,7 +99,8 @@ public class MainProfile extends AppCompatActivity
     private TextView mTvDate;
     //private Button mBtChangePassword;
     private Button mBtLogout;
-
+    private ImageView mProfilePhoto;
+    private TextView mUsername;
 
     private ProgressBar mProgressbar;
 
@@ -131,9 +137,17 @@ public class MainProfile extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View view = navigationView.getHeaderView(0);
+        mProfilePhoto = (ImageView) view.findViewById(R.id.profile_image);
+        SharedResources.getInstance().setNavProfilePhoto(mProfilePhoto);
+        mUsername = (TextView) view.findViewById(R.id.tv_username);
+        SharedResources.getInstance().setNavUsername(mUsername);
+
+        mUsername.setText(DataProvider.getInstance().getOwnUser().getUserName());
+        this.setProfileImage(DataProvider.getInstance().getOwnUser().getMyImage());
 
         initViews();
-        initSharedPreferences();
+       initSharedPreferences();
 
 
         //Create GoogleAPI from main activity to be able to better react to faults
@@ -175,16 +189,30 @@ public class MainProfile extends AppCompatActivity
     }
 
 
+
     private void initViews() {
 
-        mTvName = (TextView) findViewById(R.id.tv_username);
-        mTvEmail = (TextView) findViewById(R.id.tv_email);
-        mTvDate = (TextView) findViewById(R.id.tv_date);
+      //  mTvName = (TextView) findViewById(R.id.tv_username);
+       // mTvEmail = (TextView) findViewById(R.id.tv_email);
+      //  mTvDate = (TextView) findViewById(R.id.tv_date);
         //mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
-        mBtLogout = (Button) findViewById(R.id.nav_btn_logout);
-        mProgressbar = (ProgressBar) findViewById(R.id.progress);
+     //   mBtLogout = (Button) findViewById(R.id.nav_btn_logout);
+     //   mProgressbar = (ProgressBar) findViewById(R.id.progress);
 
     }
+
+    private void setProfileImage(Bitmap img){
+        Log.d(TAG, "setProfileImage: setting profile image.");
+        //check if we have a picture to show, if not default is shown
+        if(img == null) {
+            Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
+            this.mProfilePhoto.setImageBitmap(image);
+        }
+        else {
+            this.mProfilePhoto.setImageBitmap(img);
+        }
+    }
+
 
 
     private void initSharedPreferences() {
