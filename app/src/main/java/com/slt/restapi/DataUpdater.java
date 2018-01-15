@@ -398,30 +398,16 @@ public class DataUpdater implements Runnable{
         r_t_s.duration = t_s.getDuration();
         r_t_s.inactiveDistance = t_s.getInactiveDistance();
         r_t_s.inactiveTime = t_s.getInactiveTime();
-        ArrayList<Achievement> achievements = new ArrayList<>();
+        r_t_s.startPlace = t_s.getStartPlace();
+        r_t_s.myActivity = t_s.getMyActivity().getType();
+        r_t_s.startAddress = t_s.getStartAddress();
+        r_t_s.userSteps = t_s.getUserSteps();
+
         ArrayList<REST_Achievement> rest_achievements = new ArrayList<>();
         for(Achievement a: t_s.getMyAchievements()) {
             REST_Achievement r_a = new REST_Achievement(a.getAchievement());
             rest_achievements.add(r_a);
         }
-/*
-        r_t_s.myAchievements = rest_achievements;
-        r_t_s.myActivity = t_s.getMyActivity().getType();
-        r_t_s.POI = 0;
-        r_t_s.startPlace = t_s.getStartPlace();
-        r_t_s.startAddress = t_s.getStartAddress();
-        r_t_s.startTime = t_s.getStartTime();
-        r_t_s.userSteps = t_s.getUserSteps();
-        */
-
-        //Beispielwerte:
-        r_t_s.myAchievements = rest_achievements;
-        r_t_s.myActivity = 3;
-        r_t_s.POI = 0;
-        r_t_s.startPlace = 2.4;
-        r_t_s.startAddress = "Goldbacherstr. 3, 63739 Aschaffenburg";
-        r_t_s.userSteps = 0;
-
 
         h_queue_timelinesegments_update.put(t_s, r_t_s);
 

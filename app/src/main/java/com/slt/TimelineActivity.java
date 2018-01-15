@@ -183,13 +183,16 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         //UsefulMethods.LoadImage(this);
     }
 
+    /*
     public void loadPicture(byte[]image) {
+
         Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
         ImageView imageView = (ImageView) findViewById(R.id.iv_running);
 
         imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp, 400,
                 400, false));
     }
+    */
 
     public Runnable runnable = new Runnable() {
         @Override

@@ -2,6 +2,7 @@ package com.slt.restapi;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.slt.data.TimelineSegment;
 import com.slt.fragments.LoginFragment;
 import com.slt.restapi.data.*;
 
@@ -15,6 +16,23 @@ import retrofit2.Response;
 
 public class UpdateOperations extends Thread {
     private static Object lock = new Object();
+
+    public static boolean updateTimelineSegmentManually(TimelineSegment t_s) {
+        REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.updateTimelineSegment(r_t_s);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().h_timelineSegments.put(t_s, r_t_s);
+
+        return true;
+    }
 
     public static void createUser_Functionalities(REST_User_Functionalities rest_user_functionalities, LoginFragment loginFragment) {
 

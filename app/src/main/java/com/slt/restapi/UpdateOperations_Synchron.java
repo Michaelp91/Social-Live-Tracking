@@ -70,6 +70,22 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    public static boolean updateTimelineSegmentManually(TimelineSegment t_s) {
+        REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.updateTimelineSegment(r_t_s);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().h_timelineSegments.put(t_s, r_t_s);
+
+        return true;
+    }
 
     public static boolean updateTimelineSegment(TimelineSegment t_s, REST_TimelineSegment timelineSegment) {
         Endpoints api = RetroClient.getApiService();

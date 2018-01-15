@@ -83,18 +83,24 @@ public class OtherRestCalls {
             return null;
         }
 
-        Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
 
-        r_u_f = test.getResponse_user_functionalities();
+        if(jsonObject != null) {
 
-        User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, "");
-        user.setMyImageName(r_u_f.myImage);
+            Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
 
-        TemporaryDB.getInstance().setAppUser(r_u_f);
-        TemporaryDB.getInstance().setModel_AppUser(user);
-        TemporaryDB.getInstance().h_users.put(user, r_u_f);
+            r_u_f = test.getResponse_user_functionalities();
 
-        return user;
+            User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, "");
+            user.setMyImageName(r_u_f.myImage);
+
+            TemporaryDB.getInstance().setAppUser(r_u_f);
+            TemporaryDB.getInstance().setModel_AppUser(user);
+            TemporaryDB.getInstance().h_users.put(user, r_u_f);
+
+            return user;
+        } else {
+            return null;
+        }
     }
 
     public static ArrayList<User> retrieveFriends() {

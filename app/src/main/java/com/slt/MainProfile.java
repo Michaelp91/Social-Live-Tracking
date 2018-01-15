@@ -261,8 +261,7 @@ public class MainProfile extends AppCompatActivity
             case R.id.nav_timeline:
                 //fragment = new FragmentTimeline();
                 //TODO: Not sure which Activity, please ask Usman/Thorsten; TimelineActivity or TimelineDetailsActivity
-                Intent Timeline = new Intent( MainProfile.this, TimelineActivity.class);
-                startActivity(Timeline);
+                fragment = new FragmentTimeline();
                 break;
             case R.id.nav_summaries:
                 //fragment = new FragmentSummaries();

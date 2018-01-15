@@ -681,6 +681,10 @@ public class TimelineSegment {
         return startPlace;
     }
 
+    public void setStartPlace(String startPlace) {
+         this.startPlace = startPlace;
+    }
+
     /**
      * Get the start address of the segment
      * @return The start address
@@ -689,6 +693,9 @@ public class TimelineSegment {
         return startAddress;
     }
 
+    public void setStartAddress(String startAddress) {
+        this.startAddress = startAddress;
+    }
     /**
      *  Get all user comments associated with the segment
      * @return A list containing all user comments

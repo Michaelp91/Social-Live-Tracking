@@ -1,6 +1,7 @@
 package com.slt.restapi;
 
 import android.location.Location;
+import android.support.v4.app.FragmentTransitionImpl;
 import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
@@ -13,6 +14,7 @@ import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
+import com.slt.fragments.FragmentTimeline;
 import com.slt.restapi.data.*;
 import com.slt.restapi.data.Test;
 
@@ -30,7 +32,7 @@ import retrofit2.Response;
  */
 
 public class RetrieveOperations {
-    public TimelineActivity context;
+    public FragmentTimeline context;
     private static final RetrieveOperations ourInstance = new RetrieveOperations();
     public static RetrieveOperations getInstance() {
         return ourInstance;
@@ -109,6 +111,8 @@ public class RetrieveOperations {
         for(REST_TimelineSegment r_t_s: responses.timelinesegments) {
             DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, 100);
             TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime);
+            t_s.setStartAddress(r_t_s.startAddress);
+            t_s.setStartPlace(r_t_s.startPlace);
             t_s.setID(r_t_s._id);
             for(REST_Achievement r_a: r_t_s.myAchievements) {
                 Achievement a = new Achievement(r_a.achievement, null);
