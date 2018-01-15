@@ -80,7 +80,7 @@ public class LoginFragment extends Fragment {
 
     private void initViews(View v) {
 
-       // mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
+        mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
         mEtPassword = (EditText) v.findViewById(R.id.et_password);
         mBtLogin = (Button) v.findViewById(R.id.btn_login);
@@ -89,14 +89,12 @@ public class LoginFragment extends Fragment {
         mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
         mTvRegister = (TextView) v.findViewById(R.id.tv_register);
         mTvForgotPassword = (TextView) v.findViewById(R.id.tv_forgot_password);
-/*
+
         mBtViewStatistics.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent( getActivity()  , ViewStatistics.class);
-
-                startActivity(intent);
+                viewStatistics();
             }
-        });*/
+        });
 
         mBtLogin.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
