@@ -9,6 +9,8 @@ import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
 
 import android.util.Log;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -644,6 +646,10 @@ public class Timeline {
         }
 
         return this.myHistory.get(index);
+    }
+
+    public LinkedList<TimelineDay> getTimelineDays() {
+        return this.myHistory;
     }
 
     /**

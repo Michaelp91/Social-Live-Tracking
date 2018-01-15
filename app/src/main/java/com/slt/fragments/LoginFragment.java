@@ -122,9 +122,7 @@ public class LoginFragment extends Fragment {
 
         mBtViewStatistics.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent( getActivity()  , ViewStatistics.class);
-
-                startActivity(intent);
+                viewStatistics();
             }
         });*/
 

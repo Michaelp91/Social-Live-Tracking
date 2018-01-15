@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Singleton {
     private static Singleton singleton;
-    private ArrayList<Test> response;
+    private REST_User_Functionalities response;
     private FullTimeLine responses;
     private int request_timelinesegmentId;
     private ArrayList<REST_Achievement> achievements;
@@ -36,7 +36,7 @@ public class Singleton {
 
 
 
-    public ArrayList<Test> getTestResponse() {
+    public REST_User_Functionalities getResponse() {
         return response;
     }
 

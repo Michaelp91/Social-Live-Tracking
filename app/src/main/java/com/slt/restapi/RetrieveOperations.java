@@ -19,6 +19,7 @@ import com.slt.restapi.data.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,8 +37,10 @@ public class RetrieveOperations {
     }
 
     public ArrayList<User> retrieveAllUserLists() {
+        String debug = "True";
+        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
         Endpoints api = RetroClient.getApiService();
-        Call<JsonObject> call = api.getAllUsers();
+        Call<JsonObject> call = api.getAllUsers(r_u_f);
         JsonObject jsonObject = null;
         try {
             jsonObject =  call.execute().body();
@@ -57,15 +60,19 @@ public class RetrieveOperations {
         return users;
     }
 
-    public Timeline getCompleteTimeline(User user) {
+    public Timeline getCompleteTimeline() {
+        User user = TemporaryDB.getInstance().getModel_AppUser();
+
+        TemporaryDB.getInstance().h_rest_timelineResolver = new HashMap<>();
         TemporaryDB.getInstance().h_rest_timelinedayResolver = new HashMap<>();
         TemporaryDB.getInstance().h_timelinedayResolver = new HashMap<>();
         TemporaryDB.getInstance().h_rest_timelinesegmentResolver = new HashMap<>();
         TemporaryDB.getInstance().h_timelinesegmentResolver = new HashMap<>();
         TemporaryDB.getInstance().h_rest_locationentryResolver = new HashMap<>();
         TemporaryDB.getInstance().h_locationentryResolver = new HashMap<>();
+        TemporaryDB.getInstance().h_timelineResolver = new HashMap<>();
 
-        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().h_users.get(user);
+        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.getCompleteTimeLine(r_u_f);
 
@@ -96,6 +103,7 @@ public class RetrieveOperations {
             }
             TemporaryDB.getInstance().h_rest_timelinedayResolver.put(r_t_d._id, r_t_d);
             TemporaryDB.getInstance().h_timelinedayResolver.put(t_d.getID(), t_d);
+            TemporaryDB.getInstance().h_timelineDays.put(t_d, r_t_d);
         }
 
         for(REST_TimelineSegment r_t_s: responses.timelinesegments) {
@@ -109,6 +117,7 @@ public class RetrieveOperations {
 
             TemporaryDB.getInstance().h_rest_timelinesegmentResolver.put(r_t_s._id, r_t_s);
             TemporaryDB.getInstance().h_timelinesegmentResolver.put(t_s.getID(), t_s);
+            TemporaryDB.getInstance().h_timelineSegments.put(t_s, r_t_s);
         }
 
         for(REST_LocationEntry r_l_e: responses.locationEntries) {
@@ -119,11 +128,24 @@ public class RetrieveOperations {
             l_e.setID(r_l_e._id);
             TemporaryDB.getInstance().h_rest_locationentryResolver.put(r_l_e._id, r_l_e);
             TemporaryDB.getInstance().h_locationentryResolver.put(l_e.getID(), l_e);
+            TemporaryDB.getInstance().h_locationEntries.put(l_e, r_l_e);
         }
 
 
 
         Timeline t = RESTToDatamodel.buildCompleteTimelineObject();
+
+        LinkedList<Achievement> myAchievements = t.getMyAchievements();
+        ArrayList<REST_Achievement> rest_achievements = new ArrayList<>();
+
+        for(Achievement a: myAchievements) {
+            REST_Achievement r_a = new REST_Achievement(a.getAchievement());
+            rest_achievements.add(r_a);
+        }
+
+        REST_Timeline r_t = new REST_Timeline(r_u_f._id, rest_achievements);
+
+        TemporaryDB.getInstance().setTimeline(r_t);
 
         return t;
     }

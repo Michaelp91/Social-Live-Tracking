@@ -62,8 +62,8 @@ public interface Endpoints {
     @POST("timeline/")
     Call<JsonObject> getCompleteTimeLine(@Body REST_User_Functionalities user);
 
-    @POST("user_functionalities/")
-    Call<JsonObject> getAllUsers();
+    @POST("allusers/")
+    Call<JsonObject> getAllUsers(@Body REST_User_Functionalities user);
 
     @POST("timelines/")
     Call<JsonObject> getCompleteTimeLines(@Body REST_User_Functionalities user);

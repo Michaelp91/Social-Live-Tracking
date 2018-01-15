@@ -156,10 +156,12 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         //Thread t = new Thread(new TrackingSimulator());
         //t.start();
 
+        //Thread t = new Thread(new TrackingSimulator());
+        //t.start();
 
+        Thread t = new Thread(new TrackingSimulator());
+        t.start();
 
-        OtherRestCalls.retrieveFriends();
-        OtherRestCalls.retrieveFriendsIncludingTimelines();
     }
 
     @Override
@@ -194,7 +196,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         public void run() {
       /* do what you need to do */
             User user = new User("");
-            RetrieveOperations.getInstance().getCompleteTimeline(user);
+            RetrieveOperations.getInstance().getCompleteTimeline();
             OtherRestCalls.retrieveFriendsIncludingTimelines();
       /* and here comes the "trick" */
         }

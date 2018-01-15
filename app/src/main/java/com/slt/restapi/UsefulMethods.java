@@ -29,26 +29,34 @@ public class UsefulMethods {
 
     public static Bitmap LoadImage(User user) {
 
-        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().h_users.get(user);
-        Image imageObj = new Image();
-        imageObj.filename = r_u_f.myImage;
+        if(!user.getMyImageName().equals("") && user.getMyImageName() != null) {
+            REST_User_Functionalities r_u_f = TemporaryDB.getInstance().h_users.get(user);
+            Image imageObj = new Image();
+            imageObj.filename = r_u_f.myImage;
 
-        Endpoints api = RetroClient.getApiService();
-        Call<JsonObject> call = api.downloadPicture(imageObj);
+            Endpoints api = RetroClient.getApiService();
+            Call<JsonObject> call = api.downloadPicture(imageObj);
 
-        JsonObject jsonObject = null;
-        try {
-            jsonObject =  call.execute().body();
-        } catch (Exception e) {
+            JsonObject jsonObject = null;
+            try {
+                jsonObject = call.execute().body();
+            } catch (Exception e) {
+                return null;
+            }
+
+            if (jsonObject != null) {
+                String json = jsonObject.toString();
+                Image image = new Gson().fromJson(json, Image.class);
+                byte[] decodedString = Base64.decode(image.string, Base64.DEFAULT);
+                Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                return bmp;
+            } else {
+                return null;
+            }
+        } else {
             return null;
         }
-
-        String json = jsonObject.toString();
-        Image image = new Gson().fromJson(json, Image.class);
-        byte[] decodedString = Base64.decode(image.string, Base64.DEFAULT);
-        Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
-        return bmp;
     }
 
     public static void UploadImageView(Bitmap bitmap, String imagename) {
@@ -65,7 +73,7 @@ public class UsefulMethods {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                TrackingSimulator.FurtherOperations2();
+                TrackingSimulator.FurtherOperations();
             }
 
             @Override
