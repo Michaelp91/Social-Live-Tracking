@@ -25,7 +25,7 @@ public class TrackingSimulator implements Runnable{
 
     @Override
     public void run() {
-        TrackingTest1();
+       // TrackingTest1();
     }
 
 

@@ -293,10 +293,10 @@ public class LoginFragment extends Fragment {
 
                         if (user != null) {
                             DataProvider.getInstance().setOwnUser(user);
-
-                            Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
-                            DataProvider.getInstance().getOwnUser().setTimeline(timeline);
-                            DataProvider.getInstance().syncTimelineToUser();
+                            //TODO Wieder aktivieren wenn es geht
+                           // Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
+                         //   DataProvider.getInstance().getOwnUser().setTimeline(timeline);
+                         //   DataProvider.getInstance().syncTimelineToUser();
 
                         } else {
                             showSnackBarMessage("Error retrieving User!");
