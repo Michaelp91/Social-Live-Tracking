@@ -84,6 +84,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private View view;
     private Timeline t;
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,8 +100,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         view_timelineDays = (LinearLayout) view.findViewById(R.id.timeline_days);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Timeline");
-        Thread t = new Thread(new TrackingSimulator());
-        t.start();
+        //Thread t = new Thread(new TrackingSimulator());
+        //t.start();
 
 
         RetrieveOperations.getInstance().context = this;
@@ -284,6 +285,12 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 break;
 
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable);
     }
 }
 

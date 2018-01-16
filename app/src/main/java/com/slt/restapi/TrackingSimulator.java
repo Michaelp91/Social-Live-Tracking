@@ -247,6 +247,7 @@ public class TrackingSimulator implements Runnable{
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 Bitmap bitmap = UsefulMethods.LoadImage(user);
                 user.setMyImageName("Test2.png");
 
