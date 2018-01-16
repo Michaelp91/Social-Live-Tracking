@@ -301,6 +301,15 @@ public class User {
     }
 
     /**
+     * Used to set multiple users from the DB
+     * @param users A list containing the users to set
+     */
+    public void setfriends(LinkedList<User> users){
+        this.userList.clear();
+        this.userList.addAll(users);
+    }
+
+    /**
      * Get the date the last location update was performed
      *
      * @return

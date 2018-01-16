@@ -18,6 +18,7 @@ import com.slt.R;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.data.User;
+import com.slt.restapi.OtherRestCalls;
 
 import java.util.ArrayList;
 
@@ -73,7 +74,9 @@ public class FriendSearchListAdapter extends ArrayAdapter<User> implements View.
                             .setAction("", null).show();
             }
 
-                break;
+            //REST Call to update UserList
+            OtherRestCalls.updateUser();
+            break;
         }
     }
 
