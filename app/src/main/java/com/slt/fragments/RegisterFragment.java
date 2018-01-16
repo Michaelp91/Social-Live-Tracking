@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.R;
+import com.slt.control.DataProvider;
 import com.slt.model.Response;
 import com.slt.model.User;
 import com.slt.network.NetworkUtil;
@@ -192,8 +193,11 @@ public class RegisterFragment extends Fragment {
             @Override
             public void call(Response response) {
                 mProgressbar.setVisibility(View.GONE);
-                //showSnackBarMessage(response.getMessage());
+
+                //Create new User and store him in the DB and locally
                 OtherRestCalls.createUser_Functionalities(response.getMessage(), context);
+                DataProvider.getInstance().setNewOwnUser(new com.slt.data.User(response.getMessage()));
+
             }
         }, new Action1<Throwable>(){
             @Override

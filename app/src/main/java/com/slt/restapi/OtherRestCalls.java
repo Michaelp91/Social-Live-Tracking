@@ -62,7 +62,7 @@ public class OtherRestCalls {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                context.showSnackBarMessage("Register not successful");
             }
         });
     }
