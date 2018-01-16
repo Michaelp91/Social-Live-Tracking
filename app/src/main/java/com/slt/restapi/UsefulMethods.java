@@ -59,7 +59,7 @@ public class UsefulMethods {
         }
     }
 
-    public static void UploadImageView(Bitmap bitmap, String imagename) {
+    public static boolean UploadImageView(Bitmap bitmap, String imagename) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] imageInByte = baos.toByteArray();
@@ -70,17 +70,13 @@ public class UsefulMethods {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.uploadPicture(imageObj);
 
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                TrackingSimulator.FurtherOperations();
-            }
+        JsonObject jsonObject = null;
+        try {
+            jsonObject =  call.execute().body();
+        } catch (Exception e) {
+            return false; //Request is not Successfull
+        }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-                boolean debug = true;
-            }
-        });
+        return true;
     }
 }

@@ -3,9 +3,12 @@ package com.slt.restapi;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.slt.data.LocationEntry;
+import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.restapi.data.*;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 
@@ -19,6 +22,25 @@ public class UpdateOperations_Synchron {
     public static boolean createTimeLine(REST_Timeline timeline) {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createTimeLine(timeline);
+        JsonObject jsonObject = null;
+        try {
+            jsonObject =  call.execute().body();
+        } catch (Exception e) {
+            return false; //Request is not Successfull
+        }
+
+        Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
+        Singleton.getInstance().setResponse_timeLine(test.getResponse_timeLine());
+        TemporaryDB.getInstance().setTimeline(test.getResponse_timeLine());
+
+        return true;
+    }
+
+    public static boolean createTimeLineManually(Timeline t) {
+        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
+        REST_Timeline r_t = new REST_Timeline(r_u_f._id, new ArrayList<REST_Achievement>());
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.createTimeLine(r_t);
         JsonObject jsonObject = null;
         try {
             jsonObject =  call.execute().body();
