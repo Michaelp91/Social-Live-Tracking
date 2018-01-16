@@ -62,7 +62,7 @@ public class OtherRestCalls {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                context.showSnackBarMessage("Register not successful");
             }
         });
     }
@@ -271,7 +271,8 @@ public class OtherRestCalls {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful()) {
-                        TrackingSimulator.UploadTest(TemporaryDB.getInstance().getModel_AppUser());
+                        //TODO Wieder aktivieren wenn es geht
+                 //       TrackingSimulator.UploadTest(TemporaryDB.getInstance().getModel_AppUser());
                     }
                 }
 

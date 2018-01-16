@@ -78,8 +78,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+/**
+ * Main Profile Class, contains the main activity for our application
+ */
 public class MainProfile extends AppCompatActivity
-        implements  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>, NavigationView.OnNavigationItemSelectedListener {
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        ResultCallback<Status>, NavigationView.OnNavigationItemSelectedListener {
 
     /**
      * Definitions for the permissions that have to be requested by the user
@@ -92,43 +96,41 @@ public class MainProfile extends AppCompatActivity
      */
     private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 1000;
 
+    /**
+     * TAG for the Logger
+     */
     public static final String TAG = MainProfile.class.getSimpleName();
+
+    //creating fragment object
+    Fragment fragment;
 
     private TextView mTvName;
     private TextView mTvEmail;
     private TextView mTvDate;
-    //private Button mBtChangePassword;
     private Button mBtLogout;
+
     private ImageView mProfilePhoto;
     private TextView mUsername;
 
     private ProgressBar mProgressbar;
+    private CompositeSubscription mSubscriptions;
+
+
 
     private SharedPreferences mSharedPreferences;
     private String mToken;
     private String mEmail;
 
-    private CompositeSubscription mSubscriptions;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fragment = null;
+
         setContentView(R.layout.activity_main_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         super.setTitle("Social Live Tracking");
         setSupportActionBar(toolbar);
-
-        //TODO add setting user information
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -137,40 +139,43 @@ public class MainProfile extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         View view = navigationView.getHeaderView(0);
         mProfilePhoto = (ImageView) view.findViewById(R.id.profile_image);
         SharedResources.getInstance().setNavProfilePhoto(mProfilePhoto);
+
         mUsername = (TextView) view.findViewById(R.id.tv_username);
         SharedResources.getInstance().setNavUsername(mUsername);
 
-        mUsername.setText(DataProvider.getInstance().getOwnUser().getUserName());
-        this.setProfileImage(DataProvider.getInstance().getOwnUser().getMyImage());
+      //  mUsername.setText(DataProvider.getInstance().getOwnUser().getUserName());
+      //  this.setProfileImage(DataProvider.getInstance().getOwnUser().getMyImage());
 
-        initViews();
-       initSharedPreferences();
+        initSharedPreferences();
 
+        if(SharedResources.getInstance().getMyGoogleApiClient() == null) {
+            //Create GoogleAPI from main activity to be able to better react to faults
+            SharedResources.getInstance().setMyGoogleApiClient(new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(ActivityRecognition.API)
+                    .build());
 
-        //Create GoogleAPI from main activity to be able to better react to faults
-        SharedResources.getInstance().setMyGoogleApiClient(new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(ActivityRecognition.API)
-                .build());
-
-        SharedResources.getInstance().getMyGoogleApiClient().connect();
+            SharedResources.getInstance().getMyGoogleApiClient().connect();
+        }
 
         //check if we have the camera permission
-        if(ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
-        }else{
-            ActivityCompat.requestPermissions(this, new String[]{ android.Manifest.permission.CAMERA}, 0);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
         }
 
 
         // Check if android 23 or greater for location permission requet
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
+            //check the needed permission for location and request if needed
             if (ContextCompat.checkSelfPermission(this,
                     android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -178,6 +183,7 @@ public class MainProfile extends AppCompatActivity
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
             }
 
+            //check the needed permission for gps and request if needed
             if (ContextCompat.checkSelfPermission(this,
                     android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -188,50 +194,43 @@ public class MainProfile extends AppCompatActivity
 
     }
 
-
-
-    private void initViews() {
-
-      //  mTvName = (TextView) findViewById(R.id.tv_username);
-       // mTvEmail = (TextView) findViewById(R.id.tv_email);
-      //  mTvDate = (TextView) findViewById(R.id.tv_date);
-        //mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
-     //   mBtLogout = (Button) findViewById(R.id.nav_btn_logout);
-     //   mProgressbar = (ProgressBar) findViewById(R.id.progress);
-
-    }
-
-    private void setProfileImage(Bitmap img){
+    /**
+     * Set the picture for the nav drawer
+     *
+     * @param img The image to set as a bitmap
+     */
+    private void setProfileImage(Bitmap img) {
         Log.d(TAG, "setProfileImage: setting profile image.");
         //check if we have a picture to show, if not default is shown
-        if(img == null) {
+        if (img == null) {
             Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
             this.mProfilePhoto.setImageBitmap(image);
-        }
-        else {
+        } else {
             this.mProfilePhoto.setImageBitmap(img);
         }
     }
 
-
-
+    /**
+     * Initialize the shared preferences for the password and email to a default value
+     */
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mToken = mSharedPreferences.getString(Constants.TOKEN,"");
-        mEmail = mSharedPreferences.getString(Constants.EMAIL,"");
+        mToken = mSharedPreferences.getString(Constants.TOKEN, "");
+        mEmail = mSharedPreferences.getString(Constants.EMAIL, "");
     }
 
-    private void logout() {
 
+    /**
+     * Procedure to logout the user
+     */
+    private void logout() {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(Constants.EMAIL,"");
-        editor.putString(Constants.TOKEN,"");
+        editor.putString(Constants.EMAIL, "");
+        editor.putString(Constants.TOKEN, "");
         editor.apply();
         MainProfile.this.finish();
-        //finish();
     }
-
 
 
 /*    private void loadProfile() {
@@ -260,7 +259,7 @@ public class MainProfile extends AppCompatActivity
             try {
 
                 String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody,Response.class);
+                Response response = gson.fromJson(errorBody, Response.class);
                 showSnackBarMessage(response.getMessage());
 
             } catch (IOException e) {
@@ -274,7 +273,7 @@ public class MainProfile extends AppCompatActivity
 
     private void showSnackBarMessage(String message) {
 
-        Snackbar.make(findViewById(R.id.nav_header_main),message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(findViewById(R.id.nav_header_main), message, Snackbar.LENGTH_SHORT).show();
 
     }
 
@@ -283,8 +282,6 @@ public class MainProfile extends AppCompatActivity
         super.onDestroy();
         mSubscriptions.unsubscribe();
     }*/
-
-
 
 
     /**
@@ -305,16 +302,15 @@ public class MainProfile extends AppCompatActivity
     }
 
 
-
-
     /**
-     *  Check the result of the request of permissions
-     * @param requestCode The code of the requested permissions
-     * @param permissions The permissions we asked for
+     * Check the result of the request of permissions
+     *
+     * @param requestCode  The code of the requested permissions
+     * @param permissions  The permissions we asked for
      * @param grantResults The results of the request
      */
     @Override
-    public void onRequestPermissionsResult (int requestCode, @NonNull String permissions[], @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
 
         //Check which permissions were requestd
         switch (requestCode) {
@@ -367,6 +363,7 @@ public class MainProfile extends AppCompatActivity
 
     /**
      * If service has been connected
+     *
      * @param bundle - Bundle containing information if needed
      */
     @Override
@@ -378,13 +375,16 @@ public class MainProfile extends AppCompatActivity
             Toast.makeText(this, "GoogleApiClient not yet connected", Toast.LENGTH_SHORT).show();
         } else {
             //Add request for activity updates to the client
-            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(SharedResources.getInstance().getMyGoogleApiClient(), ACTIVITY_UPDATE_INTERVAL_MILLISECONDS, getActivityDetectionPendingIntent()).setResultCallback(this);
+            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(SharedResources.getInstance()
+                    .getMyGoogleApiClient(), ACTIVITY_UPDATE_INTERVAL_MILLISECONDS, getActivityDetectionPendingIntent())
+                    .setResultCallback(this);
         }
 
     }
 
     /**
      * Overwritten default connectionSuspended method
+     *
      * @param i - Suspend type
      */
     @Override
@@ -395,6 +395,7 @@ public class MainProfile extends AppCompatActivity
 
     /**
      * Overwritten default connectionResult method
+     *
      * @param connectionResult Result of the connection try
      */
     @Override
@@ -445,10 +446,13 @@ public class MainProfile extends AppCompatActivity
         if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
             SharedResources.getInstance().getMyGoogleApiClient().disconnect();
         }
+
+
     }
 
     /**
      * Method gets all pending intents for the activity recognition service
+     *
      * @return The pending intents for the Activity Service
      */
     private PendingIntent getActivityDetectionPendingIntent() {
@@ -459,6 +463,7 @@ public class MainProfile extends AppCompatActivity
 
     /**
      * Checks the result of adding activity recognition
+     *
      * @param status The status of the activity recognition
      */
     public void onResult(@NonNull Status status) {
@@ -469,20 +474,6 @@ public class MainProfile extends AppCompatActivity
             Log.e(TAG, "Error: " + status.getStatusMessage());
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     public void onBackPressed() {
@@ -515,8 +506,8 @@ public class MainProfile extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-    //creating fragment object
-    Fragment fragment = null;
+
+
 
 
     private void displaySelectedScreen(int itemId) {
@@ -527,13 +518,12 @@ public class MainProfile extends AppCompatActivity
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_timeline:
-                //fragment = new FragmentTimeline();
                 //TODO: Not sure which Activity, please ask Usman/Thorsten; TimelineActivity or TimelineDetailsActivity
                 fragment = new FragmentTimeline();
                 break;
             case R.id.nav_summaries:
                 //fragment = new FragmentSummaries();
-                Intent Summaries = new Intent( MainProfile.this, GeneralViewOfStatistics.class);
+                Intent Summaries = new Intent(MainProfile.this, GeneralViewOfStatistics.class);
                 startActivity(Summaries);
                 break;
             case R.id.nav_friends:
@@ -546,8 +536,6 @@ public class MainProfile extends AppCompatActivity
                 fragment = new FragmentEditSettings();
                 break;
         }
-
-
 
         //replacing the fragment
         if (fragment != null) {
@@ -563,18 +551,15 @@ public class MainProfile extends AppCompatActivity
     }
 
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-            int id = item.getItemId();
+        int id = item.getItemId();
 
         if (id == R.id.nav_btn_logout) {
-
-        logout();
-
+            DataProvider.getInstance().clearData();
+            logout();
         }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

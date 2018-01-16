@@ -36,6 +36,8 @@ import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
+import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.UsefulMethods;
 import com.slt.utils.Constants;
 import com.slt.utils.UniversalImageLoader;
 
@@ -102,7 +104,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
      */
     private void storeChanges() {
         //TODO might have to add exceptions for handling malformatted strings
-        int age = Integer.parseInt( this.ageEditText.getText().toString());
+        int age = Integer.parseInt(this.ageEditText.getText().toString());
         this.ownUser.setMyAge(age);
         this.ownUser.setForeName(this.foreNameEditText.getText().toString());
         this.ownUser.setLastName(this.lastNameEditText.getText().toString());
@@ -110,28 +112,40 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         this.ownUser.setUserName(this.usernameEditText.getText().toString());
         ownUser.setMyImage(bitmap);
 
+        //REST Call to update user in DB
+        String photo = ownUser.getEmail().replace('@', '_').replace('.', '_');
+        photo += ".png";
+        ownUser.setMyImageName(photo);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //TODO Wieder aktivieren wenn es geht
+       //         UsefulMethods.UploadImageView(bitmap, ownUser.getMyImageName());
+            }
+        }).start();
+        OtherRestCalls.updateUser();
 
-       SharedResources.getInstance().getNavUsername().setText(DataProvider.getInstance().getOwnUser().getUserName());
+        SharedResources.getInstance().getNavUsername().setText(DataProvider.getInstance().getOwnUser().getUserName());
 
-        if(bitmap == null) {
+        if (bitmap == null) {
             Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
             SharedResources.getInstance().getNavProfilePhoto().setImageBitmap(image);
-        }
-        else {
+        } else {
             SharedResources.getInstance().getNavProfilePhoto().setImageBitmap(DataProvider.getInstance().getOwnUser().getMyImage());
-        }this.setProfileImage(DataProvider.getInstance().getOwnUser().getMyImage());
+        }
+        this.setProfileImage(DataProvider.getInstance().getOwnUser().getMyImage());
 
         Toast.makeText(ApplicationController.getContext(), "Userdata updated", Toast.LENGTH_SHORT).show();
     }
 
     /**
-     *  Select image from camera and gallery
-      */
+     * Select image from camera and gallery
+     */
     private void selectImage() {
         try {
-            if(ContextCompat.checkSelfPermission(view.getContext(),
-                        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
-                final CharSequence[] options = {"Take Photo", "Choose From Gallery","Cancel"};
+            if (ContextCompat.checkSelfPermission(view.getContext(),
+                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(view.getContext());
                 builder.setTitle("Select Option");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -192,14 +206,13 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         }
     }
 
-    private void setProfileImage(Bitmap img){
+    private void setProfileImage(Bitmap img) {
         Log.d(TAG, "setProfileImage: setting profile image.");
         //check if we have a picture to show, if not default is shown
-        if(img == null) {
+        if (img == null) {
             Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
             this.mProfilePhoto.setImageBitmap(image);
-        }
-        else {
+        } else {
             this.mProfilePhoto.setImageBitmap(img);
         }
     }
@@ -211,7 +224,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         getActivity().setTitle("Edit Settings");
 
         view = view;
-        mProfilePhoto =  (ImageView) view.findViewById(R.id.profile_image);
+        mProfilePhoto = (ImageView) view.findViewById(R.id.profile_image);
         this.mListener = this;
         this.ageEditText = (EditText) view.findViewById(R.id.et_age);
         this.usernameEditText = (EditText) view.findViewById(R.id.et_username);
@@ -220,12 +233,10 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         this.cityEditText = (EditText) view.findViewById(R.id.et_city);
         this.emailEditText = (EditText) view.findViewById(R.id.et_email);
 
-        //TODO change email if we want to should check with server if changed to a unused address
-
         //init for the password change dialog
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationController.getContext());
-        mToken = mSharedPreferences.getString(Constants.TOKEN,"");
-        mEmail = mSharedPreferences.getString(Constants.EMAIL,"");
+        mToken = mSharedPreferences.getString(Constants.TOKEN, "");
+        mEmail = mSharedPreferences.getString(Constants.EMAIL, "");
 
 
         this.ownUser = DataProvider.getInstance().getOwnUser();
@@ -253,8 +264,9 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
 
                 fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
 
-            }});
-        Button picture =  (Button) view.findViewById(R.id.btn_change_photo);
+            }
+        });
+        Button picture = (Button) view.findViewById(R.id.btn_change_photo);
 
         picture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -281,7 +293,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
     @Override
     public void onPasswordChanged() {
 
-        Snackbar.make(view.findViewById(R.id.activity_profile),"Password Changed Successfully !",Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(view.findViewById(R.id.activity_profile), "Password Changed Successfully !", Snackbar.LENGTH_SHORT).show();
     }
 
 }

@@ -17,6 +17,8 @@ import com.slt.data.TimelineSegment;
 import com.slt.data.LocationEntry;
 import com.slt.data.inferfaces.ServiceInterface;
 import com.slt.definitions.Constants;
+import com.slt.restapi.DataUpdater;
+import com.slt.restapi.RetrieveOperations;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -115,31 +117,16 @@ public class DataProvider implements ServiceInterface{
         myCurrentLocation = null;
         this.changeDate = new Date();
         this.manualMode = false;
-        //TODO do we have to load data for the current position as well from the server?
 
+        this.ownUser = null;
 
-        //TODO load real data
-        this.ownUser = new User("DEFAULT", this.userTimeline, this.userList);
-        Bitmap img = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.biking);
-        this.ownUser = new User("userName", "email", "foreName", "lastName", img, 23, "city", "ID");
-        User friend1 = new User("friend1", "emailfriend1", "foreName friend1", "lastName friend1 ", img, 24, "cityfr1", "IDf1");
-        this.ownUser.addFriend(friend1);
-        img = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.running);
-        User friend2 = new User("friend2", "emailfriend2", "foreName friend2", "lastName friend2 ", img, 25, "cityfr2", "IDf2");
-        this.ownUser.addFriend(friend2);
-
-        //TODO init the user timeline and the other users with stored data
-        userTimeline = new Timeline();
-        userList = ownUser.getUserList();
-        this.allUsers = new LinkedList<>();
-
-        this.allUsers.add(friend1);
-        User friend3 = new User("friend3", "emailfriend3", "foreName friend3", "lastName friend3 ", img, 25, "cityfr3", "IDf3");
-        User friend4 = new User("friend4", "42", "foreName friend4", "lastName friend4 ", img, 25, "cityfr4", "IDf4");
-        this.allUsers.add(friend3);
-        this.allUsers.add(friend4);
     }
 
+
+    public void clearData() {
+        this.ownUser = null;
+
+    }
 
     /**
      * The method used to react on a change of the activity
@@ -271,8 +258,32 @@ public class DataProvider implements ServiceInterface{
      */
     public void setOwnUser(User ownUser) {
         this.ownUser = ownUser;
+        //REST Call to retrieve complete timeline from DB
+ //       RetrieveOperations.getInstance().getCompleteTimeline();
     }
 
+    /**
+     * Set the own user
+     * @param ownUser The user to set
+     */
+    public void setNewOwnUser(User ownUser)
+    {
+        this.ownUser = ownUser;
+
+        //Create a new Timeline
+        this.userTimeline = new Timeline();
+        this.ownUser.setTimeline(this.userTimeline);
+
+        //REST Call to create a new timeline
+        DataUpdater.getInstance().setTimeline(this.userTimeline);
+    }
+
+    /**
+     * Little Hack to ensure the user timeline is also the current timeline for easier retrieval
+     */
+    public void syncTimelineToUser(){
+        this.userTimeline = this.ownUser.getMyTimeline();
+    }
 
 
     /**

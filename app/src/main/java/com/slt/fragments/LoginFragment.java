@@ -6,10 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,20 +25,19 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.slt.ProfileActivity;
-import com.slt.MainActivity;
 import com.slt.MainProfile;
 import com.slt.R;
-import com.slt.control.SharedResources;
+import com.slt.control.DataProvider;
+import com.slt.data.Timeline;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
+import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.RetrieveOperations;
 import com.slt.statistics.GeneralViewOfStatistics;
-import com.slt.statistics.ViewStatistics;
 import com.slt.utils.Constants;
 import com.slt.TimelineActivity;
 import com.slt.data.User;
 import com.slt.network.RetrofitInterface;
-import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.TemporaryDB;
 import com.slt.restapi.data.REST_User_Functionalities;
 
@@ -53,7 +56,14 @@ import static com.slt.utils.Validation.validateFields;
 
 public class LoginFragment extends Fragment {
 
+    /**
+     * Tag for the logger
+     */
     public static final String TAG = LoginFragment.class.getSimpleName();
+
+    /*
+     * Name of the used shared preferences
+     */
     private static final String SPF_NAME = "timelinelogin";
 
     private EditText mEtEmail;
@@ -71,21 +81,29 @@ public class LoginFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
     private LoginFragment context;
 
+    public Handler handler;
+    String threadEmail;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login,container,false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
         mSubscriptions = new CompositeSubscription();
         initViews(view);
         initSharedPreferences();
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                afterRetrival();
+                return false;
+            }
+        });
+        threadEmail = null;
         return view;
     }
 
     private void initViews(View v) {
-
-       // mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
         mEtPassword = (EditText) v.findViewById(R.id.et_password);
         mBtLogin = (Button) v.findViewById(R.id.btn_login);
@@ -97,43 +115,31 @@ public class LoginFragment extends Fragment {
         checkBox = (CheckBox) v.findViewById(R.id.saveLoginCheckBox);
 
 
-    try {
-        SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
-        if(sharedPref.contains(Constants.STORE_BOX)){
-            boolean checked = sharedPref.getBoolean(Constants.STORE_BOX, false);
+        try {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
+            if (sharedPref.contains(Constants.STORE_BOX)) {
+                boolean checked = sharedPref.getBoolean(Constants.STORE_BOX, false);
 
-            if(checked){
-                checkBox.setChecked(true);
-                String login = sharedPref.getString(Constants.LOGIN, "");
-                String pwd = sharedPref.getString(Constants.PASSWORD, "");
-                this.mEtEmail.setText(login);
-                this.mEtPassword.setText(pwd);
+                if (checked) {
+                    checkBox.setChecked(true);
+                    String login = sharedPref.getString(Constants.LOGIN, "");
+                    String pwd = sharedPref.getString(Constants.PASSWORD, "");
+                    this.mEtEmail.setText(login);
+                    this.mEtPassword.setText(pwd);
 
+                }
             }
+        } catch (Exception e) {
+            //do nothing on exception except log it
+            Log.i(TAG, "Failure when retrieving shared preferences");
         }
-    } catch (Exception e){
-        //first run do nothing
-    }
-
-
-
-
-/*
-
-        mBtViewStatistics.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                viewStatistics();
-            }
-        });*/
 
         mBtLogin.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-
+                threadEmail = null;
                 setError();
-
                 String email = mEtEmail.getText().toString();
                 String password = mEtPassword.getText().toString();
-
 
 
                 int err = 0;
@@ -151,8 +157,8 @@ public class LoginFragment extends Fragment {
                 }
 
                 if (err == 0) {
-
-                    loginProcess(email,password);
+                    threadEmail = email;
+                    loginProcess(email, password);
                     mProgressBar.setVisibility(View.VISIBLE);
 
                 } else {
@@ -166,83 +172,33 @@ public class LoginFragment extends Fragment {
 
         mTvRegister.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                /*FragmentTransaction ft = getFragmentManager().beginTransaction();
-                RegisterFragment fragment = new RegisterFragment();
-                ft.replace(R.id.fragmentFrame,fragment,RegisterFragment.TAG);
-                ft.commit();*/
                 Fragment newFragment = new RegisterFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragmentFrame, newFragment);
+
+                //This way we can press the back button and come one page back
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
 
 
-
         mTvForgotPassword.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                //ResetPasswordDialog fragment = new ResetPasswordDialog();
-                //fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
                 Fragment newFragment = new ResetPasswordFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragmentFrame, newFragment);
+
                 //This way we can press the back button and come one page back:
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
-
-
-
     }
 
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    }
-
-    private void viewStatistics() {
-        Intent intent = new Intent( getActivity()  , GeneralViewOfStatistics.class);
-
-        startActivity(intent);
-
-    }
-
-    private void login() {
-
-        setError();
-
-        String email = mEtEmail.getText().toString();
-        String password = mEtPassword.getText().toString();
-
-        int err = 0;
-
-        //TODO remove later
-       // loginProcess(email,password);
-
-
-        if (!validateEmail(email)) {
-
-            err++;
-            mTiEmail.setError("Email should be valid !");
-        }
-
-        if (!validateFields(password)) {
-
-            err++;
-            mTiPassword.setError("Password should not be empty !");
-        }
-
-        if (err == 0) {
-
-            loginProcess(email,password);
-            mProgressBar.setVisibility(View.VISIBLE);
-
-        } else {
-
-            showSnackBarMessage("Enter Valid Details !");
-        }
     }
 
     private void setError() {
@@ -258,89 +214,109 @@ public class LoginFragment extends Fragment {
         mSubscriptions.add(NetworkUtil.getRetrofit(email, password).login()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-         .subscribe(new Action1<Response>() {
-            @Override
-            public void call(Response response) {
-                mProgressBar.setVisibility(View.GONE);
+                .subscribe(new Action1<Response>() {
+                    @Override
+                    public void call(Response response) {
+                        mProgressBar.setVisibility(View.GONE);
 
-                SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.putString(Constants.TOKEN,response.getToken());
-                editor.putString(Constants.EMAIL,response.getMessage());
-                editor.apply();
-
-
-                String email = mEtEmail.getText().toString();
-                String password = mEtPassword.getText().toString();
-
-                if(checkBox.isChecked()){
+                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        editor.putString(Constants.TOKEN, response.getToken());
+                        editor.putString(Constants.EMAIL, response.getMessage());
+                        editor.apply();
 
 
-                    SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor neditor = sharedPref.edit();
-                    neditor.putString( Constants.LOGIN, email);
-                    neditor.putString(Constants.PASSWORD, password);
-                    neditor.putBoolean(Constants.STORE_BOX, true);
-                    neditor.commit();
-                } else {
-                    SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor neditor = sharedPref.edit();
-                    neditor.putString( Constants.LOGIN, null);
-                    neditor.putString(Constants.PASSWORD, null);
-                    neditor.putBoolean(Constants.STORE_BOX, false);
+                        String email = mEtEmail.getText().toString();
+                        String password = mEtPassword.getText().toString();
 
-                    mEtEmail.setText(null);
-                    mEtPassword.setText(null);
-                }
+                        //Store login if checkbox was selected, if not remove setting from shared prferences
+                        if (checkBox.isChecked()) {
+                            SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
+                            SharedPreferences.Editor neditor = sharedPref.edit();
+                            neditor.putString(Constants.LOGIN, email);
+                            neditor.putString(Constants.PASSWORD, password);
+                            neditor.putBoolean(Constants.STORE_BOX, true);
+                            neditor.commit();
+                        } else {
+                            SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
+                            SharedPreferences.Editor neditor = sharedPref.edit();
+                            neditor.putString(Constants.LOGIN, null);
+                            neditor.putString(Constants.PASSWORD, null);
+                            neditor.putBoolean(Constants.STORE_BOX, false);
 
+                            mEtEmail.setText(null);
+                            mEtPassword.setText(null);
+                        }
 
+                        //Call Handler to retrieve REST User
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        handler.post(runnable);
 
-                User user = new User("");
-                user.setEmail(response.getMessage());
+                        }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable error) {
 
+                        mProgressBar.setVisibility(View.GONE);
 
-                OtherRestCalls.retrieveUser_Functionalities(response.getMessage());
+                        if (error instanceof HttpException) {
 
-                Intent intent = new Intent(getActivity(), MainProfile.class);
-                startActivity(intent);
+                            Gson gson = new GsonBuilder().create();
 
+                            try {
 
-            }
-        }, new Action1<Throwable>(){
-            @Override
-            public void call(Throwable error) {
+                                String errorBody = ((HttpException) error).response().errorBody().string();
+                                Response response = gson.fromJson(errorBody, Response.class);
+                                showSnackBarMessage(response.getMessage());
 
-                mProgressBar.setVisibility(View.GONE);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
 
-                if (error instanceof HttpException) {
+                            showSnackBarMessage("Network Error !");
 
-                    Gson gson = new GsonBuilder().create();
+                        }
 
-                    try {
-
-                        String errorBody = ((HttpException) error).response().errorBody().string();
-                        Response response = gson.fromJson(errorBody,Response.class);
-                        showSnackBarMessage(response.getMessage());
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                } else {
-
-                    showSnackBarMessage("Network Error !");
-
-                    //TODO remove later
-                   // Fragment newFragment = new FragmentFriends();
-                   // FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                  //  transaction.replace(R.id.fragmentFrame, newFragment);
-                   // transaction.addToBackStack(null);
-
-               //    transaction.commit();
-                }
-
-            }
-        } ));
+                }));
     }
+
+    public Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+      /* do what you need to do */
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (threadEmail != null) {
+                        User user = OtherRestCalls.retrieveUser_Functionalities(threadEmail);
+
+                        if (user != null) {
+                            DataProvider.getInstance().setOwnUser(user);
+                            //TODO Wieder aktivieren wenn es geht
+                           // Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
+                         //   DataProvider.getInstance().getOwnUser().setTimeline(timeline);
+                         //   DataProvider.getInstance().syncTimelineToUser();
+
+                        } else {
+                            showSnackBarMessage("Error retrieving User!");
+                        }
+                        handler.sendEmptyMessage(0);
+                    }
+                }
+            }).start();
+
+      /* and here comes the "trick" */
+        }
+    };
+
+    private void afterRetrival() {
+        mProgressBar.setVisibility(View.GONE);
+
+        Intent intent = new Intent(getActivity(), MainProfile.class);
+        startActivity(intent);
+    }
+
 
     public void openTimelineActivity() {
         Intent intent = new Intent(getActivity(), TimelineActivity.class);
@@ -349,99 +325,13 @@ public class LoginFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void handleResponse(Response response) {
-
-        mProgressBar.setVisibility(View.GONE);
-
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(Constants.TOKEN,response.getToken());
-        editor.putString(Constants.EMAIL,response.getMessage());
-        editor.apply();
-
-
-        String email = mEtEmail.getText().toString();
-        String password = mEtPassword.getText().toString();
-
-        if(checkBox.isChecked()){
-            SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
-            SharedPreferences.Editor neditor = sharedPref.edit();
-            neditor.putString( Constants.LOGIN, email);
-            neditor.putString(Constants.PASSWORD, password);
-            neditor.putBoolean(Constants.STORE_BOX, true);
-            neditor.commit();
-        } else {
-            SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
-            SharedPreferences.Editor neditor = sharedPref.edit();
-            neditor.putString( Constants.LOGIN, null);
-            neditor.putString(Constants.PASSWORD, null);
-            neditor.putBoolean(Constants.STORE_BOX, false);
-
-            mEtEmail.setText(null);
-            mEtPassword.setText(null);
-        }
-
-        Intent intent = new Intent(getActivity(), MainProfile.class);
-        startActivity(intent);
-
-    }
-
-    private void handleError(Throwable error) {
-
-        mProgressBar.setVisibility(View.GONE);
-
-        if (error instanceof HttpException) {
-
-            Gson gson = new GsonBuilder().create();
-
-            try {
-
-                String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody,Response.class);
-                showSnackBarMessage(response.getMessage());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-
-            showSnackBarMessage("Network Error !");
-        }
-    }
-
     private void showSnackBarMessage(String message) {
 
         if (getView() != null) {
 
-            Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
         }
     }
-
-    /*private void goToRegister(){
-        //Fragment Transactions, if the back button is pressed, we want to come back
-
-        Fragment newFragment = new RegisterFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragmentFrame, newFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
-
-    }*/
-
-    /*private void showDialog(){
-        //Fragment Transactions, if the back button is pressed, we want to come back
-
-        Fragment newFragment = new ResetPasswordFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragmentFrame, newFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
-        //ResetPasswordDialog fragment = new ResetPasswordDialog();
-        //fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
-    }*/
 
     @Override
     public void onDestroy() {
