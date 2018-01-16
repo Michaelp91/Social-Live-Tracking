@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -27,6 +28,7 @@ import com.google.gson.GsonBuilder;
 import com.slt.MainProfile;
 import com.slt.R;
 import com.slt.control.DataProvider;
+import com.slt.data.Timeline;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
 import com.slt.restapi.OtherRestCalls;
@@ -249,10 +251,7 @@ public class LoginFragment extends Fragment {
                         mProgressBar.setVisibility(View.VISIBLE);
                         handler.post(runnable);
 
-                        Intent intent = new Intent(getActivity(), MainProfile.class);
-                        startActivity(intent);
-
-                    }
+                        }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable error) {
@@ -294,6 +293,11 @@ public class LoginFragment extends Fragment {
 
                         if (user != null) {
                             DataProvider.getInstance().setOwnUser(user);
+
+                            Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
+                            DataProvider.getInstance().getOwnUser().setTimeline(timeline);
+                            DataProvider.getInstance().syncTimelineToUser();
+
                         } else {
                             showSnackBarMessage("Error retrieving User!");
                         }

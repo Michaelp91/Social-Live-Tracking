@@ -18,9 +18,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.R;
 import com.slt.control.DataProvider;
+import com.slt.data.Timeline;
 import com.slt.model.Response;
 import com.slt.model.User;
 import com.slt.network.NetworkUtil;
+import com.slt.restapi.DataUpdater;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.Singleton;
 import com.slt.restapi.data.REST_User;
@@ -194,9 +196,12 @@ public class RegisterFragment extends Fragment {
             public void call(Response response) {
                 mProgressbar.setVisibility(View.GONE);
 
-                //Create new User and store him in the DB and locally
+                //REST Call Create new User, timeline and store him in the DB and locally
                 OtherRestCalls.createUser_Functionalities(response.getMessage(), context);
-                DataProvider.getInstance().setNewOwnUser(new com.slt.data.User(response.getMessage()));
+                //TODO: needs new timeline
+                DataUpdater.getInstance().Start();
+                Timeline timeline = new Timeline();
+                DataUpdater.getInstance().setTimeline(timeline);
 
             }
         }, new Action1<Throwable>(){

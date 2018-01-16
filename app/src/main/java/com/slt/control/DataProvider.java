@@ -278,6 +278,13 @@ public class DataProvider implements ServiceInterface{
         DataUpdater.getInstance().setTimeline(this.userTimeline);
     }
 
+    /**
+     * Little Hack to ensure the user timeline is also the current timeline for easier retrieval
+     */
+    public void syncTimelineToUser(){
+        this.userTimeline = this.ownUser.getMyTimeline();
+    }
+
 
     /**
      * Method to look for a  user by his username
