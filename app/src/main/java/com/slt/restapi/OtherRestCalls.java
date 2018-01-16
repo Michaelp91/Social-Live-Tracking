@@ -39,32 +39,38 @@ import retrofit2.Response;
 public class OtherRestCalls {
 
 
-    public static void createUser_Functionalities(String email, final RegisterFragment context) {
+    public static User createUser_Functionalities(String email) {
 
         REST_User_Functionalities r_u_f = new REST_User_Functionalities();
         r_u_f.email = email;
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createUser_Functionalities(r_u_f);
 
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if(response.isSuccessful()){
-                    Singleton test = null;
-                    try {
-                        test = new Gson().fromJson(response.body().toString(), Singleton.class);
-                        context.showSnackBarMessage("Register successful");
-                    }catch(Exception e) {
-                        boolean debug = true;
-                    }
-                }
-            }
+        JsonObject jsonObject = null;
+        try {
+            jsonObject =  call.execute().body();
+            Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
+        } catch (Exception e) {
+            return null;
+        }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                context.showSnackBarMessage("Register not successful");
-            }
-        });
+        if(jsonObject != null) {
+
+            Singleton test = new Gson().fromJson(jsonObject.toString(), Singleton.class);
+
+            r_u_f = test.getResponse_user_functionalities();
+
+            User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, "");
+            user.setMyImageName(r_u_f.myImage);
+
+            TemporaryDB.getInstance().setAppUser(r_u_f);
+            TemporaryDB.getInstance().setModel_AppUser(user);
+            TemporaryDB.getInstance().h_users.put(user, r_u_f);
+
+            return user;
+        } else {
+            return null;
+        }
     }
 
 

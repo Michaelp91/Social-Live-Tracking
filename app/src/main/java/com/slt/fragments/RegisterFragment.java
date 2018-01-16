@@ -25,6 +25,9 @@ import com.slt.network.NetworkUtil;
 import com.slt.restapi.DataUpdater;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.Singleton;
+import com.slt.restapi.UpdateOperations;
+import com.slt.restapi.UpdateOperations_Synchron;
+import com.slt.restapi.data.REST_Timeline;
 import com.slt.restapi.data.REST_User;
 import com.slt.restapi.data.REST_User_Functionalities;
 
@@ -193,15 +196,41 @@ public class RegisterFragment extends Fragment {
                 .subscribeOn(Schedulers.io())
          .subscribe(new Action1<Response>() {
             @Override
-            public void call(Response response) {
-                mProgressbar.setVisibility(View.GONE);
+            public void call(final Response response) {
 
-                //REST Call Create new User, timeline and store him in the DB and locally
-                OtherRestCalls.createUser_Functionalities(response.getMessage(), context);
-                //TODO: needs new timeline
-                DataUpdater.getInstance().Start();
-                Timeline timeline = new Timeline();
-                DataUpdater.getInstance().setTimeline(timeline);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //REST Call Create new User, timeline and store him in the DB and locally
+                        com.slt.data.User user = OtherRestCalls.createUser_Functionalities(response.getMessage());
+
+                        //TODO: needs new timeline
+                        if(user != null) {
+                            Timeline timeline = new Timeline();
+                            boolean timelineCreated = UpdateOperations_Synchron.createTimeLineManually(timeline);
+
+                            if(timelineCreated) {
+                                //RunOnUIThread is a synchronous Call
+                                context.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mProgressbar.setVisibility(View.GONE);
+                                        showSnackBarMessage("User Registration is Successfull.");
+                                    }
+                                });
+                            } else {
+                                //RunOnUIThread is a synchronous Call
+                                context.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mProgressbar.setVisibility(View.GONE);
+                                        showSnackBarMessage("User Registration is Successfull.");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }).start();
 
             }
         }, new Action1<Throwable>(){
