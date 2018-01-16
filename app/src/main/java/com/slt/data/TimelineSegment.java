@@ -13,6 +13,8 @@ import com.slt.control.ApplicationController;
 import com.slt.control.StepSensor;
 import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
+import com.slt.restapi.UpdateOperations;
+import com.slt.restapi.UpdateOperations_Synchron;
 
 import org.w3c.dom.Comment;
 
@@ -514,7 +516,7 @@ public class TimelineSegment {
         this.calculateAchievements();
 
         //REST Call to update the segment in the DB
-        DataUpdater.getInstance().updateTimelineSegment(this);
+        UpdateOperations_Synchron.updateTimelineSegmentManually(this);
 
         //Send intent to inform about update
         Intent intent = new Intent();

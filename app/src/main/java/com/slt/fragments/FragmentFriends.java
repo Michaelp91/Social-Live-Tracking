@@ -3,6 +3,8 @@ package com.slt.fragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.ads.mediation.customevent.CustomEventAdapter;
 import com.slt.R;
@@ -19,6 +22,7 @@ import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.fragments.adapters.FriendListAdapter;
+import com.slt.restapi.OtherRestCalls;
 import com.slt.utils.Constants;
 
 import java.util.ArrayList;
@@ -35,6 +39,9 @@ public class FragmentFriends extends Fragment {
 
     private Button SearchButton;
 
+    private Handler handler;
+    private ProgressBar mProgressBar;
+
 
 
     @Nullable
@@ -44,6 +51,8 @@ public class FragmentFriends extends Fragment {
         //change R.layout.yourlayoutfilename for each of your fragments
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
         SharedResources.getInstance().setUser(null);
+        mProgressBar =  (ProgressBar) view.findViewById(R.id.friends_progress) ;
+
         //Change to Search Friends Fragment
         SearchButton = (Button) view.findViewById(R.id.btn_search_friends);
         SearchButton.setOnClickListener(new View.OnClickListener() {
@@ -67,20 +76,25 @@ public class FragmentFriends extends Fragment {
         getActivity().setTitle("Friends and Co.");
 
 
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                afterRetrieval();
+                return false;
+            }
+        });
 
-        //TODO: Retrieve Data from Server
+        //Call Handler to retrieve REST User
+        mProgressBar.setVisibility(View.VISIBLE);
+        handler.post(runnable);
+
+
         LinkedList<User> users = DataProvider.getInstance().getOwnUser().getUserList();
 
         listView=(ListView) view.findViewById(R.id.friends_listview);
 
         dataModels= new ArrayList<>(users);
 
-
-        //TODO: Friendslist mit Timeline objekten, done
-        //TODO: allUserlist ohne Timeline Objekte done
-        //TODO: Alle retrieve Operations synchron machen, done
-        //TODO: Update Interfaces, asynchron done
-        //TODO: Tracking Simulator verbessern
         adapter= new FriendListAdapter(dataModels, ApplicationController.getContext());
 
         listView.setAdapter(adapter);
@@ -99,10 +113,39 @@ public class FragmentFriends extends Fragment {
                 transaction.commit();
             }
         });
+    }
 
 
+    /**
+     * Runnable to async load the friends from the server
+     */
+    public Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+      /* do what you need to do */
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
 
+                        LinkedList<User> users = new LinkedList<>();
+                        users.addAll(OtherRestCalls.retrieveFriends());
 
+                        DataProvider.getInstance().changeFriendList(users);
+
+                        handler.sendEmptyMessage(0);
+
+                }
+            }).start();
+
+      /* and here comes the "trick" */
+        }
+    };
+
+    public void afterRetrieval() {
+        dataModels.clear();
+        dataModels.addAll(DataProvider.getInstance().getUserList());
+        mProgressBar.setVisibility(View.GONE);
+        adapter.notifyDataSetChanged();
     }
 }
 

@@ -118,6 +118,9 @@ public class DataProvider implements ServiceInterface{
         this.changeDate = new Date();
         this.manualMode = false;
 
+        this.userList = new LinkedList<>();
+        this.allUsers = new LinkedList<>();
+
         this.ownUser = null;
 
     }
@@ -197,6 +200,28 @@ public class DataProvider implements ServiceInterface{
         //TODO Really do nothing, or update something to show a change in user data -> timestamp
         Log.i(TAG, "updateActivity, no change, nothing to do.");
         return 0;
+    }
+
+
+    /**
+     * Used to update the list of all users from the DB
+     * @param users
+     */
+    public void updateAllUsers(LinkedList<User> users){
+        //Set the new users retrieved
+        this.allUsers.clear();
+        this.allUsers.addAll(users);
+
+        //remove the own user if he has been added
+        User remove = null;
+
+        for (User user : this.allUsers){
+            if(user.getEmail().equals(this.ownUser.getEmail())){
+                remove = user;
+            }
+        }
+
+        this.allUsers.remove(remove);
     }
 
     /**
@@ -285,6 +310,15 @@ public class DataProvider implements ServiceInterface{
         this.userTimeline = this.ownUser.getMyTimeline();
     }
 
+    /**
+     * Used to update friend list from the DB
+     * @param users The users to set
+     */
+    public void changeFriendList(LinkedList<User> users){
+        this.userList.clear();
+        this.userList.addAll(users);
+        this.ownUser.setfriends(users);
+    }
 
     /**
      * Method to look for a  user by his username
@@ -292,7 +326,7 @@ public class DataProvider implements ServiceInterface{
      * @return A list of users with the username if he exists, null if not
      */
     public LinkedList<User> getUserByUsername(String username){
-        LinkedList<User> result = null;
+        LinkedList<User> result = new LinkedList<>();
         //TODO implement updating the userList
 
         //check for user that has this username

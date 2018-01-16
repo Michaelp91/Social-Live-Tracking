@@ -108,7 +108,6 @@
                 android:layout_marginBottom="@dimen/button_margin"
                 android:visibility="gone"/>
 
-            <!-- TODO: Eingegebene Login-Daten speichern, wenn moeglich, habs leider nicht hinbekommen -->
             <!-- Save Login-->
             <CheckBox
                 android:id="@+id/saveLoginCheckBox"

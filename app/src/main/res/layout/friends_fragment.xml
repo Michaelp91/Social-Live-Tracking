@@ -25,6 +25,14 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#FFFFFF" />
 
+        <ProgressBar
+            android:id="@+id/friends_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:visibility="gone"/>
+
         <ListView
             android:id="@+id/friends_listview"
             android:layout_width="match_parent"
