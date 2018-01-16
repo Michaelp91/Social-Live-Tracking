@@ -116,7 +116,6 @@ public class FragmentSearchFriends extends Fragment {
 
                 }
             }).start();
-
         }
     };
 

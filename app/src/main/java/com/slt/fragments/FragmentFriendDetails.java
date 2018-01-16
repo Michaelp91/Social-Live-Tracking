@@ -18,6 +18,7 @@ import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
+import com.slt.restapi.OtherRestCalls;
 
 /**
  * Created by Thorsten on 06.01.2018.
@@ -90,6 +91,9 @@ public class FragmentFriendDetails  extends Fragment  {
 
         DataProvider.getInstance().getOwnUser().deleteFriend(this.shownUser);
         SharedResources.getInstance().setUser(null);
+
+        //REST Call to update UserList
+        OtherRestCalls.updateUser();
 
         Fragment newFragment = new FragmentFriends();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();

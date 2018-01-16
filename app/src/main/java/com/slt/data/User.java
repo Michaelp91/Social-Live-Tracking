@@ -278,7 +278,11 @@ public class User {
      * @param user The user we want to remove
      */
     public void deleteFriend(User user) {
-        this.userList.remove(user);
+        for(User usr : this.userList) {
+            if (usr.getEmail().equals(user.getEmail())) {
+                this.userList.remove(usr);
+            }
+        }
     }
 
     /**

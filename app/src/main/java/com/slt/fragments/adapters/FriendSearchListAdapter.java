@@ -107,7 +107,15 @@ public class FriendSearchListAdapter extends ArrayAdapter<User> implements View.
             viewHolder.picture = (ImageView) convertView.findViewById(R.id.friends_search_item_image);
             viewHolder.addButton = (Button) convertView.findViewById(R.id.friend_search_btn_add);
 
-            if(DataProvider.getInstance().getOwnUser().getUserList().contains(dataModel)){
+            Boolean isFriend = false;
+
+            for(User user : DataProvider.getInstance().getOwnUser().getUserList()){
+                if(dataModel.getEmail().equals(user.getEmail())){
+                    isFriend = true;
+                }
+            }
+
+            if(isFriend){
                 viewHolder.addButton.setText("Remove");
             }
 
