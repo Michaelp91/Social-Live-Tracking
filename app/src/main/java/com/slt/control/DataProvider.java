@@ -18,6 +18,7 @@ import com.slt.data.LocationEntry;
 import com.slt.data.inferfaces.ServiceInterface;
 import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
+import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
 
 import java.util.Date;
@@ -225,39 +226,12 @@ public class DataProvider implements ServiceInterface{
     }
 
     /**
-     * Used to add a user to the friends List
-     * @param user The user to add
-     */
-     public void addUserAsFriend(User user) {
-
-        this.userList.add(user);
-         //Send intent to inform about update
-         Intent intent = new Intent();
-         intent.setAction(Constants.INTENT.DATA_PROVIDER_INTENT_FRIENDS_CHANGED);
-         LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
-     }
-
-    /**
-     * Used to remove a user from the friends list
-     * @param user The user to remove
-     */
-    public void deleteUserAsFriend(User user) {
-        this.userList.remove(user);
-
-        //Send intent to inform about update
-        Intent intent = new Intent();
-        intent.setAction(Constants.INTENT.DATA_PROVIDER_INTENT_FRIENDS_CHANGED);
-        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
-    }
-
-    /**
      * Method looks for users by their last name and returns them
      * @param name The last name of the user to look for
      * @return A list containing all users with that name, might be empty
      */
     public LinkedList<User> getUserByName(String name){
         LinkedList<User> result = new LinkedList<>();
-        //TODO implement updating the userList
 
         //check for users with that name
         for(User check : this.allUsers){
@@ -283,24 +257,6 @@ public class DataProvider implements ServiceInterface{
      */
     public void setOwnUser(User ownUser) {
         this.ownUser = ownUser;
-        //REST Call to retrieve complete timeline from DB
- //       RetrieveOperations.getInstance().getCompleteTimeline();
-    }
-
-    /**
-     * Set the own user
-     * @param ownUser The user to set
-     */
-    public void setNewOwnUser(User ownUser)
-    {
-        this.ownUser = ownUser;
-
-        //Create a new Timeline
-        this.userTimeline = new Timeline();
-        this.ownUser.setTimeline(this.userTimeline);
-
-        //REST Call to create a new timeline
-        DataUpdater.getInstance().setTimeline(this.userTimeline);
     }
 
     /**
@@ -398,11 +354,17 @@ public class DataProvider implements ServiceInterface{
         if(manualMode){
             // if location did not really change
             if(location.distanceTo(myCurrentLocation) < MIN_CHANGE_LOCATION_DISTANCE){
-                Log.i(TAG, "updatePosition, manual mode, traveled distance < defined change value, ignore update: " + location.distanceTo(myCurrentLocation));
+                Log.i(TAG, "updatePosition, manual mode, traveled distance < defined change value, ignore update: "
+                        + location.distanceTo(myCurrentLocation));
                 return 0;
             }
 
             this.myCurrentLocation = location;
+            this.ownUser.setLastLocation(location, timestamp);
+
+            //REST Call to update the user position
+            OtherRestCalls.updateUser();
+
             this.userTimeline.manualAddLocation(timestamp,location);
             return 0;
         }
@@ -412,6 +374,10 @@ public class DataProvider implements ServiceInterface{
         if(myCurrentActivity == null){
             myCurrentLocation = location;
             this.ownUser.setLastLocation(location, timestamp);
+
+            //REST Call to update the user position
+            OtherRestCalls.updateUser();
+
             Log.i(TAG, "updatePosition, init current Activity, no location set.");
             return 1;
         }
@@ -420,7 +386,8 @@ public class DataProvider implements ServiceInterface{
         if(myCurrentLocation  != null){
             //check if we changed by the min. distance, if no ignore new location
             if(location.distanceTo(myCurrentLocation) < MIN_CHANGE_LOCATION_DISTANCE){
-                Log.i(TAG, "updatePosition, traveled distance < defined change value, ignore update: " + location.distanceTo(myCurrentLocation));
+                Log.i(TAG, "updatePosition, traveled distance < defined change value, ignore update: "
+                        + location.distanceTo(myCurrentLocation));
                 return 0;
             }
         }

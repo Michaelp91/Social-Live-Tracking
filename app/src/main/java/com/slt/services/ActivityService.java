@@ -34,6 +34,17 @@ public class ActivityService extends IntentService {
         startForeground(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, SharedResources.getInstance().getForegroundNotification());
     }
 
+
+    /**
+     * Destructor to remove notification bar
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        stopForeground(true);
+    }
+
     /**
      * Interface to the DataProvider
      */

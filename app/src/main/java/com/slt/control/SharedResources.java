@@ -57,6 +57,7 @@ public class SharedResources {
 
     /**
      * Get the nav bar TextView for the username
+     *
      * @return The TextView of the username
      */
     public TextView getNavUsername() {
@@ -65,6 +66,7 @@ public class SharedResources {
 
     /**
      * Set the TextView of the nav bar for the username
+     *
      * @param navUsername
      */
     public void setNavUsername(TextView navUsername) {
@@ -73,6 +75,7 @@ public class SharedResources {
 
     /**
      * Get the ImageView for the Profile Photo in the nav bar
+     *
      * @return
      */
     public ImageView getNavProfilePhoto() {
@@ -80,12 +83,13 @@ public class SharedResources {
     }
 
 
-    public  void setNavProfilePhoto(ImageView navProfilePhoto) {
+    public void setNavProfilePhoto(ImageView navProfilePhoto) {
         this.navProfilePhoto = navProfilePhoto;
     }
 
     /**
      * Get the instance of the shared resources
+     *
      * @return The instance of the shared resources
      */
     public static SharedResources getInstance() {
@@ -94,6 +98,7 @@ public class SharedResources {
 
     /**
      * Get the instance of the API Client
+     *
      * @return The stored instance of the Google API Client
      */
     public GoogleApiClient getMyGoogleApiClient() {
@@ -107,6 +112,7 @@ public class SharedResources {
 
     /**
      * Set the instance of the Google API Client
+     *
      * @param myGoogleApiClient The instance that should be stored
      */
     public void setMyGoogleApiClient(GoogleApiClient myGoogleApiClient) {
@@ -115,12 +121,13 @@ public class SharedResources {
 
     /**
      * Get the foreground notification
+     *
      * @return The foreground notification
-     * */
+     */
     @TargetApi(Build.VERSION_CODES.O)
     public Notification getForegroundNotification() {
 
-        if(foregroundNotification == null) {
+        if (foregroundNotification == null) {
             if (Build.VERSION.SDK_INT < 26) {
                 RemoteViews notificationView = new RemoteViews(ApplicationController.getContext().getPackageName(), R.layout.foreground);
                 Bitmap icon = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), ic_launcher);
@@ -167,7 +174,7 @@ public class SharedResources {
                         .setOngoing(true)
                         .build();
 
-                mNotificationManager.notify(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, foregroundNotification );
+                mNotificationManager.notify(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, foregroundNotification);
 
             }
         }
@@ -176,18 +183,44 @@ public class SharedResources {
     }
 
     /**
+     * Use to remove notification bar
+     */
+    @TargetApi(Build.VERSION_CODES.O)
+    public void removeNotification() {
+        if (foregroundNotification != null) {
+            if (Build.VERSION.SDK_INT < 26) {
+                //Deleted if services are disconnected
+
+            } else {
+
+                // Android >26 also exolicity delete bar
+                NotificationManager mNotificationManager =
+                        (NotificationManager) ApplicationController.getContext()
+                                .getSystemService(ApplicationController.getContext().NOTIFICATION_SERVICE);
+
+                mNotificationManager.deleteNotificationChannel(Constants.NOTIFICATION_ID.id);
+                mNotificationManager.cancelAll();
+            }
+
+            foregroundNotification = null;
+        }
+    }
+
+    /**
      * Can be used to pass along a User between fragments
+     *
      * @param user The user to set
      */
-    public synchronized void setUser(User user){
+    public synchronized void setUser(User user) {
         this.myUser = user;
     }
 
     /**
      * Returns the user to show further data fpr
+     *
      * @return The user that was set, null if none was set
      */
-    public synchronized  User getSelectedUser(){
+    public synchronized User getSelectedUser() {
         return this.myUser;
     }
 

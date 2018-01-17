@@ -104,22 +104,11 @@ public class MainProfile extends AppCompatActivity
     //creating fragment object
     Fragment fragment;
 
-    private TextView mTvName;
-    private TextView mTvEmail;
-    private TextView mTvDate;
-    private Button mBtLogout;
-
     private ImageView mProfilePhoto;
     private TextView mUsername;
 
-    private ProgressBar mProgressbar;
-    private CompositeSubscription mSubscriptions;
-
-
-
     private SharedPreferences mSharedPreferences;
-    private String mToken;
-    private String mEmail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,17 +131,25 @@ public class MainProfile extends AppCompatActivity
 
         View view = navigationView.getHeaderView(0);
         mProfilePhoto = (ImageView) view.findViewById(R.id.profile_image);
+
+        if (DataProvider.getInstance().getOwnUser().getMyImage() == null) {
+            Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
+            this.mProfilePhoto.setImageBitmap(image);
+        } else {
+            this.mProfilePhoto.setImageBitmap(DataProvider.getInstance().getOwnUser().getMyImage());
+        }
+
+
         SharedResources.getInstance().setNavProfilePhoto(mProfilePhoto);
 
         mUsername = (TextView) view.findViewById(R.id.tv_username);
         SharedResources.getInstance().setNavUsername(mUsername);
 
-      //  mUsername.setText(DataProvider.getInstance().getOwnUser().getUserName());
-      //  this.setProfileImage(DataProvider.getInstance().getOwnUser().getMyImage());
+        mUsername.setText(DataProvider.getInstance().getOwnUser().getUserName());
+        this.setProfileImage(DataProvider.getInstance().getOwnUser().getMyImage());
 
-        initSharedPreferences();
 
-        if(SharedResources.getInstance().getMyGoogleApiClient() == null) {
+        if (SharedResources.getInstance().getMyGoogleApiClient() == null) {
             //Create GoogleAPI from main activity to be able to better react to faults
             SharedResources.getInstance().setMyGoogleApiClient(new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -210,66 +207,14 @@ public class MainProfile extends AppCompatActivity
         }
     }
 
-    /**
-     * Initialize the shared preferences for the password and email to a default value
-     */
-    private void initSharedPreferences() {
-
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mToken = mSharedPreferences.getString(Constants.TOKEN, "");
-        mEmail = mSharedPreferences.getString(Constants.EMAIL, "");
-    }
-
 
     /**
      * Procedure to logout the user
      */
     private void logout() {
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(Constants.EMAIL, "");
-        editor.putString(Constants.TOKEN, "");
-        editor.apply();
         MainProfile.this.finish();
     }
 
-
-/*    private void loadProfile() {
-
-        mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getProfile(mEmail)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleResponse,this::handleError));
-    }*/
-
-    private void handleResponse(User user) {
-
-        mProgressbar.setVisibility(View.GONE);
-        mTvName.setText(user.getName());
-        mTvEmail.setText(user.getEmail());
-        mTvDate.setText(user.getCreated_at());
-    }
-
-    private void handleError(Throwable error) {
-
-        mProgressbar.setVisibility(View.GONE);
-
-        if (error instanceof HttpException) {
-
-            Gson gson = new GsonBuilder().create();
-
-            try {
-
-                String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody, Response.class);
-                showSnackBarMessage(response.getMessage());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-
-            showSnackBarMessage("Network Error !");
-        }
-    }
 
     private void showSnackBarMessage(String message) {
 
@@ -277,11 +222,22 @@ public class MainProfile extends AppCompatActivity
 
     }
 
-    /*@Override
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSubscriptions.unsubscribe();
-    }*/
+
+        //Disconnect Activity Listener if App has been stopped
+        if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
+            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
+                    SharedResources.getInstance().getMyGoogleApiClient(),
+                    getActivityDetectionPendingIntent()
+            ).setResultCallback(this);
+        }
+
+        stopService(new Intent(this, LocationService.class));
+
+        SharedResources.getInstance().removeNotification();
+    }
 
 
     /**
@@ -444,9 +400,13 @@ public class MainProfile extends AppCompatActivity
 
         //Disconnect Activity Listener if App has been stopped
         if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
-            SharedResources.getInstance().getMyGoogleApiClient().disconnect();
+            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
+                    SharedResources.getInstance().getMyGoogleApiClient(),
+                    getActivityDetectionPendingIntent()
+            ).setResultCallback(this);
         }
 
+        stopService(new Intent(this, LocationService.class));
 
     }
 
@@ -506,8 +466,6 @@ public class MainProfile extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
 
     private void displaySelectedScreen(int itemId) {

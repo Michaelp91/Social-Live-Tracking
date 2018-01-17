@@ -262,8 +262,8 @@ public class DataUpdater implements Runnable{
                             && ourInstance.h_queue_locationEntries_delete.isEmpty()) {
                         Locks.getInstance().lock.wait();
                     }
-
-                    Thread.sleep(2000);
+                    //TODO: Might REMOVE , could LEAD TO CONTENTIONS
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

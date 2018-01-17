@@ -31,6 +31,7 @@ import com.slt.control.DataProvider;
 import com.slt.data.Timeline;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
+import com.slt.restapi.DataUpdater;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
 import com.slt.statistics.GeneralViewOfStatistics;
@@ -284,7 +285,6 @@ public class LoginFragment extends Fragment {
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
-      /* do what you need to do */
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -293,10 +293,12 @@ public class LoginFragment extends Fragment {
 
                         if (user != null) {
                             DataProvider.getInstance().setOwnUser(user);
-                            //TODO Wieder aktivieren wenn es geht
+
                             Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
                             DataProvider.getInstance().getOwnUser().setTimeline(timeline);
                             DataProvider.getInstance().syncTimelineToUser();
+
+                            DataUpdater.getInstance().Start();
 
                         } else {
                             showSnackBarMessage("Error retrieving User!");
@@ -305,8 +307,6 @@ public class LoginFragment extends Fragment {
                     }
                 }
             }).start();
-
-      /* and here comes the "trick" */
         }
     };
 

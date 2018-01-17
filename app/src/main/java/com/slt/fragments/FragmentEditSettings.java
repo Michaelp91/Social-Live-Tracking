@@ -119,7 +119,6 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //TODO Wieder aktivieren wenn es geht
                 boolean uploadSuccessfull = UsefulMethods.UploadImageView(bitmap, ownUser.getMyImageName());
 
                 boolean debug = true;
