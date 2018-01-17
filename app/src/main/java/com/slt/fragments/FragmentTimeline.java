@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.MainProfile;
 import com.slt.R;
+import com.slt.control.DataProvider;
 import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
@@ -117,8 +118,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
       new Thread(new Runnable() {
           @Override
           public void run() {
-              User user = OtherRestCalls.retrieveUser_Functionalities("max.mustermann@web.de");
-
+              User user = DataProvider.getInstance().getOwnUser();
               if(user != null) {
                   t = RetrieveOperations.getInstance().getCompleteTimeline();
                   updateTimelineDays();
