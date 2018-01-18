@@ -376,10 +376,13 @@ public class TimelineDay {
      */
     public void manualStartNewSegment(Location location, Date date, DetectedActivity activity){
         Log.i(TAG, "ManualAddUserStatus:  create new Segment, location resolution.");
-        this.mySegments.add(new TimelineSegment(location, date, activity, date));
+        TimelineSegment next = new TimelineSegment(location, date, activity, date);
+        this.mySegments.add(next);
 
         //REST Call to add new segment to DB
         DataUpdater.getInstance().addTimeLineSegment(this.mySegments.getLast(), this);
+
+        next.addLocationPoint(location,date);
 
         Object[] ResolutionData = new Object[2];
         ResolutionData[0] = this.mySegments.getLast();
@@ -417,10 +420,13 @@ public class TimelineDay {
     public void manualEndSegment(Date date, Location location){
         DetectedActivity activity = new DetectedActivity(DetectedActivity.UNKNOWN, 100);
         Log.i(TAG, "ManualEndSegment:  create new Segment, end last one.");
-        this.mySegments.add(new TimelineSegment(location, date, activity, date));
+        TimelineSegment next = new TimelineSegment(location, date, activity, date);
+        this.mySegments.add(next);
 
         //REST Call to add new segment to DB
         DataUpdater.getInstance().addTimeLineSegment(this.mySegments.getLast(), this);
+
+        next.addLocationPoint(location, date);
     }
 
     /**
@@ -434,10 +440,14 @@ public class TimelineDay {
         //check if we have segments in the history, if not add and start place and address resolution
         if(this.mySegments.isEmpty()){
             Log.i(TAG, "addUserStatus: Segements empty, create new Segment, location resolution.");
-            this.mySegments.add(new TimelineSegment(location, date, activity, date));
+            TimelineSegment next = new TimelineSegment(location, date, activity, date);
+            this.mySegments.add(next);
 
             //REST Call to add new segment to DB
-            DataUpdater.getInstance().addTimeLineSegment(this.mySegments.getLast(), this);
+            DataUpdater.getInstance().addTimeLineSegment(next, this);
+
+            next.addLocationPoint(location, date);
+
 
             Object[] ResolutionData = new Object[2];
             ResolutionData[0] = this.mySegments.getLast();
@@ -499,6 +509,8 @@ public class TimelineDay {
 
                 //REST Call to add new segment to DB
                 DataUpdater.getInstance().addTimeLineSegment(nextSegment, this);
+
+                nextSegment.addLocationPoint(location, date);
 
                 Object[] ResolutionData = new Object[2];
                 ResolutionData[0] = this.mySegments.getLast();

@@ -91,7 +91,7 @@ public class DataUpdater implements Runnable{
             }
         }
 
-        REST_Timeline timeLine = Singleton.getInstance().getResponse_timeLine();
+        REST_Timeline timeLine = TemporaryDB.getInstance().getTimeline();
 
         if(timeLine != null) {
             Iterator iterator = h_queue_timelineDays.entrySet().iterator();
@@ -334,6 +334,7 @@ public class DataUpdater implements Runnable{
 
 
             REST_TimelineDay r_t_d = new REST_TimelineDay(t_d.getMyDate());
+            r_t_d.timeline = TemporaryDB.getInstance().getTimeline()._id;
             h_queue_timelineDays.put(t_d, r_t_d);
             TemporaryDB.getInstance().h_timelineDays.put(t_d, r_t_d);
             synchronized (Locks.getInstance().lock) {

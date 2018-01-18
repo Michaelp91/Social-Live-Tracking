@@ -147,9 +147,8 @@ public class RetrieveOperations {
             rest_achievements.add(r_a);
         }
 
-        REST_Timeline r_t = new REST_Timeline(r_u_f._id, rest_achievements);
+        TemporaryDB.getInstance().getTimeline().myAchievements = rest_achievements;
 
-        TemporaryDB.getInstance().setTimeline(r_t);
 
         return t;
     }

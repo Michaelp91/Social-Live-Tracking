@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.MainProfile;
 import com.slt.R;
+import com.slt.control.DataProvider;
 import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import retrofit2.adapter.rxjava.HttpException;
@@ -72,7 +74,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     //public Toolbar toolBar;
 
     private TimelineDay choosedTimelineDay;
-    private ArrayList<LinearLayout> list_TimelineDays;
+    private TimelineDay tmpTimelineDay = null;
+    private ArrayList<LinearLayout> list_TimelineDays = new ArrayList<>();
     private ArrayList<LinearLayout> list_TimelineSegments;
     private LinearLayout view_timelineDays;
     private LinearLayout choosedChildren;
@@ -83,6 +86,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private LinkedList<TimelineDay> timeLineDays;
     private View view;
     private Timeline t;
+    private HashMap<Date, TimelineDay> h_viewedTimelineDays = new HashMap<>();
+    private HashMap<Date, TimelineSegment> h_viewedTimelineSegments = new HashMap<>();
+    private HashMap<Date, TimelineDay> h_alreadyChoosedDay = new HashMap<>();
 
 
     @Nullable
@@ -117,8 +123,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
       new Thread(new Runnable() {
           @Override
           public void run() {
-              User user = OtherRestCalls.retrieveUser_Functionalities("max.mustermann@web.de");
-
+              User user = DataProvider.getInstance().getOwnUser();
               if(user != null) {
                   t = RetrieveOperations.getInstance().getCompleteTimeline();
                   updateTimelineDays();
@@ -131,53 +136,66 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         }
     };
 
+    public boolean timelinedayIsNotViewed(Date date) {
+        return (h_viewedTimelineDays.get(date) == null)? true:false;
+    }
+
+    public boolean timelinesegmentIsNotViewed(Date date) {
+        return (h_viewedTimelineSegments.get(date) == null)? true:false;
+    }
+
     public void updateTimelineDays() {
+
+        /*
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 view_timelineDays.removeAllViews();
             }
         });
+        */
 
 
         LayoutInflater inflater = LayoutInflater.from(this.getActivity());
 
-        list_TimelineDays = new ArrayList<>();
+
         timeLineDays = t.getTimelineDays();
         counter_timelinedays = 0;
         //view_timelineDays.removeAllViews();
         for(TimelineDay t_d: timeLineDays) {
-            final LinearLayout row = (LinearLayout)inflater.inflate(R.layout.timeline_day, null);
-            TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
+
+            if(timelinedayIsNotViewed(t_d.getMyDate())) {
+                h_viewedTimelineDays.put(t_d.getMyDate(), t_d);
+                final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.timeline_day, null);
+                TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
 //            ImageView imageView = (ImageView) row.findViewById(R.id.iv_activity);
 //            UsefulMethods.UploadImageView(imageView);
 
 
-            Date date = t_d.getMyDate();
+                Date date = t_d.getMyDate();
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-            String strDate = sdf.format(date);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                String strDate = sdf.format(date);
 
-            myDate.setText(strDate);
+                myDate.setText(strDate);
 
-            row.setTag(TAG_TIMELINEDAY);
-            row.setId(counter_timelinedays);
-            row.setOnClickListener(this);
+                row.setTag(TAG_TIMELINEDAY);
+                row.setId(counter_timelinedays);
+                row.setOnClickListener(this);
 
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    view_timelineDays.addView(row);
-                    list_TimelineDays.add(row);
-                }
-            });
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        view_timelineDays.addView(row);
+                        list_TimelineDays.add(row);
+                    }
+                });
 
 
-            counter_timelinedays++;
-        }
+                counter_timelinedays++;
+            }
 
-        if(choosedChildren != null) {
-            if(choosedChildren.getChildCount() != 0) {
+            if(choosedChildren != null) {
                 updateTimelineView();
             }
         }
@@ -185,6 +203,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     }
 
     public void updateTimelineView() {
+
+/*
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -192,40 +212,47 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             }
         });
 
+        */
+
+
         final LayoutInflater inflater = LayoutInflater.from(this.getActivity());
 
         LinkedList<TimelineSegment> timeLineSegments = choosedTimelineDay.getMySegments();
-        boolean firstLoop = true;
+        boolean isAdded = false;
 
 
         for(TimelineSegment tSegment: timeLineSegments) {
-            LinkedList<LocationEntry> locationEntries = tSegment.getLocationPoints();
 
-            RelativeLayout view_FirstPoint = null;
-            RelativeLayout view_segment = null;
-            RelativeLayout view_LastPoint = null;
+            if (timelinesegmentIsNotViewed(tSegment.getStartTime())) {
+                isAdded = true;
+                h_viewedTimelineSegments.put(tSegment.getStartTime(), tSegment);
+                LinkedList<LocationEntry> locationEntries = tSegment.getLocationPoints();
 
-            if(!locationEntries.isEmpty()) {
-                LocationEntry fstPoint = locationEntries.get(0);
+                RelativeLayout view_FirstPoint = null;
+                RelativeLayout view_segment = null;
+                RelativeLayout view_LastPoint = null;
 
-                view_FirstPoint = (RelativeLayout)inflater.inflate(R.layout.timeline_locationpoint, null);
-                TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeAndaddress);
-                TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
+                if (!locationEntries.isEmpty()) {
+                    LocationEntry fstPoint = locationEntries.get(0);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-                String strDate = sdf.format(fstPoint.getMyEntryDate());
+                    view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
+                    TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeAndaddress);
+                    TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                    String strDate = sdf.format(fstPoint.getMyEntryDate());
 
 
-                myEntryDate.setText(strDate);
-                placeAndaddress.setText(tSegment.getStartAddress());
+                    myEntryDate.setText(strDate);
+                    placeAndaddress.setText(tSegment.getStartAddress());
 
-                if(timeLineSegments.indexOf(tSegment) < timeLineSegments.size() - 1) { //Draw Segment and the Endpoint
+                    if (timeLineSegments.indexOf(tSegment) < timeLineSegments.size() - 1) { //Draw Segment and the Endpoint
 
-                    view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
-                    TextView activeTime = (TextView) view_segment.findViewById(R.id.tv_activeTime);
-                    TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
-                    activeTime.setText(Double.toString(tSegment.getDuration()));
-                    activeDistance.setText(Double.toString(tSegment.getActiveDistance()));
+                        view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
+                        TextView activeTime = (TextView) view_segment.findViewById(R.id.tv_activeTime);
+                        TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
+                        activeTime.setText(Double.toString(tSegment.getDuration()));
+                        activeDistance.setText(Double.toString(tSegment.getActiveDistance()));
 
                         /*
                         view_LastPoint = (RelativeLayout)inflater.inflate(R.layout.timeline_locationpoint, null);
@@ -240,37 +267,42 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         placeAndaddress_endlocation.setText("");
                         */
 
+                    }
+
                 }
+
+
+                final RelativeLayout finalView_FirstPoint = view_FirstPoint;
+                final RelativeLayout finalView_segment = view_segment;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (finalView_FirstPoint != null)
+                            choosedChildren.addView(finalView_FirstPoint);
+
+
+                        if (finalView_segment != null)
+                            choosedChildren.addView(finalView_segment);
+
+                    }
+                });
 
             }
-
-
-            final RelativeLayout finalView_FirstPoint = view_FirstPoint;
-            final RelativeLayout finalView_segment = view_segment;
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                    if(finalView_FirstPoint != null)
-                        choosedChildren.addView(finalView_FirstPoint);
-
-
-                    if(finalView_segment != null)
-                        choosedChildren.addView(finalView_segment);
-
-                }
-            });
 
         }
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                LinearLayout whiteSpace = (LinearLayout) inflater.inflate(R.layout.timeline_whitespace, null);
 
-                choosedChildren.addView(whiteSpace);
-            }
-        });
+        if(isAdded) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    LinearLayout whiteSpace = (LinearLayout) inflater.inflate(R.layout.timeline_whitespace, null);
+
+                    choosedChildren.addView(whiteSpace);
+                }
+            });
+        }
 
     }
 
@@ -281,7 +313,20 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 LinearLayout tday = list_TimelineDays.get(v.getId());
                 choosedChildren = (LinearLayout) tday.findViewById(R.id.ll_all_locations);
                 choosedTimelineDay = timeLineDays.get(v.getId());
-                updateTimelineView();
+                choosedChildren.removeAllViews();
+                h_viewedTimelineSegments = new HashMap<>();
+
+                if(h_alreadyChoosedDay.get(choosedTimelineDay.getMyDate()) == null) {
+                        h_alreadyChoosedDay = new HashMap<>();
+                        h_alreadyChoosedDay.put(choosedTimelineDay.getMyDate(), choosedTimelineDay);
+                        updateTimelineView();
+                } else {
+                    h_alreadyChoosedDay = new HashMap<>();
+                    choosedTimelineDay = null;
+                    choosedChildren = null;
+                }
+
+
                 break;
 
         }
