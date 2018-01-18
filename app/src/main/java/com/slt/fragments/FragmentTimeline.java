@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -15,11 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,6 +41,7 @@ import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.TemporaryDB;
 import com.slt.restapi.TrackingSimulator;
+import com.slt.restapi.data.Image;
 import com.slt.restapi.data.REST_LocationEntry;
 import com.slt.restapi.data.REST_TimelineDay;
 import com.slt.restapi.data.REST_TimelineSegment;
@@ -248,11 +253,41 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                     if (timeLineSegments.indexOf(tSegment) < timeLineSegments.size() - 1) { //Draw Segment and the Endpoint
 
+
+
                         view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
                         TextView activeTime = (TextView) view_segment.findViewById(R.id.tv_activeTime);
                         TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
+                        final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
+                        final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
+
+                        final DetectedActivity detectedActivity = tSegment.getMyActivity();
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                switch(detectedActivity.getType()) {
+                                    case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
+                                        activity.setImageResource(R.drawable.walking);
+                                        ll_line.setBackgroundColor(Color.GREEN);
+                                        break;
+                                    case com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING:
+                                        activity.setImageResource(R.drawable.running);
+                                        ll_line.setBackgroundColor(R.color.md_amber_800);
+                                        break;
+                                    default:
+                                        activity.setVisibility(View.GONE);
+                                        break;
+                                }
+                            }
+                        });
+
+
+
                         activeTime.setText(Double.toString(tSegment.getDuration()));
                         activeDistance.setText(Double.toString(tSegment.getActiveDistance()));
+
+
 
                         /*
                         view_LastPoint = (RelativeLayout)inflater.inflate(R.layout.timeline_locationpoint, null);
@@ -335,6 +370,11 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         handler.removeCallbacks(runnable);
     }
 }

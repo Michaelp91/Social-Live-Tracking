@@ -7,6 +7,13 @@ public class Constants {
     /**
      * Action notifications for the application
      */
+
+    public interface TIMELINEACTIVITY {
+        public static int WALKING = 7;
+        public static int RUNNING = 8;
+
+    }
+
     public interface ACTION {
         public static String MAIN_ACTION = "com.slt.definitions.action.main";
         public static String START_DATA_PROVIDER_ACTION = "com.slt.definitions.action.startforeground";
