@@ -132,7 +132,7 @@ public class TimelineSegment {
         this.myStepSensor = new StepSensor();
 
         //add a new location point
-        this.addLocationPoint(location, date);
+     //   this.addLocationPoint(location, date);
     }
 
     /**
