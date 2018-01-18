@@ -52,6 +52,9 @@ public class User {
      */
     private Bitmap myImage;
 
+    /**
+     * The Image Name of the uploaded Bitmap
+     */
     private String myImageName;
 
     /**
@@ -376,13 +379,22 @@ public class User {
         return myImage;
     }
 
+    /**
+     * Get the name of the image
+     * @return The name of the image
+     */
     public String getMyImageName() {
         return myImageName;
     }
 
+    /**
+     * Set the name of the image
+     * @param imageName The image name to set
+     */
     public void setMyImageName(String imageName) {
         this.myImageName = imageName;
     }
+
 
     /**
      * Set a new username for the user

@@ -197,8 +197,6 @@ public class DataProvider implements ServiceInterface{
                 return 2;
             }
         }
-
-        //TODO Really do nothing, or update something to show a change in user data -> timestamp
         Log.i(TAG, "updateActivity, no change, nothing to do.");
         return 0;
     }
@@ -283,7 +281,6 @@ public class DataProvider implements ServiceInterface{
      */
     public LinkedList<User> getUserByUsername(String username){
         LinkedList<User> result = new LinkedList<>();
-        //TODO implement updating the userList
 
         //check for user that has this username
         for(User check : this.allUsers){
@@ -303,7 +300,6 @@ public class DataProvider implements ServiceInterface{
      */
     public LinkedList<User> getUserByEMail(String email){
         LinkedList<User> result = new LinkedList<>();
-        //TODO implement updating the userList
 
         //check for users with that email address
         for(User check : this.allUsers){
@@ -329,7 +325,6 @@ public class DataProvider implements ServiceInterface{
             checkDistance = distance;
         }
         LinkedList<User> result = new LinkedList<>();
-        //TODO implement updating the userList
 
         //check for users in nearby distance
         for(User check : this.allUsers){

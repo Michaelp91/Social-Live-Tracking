@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +35,7 @@ import com.slt.network.NetworkUtil;
 import com.slt.restapi.DataUpdater;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
+import com.slt.restapi.UsefulMethods;
 import com.slt.statistics.GeneralViewOfStatistics;
 import com.slt.utils.Constants;
 import com.slt.TimelineActivity;
@@ -293,6 +295,10 @@ public class LoginFragment extends Fragment {
 
                         if (user != null) {
                             DataProvider.getInstance().setOwnUser(user);
+
+                            Bitmap bitmap = UsefulMethods.LoadImage(user);
+
+                            DataProvider.getInstance().getOwnUser().setMyImage(bitmap);
 
                             Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
                             DataProvider.getInstance().getOwnUser().setTimeline(timeline);

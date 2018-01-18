@@ -28,8 +28,12 @@ import retrofit2.Response;
 public class UsefulMethods {
 
     public static Bitmap LoadImage(User user) {
+        if (user.getMyImageName() == null) {
+            return null;
+        }
 
-        if(!user.getMyImageName().equals("") && user.getMyImageName() != null) {
+        if(!user.getMyImageName().equals("")  ) {
+
             REST_User_Functionalities r_u_f = TemporaryDB.getInstance().h_users.get(user);
             Image imageObj = new Image();
             imageObj.filename = r_u_f.myImage;

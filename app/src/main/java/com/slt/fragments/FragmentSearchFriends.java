@@ -1,6 +1,7 @@
 package com.slt.fragments;
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,6 +22,7 @@ import com.slt.control.DataProvider;
 import com.slt.data.User;
 import com.slt.fragments.adapters.FriendSearchListAdapter;
 import com.slt.restapi.RetrieveOperations;
+import com.slt.restapi.UsefulMethods;
 
 import org.w3c.dom.Text;
 
@@ -45,10 +47,13 @@ public class FragmentSearchFriends extends Fragment {
     private Handler handler;
     private ProgressBar mProgressBar;
 
+    private LinkedList<User> retrievedUsers;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friends_search, container, false);
+        retrievedUsers = new LinkedList<>();
         return view;
     }
 
@@ -72,7 +77,17 @@ public class FragmentSearchFriends extends Fragment {
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
-                afterRetrieval();
+                if(msg.arg1 == 0){
+                    afterRetrieval();
+                }
+                if(msg.arg1 == 1) {
+                    dataModels.clear();
+                    dataModels.addAll(retrievedUsers);
+
+                    adapter.notifyDataSetChanged();
+                    mProgressBar.setVisibility(View.GONE);
+                }
+
                 return false;
             }
         });
@@ -112,7 +127,34 @@ public class FragmentSearchFriends extends Fragment {
 
                     DataProvider.getInstance().updateAllUsers(users);
 
-                    handler.sendEmptyMessage(0);
+                    Message msg = new Message();
+                    msg.arg1 = 0;
+                    handler.sendMessage(msg );
+
+                }
+            }).start();
+        }
+    };
+
+    /**
+     * Runnable to async load all users from the server
+     */
+    public Runnable runnableImages = new Runnable() {
+        @Override
+        public void run() {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //REST Call to retrieve the current User List
+                        for (User user : retrievedUsers){
+                            Bitmap bitmap = UsefulMethods.LoadImage(user);
+
+                            user.setMyImage(bitmap);
+                        }
+
+                    Message msg = new Message();
+                    msg.arg1 = 1;
+                    handler.sendMessage(msg );
 
                 }
             }).start();
@@ -122,14 +164,12 @@ public class FragmentSearchFriends extends Fragment {
     public void afterRetrieval() {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         String text = null;
+        retrievedUsers.clear();
 
         switch (selectedId){
             case R.id.friends_search_option_email:
                 text = enteredText.getText().toString();
-                dataModels.clear();
-                dataModels.addAll(DataProvider.getInstance().getUserByEMail(text));
-
-                adapter.notifyDataSetChanged();
+                retrievedUsers = DataProvider.getInstance().getUserByEMail(text);
                 break;
             case R.id.friends_search_option_nearby:
                 text = enteredText.getText().toString();
@@ -137,7 +177,7 @@ public class FragmentSearchFriends extends Fragment {
 
                 try {
                     Double distance = Double.parseDouble(text);
-                    dataModels.addAll(DataProvider.getInstance().getNearbyUsers(distance));
+                    retrievedUsers = DataProvider.getInstance().getNearbyUsers(distance);
 
                 } catch (NumberFormatException exception){
                     showSnackBarMessage("Input could not be processed, Should be XX.X");
@@ -146,22 +186,22 @@ public class FragmentSearchFriends extends Fragment {
                 break;
             case R.id.friends_search_option_name:
                 text = enteredText.getText().toString();
-                dataModels.clear();
-                dataModels.addAll(DataProvider.getInstance().getUserByName(text));
+                retrievedUsers = DataProvider.getInstance().getUserByName(text);
+
 
                 adapter.notifyDataSetChanged();
                 break;
 
             case R.id.friends_search_option_username:
                 text = enteredText.getText().toString();
-                dataModels.clear();
-                dataModels.addAll(DataProvider.getInstance().getUserByUsername(text));
+                retrievedUsers = DataProvider.getInstance().getUserByUsername(text);
 
                 adapter.notifyDataSetChanged();
                 break;
         }
 
-        mProgressBar.setVisibility(View.GONE);
+        handler.post(runnableImages);
+
     }
 
 

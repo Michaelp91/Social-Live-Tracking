@@ -121,7 +121,9 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
             public void run() {
                 boolean uploadSuccessfull = UsefulMethods.UploadImageView(bitmap, ownUser.getMyImageName());
 
-                boolean debug = true;
+                if(!uploadSuccessfull) {
+                    Toast.makeText(ApplicationController.getContext(), "Image Upload failed.", Toast.LENGTH_SHORT).show();
+                }
             }
         }).start();
         OtherRestCalls.updateUser();

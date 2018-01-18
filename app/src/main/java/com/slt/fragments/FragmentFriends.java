@@ -2,6 +2,7 @@ package com.slt.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +24,7 @@ import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.fragments.adapters.FriendListAdapter;
 import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.UsefulMethods;
 import com.slt.utils.Constants;
 
 import java.util.ArrayList;
@@ -131,6 +133,12 @@ public class FragmentFriends extends Fragment {
                         users.addAll(OtherRestCalls.retrieveFriends());
 
                         DataProvider.getInstance().changeFriendList(users);
+
+                        for (User user : DataProvider.getInstance().getUserList()){
+                            Bitmap bitmap = UsefulMethods.LoadImage(user);
+
+                            user.setMyImage(bitmap);
+                        }
 
                         handler.sendEmptyMessage(0);
 
