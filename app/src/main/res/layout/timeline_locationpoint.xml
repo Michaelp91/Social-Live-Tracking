@@ -18,7 +18,7 @@
 
 
     <TextView
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/ll_locationpoint"
         android:id="@+id/tv_placeAndaddress"
@@ -27,7 +27,7 @@
         android:text="City Gallerie"/>
 
     <TextView
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:id="@+id/tv_myEntryDate"
         android:layout_marginRight="5dp"
         android:layout_width="wrap_content"

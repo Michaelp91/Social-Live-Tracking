@@ -81,6 +81,11 @@
     <string name="data_provider_notification">GPS Position and Activity Detection active"</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBYDCD1tmcSTSHdB2LhYU-aIYE-C-hjNeQ</string>
 
+    <string name="str_img1">Image1</string>
+    <string name="str_img2">Image2</string>
+    <string name="str_img3">Image3</string>
+    <string name="str_img4">Image4</string>
+    <string name="str_img5">Image5</string>
 
 
 </resources>

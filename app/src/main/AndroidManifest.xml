@@ -27,10 +27,17 @@
         android:supportsRtl="true"
         android:theme="@style/Social_Live_Theme">
 
+
+
+        <!-- TODO: This API KEY DOESN'T SHOW THE MAP CORRECTLY, SO I HAVE INSERT THE ANOTHER KEY
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"/>
+            android:value="@string/google_maps_key"/>-->
 
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCBgOcdVidmZEWxJdFnAEnCdY3-64cY184"/>
 
         <activity
             android:name=".MainActivity"

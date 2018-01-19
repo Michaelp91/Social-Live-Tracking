@@ -46,6 +46,8 @@ public class TimelineSegment {
      */
     private LinkedList<UserComment> userComments;
 
+    private LinkedList<String>strUserComments;
+
     /**
      * The distance a user spend with the activity
      */
@@ -94,7 +96,7 @@ public class TimelineSegment {
     /**
      * Linked list with images for the segment
      */
-    private LinkedList<Image> myImages;
+    private LinkedList<String> myImages;
 
     /**
      * Start time of the segment
@@ -114,6 +116,7 @@ public class TimelineSegment {
      * @param activity The activity the segment was created for
      */
     public TimelineSegment(Location location, Date date, DetectedActivity activity, Date startTime){
+        strUserComments = new LinkedList<>();
         myLocationPoints = new LinkedList<>();
         myAchievements = new LinkedList<>();
         myImages = new LinkedList<>();
@@ -141,6 +144,7 @@ public class TimelineSegment {
      * @param startTime The start Time of the segment
      */
     public TimelineSegment(DetectedActivity activity, Date startTime){
+        strUserComments = new LinkedList<>();
         myLocationPoints = new LinkedList<>();
         myAchievements = new LinkedList<>();
         myImages = new LinkedList<>();
@@ -174,6 +178,14 @@ public class TimelineSegment {
             intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
             LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
         }
+    }
+
+    public void setStrUserComments(LinkedList<String> userComments) {
+        this.strUserComments = strUserComments;
+    }
+
+    public LinkedList<String> getStrUserComments() {
+        return strUserComments;
     }
 
 
@@ -284,7 +296,9 @@ public class TimelineSegment {
      * @param userComment The comment of the user
      * @param user The user that made the comment
      */
+
     public void addUserComment(String userComment, String user) {
+        /*
         UserComment newComment = null;
 
         //check if we have a comment from the user
@@ -301,6 +315,7 @@ public class TimelineSegment {
         } else {
             newComment.addUserComment(userComment);
         }
+        */
     }
 
     /**
@@ -309,6 +324,7 @@ public class TimelineSegment {
      * @param id  The DB ID of the owning user
      */
     public void addUserComment(UserComment comment, String id) {
+        /*
         this.userComments.add(comment);
 
         //Send intent to inform about update
@@ -317,6 +333,7 @@ public class TimelineSegment {
         intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
         intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
         LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+        */
     }
 
     /**
@@ -325,6 +342,7 @@ public class TimelineSegment {
      * @return The comments for the user, null if none are found
      */
     public UserComment getUserComment(String user){
+        /*
         UserComment comment = null;
 
         //check if we have a comment from the user
@@ -335,6 +353,9 @@ public class TimelineSegment {
         }
 
         return comment;
+        */
+
+        return new UserComment("", "");
     }
 
     /**
@@ -427,7 +448,7 @@ public class TimelineSegment {
      * Get the images that are associated with the segment
      * @return A list containing all the images
      */
-    public LinkedList<Image> getMyImages() {
+    public LinkedList<String> getMyImages() {
         return myImages;
     }
 
@@ -450,12 +471,16 @@ public class TimelineSegment {
         LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
+
     /**
      * Add an image from the DB
      * @param image The image to add
      * @param id  The DB ID of the owning user
      */
+
     public void addImage(Image image, String id) {
+
+        /*
         this.myImages.add(image);
 
         //Send intent to inform about update
@@ -464,6 +489,12 @@ public class TimelineSegment {
         intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
         intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
         LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+        */
+    }
+
+
+    public void setImages(LinkedList<String> images) {
+        this.myImages = images;
     }
 
 
@@ -472,6 +503,7 @@ public class TimelineSegment {
      * @param image The image to add to the list
      */
     public void addImages(Image image) {
+        /*
         if(image != null) {
             this.myImages.add(image);
 
@@ -481,6 +513,7 @@ public class TimelineSegment {
             intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
             LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
         }
+        */
     }
 
     /**

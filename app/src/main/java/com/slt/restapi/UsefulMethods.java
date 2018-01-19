@@ -63,6 +63,40 @@ public class UsefulMethods {
         }
     }
 
+    public static Bitmap LoadImage(String imageName) {
+        if (imageName == null) {
+            return null;
+        }
+
+        if(!imageName.equals("")  ) {
+            Image imageObj = new Image();
+            imageObj.filename = imageName;
+
+            Endpoints api = RetroClient.getApiService();
+            Call<JsonObject> call = api.downloadPicture(imageObj);
+
+            JsonObject jsonObject = null;
+            try {
+                jsonObject = call.execute().body();
+            } catch (Exception e) {
+                return null;
+            }
+
+            if (jsonObject != null) {
+                String json = jsonObject.toString();
+                Image image = new Gson().fromJson(json, Image.class);
+                byte[] decodedString = Base64.decode(image.string, Base64.DEFAULT);
+                Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                return bmp;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     public static boolean UploadImageView(Bitmap bitmap, String imagename) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);

@@ -1,17 +1,26 @@
 package com.slt.fragments;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
+import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +38,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.MainProfile;
 import com.slt.R;
+import com.slt.TimelineDetailsActivity;
+import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
@@ -41,18 +52,21 @@ import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.TemporaryDB;
 import com.slt.restapi.TrackingSimulator;
+import com.slt.restapi.UsefulMethods;
 import com.slt.restapi.data.Image;
 import com.slt.restapi.data.REST_LocationEntry;
 import com.slt.restapi.data.REST_TimelineDay;
 import com.slt.restapi.data.REST_TimelineSegment;
 import com.slt.utils.Constants;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
@@ -68,10 +82,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 
 public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
+    private static final String TAG = "FragmentTimeline";
     private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
     private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
     public Handler handler = new Handler();
@@ -91,9 +107,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private LinkedList<TimelineDay> timeLineDays;
     private View view;
     private Timeline t;
-    private HashMap<Date, TimelineDay> h_viewedTimelineDays = new HashMap<>();
-    private HashMap<Date, TimelineSegment> h_viewedTimelineSegments = new HashMap<>();
-    private HashMap<Date, TimelineDay> h_alreadyChoosedDay = new HashMap<>();
+    private HashMap<String, TimelineDay> h_viewedTimelineDays = new HashMap<>();
+    private HashMap<String, TimelineSegment> h_viewedTimelineSegments = new HashMap<>();
+    private HashMap<String, TimelineDay> h_alreadyChoosedDay = new HashMap<>();
+    private LinkedList<Bitmap> downloadedImages = new LinkedList<>();
+    private LinkedList<Integer> randomPositions = new LinkedList<>();
+    private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
+    private Bitmap bitmap;
 
 
     @Nullable
@@ -141,12 +161,12 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         }
     };
 
-    public boolean timelinedayIsNotViewed(Date date) {
-        return (h_viewedTimelineDays.get(date) == null)? true:false;
+    public boolean timelinedayIsNotViewed(String id) {
+        return (h_viewedTimelineDays.get(id) == null)? true:false;
     }
 
-    public boolean timelinesegmentIsNotViewed(Date date) {
-        return (h_viewedTimelineSegments.get(date) == null)? true:false;
+    public boolean timelinesegmentIsNotViewed(String id) {
+        return (h_viewedTimelineSegments.get(id) == null)? true:false;
     }
 
     public void updateTimelineDays() {
@@ -169,8 +189,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         //view_timelineDays.removeAllViews();
         for(TimelineDay t_d: timeLineDays) {
 
-            if(timelinedayIsNotViewed(t_d.getMyDate())) {
-                h_viewedTimelineDays.put(t_d.getMyDate(), t_d);
+            if(timelinedayIsNotViewed(t_d.getID())) {
+                h_viewedTimelineDays.put(t_d.getID(), t_d);
                 final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.timeline_day, null);
                 TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
 //            ImageView imageView = (ImageView) row.findViewById(R.id.iv_activity);
@@ -226,11 +246,11 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         boolean isAdded = false;
 
 
-        for(TimelineSegment tSegment: timeLineSegments) {
+        for(final TimelineSegment tSegment: timeLineSegments) {
 
-            if (timelinesegmentIsNotViewed(tSegment.getStartTime())) {
+            if (timelinesegmentIsNotViewed(tSegment.getID())) {
                 isAdded = true;
-                h_viewedTimelineSegments.put(tSegment.getStartTime(), tSegment);
+                h_viewedTimelineSegments.put(tSegment.getID(), tSegment);
                 LinkedList<LocationEntry> locationEntries = tSegment.getLocationPoints();
 
                 RelativeLayout view_FirstPoint = null;
@@ -260,6 +280,20 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
                         final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
                         final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
+                        LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
+
+                        ll_pictures = AddPictures(tSegment, ll_pictures, inflater);
+
+                        ll_pictures.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                selectImage();
+                            }
+                        });
+
+
+
+
 
                         final DetectedActivity detectedActivity = tSegment.getMyActivity();
 
@@ -273,7 +307,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                         break;
                                     case com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING:
                                         activity.setImageResource(R.drawable.running);
-                                        ll_line.setBackgroundColor(R.color.md_amber_800);
+                                        ll_line.setBackgroundResource(R.color.md_amber_800);
                                         break;
                                     default:
                                         activity.setVisibility(View.GONE);
@@ -317,8 +351,20 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                             choosedChildren.addView(finalView_FirstPoint);
 
 
-                        if (finalView_segment != null)
+                        if (finalView_segment != null) {
+                            finalView_segment.setTag(tSegment);
+                            finalView_segment.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    TimelineSegment tSegment = (TimelineSegment) view.getTag();
+                                    DataProvider.getInstance().setOnClickedTimelineSegmentForDetails(tSegment);
+                                    Intent intent = new Intent(getActivity(), TimelineDetailsActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+
                             choosedChildren.addView(finalView_segment);
+                        }
 
                     }
                 });
@@ -341,6 +387,134 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
     }
 
+    private void selectImage() {
+        try {
+            if (ContextCompat.checkSelfPermission(view.getContext(),
+                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(view.getContext());
+                builder.setTitle("Select Option");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Take Photo")) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent, PICK_IMAGE_CAMERA);
+                        } else if (options[item].equals("Choose From Gallery")) {
+                            dialog.dismiss();
+                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
+                        } else if (options[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder.show();
+            } else
+                Toast.makeText(ApplicationController.getContext(), "Camera Permission error", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(ApplicationController.getContext(), "Camera Permission error", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_CAMERA) {
+            try {
+                Uri selectedImage = data.getData();
+                bitmap = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                downloadedImages.add(bitmap);
+
+                //TODO: The File is not uploaded after uploadImage()
+                uploadImage();
+
+                Log.e(TAG, "Pick from Camera::>>> ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == PICK_IMAGE_GALLERY) {
+            Uri selectedImage = data.getData();
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(ApplicationController.getContext().getContentResolver(), selectedImage);
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                downloadedImages.add(bitmap);
+                Log.e(TAG, "Pick from Gallery::>>> ");
+
+                //TODO: The File is not uploaded after uploadImage()
+                uploadImage();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void uploadImage() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Integer imageId = downloadedImages.size() + 1;
+                final boolean uploaded = UsefulMethods.UploadImageView(bitmap, "Dies");
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (uploaded)
+                            Toast.makeText(getActivity(), "Image is uploaded successfully.", Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getActivity(), "Image is not successfully uploaded", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private LinearLayout AddPictures(TimelineSegment tSegment, final LinearLayout ll_pictures , final LayoutInflater inflater) {
+        ArrayList<Integer> numbersInUse = new ArrayList<>();
+        for(String image: tSegment.getMyImages()) {
+            Bitmap bmp = UsefulMethods.LoadImage(image);
+            downloadedImages.add(bmp);
+        }
+
+        int max = (downloadedImages.size() >= 3)?3: downloadedImages.size();
+        for(int i = 0; i < max; i++) {
+            int randomNum = ThreadLocalRandom.current().nextInt(0, downloadedImages.size());
+
+            Bitmap bmp = downloadedImages.get(randomNum);
+
+            final LinearLayout ll_picture = (LinearLayout) inflater.inflate(R.layout.timelinesegment_picture, null);
+            ImageView picture = (ImageView) ll_picture.findViewById(R.id.picture);
+            picture.setImageBitmap(bmp);
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ll_pictures.addView(ll_picture);
+                }
+            });
+        }
+
+        if(max == 0) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    final LinearLayout ll_nonpicture = (LinearLayout) inflater.inflate(R.layout.timelinesegment_nopictures, null);
+                    ll_pictures.addView(ll_nonpicture);
+                }
+            });
+        }
+
+        return ll_pictures;
+
+    }
+
     @Override
     public void onClick(View v) {
         switch ((String)v.getTag()) {
@@ -351,12 +525,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 choosedChildren.removeAllViews();
                 h_viewedTimelineSegments = new HashMap<>();
 
-                if(h_alreadyChoosedDay.get(choosedTimelineDay.getMyDate()) == null) {
+                if(h_alreadyChoosedDay.get(choosedTimelineDay.getID()) == null) {
                         h_alreadyChoosedDay = new HashMap<>();
-                        h_alreadyChoosedDay.put(choosedTimelineDay.getMyDate(), choosedTimelineDay);
+                        h_alreadyChoosedDay.put(choosedTimelineDay.getID(), choosedTimelineDay);
                         updateTimelineView();
                 } else {
                     h_alreadyChoosedDay = new HashMap<>();
+                    downloadedImages = new LinkedList<>();
                     choosedTimelineDay = null;
                     choosedChildren = null;
                 }
@@ -370,12 +545,12 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
+        handler.removeCallbacks(runnable);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(runnable);
     }
 }
 
