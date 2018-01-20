@@ -114,6 +114,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private LinkedList<Integer> randomPositions = new LinkedList<>();
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private Bitmap bitmap;
+    ImageView tmpImageView;
 
 
     @Nullable
@@ -428,7 +429,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 Uri selectedImage = data.getData();
                 bitmap = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                tmpImageView = new ImageView(getActivity());
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                tmpImageView.setImageBitmap(bitmap);
                 downloadedImages.add(bitmap);
 
                 //TODO: The File is not uploaded after uploadImage()
@@ -461,7 +464,10 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 Integer imageId = downloadedImages.size() + 1;
-                final boolean uploaded = UsefulMethods.UploadImageView(bitmap, "Dies");
+                Bitmap bmp = ((BitmapDrawable)tmpImageView.getDrawable()).getBitmap();
+
+
+                final boolean uploaded = UsefulMethods.UploadImageView(bmp, "Dies.png");
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -501,6 +507,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             });
         }
 
+        /*
         if(max == 0) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -510,6 +517,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 }
             });
         }
+        */
 
         return ll_pictures;
 
