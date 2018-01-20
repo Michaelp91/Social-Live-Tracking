@@ -1,6 +1,8 @@
 package com.slt.fragments;
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -14,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -21,6 +24,7 @@ import com.slt.R;
 import com.slt.control.DataProvider;
 import com.slt.data.User;
 import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.UsefulMethods;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -64,6 +68,9 @@ public class FragmentLiveMap extends Fragment {
                 User ownUser = DataProvider.getInstance().getOwnUser();
                 Location ownLocation = ownUser.getLastLocation();
                 LatLng ownLatLng = new LatLng(ownLocation.getLatitude(), ownLocation.getLongitude());
+
+                googleMap.addMarker(new MarkerOptions().position(ownLatLng).title("You").snippet("and snippet")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ownLatLng,
                         10));
 
@@ -84,10 +91,18 @@ public class FragmentLiveMap extends Fragment {
                 for(final User u: list_friends) {
                     Location location = u.getLastLocation();
                     final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    final Bitmap bmp = UsefulMethods.LoadImage(u);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(u.getEmail()));
+
+                            Marker marker = null;
+
+                            if(bmp != null)
+                              marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(u.getEmail()).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+                            else
+                                marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(u.getEmail()));
+
                             markers.add(marker);
                             boolean debug = true;
                         }
