@@ -55,6 +55,7 @@ import com.slt.fragments.ChangePasswordDialog;
 import com.slt.fragments.FragmentAchievements;
 import com.slt.fragments.FragmentEditSettings;
 import com.slt.fragments.FragmentFriends;
+import com.slt.fragments.FragmentLiveMap;
 import com.slt.fragments.FragmentSummaries;
 import com.slt.fragments.FragmentTimeline;
 import com.slt.fragments.LoginFragment;
@@ -481,6 +482,9 @@ public class MainProfile extends AppCompatActivity
                 break;
             case R.id.nav_friends:
                 fragment = new FragmentFriends();
+                break;
+            case R.id.nav_livemap:
+                fragment = new FragmentLiveMap();
                 break;
             case R.id.nav_achievements:
                 fragment = new FragmentAchievements();

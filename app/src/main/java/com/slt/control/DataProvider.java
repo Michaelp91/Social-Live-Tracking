@@ -368,7 +368,7 @@ public class DataProvider implements ServiceInterface{
             this.ownUser.setLastLocation(location, timestamp);
 
             //REST Call to update the user position
-            OtherRestCalls.updateUser();
+            OtherRestCalls.updateUser(false);
 
             this.userTimeline.manualAddLocation(timestamp,location);
             return 0;
@@ -381,7 +381,7 @@ public class DataProvider implements ServiceInterface{
             this.ownUser.setLastLocation(location, timestamp);
 
             //REST Call to update the user position
-            OtherRestCalls.updateUser();
+            OtherRestCalls.updateUser(false);
 
             Log.i(TAG, "updatePosition, init current Activity, no location set.");
             return 1;

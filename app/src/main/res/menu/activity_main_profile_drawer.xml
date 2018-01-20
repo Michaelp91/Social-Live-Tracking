@@ -16,6 +16,12 @@
             android:id="@+id/nav_friends"
             android:icon="@drawable/ic_face_black_24dp"
             android:title="Friends and Co." />
+
+        <item
+            android:id="@+id/nav_livemap"
+            android:icon="@drawable/ic_face_black_24dp"
+            android:title="Live Map" />
+
         <item
             android:id="@+id/nav_achievements"
             android:icon="@drawable/ic_all_inclusive_black_24dp"

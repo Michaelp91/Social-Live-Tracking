@@ -29,7 +29,7 @@
 
 
 
-        <!-- TODO: This API KEY DOESN'T SHOW THE MAP CORRECTLY, SO I HAVE INSERT THE ANOTHER KEY
+        <!-- TODO: This API KEY DOESN'T SHOW THE MAP CORRECTLY, SO I HAVE INSERTED THE ANOTHER KEY
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>-->

@@ -126,7 +126,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
                 }
             }
         }).start();
-        OtherRestCalls.updateUser();
+        OtherRestCalls.updateUser(false); //TODO: Include Friends Update or not? I don't think so
 
         SharedResources.getInstance().getNavUsername().setText(DataProvider.getInstance().getOwnUser().getUserName());
 

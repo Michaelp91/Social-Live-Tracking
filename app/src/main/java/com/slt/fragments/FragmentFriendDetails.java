@@ -93,7 +93,7 @@ public class FragmentFriendDetails  extends Fragment  {
         SharedResources.getInstance().setUser(null);
 
         //REST Call to update UserList
-        OtherRestCalls.updateUser();
+        OtherRestCalls.updateUser(true); //TODO: Include Friends Update or not? I think so.
 
         Fragment newFragment = new FragmentFriends();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();

@@ -38,7 +38,6 @@ import retrofit2.Response;
 
 public class OtherRestCalls {
 
-
     public static User createUser_Functionalities(String email) {
 
         REST_User_Functionalities r_u_f = new REST_User_Functionalities();
@@ -99,6 +98,7 @@ public class OtherRestCalls {
             User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, "");
             user.setMyImageName(r_u_f.myImage);
 
+
             TemporaryDB.getInstance().setAppUser(r_u_f);
             TemporaryDB.getInstance().setModel_AppUser(user);
             TemporaryDB.getInstance().h_users.put(user, r_u_f);
@@ -135,6 +135,12 @@ public class OtherRestCalls {
             for(REST_User_Functionalities r_user_f: rest_user_functionalities) {
                 //TODO: Bitmap !=null :)
                 User u = new User(r_user_f.userName, r_user_f.email, r_user_f.foreName, r_user_f.lastName, null, r_user_f.myAge, r_user_f.myCity, r_user_f._id);
+                u.setMyImageName(r_user_f.myImage);
+
+                Location location = new Location("");
+                location.setLongitude(r_user_f.lastLocation.longitude);
+                location.setLatitude(r_user_f.lastLocation.latitude);
+                u.setLastLocation(location, null);
 
                 TemporaryDB.getInstance().h_rest_userResolver.put(r_u_f._id, r_u_f);
                 TemporaryDB.getInstance().h_userResolver.put(u.getID(), u);
@@ -232,7 +238,7 @@ public class OtherRestCalls {
     }
 
 
-    public static void updateUser() {
+    public static void updateUser(boolean includeFriendsUpdate) {
 
 
         REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
@@ -241,18 +247,22 @@ public class OtherRestCalls {
         r_u_f.foreName = user.getForeName();
         r_u_f.lastName = user.getLastName();
 
-        LinkedList<User> users = user.getUserList();
-        ArrayList<String> ids = new ArrayList<>();
+        if(includeFriendsUpdate) {
+            LinkedList<User> users = user.getUserList();
+            ArrayList<String> ids = new ArrayList<>();
 
-        for(User u: users) {
-            REST_User_Functionalities friend = TemporaryDB.getInstance().h_users.get(u);
+            for (User u : users) {
+                REST_User_Functionalities friend = TemporaryDB.getInstance().h_users.get(u);
 
-            if(friend != null) {
-                ids.add(friend._id);
+                if (friend != null) {
+                    ids.add(friend._id);
+                }
             }
+
+            r_u_f.friends = ids;
         }
 
-        r_u_f.friends = ids;
+
         Location l = user.getLastLocation();
 
         if(l == null) {
