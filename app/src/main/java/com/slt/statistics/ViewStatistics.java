@@ -42,7 +42,7 @@ public class ViewStatistics extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs_in_view_statistics);
         tabLayout.setupWithViewPager(viewPager);
 
     }
