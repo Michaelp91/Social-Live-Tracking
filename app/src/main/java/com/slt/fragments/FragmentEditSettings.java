@@ -114,7 +114,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
 
         //REST Call to update user in DB
         String photo = ownUser.getEmail().replace('@', '_').replace('.', '_');
-        photo += ".png";
+        photo += ".jpeg";
         ownUser.setMyImageName(photo);
         new Thread(new Runnable() {
             @Override
@@ -185,9 +185,14 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
                 Uri selectedImage = data.getData();
                 bitmap = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
 
-                Log.e(TAG, "Pick from Camera::>>> ");
+                //compress the picture -> reduces the quality by 50%
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                byte[] BYTE = bytes.toByteArray();
+
+                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
+
+                Log.e(TAG, "Picked from Camera");
 
                 mProfilePhoto.setImageBitmap(bitmap);
 
@@ -200,7 +205,14 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
                 bitmap = MediaStore.Images.Media.getBitmap(ApplicationController.getContext().getContentResolver(), selectedImage);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                Log.e(TAG, "Pick from Gallery::>>> ");
+
+                //compress the picture -> reduces the quality by 50%
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                byte[] BYTE = bytes.toByteArray();
+
+                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
+
+                Log.e(TAG, "Picked from Gallery");
                 mProfilePhoto.setImageBitmap(bitmap);
 
             } catch (Exception e) {
