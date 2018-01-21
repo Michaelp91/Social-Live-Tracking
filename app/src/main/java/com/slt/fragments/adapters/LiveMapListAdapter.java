@@ -90,7 +90,9 @@ public class LiveMapListAdapter extends ArrayAdapter<User> implements View.OnCli
 
 
         if(dataModel.getMyImage() == null) {
-            Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 8;
+            Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic, options);
             viewHolder.picture.setImageBitmap(image);
         }
         else {

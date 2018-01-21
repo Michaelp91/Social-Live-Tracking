@@ -110,22 +110,26 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         this.ownUser.setLastName(this.lastNameEditText.getText().toString());
         this.ownUser.setMyCity(this.cityEditText.getText().toString());
         this.ownUser.setUserName(this.usernameEditText.getText().toString());
-        ownUser.setMyImage(bitmap);
 
-        //REST Call to update user in DB
-        String photo = ownUser.getEmail().replace('@', '_').replace('.', '_');
-        photo += ".jpeg";
-        ownUser.setMyImageName(photo);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean uploadSuccessfull = UsefulMethods.UploadImageView(bitmap, ownUser.getMyImageName());
 
-                if(!uploadSuccessfull) {
-                    Toast.makeText(ApplicationController.getContext(), "Image Upload failed.", Toast.LENGTH_SHORT).show();
+        if(bitmap != null) {
+            ownUser.setMyImage(bitmap);
+
+            //REST Call to update user in DB
+            String photo = ownUser.getEmail().replace('@', '_').replace('.', '_');
+            photo += ".jpeg";
+            ownUser.setMyImageName(photo);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean uploadSuccessfull = UsefulMethods.UploadImageView(bitmap, ownUser.getMyImageName());
+
+                    if (!uploadSuccessfull) {
+                        Toast.makeText(ApplicationController.getContext(), "Image Upload failed.", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        }).start();
+            }).start();
+        }
         OtherRestCalls.updateUser(false); //TODO: Include Friends Update or not? I don't think so
 
         SharedResources.getInstance().getNavUsername().setText(DataProvider.getInstance().getOwnUser().getUserName());
