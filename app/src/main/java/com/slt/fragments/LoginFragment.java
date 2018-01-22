@@ -107,7 +107,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void initViews(View v) {
-        mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
+        //mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
         mEtPassword = (EditText) v.findViewById(R.id.et_password);
         mBtLogin = (Button) v.findViewById(R.id.btn_login);
@@ -138,11 +138,7 @@ public class LoginFragment extends Fragment {
             Log.i(TAG, "Failure when retrieving shared preferences");
         }
 
-        mBtViewStatistics.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                viewStatistics();
-            }
-        });
+
 
         mBtLogin.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -150,6 +146,11 @@ public class LoginFragment extends Fragment {
                 setError();
                 String email = mEtEmail.getText().toString();
                 String password = mEtPassword.getText().toString();
+
+                // TODO to be deleted!!!
+                email = "live.tr@gmx.de";
+                password = "app";
+                // TODO the end
 
 
                 int err = 0;
