@@ -1,10 +1,17 @@
 package com.slt;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -38,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     private Button mBtLogout;
 
 
+
     private ProgressBar mProgressbar;
 
     private SharedPreferences mSharedPreferences;
@@ -51,9 +59,13 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         mSubscriptions = new CompositeSubscription();
+
+
+
         initViews();
         initSharedPreferences();
         loadProfile();
+
     }
 
     private void initViews() {
@@ -207,5 +219,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
         showSnackBarMessage("Password Changed Successfully !");
     }
+
+
+
+
+
 }
 
