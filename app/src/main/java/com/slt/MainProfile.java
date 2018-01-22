@@ -167,9 +167,8 @@ public class MainProfile extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .addApi(ActivityRecognition.API)
                     .build());
-
-            SharedResources.getInstance().getMyGoogleApiClient().connect();
         }
+        SharedResources.getInstance().getMyGoogleApiClient().connect();
 
         //check if we have the camera permission
         if (ContextCompat.checkSelfPermission(this,
@@ -205,10 +204,10 @@ public class MainProfile extends AppCompatActivity
      */
     private void checkSettings() {
         LocationManager locationManager = null;
-        boolean gps_enabled= false,network_enabled = false;
+        boolean gps_enabled = false, network_enabled = false;
 
 
-        if(locationManager ==null)
+        if (locationManager == null)
             locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         try {
             gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -235,23 +234,23 @@ public class MainProfile extends AppCompatActivity
                 });
                 dialog.show();
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             Log.i(TAG, "Exception when trying to check GPS Settings");
         }
 
-        try{
+        try {
             ConnectivityManager conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             network_enabled = conMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.DISCONNECTED
-                    || conMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.DISCONNECTED ;
+                    || conMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.DISCONNECTED;
 
-            if(!network_enabled){
+            if (!network_enabled) {
 
                 android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
                 dialog.setMessage("Network not enabled!");
                 dialog.setPositiveButton("Go to  settings?", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        Intent myIntent = new Intent( Settings.ACTION_APPLICATION_SETTINGS);
+                        Intent myIntent = new Intent(Settings.ACTION_APPLICATION_SETTINGS);
                         context.startActivity(myIntent);
                     }
                 });
@@ -267,7 +266,7 @@ public class MainProfile extends AppCompatActivity
                 dialog.show();
 
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             Log.i(TAG, "Exception when trying to check Network Settings");
         }
     }
@@ -307,18 +306,19 @@ public class MainProfile extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (isFinishing()) {
+            //Disconnect Activity Listener if App has been stopped
+            if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
+                ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
+                        SharedResources.getInstance().getMyGoogleApiClient(),
+                        getActivityDetectionPendingIntent()
+                ).setResultCallback(this);
+            }
 
-        //Disconnect Activity Listener if App has been stopped
-        if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
-            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
-                    SharedResources.getInstance().getMyGoogleApiClient(),
-                    getActivityDetectionPendingIntent()
-            ).setResultCallback(this);
+            stopService(new Intent(this, LocationService.class));
+
+            SharedResources.getInstance().removeNotification();
         }
-
-        stopService(new Intent(this, LocationService.class));
-
-        SharedResources.getInstance().removeNotification();
     }
 
 
@@ -428,7 +428,6 @@ public class MainProfile extends AppCompatActivity
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Connection suspended");
-        SharedResources.getInstance().getMyGoogleApiClient().connect();
     }
 
     /**
@@ -480,15 +479,6 @@ public class MainProfile extends AppCompatActivity
     protected void onStop() {
         super.onStop();
 
-        //Disconnect Activity Listener if App has been stopped
-        if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
-            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
-                    SharedResources.getInstance().getMyGoogleApiClient(),
-                    getActivityDetectionPendingIntent()
-            ).setResultCallback(this);
-        }
-
-        stopService(new Intent(this, LocationService.class));
 
     }
 
@@ -601,6 +591,18 @@ public class MainProfile extends AppCompatActivity
 
         if (id == R.id.nav_btn_logout) {
             DataProvider.getInstance().clearData();
+
+            //Disconnect Activity Listener if App has been stopped
+            if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
+                ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
+                        SharedResources.getInstance().getMyGoogleApiClient(),
+                        getActivityDetectionPendingIntent()
+                ).setResultCallback(this);
+            }
+
+            stopService(new Intent(this, LocationService.class));
+
+            SharedResources.getInstance().removeNotification();
             logout();
         }
 

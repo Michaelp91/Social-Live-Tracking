@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -190,11 +191,17 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
                 bitmap = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
+                float aspectRatio = bitmap.getWidth() /
+                        (float) bitmap.getHeight();
+                int width = 480;
+                int height = Math.round(width / aspectRatio);
+
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
                 //compress the picture -> reduces the quality by 50%
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+            /*    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
                 byte[] BYTE = bytes.toByteArray();
 
-                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
+                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);*/
 
                 Log.e(TAG, "Picked from Camera");
 
@@ -208,13 +215,19 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(ApplicationController.getContext().getContentResolver(), selectedImage);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
 
                 //compress the picture -> reduces the quality by 50%
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+              /*  bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
                 byte[] BYTE = bytes.toByteArray();
 
-                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
+                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);*/
+
+                float aspectRatio = bitmap.getWidth() /
+                        (float) bitmap.getHeight();
+                int width = 480;
+                int height = Math.round(width / aspectRatio);
+
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
 
                 Log.e(TAG, "Picked from Gallery");
                 mProfilePhoto.setImageBitmap(bitmap);
@@ -223,6 +236,22 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
                 e.printStackTrace();
             }
         }
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap( bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 
     private void setProfileImage(Bitmap img) {

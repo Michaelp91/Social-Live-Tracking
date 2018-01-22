@@ -68,6 +68,7 @@ public class ActivityService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.i(TAG, "Intent Received");
         // If the intent contains an update
         if (ActivityRecognitionResult.hasResult(intent)) {
             // Get the update
