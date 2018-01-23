@@ -118,6 +118,7 @@ public class DataProvider implements ServiceInterface{
         myCurrentLocation = null;
         this.changeDate = new Date();
         this.manualMode = false;
+        this.userTimeline = null;
 
         this.userList = new LinkedList<>();
         this.allUsers = new LinkedList<>();
@@ -126,10 +127,23 @@ public class DataProvider implements ServiceInterface{
 
     }
 
-
+    /**
+     * Add a new unknown Timeline Segment and clear all data
+     */
     public void clearData() {
-        this.ownUser = null;
+        this.userTimeline.addUserStatus(this.myCurrentLocation, new Date(), new DetectedActivity(DetectedActivity.UNKNOWN, 100));
 
+
+        myCurrentActivity = null;
+        myCurrentLocation = null;
+        this.changeDate = null;
+        this.manualMode = false;
+        this.userTimeline = null;
+
+        this.userList = new LinkedList<>();
+        this.allUsers = new LinkedList<>();
+
+        this.ownUser = null;
     }
 
 
