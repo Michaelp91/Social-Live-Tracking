@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -39,6 +40,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.vision.text.Line;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.MainProfile;
@@ -122,6 +124,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private Bitmap bitmap;
     ImageView tmpImageView;
     private TextView tv_usercomments;
+    private LinearLayout choosedPicView;
 
 
     @Nullable
@@ -291,12 +294,14 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
                         tv_usercomments.setTag(tSegment);
 
-                        ll_pictures = AddPictures(tSegment, ll_pictures, inflater);
+                        ll_pictures = AddPictures(tSegment, ll_pictures);
+                        ll_pictures.setTag(tSegment);
                         AddUserComments(tSegment.getStrUserComments(), ll_line);
 
                         ll_pictures.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                choosedPicView = (LinearLayout) v;
                                 selectImage();
                             }
                         });
@@ -558,13 +563,18 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 Bitmap bmp = ((BitmapDrawable)tmpImageView.getDrawable()).getBitmap();
 
 
-                final boolean uploaded = UsefulMethods.UploadImageView(bmp, "Dies.png");
+                final boolean uploaded = UsefulMethods.UploadImageView(bmp, imageId.toString() + ".png");
+                final TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
+                timelineSegment.addImage(imageId.toString() + ".png");
+                final boolean timelinesegmentUpdated = OtherRestCalls.updateTimelineSegmentForImages(timelineSegment);
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (uploaded)
+                        if (uploaded || timelinesegmentUpdated) {
                             Toast.makeText(getActivity(), "Image is uploaded successfully.", Toast.LENGTH_SHORT).show();
+                            AddPictures(timelineSegment, choosedPicView);
+                        }
                         else
                             Toast.makeText(getActivity(), "Image is not successfully uploaded", Toast.LENGTH_SHORT).show();
                     }
@@ -573,7 +583,20 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         }).start();
     }
 
-    private LinearLayout AddPictures(TimelineSegment tSegment, final LinearLayout ll_pictures , final LayoutInflater inflater) {
+    private LinearLayout AddPictures(TimelineSegment tSegment, final LinearLayout ll_pictures) {
+        ImageView iv_pic1 = ll_pictures.findViewById(R.id.iv_pic1);
+        ImageView iv_pic2 = ll_pictures.findViewById(R.id.iv_pic2);
+        ImageView iv_pic3 = ll_pictures.findViewById(R.id.iv_pic3);
+        TextView tv_noPicAvailable = ll_pictures.findViewById(R.id.tv_noPicAvailable);
+
+        iv_pic1.setVisibility(View.GONE);
+        iv_pic2.setVisibility(View.GONE);
+        iv_pic3.setVisibility(View.GONE);
+        tv_noPicAvailable.setVisibility(View.VISIBLE);
+
+
+
+
         ArrayList<Integer> numbersInUse = new ArrayList<>();
         for(String image: tSegment.getMyImages()) {
             Bitmap bmp = UsefulMethods.LoadImage(image);
@@ -586,16 +609,24 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
             Bitmap bmp = downloadedImages.get(randomNum);
 
-            final LinearLayout ll_picture = (LinearLayout) inflater.inflate(R.layout.timelinesegment_picture, null);
-            ImageView picture = (ImageView) ll_picture.findViewById(R.id.picture);
-            picture.setImageBitmap(bmp);
 
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ll_pictures.addView(ll_picture);
-                }
-            });
+            switch (i) {
+                case 0:
+                    tv_noPicAvailable.setVisibility(View.GONE);
+                    iv_pic1.setVisibility(View.VISIBLE);
+                    iv_pic1.setImageBitmap(bmp);
+                    break;
+                case 1:
+                    tv_noPicAvailable.setVisibility(View.GONE);
+                    iv_pic1.setVisibility(View.VISIBLE);
+                    iv_pic2.setImageBitmap(bmp);
+                    break;
+                case 2:
+                    tv_noPicAvailable.setVisibility(View.GONE);
+                    iv_pic1.setVisibility(View.VISIBLE);
+                    iv_pic3.setImageBitmap(bmp);
+                    break;
+            }
         }
 
         /*

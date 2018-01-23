@@ -536,6 +536,9 @@ public class TimelineSegment {
     public void setImages(LinkedList<String> images) {
         this.myImages = images;
     }
+    public void addImage(String image) {
+        this.myImages.add(image);
+    }
 
 
     /**

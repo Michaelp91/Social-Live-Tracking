@@ -59,40 +59,42 @@
             android:layout_height="60dp"
             android:orientation="horizontal">
 
-
-            <!--
             <ImageView
+                android:id="@+id/iv_pic1"
                 android:src="@drawable/landscape1"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:visibility="gone"/>
 
             <ImageView
+                android:id="@+id/iv_pic2"
                 android:src="@drawable/landscape1"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:visibility="gone"/>
 
             <ImageView
+                android:id="@+id/iv_pic3"
                 android:src="@drawable/landscape1"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_weight="1"/> -->
-
-
-
+                android:layout_weight="1"
+                android:visibility="gone"/>
 
             <TextView
+                android:id="@+id/tv_noPicAvailable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
-                android:text="Keine Bilder vorhanden"
+                android:text="No Pictures available"
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:layout_weight="1"/>

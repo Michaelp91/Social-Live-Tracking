@@ -77,6 +77,25 @@ public class OtherRestCalls {
         return true;
     }
 
+    public static boolean updateTimelineSegmentForImages(TimelineSegment t_s) {
+        REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
+        LinkedList<String> images =  t_s.getMyImages();
+        r_t_s.images = images;
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.updateTimelineSegment(r_t_s);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().h_timelineSegments.put(t_s, r_t_s);
+
+        return true;
+    }
+
     public static User createUser_Functionalities(String email) {
 
         REST_User_Functionalities r_u_f = new REST_User_Functionalities();
