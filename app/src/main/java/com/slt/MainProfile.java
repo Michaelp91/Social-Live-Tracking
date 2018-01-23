@@ -241,7 +241,6 @@ public class MainProfile extends AppCompatActivity
 
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        // TODO Auto-generated method stub
 
                     }
                 });
@@ -272,7 +271,6 @@ public class MainProfile extends AppCompatActivity
 
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        // TODO Auto-generated method stub
 
                     }
                 });

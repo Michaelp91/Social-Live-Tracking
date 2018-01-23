@@ -177,7 +177,7 @@ public class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
         return mShowCandleBar;
     }
 
-    // TODO
+
     /**
      * It is necessary to implement ColorsList class that will encapsulate
      * colors list functionality, because It's wrong to copy paste setColor,

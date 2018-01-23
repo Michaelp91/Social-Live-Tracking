@@ -75,7 +75,7 @@ public class FriendSearchListAdapter extends ArrayAdapter<User> implements View.
             }
 
             //REST Call to update UserList
-            OtherRestCalls.updateUser(true); //TODO: Friends Update or not? I do think so.
+            OtherRestCalls.updateUser(true);
             break;
         }
     }
