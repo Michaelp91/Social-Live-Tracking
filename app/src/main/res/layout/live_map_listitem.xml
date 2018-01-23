@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/button_2"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/live_map_list_item_image"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/profile_pic" />
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_marginLeft="5sp"
+        android:layout_marginRight="5sp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/live_map_list_item_title_username"
+            android:layout_width="140dp"
+            android:layout_height="21dp"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:text="Username"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="8sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/live_map_list_item_username"
+            android:layout_width="140dp"
+            android:layout_height="19dp"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:text="Username"
+            android:textColor="@color/md_black_1000"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/live_map_list_item_title_username" />
+
+
+        <TextView
+            android:id="@+id/live_map_list_item_title_email"
+            android:layout_width="140dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="140dp"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:text="E-Mail"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="8sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/live_map_list_item_email"
+            android:layout_width="140dp"
+            android:layout_height="19dp"
+            android:layout_marginStart="140dp"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:text="email"
+            android:textColor="@color/md_black_1000"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/live_map_list_item_title_username" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</LinearLayout>

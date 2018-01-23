@@ -12,8 +12,11 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
+
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -21,6 +24,35 @@ import android.support.v4.content.LocalBroadcastManager;
  * A Timeline contains all data of a
  */
 public class Timeline {
+
+
+    /**
+     * Implementation of a comparator used to sort the location points by time
+     */
+    public class SortTimelineDay implements Comparator<TimelineDay> {
+        /**
+         * Overwritten comparision method
+         *
+         * @param day1 The first day to compare
+         * @param day2 The second day to compare
+         * @return 0 if both are the same, positive if u1 > u2, negative if u1 < u2
+         */
+        @Override
+        public int compare(TimelineDay day1, TimelineDay day2) {
+            //get the values
+            Date d1 = day1.getMyDate();
+            Date d2 = day2.getMyDate();
+
+            //return the comparision results
+            if (d1.equals(d2))
+                return 0;
+            if (d1.after(d2))
+                return 1;
+            else
+                return -1;
+        }
+    }
+
     /*
     * Tag for the Logger
     */
@@ -44,7 +76,7 @@ public class Timeline {
     /**
      * Constructor, initializes the list
      */
-    public Timeline(){
+    public Timeline() {
         myHistory = new LinkedList<TimelineDay>();
         myAchievements = new LinkedList<>();
         this.ID = null;
@@ -52,6 +84,7 @@ public class Timeline {
 
     /**
      * Get active time of a certain activity and day
+     *
      * @param activity Activity we want to retrieve the active time for
      * @param checkDay Day we want to retrieve the active time for
      * @return
@@ -60,9 +93,9 @@ public class Timeline {
         long time = 0;
 
         //go through all days in our list
-        for(TimelineDay day : this.myHistory){
+        for (TimelineDay day : this.myHistory) {
             //check if is the same day
-            if(day.isSameDay(checkDay)){
+            if (day.isSameDay(checkDay)) {
                 time += day.getActiveTime(activity);
             }
         }
@@ -72,9 +105,10 @@ public class Timeline {
 
     /**
      * Get the active time for the current month
+     *
      * @return The active distance
      */
-    public long getActiveTimeForMonth(){
+    public long getActiveTimeForMonth() {
         Date current = new Date();
 
         //get days of week
@@ -87,7 +121,7 @@ public class Timeline {
         DetectedActivity running = new DetectedActivity(DetectedActivity.RUNNING, 100);
 
         //loop over all week days to count all times
-        for(TimelineDay day : week){
+        for (TimelineDay day : week) {
             time += day.getActiveTime(biking);
             time += day.getActiveTime(walking);
             time += day.getActiveTime(foot);
@@ -99,6 +133,7 @@ public class Timeline {
 
     /**
      * Get the number of achievements in the last week
+     *
      * @return The number of achievements
      */
     public int getAchievementsForWeek() {
@@ -109,10 +144,10 @@ public class Timeline {
         LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
 
         //sum up all achievements of the week
-        for(TimelineDay day : week){
+        for (TimelineDay day : week) {
             achievementPoints += day.getMyAchievements().size();
 
-            for(TimelineSegment segment : day.getMySegments()){
+            for (TimelineSegment segment : day.getMySegments()) {
                 achievementPoints += segment.getMyAchievements().size();
             }
         }
@@ -126,13 +161,13 @@ public class Timeline {
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-         //   calendar.set(Calendar.DAY_OF_MONTH, 1);calendar.getActualMaximum(Calendar.DATE)
+        //   calendar.set(Calendar.DAY_OF_MONTH, 1);calendar.getActualMaximum(Calendar.DATE)
 
         //get the TimelineDays
         for (int i = 0; i < 7; i++) {
-            for(Achievement achievement: this.myAchievements) {
-                if(achievement.isSameDay(calendar.getTime())) {
-                   achievementPoints += 1;
+            for (Achievement achievement : this.myAchievements) {
+                if (achievement.isSameDay(calendar.getTime())) {
+                    achievementPoints += 1;
                 }
             }
             calendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -143,6 +178,7 @@ public class Timeline {
 
     /**
      * Get the number of achievements in the last month
+     *
      * @return The number of achievements
      */
     public int getAchievementsForMonth() {
@@ -153,10 +189,10 @@ public class Timeline {
         LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 1);
 
         //sum up all achievements of the week
-        for(TimelineDay day : week){
+        for (TimelineDay day : week) {
             achievementPoints += day.getMyAchievements().size();
 
-            for(TimelineSegment segment : day.getMySegments()){
+            for (TimelineSegment segment : day.getMySegments()) {
                 achievementPoints += segment.getMyAchievements().size();
             }
         }
@@ -168,12 +204,12 @@ public class Timeline {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-         calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
 
         //get the TimelineDays
         for (int i = 0; i < calendar.getActualMaximum(Calendar.DATE); i++) {
-            for(Achievement achievement: this.myAchievements) {
-                if(achievement.isSameDay(calendar.getTime())) {
+            for (Achievement achievement : this.myAchievements) {
+                if (achievement.isSameDay(calendar.getTime())) {
                     achievementPoints += 1;
                 }
             }
@@ -185,9 +221,10 @@ public class Timeline {
 
     /**
      * Get the active time for the current week
+     *
      * @return The active distance
      */
-    public long getActiveTimeForWeek(){
+    public long getActiveTimeForWeek() {
         Date current = new Date();
 
         //get days of week
@@ -200,7 +237,7 @@ public class Timeline {
         DetectedActivity running = new DetectedActivity(DetectedActivity.RUNNING, 100);
 
         //loop over all week days to count all times
-        for(TimelineDay day : week){
+        for (TimelineDay day : week) {
             time += day.getActiveTime(biking);
             time += day.getActiveTime(walking);
             time += day.getActiveTime(foot);
@@ -212,6 +249,7 @@ public class Timeline {
 
     /**
      * Get inactive time of a certain activity and day
+     *
      * @param activity Activity we want to retrieve the inactive time for
      * @param checkDay Day we want to retrieve the inactive time for
      */
@@ -219,9 +257,9 @@ public class Timeline {
         long time = 0;
 
         //go through all days in our list
-        for(TimelineDay day : this.myHistory){
+        for (TimelineDay day : this.myHistory) {
             //check if is the same day
-            if(day.isSameDay(checkDay)){
+            if (day.isSameDay(checkDay)) {
                 time += day.getInactiveTime(activity);
             }
         }
@@ -231,6 +269,7 @@ public class Timeline {
 
     /**
      * Get active distance of a certain activity and day
+     *
      * @param activity Activity we want to retrieve the active distance for
      * @param checkDay Day we want to retrieve the active distance for
      * @return
@@ -239,9 +278,9 @@ public class Timeline {
         double distance = 0;
 
         //go through all days in our list
-        for(TimelineDay day : this.myHistory){
+        for (TimelineDay day : this.myHistory) {
             //check if is the same day
-            if(day.isSameDay(checkDay)){
+            if (day.isSameDay(checkDay)) {
                 distance += day.getActiveDistance(activity);
             }
         }
@@ -251,9 +290,10 @@ public class Timeline {
 
     /**
      * Get the active distance for the current month
+     *
      * @return The active distance
      */
-    public double getActiveDistanceForMonth(){
+    public double getActiveDistanceForMonth() {
         Date current = new Date();
 
         //get days of week
@@ -266,7 +306,7 @@ public class Timeline {
         DetectedActivity running = new DetectedActivity(DetectedActivity.RUNNING, 100);
 
         //loop over all week days to count all steps
-        for(TimelineDay day : week){
+        for (TimelineDay day : week) {
             distance += day.getActiveDistance(biking);
             distance += day.getActiveDistance(walking);
             distance += day.getActiveDistance(foot);
@@ -278,9 +318,10 @@ public class Timeline {
 
     /**
      * Get the active distance for the current week
+     *
      * @return The active distance
      */
-    public double getActiveDistanceForWeek(){
+    public double getActiveDistanceForWeek() {
         Date current = new Date();
 
         //get days of week
@@ -293,7 +334,7 @@ public class Timeline {
         DetectedActivity running = new DetectedActivity(DetectedActivity.RUNNING, 100);
 
         //loop over all week days to count all steps
-        for(TimelineDay day : week){
+        for (TimelineDay day : week) {
             distance += day.getActiveDistance(biking);
             distance += day.getActiveDistance(walking);
             distance += day.getActiveDistance(foot);
@@ -304,8 +345,8 @@ public class Timeline {
     }
 
     /**
-     *
      * Get inactive distance of a certain activity and day
+     *
      * @param activity Activity we want to retrieve the inactive distance for
      * @param checkDay Day we want to retrieve the inactive distance for
      */
@@ -313,9 +354,9 @@ public class Timeline {
         double distance = 0;
 
         //go through all days in our list
-        for(TimelineDay day : this.myHistory){
+        for (TimelineDay day : this.myHistory) {
             //check if is the same day
-            if(day.isSameDay(checkDay)){
+            if (day.isSameDay(checkDay)) {
                 distance += day.getInactiveDistance(activity);
             }
         }
@@ -325,6 +366,7 @@ public class Timeline {
 
     /**
      * Get the Steps of the timeline
+     *
      * @param checkDay Day we want to retrieve the inactive distance for
      * @return The steps of the user
      */
@@ -332,8 +374,8 @@ public class Timeline {
         int steps = 0;
 
         //loop over all days to count all steps
-        for(TimelineDay day : this.myHistory){
-            if(day.isSameDay(checkDay)){
+        for (TimelineDay day : this.myHistory) {
+            if (day.isSameDay(checkDay)) {
                 steps += day.getSteps();
             }
         }
@@ -343,9 +385,10 @@ public class Timeline {
 
     /**
      * Get the steps in the last week
+     *
      * @return The steps in the last week
      */
-    public int getStepsForWeek(){
+    public int getStepsForWeek() {
         Date current = new Date();
 
         //get days of week
@@ -354,8 +397,8 @@ public class Timeline {
         int steps = 0;
 
         //loop over all week days to count all steps
-        for(TimelineDay day : week){
-           steps += day.getSteps();
+        for (TimelineDay day : week) {
+            steps += day.getSteps();
         }
 
         return steps;
@@ -363,9 +406,10 @@ public class Timeline {
 
     /**
      * Get the Steps for the last month
+     *
      * @return The steps in the last month
      */
-    public int getStepsForMonth(){
+    public int getStepsForMonth() {
         Date current = new Date();
 
         //get days of week
@@ -374,7 +418,7 @@ public class Timeline {
         int steps = 0;
 
         //loop over all week days to count all steps
-        for(TimelineDay day : week){
+        for (TimelineDay day : week) {
             steps += day.getSteps();
         }
 
@@ -383,25 +427,27 @@ public class Timeline {
 
     /**
      * Get total distance of a certain activity and day
+     *
      * @param activity Activity we want to retrieve the total distance for
      * @param checkDay Day we want to retrieve the total distance for
      * @return
      */
-    public double getTotalDistance(DetectedActivity activity, Date checkDay){
-        return this.getActiveDistance(activity, checkDay)+ getInactiveDistance(activity, checkDay);
+    public double getTotalDistance(DetectedActivity activity, Date checkDay) {
+        return this.getActiveDistance(activity, checkDay) + getInactiveDistance(activity, checkDay);
     }
 
     /**
      * Manually starts a new segment if the user wants to
+     *
      * @param location The location that should be added
-     * @param date The date the location/activity was detected
+     * @param date     The date the location/activity was detected
      * @param activity The activity that was detected
      */
-    public void manualStartNewSegment(Location location, Date date, DetectedActivity activity){
+    public void manualStartNewSegment(Location location, Date date, DetectedActivity activity) {
         Log.i(TAG, "ManualAddUserStatus:  create new Segment, location resolution.");
 
         //check if we have a day already
-        if (this.myHistory.size() == 0){
+        if (this.myHistory.size() == 0) {
             this.myHistory.add(new TimelineDay(date));
 
             //REST Call to add the new Day to the DB
@@ -414,7 +460,7 @@ public class Timeline {
         }
 
         //check if we still have the same day
-        if(!this.myHistory.getLast().isSameDay(date)) {
+        if (!this.myHistory.getLast().isSameDay(date)) {
             this.myHistory.add(new TimelineDay(date));
 
             //REST Call to add the new Day to the DB
@@ -432,31 +478,33 @@ public class Timeline {
 
     /**
      * End a manually created segment by user choice
+     *
      * @param location The location that should be added
-     * @param date The date the location/activity was detected
+     * @param date     The date the location/activity was detected
      */
-    public void manualEndSegment(Date date, Location location){
+    public void manualEndSegment(Date date, Location location) {
         Log.i(TAG, "ManualEndSegment:  create new Segment, end last one.");
         this.myHistory.getLast().manualEndSegment(date, location);
     }
 
     /**
-     *
      * Get total time of a certain activity and day
+     *
      * @param activity Activity we want to retrieve the total time for
      * @param checkDay Day we want to retrieve the total time for
      */
-    public long getTotalTime(DetectedActivity activity, Date checkDay){
+    public long getTotalTime(DetectedActivity activity, Date checkDay) {
         return this.getActiveTime(activity, checkDay) + this.getInactiveTime(activity, checkDay);
     }
 
     /**
      * Get all Timeline Days for the selected month or week
+     *
      * @param referenceDate The date for the week we want the data for
-     * @param mode The mode of the method, 0 returns all days of the week, 1 for the month
+     * @param mode          The mode of the method, 0 returns all days of the week, 1 for the month
      * @return A linked list containing all TimelineDays
      */
-    private  LinkedList<TimelineDay> getDaysOfWeekOrMonth(Date referenceDate, int mode) {
+    private LinkedList<TimelineDay> getDaysOfWeekOrMonth(Date referenceDate, int mode) {
 
         //Set the calendar
         Calendar calendar = Calendar.getInstance();
@@ -469,7 +517,7 @@ public class Timeline {
         int maximum = 0;
 
         //choose if we need all days of the week or month
-        if( 0 == mode) {
+        if (0 == mode) {
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
             maximum = 7;
         } else {
@@ -481,8 +529,8 @@ public class Timeline {
 
         //get the TimelineDays
         for (int i = 0; i < maximum; i++) {
-            for(TimelineDay day: this.myHistory) {
-                if(day.isSameDay(calendar.getTime())) {
+            for (TimelineDay day : this.myHistory) {
+                if (day.isSameDay(calendar.getTime())) {
                     daysOfWeek.add(day);
                 }
             }
@@ -493,14 +541,16 @@ public class Timeline {
 
     /**
      * Get the date of the current TimelineDay
+     *
      * @return The date
      */
-    private Date getLastDate(){
+    private Date getLastDate() {
         return this.myHistory.getLast().getMyDate();
     }
 
     /**
      * Get the Month or Week Achievements
+     *
      * @return The achivements
      */
     public LinkedList<Achievement> getMyAchievements() {
@@ -509,9 +559,10 @@ public class Timeline {
 
     /**
      * Calculate the achievements to see if we have any new achievements
+     *
      * @param day A day of the week we want to calculate achievements for
      */
-    public void calculateAchievements(Date day){
+    public void calculateAchievements(Date day) {
 
         //Set the calendar
         Calendar calendar = Calendar.getInstance();
@@ -530,7 +581,7 @@ public class Timeline {
         this.myAchievements.addAll(achievements);
 
         //if new achievements -> send intent
-        if(!achievements.isEmpty()){
+        if (!achievements.isEmpty()) {
             //REST Call to update Timeline
             //TODO: Update for achievements of a timeline
 
@@ -542,6 +593,7 @@ public class Timeline {
 
     /**
      * Method can be used to update the achievements in case there was a change from the Database
+     *
      * @param achievement The new achievement we want to add
      */
     public void addAchievement(Achievement achievement) {
@@ -557,13 +609,14 @@ public class Timeline {
 
     /**
      * Used to add a new location/activity to our timeline
+     *
      * @param location The location we want to add
-     * @param date The date the location was detected
+     * @param date     The date the location was detected
      * @param activity The activity that was detected
      */
     public void addUserStatus(Location location, Date date, DetectedActivity activity) {
         //check if we have a day already
-        if (this.myHistory.size() == 0){
+        if (this.myHistory.size() == 0) {
             this.myHistory.add(new TimelineDay(date));
 
             //REST Call to add the new Day to the DB
@@ -576,7 +629,7 @@ public class Timeline {
         }
 
         //check if we still have the same day
-        if(!this.myHistory.getLast().isSameDay(date)) {
+        if (!this.myHistory.getLast().isSameDay(date)) {
             this.myHistory.add(new TimelineDay(date));
 
             //REST Call to add the new Day to the DB
@@ -593,11 +646,15 @@ public class Timeline {
 
     /**
      * Method can be used to add a timeline day in case there was a change from the Database
-     * @param day The Timeline Day we want to add
+     *
+     * @param day    The Timeline Day we want to add
      * @param userid The DB ID of the user the timeline is from
      */
     public void setMyHistory(TimelineDay day, String userid) {
         this.myHistory.add(day);
+
+        //sort in case the order the segments were added is wrong
+        Collections.sort(this.myHistory, new SortTimelineDay());
 
         //Send intent to inform about update, since this method should only be used for DB based updates
         //add the DB ID
@@ -610,37 +667,41 @@ public class Timeline {
 
     /**
      * Add a new location point to a manual segment
+     *
      * @param location The location that should be added
-     * @param date The date the location/activity was detected
+     * @param date     The date the location/activity was detected
      */
-    public void manualAddLocation(Date date, Location location){
+    public void manualAddLocation(Date date, Location location) {
         this.myHistory.getLast().manualAddLocation(date, location);
     }
 
     /**
      * Get the month and week achievements for the timeline
+     *
      * @return A list containing all achievements
      */
-    public LinkedList<Achievement> getAchievements(){
+    public LinkedList<Achievement> getAchievements() {
         return new LinkedList<>(this.myAchievements);
     }
 
     /**
      * Get the size of the history, so how many days are already in storage
+     *
      * @return The size of the history
      */
-    public int getHistorySize(){
+    public int getHistorySize() {
         return this.myHistory.size();
     }
 
     /**
      * Get a specific day of the history
+     *
      * @param index The index for which we want to retrieve the day for
      * @return The TimelineDay
      */
-    public TimelineDay getTimelineDay(int index){
+    public TimelineDay getTimelineDay(int index) {
         //check if index is out of bounds
-        if(index < 0 || index >= this.myHistory.size()){
+        if (index < 0 || index >= this.myHistory.size()) {
             Log.i(TAG, "getTimelineDay: Index out of bounds.");
             return null;
         }
@@ -654,6 +715,7 @@ public class Timeline {
 
     /**
      * Retrieve the database ID
+     *
      * @return The database ID
      */
     public String getID() {
@@ -662,6 +724,7 @@ public class Timeline {
 
     /**
      * Set the Datatbase ID
+     *
      * @param ID The new Database ID
      */
     public void setID(String ID) {

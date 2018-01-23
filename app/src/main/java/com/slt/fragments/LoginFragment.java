@@ -107,6 +107,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void initViews(View v) {
+        //mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
         mEtPassword = (EditText) v.findViewById(R.id.et_password);
         mBtLogin = (Button) v.findViewById(R.id.btn_login);
@@ -136,6 +137,8 @@ public class LoginFragment extends Fragment {
             //do nothing on exception except log it
             Log.i(TAG, "Failure when retrieving shared preferences");
         }
+
+
 
         mBtLogin.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -202,6 +205,13 @@ public class LoginFragment extends Fragment {
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    }
+
+    private void viewStatistics() {
+        Intent intent = new Intent( getActivity()  , GeneralViewOfStatistics.class);
+
+        startActivity(intent);
+
     }
 
     private void setError() {

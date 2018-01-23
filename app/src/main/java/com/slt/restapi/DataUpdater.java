@@ -87,7 +87,7 @@ public class DataUpdater implements Runnable{
                 Log.d("Create", "Timeline is created.");
                 timeline = null;
             } else {
-                Log.d("Create", "Timeline is not created.");
+          //      Log.d("Create", "Timeline is not created.");
             }
         }
 
@@ -107,7 +107,7 @@ public class DataUpdater implements Runnable{
                     Log.d("Create", "Timeline Day is created.");
                     iterator.remove();
                 } else {
-                    Log.d("Create", "Timeline Day is not created.");
+          //          Log.d("Create", "Timeline Day is not created.");
                 }
             }
 
@@ -127,11 +127,11 @@ public class DataUpdater implements Runnable{
                         Log.d("Create", "Timeline Segment is created.");
                         iterator.remove();
                     } else {
-                        Log.d("Create", "Timeline Segment is not created.");
+               //         Log.d("Create", "Timeline Segment is not created.");
                     }
 
                 } else {
-                    Log.d("Create", "Timeline Segment is not Created.");
+            //        Log.d("Create", "Timeline Segment is not Created.");
                 }
             }
 
@@ -152,14 +152,14 @@ public class DataUpdater implements Runnable{
                         Log.d("Create", "Location Entry is created.");
                         iterator.remove();
                     } else {
-                        Log.d("Create", "Location Entry is not created.");
+              //          Log.d("Create", "Location Entry is not created.");
                     }
                 } else {
-                    Log.d("Create", "Location Entry is not created.");
+            //        Log.d("Create", "Location Entry is not created.");
                 }
             }
 
-            Log.d("Create", "End");
+       //     Log.d("Create", "End");
 
         }
 
@@ -181,7 +181,7 @@ public class DataUpdater implements Runnable{
                     Log.d("Create", "Timeline Segment is updated.");
                     iterator.remove();
                 } else {
-                    Log.d("Create", "Timeline Segment is not updated.");
+            //        Log.d("Create", "Timeline Segment is not updated.");
                 }
             }
 
@@ -197,7 +197,7 @@ public class DataUpdater implements Runnable{
                     Log.d("Create", "Timeline Day is updated.");
                     iterator.remove();
                 } else {
-                    Log.d("Create", "Timeline Day is not updated.");
+            //        Log.d("Create", "Timeline Day is not updated.");
                 }
             }
         }
@@ -219,7 +219,7 @@ public class DataUpdater implements Runnable{
                     Log.d("Create", "Timeline Segment is deleted.");
                     iterator.remove();
                 } else {
-                    Log.d("Create", "Timeline Segment is not deleted.");
+           //         Log.d("Create", "Timeline Segment is not deleted.");
                 }
             }
 
@@ -235,7 +235,7 @@ public class DataUpdater implements Runnable{
                     Log.d("Create", "Location Entry is deleted.");
                     iterator.remove();
                 } else {
-                    Log.d("Create", "Location Entry is not deleted.");
+           //         Log.d("Create", "Location Entry is not deleted.");
                 }
             }
         }

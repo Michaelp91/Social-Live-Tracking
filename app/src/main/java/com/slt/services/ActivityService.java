@@ -68,6 +68,7 @@ public class ActivityService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.i(TAG, "Intent Received");
         // If the intent contains an update
         if (ActivityRecognitionResult.hasResult(intent)) {
             // Get the update
@@ -79,6 +80,11 @@ public class ActivityService extends IntentService {
 
             // Get the confidence % (probability)
             int confidence = mostProbableActivity.getConfidence();
+
+            //ignore if the confidence is too small
+            if(confidence < 50){
+                return;
+            }
 
             // Get the type
             int activityType = mostProbableActivity.getType();

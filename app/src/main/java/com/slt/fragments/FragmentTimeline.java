@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -493,7 +494,14 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 bitmap = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 tmpImageView = new ImageView(getActivity());
+
+
+                //compress the picture -> reduces the quality by 50%
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                byte[] BYTE = bytes.toByteArray();
+
+                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
+
                 tmpImageView.setImageBitmap(bitmap);
                 downloadedImages.add(bitmap);
 
@@ -509,7 +517,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(ApplicationController.getContext().getContentResolver(), selectedImage);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+                //compress the picture -> reduces the quality by 50%
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                byte[] BYTE = bytes.toByteArray();
+
+                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
+
                 downloadedImages.add(bitmap);
                 Log.e(TAG, "Pick from Gallery::>>> ");
 

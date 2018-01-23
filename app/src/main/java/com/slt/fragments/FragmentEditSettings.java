@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -110,22 +111,26 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         this.ownUser.setLastName(this.lastNameEditText.getText().toString());
         this.ownUser.setMyCity(this.cityEditText.getText().toString());
         this.ownUser.setUserName(this.usernameEditText.getText().toString());
-        ownUser.setMyImage(bitmap);
 
-        //REST Call to update user in DB
-        String photo = ownUser.getEmail().replace('@', '_').replace('.', '_');
-        photo += ".png";
-        ownUser.setMyImageName(photo);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean uploadSuccessfull = UsefulMethods.UploadImageView(bitmap, ownUser.getMyImageName());
 
-                if(!uploadSuccessfull) {
-                    Toast.makeText(ApplicationController.getContext(), "Image Upload failed.", Toast.LENGTH_SHORT).show();
+        if(bitmap != null) {
+            ownUser.setMyImage(bitmap);
+
+            //REST Call to update user in DB
+            String photo = ownUser.getEmail().replace('@', '_').replace('.', '_');
+            photo += ".jpeg";
+            ownUser.setMyImageName(photo);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean uploadSuccessfull = UsefulMethods.UploadImageView(bitmap, ownUser.getMyImageName());
+
+                    if (!uploadSuccessfull) {
+                        Toast.makeText(ApplicationController.getContext(), "Image Upload failed.", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        }).start();
+            }).start();
+        }
         OtherRestCalls.updateUser(false); //TODO: Include Friends Update or not? I don't think so
 
         SharedResources.getInstance().getNavUsername().setText(DataProvider.getInstance().getOwnUser().getUserName());
@@ -185,9 +190,20 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
                 Uri selectedImage = data.getData();
                 bitmap = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
 
-                Log.e(TAG, "Pick from Camera::>>> ");
+                float aspectRatio = bitmap.getWidth() /
+                        (float) bitmap.getHeight();
+                int width = 480;
+                int height = Math.round(width / aspectRatio);
+
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+                //compress the picture -> reduces the quality by 50%
+            /*    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                byte[] BYTE = bytes.toByteArray();
+
+                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);*/
+
+                Log.e(TAG, "Picked from Camera");
 
                 mProfilePhoto.setImageBitmap(bitmap);
 
@@ -199,14 +215,43 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(ApplicationController.getContext().getContentResolver(), selectedImage);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                Log.e(TAG, "Pick from Gallery::>>> ");
+
+                //compress the picture -> reduces the quality by 50%
+              /*  bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                byte[] BYTE = bytes.toByteArray();
+
+                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);*/
+
+                float aspectRatio = bitmap.getWidth() /
+                        (float) bitmap.getHeight();
+                int width = 480;
+                int height = Math.round(width / aspectRatio);
+
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+
+                Log.e(TAG, "Picked from Gallery");
                 mProfilePhoto.setImageBitmap(bitmap);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap( bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 
     private void setProfileImage(Bitmap img) {

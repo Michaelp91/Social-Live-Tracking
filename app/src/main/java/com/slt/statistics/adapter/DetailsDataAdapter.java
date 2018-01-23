@@ -42,7 +42,7 @@ import java.util.List;
  * Created by matze on 02.01.18.
  */
 
-public class DetailsDataAdapter  extends ArrayAdapter {
+public class DetailsDataAdapter extends ArrayAdapter {
     private GridView gridView;
 
     public DetailsDataAdapter(@NonNull Context context, List list) {
@@ -91,7 +91,7 @@ public class DetailsDataAdapter  extends ArrayAdapter {
             ImageView imageView = new ImageView(getContext());
             imageView.setId(i);
             imageView.setPadding(2, 2, 2, 2);
-                           imageView.setImageBitmap(BitmapFactory.decodeResource(
+            imageView.setImageBitmap(BitmapFactory.decodeResource(
                     getContext().getResources(), R.drawable.running_cup));
 
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -129,7 +129,6 @@ public class DetailsDataAdapter  extends ArrayAdapter {
     }
 
 
-
     private View getViewOfDetailsText(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
         View rowView = inflater.inflate(R.layout.details_infos_list, parent, false);
 
@@ -150,7 +149,6 @@ public class DetailsDataAdapter  extends ArrayAdapter {
         ObjectItemData.add(new ObjectItem("93", "Nissan"));
         ObjectItemData.add(new ObjectItem("94", "Puregold"));
         ObjectItemData.add(new ObjectItem("95", "SM"));
-
 
 
         // our adapter instance
