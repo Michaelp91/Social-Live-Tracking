@@ -16,6 +16,8 @@ import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
 import com.slt.restapi.UpdateOperations;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -27,6 +29,34 @@ import java.util.LinkedList;
  */
 
 public class TimelineDay {
+
+    /**
+     * Implementation of a comparator used to sort the location points by time
+     */
+    public class SortTimelineSegment implements Comparator<TimelineSegment> {
+        /**
+         * Overwritten comparision method
+         * @param seg1 The first segment to compare
+         * @param seg2 The second segment to compare
+         * @return 0 if both are the same, positive if u1 > u2, negative if u1 < u2
+         */
+        @Override
+        public int compare(TimelineSegment seg1, TimelineSegment seg2) {
+            //get the values
+            Date d1 = seg1.getStartTime();
+            Date d2 = seg2.getStartTime();
+
+            //return the comparision results
+            if(d1.equals(d2))
+                return 0;
+            if(d1.after(d2))
+                return 1;
+            else
+                return -1;
+        }
+    }
+
+
     /*
     * Tag for the Logger
     */
@@ -143,7 +173,22 @@ public class TimelineDay {
      * @param userID The DB ID of the user the Day is from
      */
     public void insertTimelineSegment(TimelineSegment segment, String userID){
+
+        //remove sensor from last segment if there is one
+        if (!this.mySegments.isEmpty()) {
+            this.mySegments.getLast().deleteSensor();
+        }
+
         this.mySegments.add(segment);
+
+        //sort in case the order the segments were added is wrong
+        Collections.sort(this.mySegments, new SortTimelineSegment());
+
+        //if we are on the current day
+        if(this.isSameDay(new Date())) {
+            //add a sensor
+            this.mySegments.getLast().addSensor();
+        }
 
         //Send intent to inform about update, since this method should only be used for DB based updates
         //add the DB ID
@@ -376,7 +421,7 @@ public class TimelineDay {
      */
     public void manualStartNewSegment(Location location, Date date, DetectedActivity activity){
         Log.i(TAG, "ManualAddUserStatus:  create new Segment, location resolution.");
-        TimelineSegment next = new TimelineSegment(location, date, activity, date);
+        TimelineSegment next = new TimelineSegment(activity, date, true);
         this.mySegments.add(next);
 
         //REST Call to add new segment to DB
@@ -420,13 +465,21 @@ public class TimelineDay {
     public void manualEndSegment(Date date, Location location){
         DetectedActivity activity = new DetectedActivity(DetectedActivity.UNKNOWN, 100);
         Log.i(TAG, "ManualEndSegment:  create new Segment, end last one.");
-        TimelineSegment next = new TimelineSegment(location, date, activity, date);
+        TimelineSegment next = new TimelineSegment(activity, date, true);
         this.mySegments.add(next);
+        next.addLocationPoint(location, date);
 
         //REST Call to add new segment to DB
         DataUpdater.getInstance().addTimeLineSegment(this.mySegments.getLast(), this);
+    }
 
-        next.addLocationPoint(location, date);
+    /**
+     * Removes the step sensor from the last segment
+     */
+    void removeStepSensor() {
+        if(!this.mySegments.isEmpty()) {
+            this.mySegments.getLast().deleteSensor();
+        }
     }
 
     /**
@@ -440,15 +493,17 @@ public class TimelineDay {
         //check if we have segments in the history, if not add and start place and address resolution
         if(this.mySegments.isEmpty()){
             Log.i(TAG, "addUserStatus: Segements empty, create new Segment, location resolution.");
-            TimelineSegment next = new TimelineSegment(location, date, activity, date);
+            TimelineSegment next = new TimelineSegment(activity, date, false);
             this.mySegments.add(next);
 
             //REST Call to add new segment to DB
             DataUpdater.getInstance().addTimeLineSegment(next, this);
 
+            //adds the segment and starts the step detection
             next.addLocationPoint(location, date);
+            next.addSensor();
 
-
+            //search for location and address
             Object[] ResolutionData = new Object[2];
             ResolutionData[0] = this.mySegments.getLast();
             ResolutionData[1] = location;
@@ -464,6 +519,10 @@ public class TimelineDay {
 
         //add the location to the last segment in our history
         this.mySegments.getLast().addLocationPoint(location, date);
+
+        //remove the step sensor since it might not be the current segment afterwards, current steps
+        //have been saved by the addLocationPoint Call
+        this.mySegments.getLast().deleteSensor();
 
         //if it is a new activity
         if(!this.mySegments.getLast().compareActivities(activity)){
@@ -499,18 +558,21 @@ public class TimelineDay {
                     }
                 }
 
+
+
             }
 
             //check if new activity, if yes add and start place/address resolution
             if(this.mySegments.peekLast().getMyActivity().getType() != activity.getType()) {
                 Log.i(TAG, "addUserStatus: new Activity, new Segment created, create new Segment.");
-                TimelineSegment nextSegment = new TimelineSegment(location, date, activity, date);
+                TimelineSegment nextSegment = new TimelineSegment(activity, date, false);
                 this.mySegments.add(nextSegment);
+                nextSegment.addLocationPoint(location, date);
+
 
                 //REST Call to add new segment to DB
                 DataUpdater.getInstance().addTimeLineSegment(nextSegment, this);
 
-                nextSegment.addLocationPoint(location, date);
 
                 Object[] ResolutionData = new Object[2];
                 ResolutionData[0] = this.mySegments.getLast();
@@ -523,6 +585,9 @@ public class TimelineDay {
                 placesResolver.execute(ResolutionData);
             }
         }
+
+        //add a step sensor to the last segment
+        this.mySegments.getLast().addSensor();
 
         this.calculateAchievements();
 

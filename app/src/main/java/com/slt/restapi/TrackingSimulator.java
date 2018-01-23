@@ -51,7 +51,7 @@ public class TrackingSimulator implements Runnable{
         location.setLongitude(4.2);
         location.setLatitude(2.3);
         DetectedActivity myActivity = new DetectedActivity(3, 3);
-        TimelineSegment timelineSegment = new TimelineSegment(location, new Date(), myActivity, new Date());
+        TimelineSegment timelineSegment = new TimelineSegment( myActivity, new Date(), false);
         timelineSegment.setStartPlace("City Gallerie");
         timelineSegment.setStartAddress("Goldbacherstr. 2, 63739 Aschaffenburg");
 
@@ -161,7 +161,7 @@ public class TrackingSimulator implements Runnable{
                 location.setLongitude(4.2);
                 location.setLatitude(2.3);
                 DetectedActivity myActivity = new DetectedActivity(3, 3);
-                TimelineSegment timelineSegment = new TimelineSegment(location, new Date(), myActivity, new Date());
+                TimelineSegment timelineSegment = new TimelineSegment( myActivity, new Date(), false);
                 LocationEntry locationEntry = new LocationEntry(location, new Date(), location, new Date());
 
                 DataUpdater.getInstance().Start();

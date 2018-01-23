@@ -81,6 +81,11 @@ public class ActivityService extends IntentService {
             // Get the confidence % (probability)
             int confidence = mostProbableActivity.getConfidence();
 
+            //ignore if the confidence is too small
+            if(confidence < 50){
+                return;
+            }
+
             // Get the type
             int activityType = mostProbableActivity.getType();
 

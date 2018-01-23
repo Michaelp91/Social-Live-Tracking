@@ -210,7 +210,7 @@ public class OtherRestCalls {
 
             for(REST_TimelineSegment r_t_s: rest_timelinesegments) {
                 DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, 100);
-                TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime);
+                TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime, false);
                 t_s.setID(r_t_s._id);
                 for(REST_Achievement r_a: r_t_s.myAchievements) {
                     Achievement a = new Achievement(r_a.achievement, null);

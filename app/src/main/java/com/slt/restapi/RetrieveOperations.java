@@ -110,7 +110,7 @@ public class RetrieveOperations {
 
         for(REST_TimelineSegment r_t_s: responses.timelinesegments) {
             DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, 100);
-            TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime);
+            TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime, false);
             t_s.setStartAddress(r_t_s.startAddress);
             t_s.setStartPlace(r_t_s.startPlace);
             t_s.setID(r_t_s._id);
