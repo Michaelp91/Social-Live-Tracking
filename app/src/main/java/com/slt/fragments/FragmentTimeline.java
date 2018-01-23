@@ -1,6 +1,7 @@
 package com.slt.fragments;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -115,6 +117,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private Bitmap bitmap;
     ImageView tmpImageView;
+    private TextView tv_usercomments;
 
 
     @Nullable
@@ -282,13 +285,65 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
                         final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
                         LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
+                        tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
+                        tv_usercomments.setTag(tSegment);
 
                         ll_pictures = AddPictures(tSegment, ll_pictures, inflater);
+                        AddUserComments(tSegment.getStrUserComments());
 
                         ll_pictures.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 selectImage();
+                            }
+                        });
+
+                        tv_usercomments.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final Dialog commentDialog = new Dialog(getActivity());
+                                commentDialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
+                                commentDialog.setContentView(R.layout.popup_usercomment);
+
+                                final EditText editText = (EditText) commentDialog.findViewById(R.id.et_titel);
+                                Button btnOk = (Button) commentDialog.findViewById(R.id.btn_ok);
+
+                                btnOk.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        User user = DataProvider.getInstance().getOwnUser();
+                                        String email = user.getEmail();
+                                        String comment = "- " + email + " : " +  editText.getText().toString() + "\n";
+                                        String comments = tv_usercomments.getText().toString();
+                                        comments += comment;
+                                        tSegment.addStrUserComment(comment);
+
+
+
+                                        final String finalComments = comments;
+
+                                        tv_usercomments.setText(finalComments);
+
+
+                                                new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        OtherRestCalls.updateTimelineSegmentForComments(tSegment);
+
+                                                        getActivity().runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                commentDialog.hide();
+                                                            }
+                                                        });
+                                                    }
+                                                }).start();
+
+                                    }
+                                });
+
+                                commentDialog.show();
+
                             }
                         });
 
@@ -386,6 +441,14 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             });
         }
 
+    }
+
+    private void AddUserComments(LinkedList<String> strUserComments) {
+        String comments = "";
+        for(String u: strUserComments) {
+            comments += u;
+        }
+        tv_usercomments.setText(comments);
     }
 
     private void selectImage() {

@@ -184,6 +184,10 @@ public class TimelineSegment {
         this.strUserComments = strUserComments;
     }
 
+    public void addStrUserComment(String comment) {
+        this.strUserComments.add(comment);
+    }
+
     public LinkedList<String> getStrUserComments() {
         return strUserComments;
     }

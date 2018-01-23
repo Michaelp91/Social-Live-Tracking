@@ -114,6 +114,7 @@ public class RetrieveOperations {
             t_s.setStartAddress(r_t_s.startAddress);
             t_s.setStartPlace(r_t_s.startPlace);
             t_s.setID(r_t_s._id);
+            t_s.setStrUserComments(r_t_s.usercomments);
             for(REST_Achievement r_a: r_t_s.myAchievements) {
                 Achievement a = new Achievement(r_a.achievement, null);
                 t_s.addAchievement(a, null); //TODO: Fill Userid in buildcompleteUserObjects
