@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -23,6 +24,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Layout;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -279,7 +281,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                     if (timeLineSegments.indexOf(tSegment) < timeLineSegments.size() - 1) { //Draw Segment and the Endpoint
 
 
-
                         view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
                         TextView activeTime = (TextView) view_segment.findViewById(R.id.tv_activeTime);
                         TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
@@ -290,7 +291,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         tv_usercomments.setTag(tSegment);
 
                         ll_pictures = AddPictures(tSegment, ll_pictures, inflater);
-                        AddUserComments(tSegment.getStrUserComments());
+                        AddUserComments(tSegment.getStrUserComments(), ll_line);
 
                         ll_pictures.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -444,11 +445,23 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
     }
 
-    private void AddUserComments(LinkedList<String> strUserComments) {
-        String comments = "";
+    private void AddUserComments(LinkedList<String> strUserComments, LinearLayout ll_line) {
+        String comments = "Keine Kommentare vorhanden";
+
+
+        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics());
+        int heightToAdd = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
         for(String u: strUserComments) {
             comments += u;
+            heightToAdd += heightToAdd;
+            boolean debug = true;
         }
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)  ll_line.getLayoutParams();
+        params.height += heightToAdd;
+        ll_line.setLayoutParams(params);
+
+
         tv_usercomments.setText(comments);
     }
 

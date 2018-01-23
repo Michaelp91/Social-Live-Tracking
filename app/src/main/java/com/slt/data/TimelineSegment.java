@@ -194,7 +194,7 @@ public class TimelineSegment {
      * @param userComments The user comments to set
      */
     public void setStrUserComments(LinkedList<String> userComments) {
-        this.strUserComments = strUserComments;
+        this.strUserComments = userComments;
     }
 
     public void addStrUserComment(String comment) {

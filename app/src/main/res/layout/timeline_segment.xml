@@ -13,7 +13,7 @@
         android:id="@+id/ll_line"
         android:layout_below="@id/startcircle"
         android:layout_width="3dp"
-        android:layout_height="180dp"
+        android:layout_height="145dp"
         android:orientation="vertical"
         android:layout_marginLeft="13dp"
         android:background="#000000"    >

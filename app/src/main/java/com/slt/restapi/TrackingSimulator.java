@@ -25,7 +25,7 @@ public class TrackingSimulator implements Runnable{
 
     @Override
     public void run() {
-       // TrackingTest1();
+       TrackingTest1();
     }
 
 
@@ -50,7 +50,7 @@ public class TrackingSimulator implements Runnable{
         Location location = new Location("");
         location.setLongitude(4.2);
         location.setLatitude(2.3);
-        DetectedActivity myActivity = new DetectedActivity(3, 3);
+        DetectedActivity myActivity = new DetectedActivity(3, 100);
         TimelineSegment timelineSegment = new TimelineSegment( myActivity, new Date(), false);
         timelineSegment.setStartPlace("City Gallerie");
         timelineSegment.setStartAddress("Goldbacherstr. 2, 63739 Aschaffenburg");
