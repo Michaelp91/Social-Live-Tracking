@@ -204,7 +204,6 @@ public class RegisterFragment extends Fragment {
                         //REST Call Create new User, timeline and store him in the DB and locally
                         com.slt.data.User user = OtherRestCalls.createUser_Functionalities(response.getMessage());
 
-                        //TODO: needs new timeline
                         if(user != null) {
                             Timeline timeline = new Timeline();
                             boolean timelineCreated = UpdateOperations_Synchron.createTimeLineManually(timeline);

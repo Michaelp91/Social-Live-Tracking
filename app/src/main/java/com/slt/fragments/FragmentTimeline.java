@@ -46,6 +46,7 @@ import com.slt.R;
 import com.slt.TimelineDetailsActivity;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
+import com.slt.control.SharedResources;
 import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
@@ -415,7 +416,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void onClick(View view) {
                                     TimelineSegment tSegment = (TimelineSegment) view.getTag();
-                                    DataProvider.getInstance().setOnClickedTimelineSegmentForDetails(tSegment);
+                                    SharedResources.getInstance().setOnClickedTimelineSegmentForDetails(tSegment);
                                     Intent intent = new Intent(getActivity(), TimelineDetailsActivity.class);
                                     startActivity(intent);
                                 }

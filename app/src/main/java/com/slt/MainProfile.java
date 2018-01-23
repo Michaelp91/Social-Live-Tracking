@@ -197,6 +197,19 @@ public class MainProfile extends AppCompatActivity
 
 
         checkSettings();
+
+        // show a message to inform the user if step detection is not supported
+        if(!isVersionWithStepSensor()){
+            android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
+            dialog.setMessage("Step Detection not supported!");
+            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                }
+            });
+            dialog.show();
+        }
     }
 
     /**
@@ -216,7 +229,7 @@ public class MainProfile extends AppCompatActivity
 
                 android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
                 dialog.setMessage("Location not enabled!");
-                dialog.setPositiveButton("Go to location settings?", new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton("Location settings", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -228,7 +241,6 @@ public class MainProfile extends AppCompatActivity
 
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        // TODO Auto-generated method stub
 
                     }
                 });
@@ -247,7 +259,7 @@ public class MainProfile extends AppCompatActivity
 
                 android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
                 dialog.setMessage("Network not enabled!");
-                dialog.setPositiveButton("Go to  settings?", new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         Intent myIntent = new Intent(Settings.ACTION_APPLICATION_SETTINGS);
@@ -259,7 +271,6 @@ public class MainProfile extends AppCompatActivity
 
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        // TODO Auto-generated method stub
 
                     }
                 });
@@ -303,10 +314,15 @@ public class MainProfile extends AppCompatActivity
 
     }
 
+    /**
+     * On Activity Destroy do the cleanup of the services, notification and Data Provider
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (isFinishing()) {
+            DataProvider.getInstance().clearData();
+
             //Disconnect Activity Listener if App has been stopped
             if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
                 ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
@@ -328,7 +344,6 @@ public class MainProfile extends AppCompatActivity
      * @return True if the device has support for Step Sensing
      */
     private boolean isVersionWithStepSensor() {
-        //TODO might want to check
         // BEGIN_INCLUDE(iskitkatsensor)
         // Require at least Android KitKat
         int currentApiVersion = android.os.Build.VERSION.SDK_INT;
