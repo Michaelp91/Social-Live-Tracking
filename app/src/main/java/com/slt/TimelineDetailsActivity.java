@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.slt.control.DataProvider;
+import com.slt.control.SharedResources;
 import com.slt.data.TimelineSegment;
 import com.slt.restapi.data.Constants;
 
@@ -59,7 +60,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         });
 
 
-        TimelineSegment segment = DataProvider.getInstance().getOnClickedTimelineSegmentForDetails();
+        TimelineSegment segment = SharedResources.getInstance().getOnClickedTimelineSegmentForDetails();
 
         TextView tvAktivitaet = (TextView) findViewById(R.id.tv_aktivitaet);
         TextView tvDauer = (TextView) findViewById(R.id.tv_dauer);

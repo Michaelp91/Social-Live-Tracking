@@ -48,8 +48,6 @@ public class DataProvider implements ServiceInterface{
         return ourInstance;
     }
 
-    private TimelineSegment onclickedTimelineSegment;
-
     /**
      * Current activity of the user
      */
@@ -134,13 +132,6 @@ public class DataProvider implements ServiceInterface{
 
     }
 
-    public void setOnClickedTimelineSegmentForDetails(TimelineSegment onclickedTimelineSegment) {
-        this.onclickedTimelineSegment = onclickedTimelineSegment;
-    }
-
-    public TimelineSegment getOnClickedTimelineSegmentForDetails() {
-        return onclickedTimelineSegment;
-    }
 
     /**
      * The method used to react on a change of the activity

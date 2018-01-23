@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.slt.R;
+import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 import com.slt.definitions.Constants;
 
@@ -34,6 +35,11 @@ public class SharedResources {
      * Stores the instance of the shared resources
      */
     private static final SharedResources ourInstance = new SharedResources();
+
+    /**
+     * Used to communicate timeline segments between fragments
+     */
+    private TimelineSegment onclickedTimelineSegment;
 
     /**
      * Stores the instance of the API Client
@@ -82,7 +88,10 @@ public class SharedResources {
         return this.navProfilePhoto;
     }
 
-
+    /**
+     * Set the Image View for the Profile Photo in the nav bar
+     * @param navProfilePhoto The Image view that should be stored
+     */
     public void setNavProfilePhoto(ImageView navProfilePhoto) {
         this.navProfilePhoto = navProfilePhoto;
     }
@@ -106,7 +115,7 @@ public class SharedResources {
     }
 
     /**
-     *
+     * User to pass along between segments
      */
     private User myUser;
 
@@ -117,6 +126,22 @@ public class SharedResources {
      */
     public void setMyGoogleApiClient(GoogleApiClient myGoogleApiClient) {
         this.myGoogleApiClient = myGoogleApiClient;
+    }
+
+    /**
+     * Store a timeline segment that should be shared between segments
+     * @param onclickedTimelineSegment The Timeline segment to store
+     */
+    public void setOnClickedTimelineSegmentForDetails(TimelineSegment onclickedTimelineSegment) {
+        this.onclickedTimelineSegment = onclickedTimelineSegment;
+    }
+
+    /**
+     * Get the stored timeline segment
+     * @return The stored timeline segment
+     */
+    public TimelineSegment getOnClickedTimelineSegmentForDetails() {
+        return onclickedTimelineSegment;
     }
 
     /**
