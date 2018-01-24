@@ -500,8 +500,9 @@ public class TimelineDay {
             DataUpdater.getInstance().addTimeLineSegment(next, this);
 
             //adds the segment and starts the step detection
-            next.addLocationPoint(location, date);
             next.addSensor();
+            next.addLocationPoint(location, date);
+
 
             //search for location and address
             Object[] ResolutionData = new Object[2];

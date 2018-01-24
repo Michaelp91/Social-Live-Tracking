@@ -252,7 +252,9 @@ public class TimelineSegment {
         this.activeTime += newEntry.getMyDuration();
 
         // update the statistics for the steps
-        this.userSteps += myStepSensor.getSteps();
+        if(myStepSensor != null) {
+            this.userSteps += myStepSensor.getSteps();
+        }
 
         this.myLocationPoints.add(newEntry);
         this.calculateAchievements();

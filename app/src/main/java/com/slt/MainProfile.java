@@ -100,7 +100,7 @@ public class MainProfile extends AppCompatActivity
     /**
      * Update interval for the activity detection
      */
-    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 1000;
+    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 500;
 
     /**
      * TAG for the Logger

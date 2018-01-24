@@ -197,6 +197,8 @@ public class TemporaryDB {
 
 
     public REST_TimelineSegment findTimeLineSegmentByObject(REST_TimelineSegment search) {
+        if(search == null)
+            return null;
 
         REST_TimelineSegment toSearch = timeLineSegmentsByTags.get(search.int_TAG);
 
