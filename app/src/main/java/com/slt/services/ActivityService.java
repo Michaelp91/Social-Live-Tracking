@@ -85,7 +85,7 @@ public class ActivityService extends IntentService {
             int confidence = mostProbableActivity.getConfidence();
 
             //ignore if the confidence is too small
-            if(confidence < 51){
+            if(confidence < 25){
                 return;
             }
 

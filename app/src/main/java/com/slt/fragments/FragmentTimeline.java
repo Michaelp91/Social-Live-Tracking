@@ -537,7 +537,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 tmpImageView.setImageBitmap(bitmap);
                 downloadedImages.add(bitmap);
 
-                //TODO: The File is not uploaded after uploadImage()
+
                 uploadImage();
 
                 Log.e(TAG, "Pick from Camera::>>> ");
@@ -569,7 +569,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 downloadedImages.add(bitmap);
                 Log.e(TAG, "Pick from Gallery::>>> ");
 
-                //TODO: The File is not uploaded after uploadImage()
                 uploadImage();
 
             } catch (Exception e) {
@@ -641,7 +640,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 Bitmap bmp = ((BitmapDrawable)tmpImageView.getDrawable()).getBitmap();
 
 
-                final boolean uploaded = UsefulMethods.UploadImageView(bmp, imageId.toString() + ".png");
+                final boolean uploaded = UsefulMethods.UploadImageView(bmp, imageId.toString() + ".jpeg");
                 final TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
                 timelineSegment.addImage(imageId.toString() + ".png");
                 final boolean timelinesegmentUpdated = OtherRestCalls.updateTimelineSegmentForImages(timelineSegment);

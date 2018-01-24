@@ -384,19 +384,6 @@ public class TimelineSegment {
      * @return The comments for the user, null if none are found
      */
     public UserComment getUserComment(String user){
-        /*
-        UserComment comment = null;
-
-        //check if we have a comment from the user
-        for(UserComment com : this.userComments){
-            if(com.getUserName().equals(user)){
-                comment = com;
-            }
-        }
-
-        return comment;
-        */
-
         return new UserComment("", "");
     }
 
@@ -513,53 +500,22 @@ public class TimelineSegment {
         LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
-
     /**
-     * Add an image from the DB
-     * @param image The image to add
-     * @param id  The DB ID of the owning user
+     * Set the images from the DB
+     * @param images The images to add in a list
      */
-
-    public void addImage(Image image, String id) {
-
-        /*
-        this.myImages.add(image);
-
-        //Send intent to inform about update
-        Intent intent = new Intent();
-        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_INFO_CHANGED);
-        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
-        intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
-        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
-        */
-    }
-
-
     public void setImages(LinkedList<String> images) {
         this.myImages = images;
     }
+
+    /**
+     * Add a single image
+     * @param image Add a single image
+     */
     public void addImage(String image) {
         this.myImages.add(image);
     }
 
-
-    /**
-     * Add am image to the segment
-     * @param image The image to add to the list
-     */
-    public void addImages(Image image) {
-        /*
-        if(image != null) {
-            this.myImages.add(image);
-
-            //Send intent to inform about update
-            Intent intent = new Intent();
-            intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_INFO_CHANGED);
-            intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
-            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
-        }
-        */
-    }
 
     /**
      * Used in Case the user wants to change the activity, can only be called from the TimelineDay
