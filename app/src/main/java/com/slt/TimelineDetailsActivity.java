@@ -23,7 +23,7 @@ import com.slt.control.SharedResources;
 import com.slt.data.TimelineSegment;
 import com.slt.restapi.data.Constants;
 
-
+//TODO: Test Timeline Details
 public class TimelineDetailsActivity extends AppCompatActivity {
     private GoogleMap googleMap;
     MapView mMapView;
@@ -89,7 +89,6 @@ public class TimelineDetailsActivity extends AppCompatActivity {
     }
 
     private void addLines() {
-
         googleMap.addPolyline((new PolylineOptions())
                 .add(DARMSTADT_NORD, WILLYBRANDTPLATZ).width(5).color(Color.BLUE)
                 .geodesic(true));
