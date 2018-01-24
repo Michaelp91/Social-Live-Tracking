@@ -24,12 +24,16 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.location.DetectedActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.MainProfile;
 import com.slt.R;
 import com.slt.control.DataProvider;
+import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
+import com.slt.data.TimelineDay;
+import com.slt.data.TimelineSegment;
 import com.slt.model.Response;
 import com.slt.network.NetworkUtil;
 import com.slt.restapi.DataUpdater;
@@ -294,27 +298,61 @@ public class LoginFragment extends Fragment {
                 }));
     }
 
+    /**
+     * Runnabe to load Data from REST
+     */
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    //if we have an email address
                     if (threadEmail != null) {
+                        //load user data
                         User user = OtherRestCalls.retrieveUser_Functionalities(threadEmail);
 
+                        // if we have user data
                         if (user != null) {
+                            //set the user
                             DataProvider.getInstance().setOwnUser(user);
 
+                            //load the user image
                             Bitmap bitmap = UsefulMethods.LoadImage(user);
-
                             DataProvider.getInstance().getOwnUser().setMyImage(bitmap);
 
+                            //get user timeline
                             Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
                             DataProvider.getInstance().getOwnUser().setTimeline(timeline);
                             DataProvider.getInstance().syncTimelineToUser();
 
+                            //start the REST Updater
                             DataUpdater.getInstance().Start();
+
+                            //if we already have the timeline check if we already have entries
+                            if(timeline != null){
+
+                                if(timeline.getHistorySize() > 0){
+                                    TimelineDay day = timeline.getTimelineDays().getLast();
+
+                                    if(!day.getMySegments().isEmpty()){
+                                        TimelineSegment seg = day.getMySegments().getLast();
+                                        LocationEntry entry = null;
+
+                                        if(!seg.getLocationPoints().isEmpty()) {
+                                            entry = seg.getMyLocationPoints().getLast();
+                                        }
+
+                                        //add a unknown entry if we had switched off a while
+                                        if(entry != null){
+                                            DetectedActivity activity = new DetectedActivity(DetectedActivity.UNKNOWN, 100);
+                                            timeline.addUserStatus(entry.getMyLocation(), entry.getMyEntryDate(), activity);
+                                        }
+                                    }
+
+
+                                }
+                            }
 
                         } else {
                             showSnackBarMessage("Error retrieving User!");
@@ -326,6 +364,9 @@ public class LoginFragment extends Fragment {
         }
     };
 
+    /**
+     * After we have loaded the Data go to our main activity
+     */
     private void afterRetrival() {
         mProgressBar.setVisibility(View.GONE);
 

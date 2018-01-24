@@ -4,15 +4,19 @@ import android.Manifest;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -515,16 +519,25 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 tmpImageView = new ImageView(getActivity());
 
 
-                //compress the picture -> reduces the quality by 50%
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                float aspectRatio = bitmap.getWidth() /
+                        (float) bitmap.getHeight();
+                int width = 800;
+                int height = Math.round(width / aspectRatio);
+
+                bitmap = getResizedBitmap(bitmap, width, height);
+
+                //compress the picture -> reduces the quality to 90%
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
                 byte[] BYTE = bytes.toByteArray();
 
                 this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
 
+                this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
+
                 tmpImageView.setImageBitmap(bitmap);
                 downloadedImages.add(bitmap);
 
-                //TODO: The File is not uploaded after uploadImage()
+
                 uploadImage();
 
                 Log.e(TAG, "Pick from Camera::>>> ");
@@ -537,22 +550,86 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 bitmap = MediaStore.Images.Media.getBitmap(ApplicationController.getContext().getContentResolver(), selectedImage);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-                //compress the picture -> reduces the quality by 50%
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+
+                float aspectRatio = bitmap.getWidth() /
+                        (float) bitmap.getHeight();
+                int width = 800;
+                int height = Math.round(width / aspectRatio);
+
+                bitmap = getResizedBitmap(bitmap, width, height);
+
+                //compress the picture -> reduces the quality to 90%
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
                 byte[] BYTE = bytes.toByteArray();
 
                 this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
 
+                this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
+
                 downloadedImages.add(bitmap);
                 Log.e(TAG, "Pick from Gallery::>>> ");
 
-                //TODO: The File is not uploaded after uploadImage()
                 uploadImage();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+
+
+    public static Bitmap rotateImageIfRequired(Bitmap img, Context context, Uri selectedImage) throws IOException {
+
+        if (selectedImage.getScheme().equals("content")) {
+            String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION };
+            Cursor c = context.getContentResolver().query(selectedImage, projection, null, null, null);
+            if (c.moveToFirst()) {
+                final int rotation = c.getInt(0);
+                c.close();
+                return rotateImage(img, rotation);
+            }
+            return img;
+        } else {
+            ExifInterface ei = new ExifInterface(selectedImage.getPath());
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            Log.i( TAG, " orientation: " + orientation);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    return rotateImage(img, 90);
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    return rotateImage(img, 180);
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    return rotateImage(img, 270);
+                default:
+                    return img;
+            }
+        }
+    }
+
+    private static Bitmap rotateImage(Bitmap img, int degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+        return rotatedImg;
+    }
+
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap( bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 
     private void uploadImage() {
@@ -563,7 +640,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 Bitmap bmp = ((BitmapDrawable)tmpImageView.getDrawable()).getBitmap();
 
 
-                final boolean uploaded = UsefulMethods.UploadImageView(bmp, imageId.toString() + ".png");
+                final boolean uploaded = UsefulMethods.UploadImageView(bmp, imageId.toString() + ".jpeg");
                 final TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
                 timelineSegment.addImage(imageId.toString() + ".png");
                 final boolean timelinesegmentUpdated = OtherRestCalls.updateTimelineSegmentForImages(timelineSegment);

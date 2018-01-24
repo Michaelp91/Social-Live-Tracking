@@ -118,6 +118,7 @@ public class DataProvider implements ServiceInterface{
         myCurrentLocation = null;
         this.changeDate = new Date();
         this.manualMode = false;
+        this.userTimeline = null;
 
         this.userList = new LinkedList<>();
         this.allUsers = new LinkedList<>();
@@ -126,10 +127,23 @@ public class DataProvider implements ServiceInterface{
 
     }
 
-
+    /**
+     * Add a new unknown Timeline Segment and clear all data
+     */
     public void clearData() {
-        this.ownUser = null;
+      //  this.userTimeline.addUserStatus(this.myCurrentLocation, new Date(), new DetectedActivity(DetectedActivity.UNKNOWN, 100));
 
+
+        myCurrentActivity = null;
+        myCurrentLocation = null;
+        this.changeDate = null;
+        this.manualMode = false;
+        this.userTimeline = null;
+
+        this.userList.clear();
+        this.allUsers.clear();
+
+        this.ownUser = null;
     }
 
 
@@ -141,6 +155,10 @@ public class DataProvider implements ServiceInterface{
      * detected but not used, 3 if the data was entered
      */
     public synchronized int updateActivity(DetectedActivity activity, Date timestamp){
+
+        //return if we no longer have a user
+        if(this.ownUser == null || this.userTimeline == null)
+            return  0;
 
         // if we are in manual mode ignore the change since the user now has the control
         if(manualMode){
@@ -345,6 +363,10 @@ public class DataProvider implements ServiceInterface{
      * location
      */
     public synchronized  int updatePosition(Location location, Date timestamp){
+
+        //return if we no longer have a user
+        if(this.ownUser == null || this.userTimeline == null)
+            return  0;
 
         // if we are in manual mode update the values
         if(manualMode){

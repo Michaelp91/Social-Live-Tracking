@@ -105,14 +105,11 @@ public class StepSensor implements SensorEventListener {
             // initialize value
             myCurrentSteps = myStartSteps = (int) event.values[0];
 
-            Log.i(TAG, "New step detected by STEP_COUNTER sensor "+ sensorID + ". Init Start Steps: " + myStartSteps);
+
         }
 
         // Calculate steps taken based on first counter value received.
         this.myCurrentSteps = (int) event.values[0];
-
-        Log.i(TAG, "New step detected by STEP_COUNTER sensor "+ sensorID + ". Current Step Count: " + myCurrentSteps);
-
     }
 
     /**
@@ -132,6 +129,7 @@ public class StepSensor implements SensorEventListener {
     public int getSteps(){
         int steps = this.myCurrentSteps - this.myStartSteps;
         this.myStartSteps = this.myCurrentSteps;
+        Log.i(TAG, "Step detected by STEP_COUNTER sensor "+ sensorID + ". Steps: " + steps);
         return steps;
     }
 

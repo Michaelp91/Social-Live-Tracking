@@ -2,6 +2,7 @@ package com.slt.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
@@ -31,7 +32,9 @@ public class ActivityService extends IntentService {
 
         //start the foreground service so we have no limitations for update with later android
         // versions
-        startForeground(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, SharedResources.getInstance().getForegroundNotification());
+        if (Build.VERSION.SDK_INT > 26) {
+            startForeground(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, SharedResources.getInstance().getForegroundNotification());
+        }
     }
 
 
@@ -82,7 +85,7 @@ public class ActivityService extends IntentService {
             int confidence = mostProbableActivity.getConfidence();
 
             //ignore if the confidence is too small
-            if(confidence < 50){
+            if(confidence < 25){
                 return;
             }
 

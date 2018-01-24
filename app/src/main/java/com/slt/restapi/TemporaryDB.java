@@ -1,5 +1,7 @@
 package com.slt.restapi;
 
+import android.util.Log;
+
 import com.slt.data.Achievement;
 import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
@@ -197,6 +199,10 @@ public class TemporaryDB {
 
 
     public REST_TimelineSegment findTimeLineSegmentByObject(REST_TimelineSegment search) {
+        if(search == null) {
+            Log.i("TemporaryDB: ", "----------------------------- REST Null Timeline Segment");
+            return null;
+        }
 
         REST_TimelineSegment toSearch = timeLineSegmentsByTags.get(search.int_TAG);
 

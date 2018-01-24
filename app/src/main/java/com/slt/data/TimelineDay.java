@@ -500,8 +500,9 @@ public class TimelineDay {
             DataUpdater.getInstance().addTimeLineSegment(next, this);
 
             //adds the segment and starts the step detection
-            next.addLocationPoint(location, date);
             next.addSensor();
+            next.addLocationPoint(location, date);
+
 
             //search for location and address
             Object[] ResolutionData = new Object[2];
@@ -557,9 +558,6 @@ public class TimelineDay {
                         this.mySegments.getLast().setMyActivity(activity);
                     }
                 }
-
-
-
             }
 
             //check if new activity, if yes add and start place/address resolution
@@ -567,12 +565,12 @@ public class TimelineDay {
                 Log.i(TAG, "addUserStatus: new Activity, new Segment created, create new Segment.");
                 TimelineSegment nextSegment = new TimelineSegment(activity, date, false);
                 this.mySegments.add(nextSegment);
-                nextSegment.addLocationPoint(location, date);
-
 
                 //REST Call to add new segment to DB
                 DataUpdater.getInstance().addTimeLineSegment(nextSegment, this);
 
+                //Add a new location point
+                nextSegment.addLocationPoint(location, date);
 
                 Object[] ResolutionData = new Object[2];
                 ResolutionData[0] = this.mySegments.getLast();
