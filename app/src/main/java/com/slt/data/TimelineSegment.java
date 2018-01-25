@@ -411,12 +411,14 @@ public class TimelineSegment {
      */
     public void mergeTimelineSegments(TimelineSegment segment){
 
-        //REST Call to remove the last location point
-        DataUpdater.getInstance().deleteLocationEntry(this.myLocationPoints.getLast());
+        //check if we have location points added
+        if(!this.myLocationPoints.isEmpty()) {
+            //REST Call to remove the last location point
+            DataUpdater.getInstance().deleteLocationEntry(this.myLocationPoints.getLast());
 
-        //Remove the last location point since it is double in both segment
-        this.myLocationPoints.removeLast();
-
+            //Remove the last location point since it is double in both segment
+            this.myLocationPoints.removeLast();
+        }
         //merge all the remaining data
         this.myLocationPoints.addAll(segment.getLocationPoints());
         this.myAchievements.addAll(segment.getMyAchievements());
@@ -426,7 +428,6 @@ public class TimelineSegment {
         for(LocationEntry entry : segment.getLocationPoints()){
             DataUpdater.getInstance().addLocationEntry(entry, this);
         }
-
 
         //check which activity type our activity is
         switch(segment.getMyActivity().getType())
