@@ -260,6 +260,7 @@ public class DataUpdater implements Runnable{
                             && ourInstance.h_queue_timelineDays_update.isEmpty()
                             && ourInstance.h_queue_timelinesegments_delete.isEmpty()
                             && ourInstance.h_queue_locationEntries_delete.isEmpty()) {
+
                         Locks.getInstance().lock.wait();
                     }
                     //TODO: Might REMOVE , could LEAD TO CONTENTIONS

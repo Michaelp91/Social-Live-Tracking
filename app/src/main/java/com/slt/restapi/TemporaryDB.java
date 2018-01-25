@@ -71,15 +71,31 @@ public class TemporaryDB {
     }
 
     public void setLocationEntries(ArrayList<REST_LocationEntry> locationEntries) {
-        this.locationEntries = locationEntries;
+
+        for(REST_LocationEntry r_l: locationEntries) {
+
+            r_l.int_TAG = Singleton_General.getInstance().counter;
+            this.locationEntriesByTags.put(r_l.int_TAG, r_l);
+            Singleton_General.getInstance().counter++;
+        }
     }
 
     public void setTimelineDays(ArrayList<REST_TimelineDay> timelineDays) {
-        this.timelineDays = timelineDays;
+
+        for(REST_TimelineDay r_t_d: timelineDays) {
+            r_t_d.int_TAG = Singleton_General.getInstance().counter;
+            this.timelineDaysByTags.put(r_t_d.int_TAG, r_t_d);
+            Singleton_General.getInstance().counter++;
+        }
     }
 
     public void setTimeLineSegments(ArrayList<REST_TimelineSegment> timeLineSegments) {
-        this.timeLineSegments = timeLineSegments;
+
+        for(REST_TimelineSegment r_t_s: timeLineSegments) {
+            r_t_s.int_TAG = Singleton_General.getInstance().counter;
+            this.timeLineSegmentsByTags.put(r_t_s.int_TAG, r_t_s);
+            Singleton_General.getInstance().counter++;
+        }
     }
 
     public void addLocationEntry(REST_LocationEntry l) {
