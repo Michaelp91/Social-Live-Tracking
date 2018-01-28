@@ -1,13 +1,10 @@
 package com.slt.restapi;
 
 import android.location.Location;
-import android.support.v4.app.FragmentTransitionImpl;
-import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.slt.TimelineActivity;
 import com.slt.data.Achievement;
 import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;

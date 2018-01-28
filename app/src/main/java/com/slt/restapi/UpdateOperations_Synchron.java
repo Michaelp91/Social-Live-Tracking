@@ -137,7 +137,7 @@ public class UpdateOperations_Synchron {
         }
 
         String timeLineDay = timelineSegment.timeLineDay;
-        TemporaryDB.getInstance().removeTimelineSegmentsByTDayId(timeLineDay);
+        //TemporaryDB.getInstance().removeTimelineSegmentsByTDayId(timeLineDay);
         TemporaryDB.getInstance().h_timelineSegments.remove(t_s);
 
         return true;
@@ -159,6 +159,7 @@ public class UpdateOperations_Synchron {
         REST_TimelineSegment response = test.getResponse_timelineSegment();
         response.int_TAG = timelineSegment.int_TAG;
         Singleton.getInstance().setResponse_timelineSegment(test.getResponse_timelineSegment());
+        //TemporaryDB.getInstance().addTimeLineSegment(response);
         TemporaryDB.getInstance().addTimeLineSegment(response);
         TemporaryDB.getInstance().h_timelineSegments.put(t_s, response);
 
@@ -181,7 +182,7 @@ public class UpdateOperations_Synchron {
         response.int_TAG = locationEntry.int_TAG;
 
         Singleton.getInstance().setResponse_locationEntry(test.getResponse_locationEntry());
-        TemporaryDB.getInstance().addLocationEntry(response);
+        //TemporaryDB.getInstance().addLocationEntry(response);
         TemporaryDB.getInstance().h_locationEntries.put(l_e, response);
 
         return true;
@@ -199,7 +200,7 @@ public class UpdateOperations_Synchron {
         }
 
         String timelineSegment = r_l_e.timelinesegment;
-        TemporaryDB.getInstance().removeLocationEntriesByTSegmentId(timelineSegment);
+        //TemporaryDB.getInstance().removeLocationEntriesByTSegmentId(timelineSegment);
         TemporaryDB.getInstance().h_locationEntries.remove(l_e);
 
         return true;

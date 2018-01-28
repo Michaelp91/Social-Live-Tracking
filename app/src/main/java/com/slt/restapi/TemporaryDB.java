@@ -38,9 +38,6 @@ public class TemporaryDB {
     private HashMap<Integer, REST_TimelineSegment> timeLineSegmentsByTags = new HashMap<>();
     private HashMap<Integer, REST_LocationEntry> locationEntriesByTags = new HashMap<>();
 
-    private HashMap<String, ArrayList<REST_TimelineSegment>> timelineSegmentsByTimelineDayId = new HashMap<>();
-    private HashMap<String, ArrayList<REST_LocationEntry>> locationEntriesByTimelineSegmentId = new HashMap<>();
-
 
     //Identifying Data model object, after that edit this identified object by adding children
     public HashMap<String, User> h_userResolver = new HashMap<>();
@@ -74,6 +71,7 @@ public class TemporaryDB {
 
         for(REST_LocationEntry r_l: locationEntries) {
 
+
             r_l.int_TAG = Singleton_General.getInstance().counter;
             this.locationEntriesByTags.put(r_l.int_TAG, r_l);
             Singleton_General.getInstance().counter++;
@@ -98,25 +96,8 @@ public class TemporaryDB {
         }
     }
 
-    public void addLocationEntry(REST_LocationEntry l) {
-        int tag = l.int_TAG;
-        String timelineSegmentId = l.timelinesegment;
-
-        locationEntriesByTags.put(tag, l);
-        ArrayList<REST_LocationEntry> locationEntries = locationEntriesByTimelineSegmentId.get(timelineSegmentId);
-
-        if(locationEntries != null) {
-            locationEntries.add(l);
-        } else {
-            locationEntries = new ArrayList<>();
-            locationEntries.add(l);
-        }
-
-        locationEntriesByTimelineSegmentId.put(timelineSegmentId, locationEntries);
-    }
-
-    public ArrayList<REST_LocationEntry> getLocationEntries() {
-        return locationEntries;
+    public void addTimeLineSegment(REST_TimelineSegment r_t_s) {
+        this.timeLineSegmentsByTags.put(r_t_s.int_TAG, r_t_s);
     }
 
     public void setTimeline(REST_Timeline timeline) {
@@ -134,50 +115,6 @@ public class TemporaryDB {
         this.timelineDays.add(t);
     }
 
-
-    public ArrayList<REST_TimelineSegment> findTimelineSegmentsByTDayId(String tId) {
-        ArrayList<REST_TimelineSegment> choosedSegments = timelineSegmentsByTimelineDayId.get(tId);
-
-        if(choosedSegments != null) {
-            return choosedSegments;
-        } else {
-            return new ArrayList<REST_TimelineSegment>();
-        }
-    }
-
-    public void removeTimelineSegmentsByTDayId(String tId) {
-        ArrayList<REST_TimelineSegment> rest_timelineSegments = timelineSegmentsByTimelineDayId.get(tId);
-
-        for(REST_TimelineSegment r_t_s: rest_timelineSegments) {
-            int int_tag = r_t_s.int_TAG;
-            timeLineSegmentsByTags.remove(int_tag);
-        }
-
-        timelineSegmentsByTimelineDayId.remove(tId);
-    }
-
-    public void removeLocationEntriesByTSegmentId(String t_s_Id) {
-        ArrayList<REST_LocationEntry> rest_locationEntries = locationEntriesByTimelineSegmentId.get(t_s_Id);
-
-        for(REST_LocationEntry r_t_s: rest_locationEntries) {
-            int int_tag = r_t_s.int_TAG;
-            locationEntriesByTags.remove(int_tag);
-        }
-
-        timelineSegmentsByTimelineDayId.remove(t_s_Id);
-    }
-
-
-    public ArrayList<REST_LocationEntry> findLocationEntriesByTSegmentId(String segmentId) {
-        ArrayList<REST_LocationEntry> choosedEntries = locationEntriesByTimelineSegmentId.get(segmentId);
-
-        if(choosedEntries != null) {
-            return choosedEntries;
-        } else {
-            return new ArrayList<REST_LocationEntry>();
-        }
-    }
-
     public REST_TimelineDay findTimeLineDayByObject(REST_TimelineDay search) {
 
         REST_TimelineDay toSearch = timelineDaysByTags.get(search.int_TAG);
@@ -187,29 +124,6 @@ public class TemporaryDB {
         } else {
             return null;
         }
-    }
-
-    public ArrayList<REST_TimelineDay> getTimelineDays() {
-        return timelineDays;
-    }
-
-    public void addTimeLineSegment(REST_TimelineSegment t) {
-        int tag = t.int_TAG;
-        String timelineDayId = t.timeLineDay;
-
-        timeLineSegmentsByTags.put(tag, t);
-        ArrayList<REST_TimelineSegment> timelinesegments = timelineSegmentsByTimelineDayId.get(timelineDayId);
-
-        if(timelinesegments != null) {
-            timelinesegments.add(t);
-        } else {
-            timelinesegments = new ArrayList<>();
-            timelinesegments.add(t);
-        }
-
-        timelineSegmentsByTimelineDayId.put(timelineDayId, timelinesegments);
-
-        this.timeLineSegments.add(t);
     }
 
 

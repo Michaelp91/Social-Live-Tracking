@@ -63,7 +63,6 @@ import com.slt.network.NetworkUtil;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.TemporaryDB;
-import com.slt.restapi.TrackingSimulator;
 import com.slt.restapi.UsefulMethods;
 import com.slt.restapi.data.Image;
 import com.slt.restapi.data.REST_LocationEntry;
@@ -168,7 +167,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                   t = RetrieveOperations.getInstance().getCompleteTimeline();
                   updateTimelineDays();
               }
-              handler.postDelayed(runnable, 2000);
+              handler.postDelayed(runnable, 10000);
           }
       }).start();
 
@@ -196,47 +195,49 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         */
 
 
-        LayoutInflater inflater = LayoutInflater.from(this.getActivity());
+        if(getActivity() != null) {
+            LayoutInflater inflater = LayoutInflater.from(this.getActivity());
 
 
-        timeLineDays = t.getTimelineDays();
-        counter_timelinedays = 0;
-        //view_timelineDays.removeAllViews();
-        for(TimelineDay t_d: timeLineDays) {
+            timeLineDays = t.getTimelineDays();
+            counter_timelinedays = 0;
+            //view_timelineDays.removeAllViews();
+            for (TimelineDay t_d : timeLineDays) {
 
-            if(timelinedayIsNotViewed(t_d.getID())) {
-                h_viewedTimelineDays.put(t_d.getID(), t_d);
-                final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.timeline_day, null);
-                TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
+                if (timelinedayIsNotViewed(t_d.getID())) {
+                    h_viewedTimelineDays.put(t_d.getID(), t_d);
+                    final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.timeline_day, null);
+                    TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
 //            ImageView imageView = (ImageView) row.findViewById(R.id.iv_activity);
 //            UsefulMethods.UploadImageView(imageView);
 
 
-                Date date = t_d.getMyDate();
+                    Date date = t_d.getMyDate();
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-                String strDate = sdf.format(date);
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                    String strDate = sdf.format(date);
 
-                myDate.setText(strDate);
+                    myDate.setText(strDate);
 
-                row.setTag(TAG_TIMELINEDAY);
-                row.setId(counter_timelinedays);
-                row.setOnClickListener(this);
+                    row.setTag(TAG_TIMELINEDAY);
+                    row.setId(counter_timelinedays);
+                    row.setOnClickListener(this);
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        view_timelineDays.addView(row);
-                        list_TimelineDays.add(row);
-                    }
-                });
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            view_timelineDays.addView(row);
+                            list_TimelineDays.add(row);
+                        }
+                    });
 
 
-                counter_timelinedays++;
-            }
+                    counter_timelinedays++;
+                }
 
-            if(choosedChildren != null) {
-                updateTimelineView();
+                if (choosedChildren != null) {
+                    updateTimelineView();
+                }
             }
         }
 
@@ -640,7 +641,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 Bitmap bmp = ((BitmapDrawable)tmpImageView.getDrawable()).getBitmap();
 
 
-                final boolean uploaded = UsefulMethods.UploadImageView(bmp, imageId.toString() + ".jpeg");
+                final boolean uploaded = UsefulMethods.UploadImageView(bmp, imageId.toString() + ".png");
                 final TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
                 timelineSegment.addImage(imageId.toString() + ".png");
                 final boolean timelinesegmentUpdated = OtherRestCalls.updateTimelineSegmentForImages(timelineSegment);

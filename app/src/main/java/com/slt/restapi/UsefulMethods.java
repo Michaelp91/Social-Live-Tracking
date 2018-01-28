@@ -2,24 +2,17 @@ package com.slt.restapi;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.Base64;
-import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.slt.TimelineActivity;
 import com.slt.data.User;
-import com.slt.restapi.data.FullTimeLine;
 import com.slt.restapi.data.Image;
 import com.slt.restapi.data.REST_User_Functionalities;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by Usman Ahmad on 07.01.2018.

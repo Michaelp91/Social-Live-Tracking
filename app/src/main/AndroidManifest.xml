@@ -72,7 +72,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.slt.MainActivity" />
         </activity>
-        <activity android:name=".TimelineActivity"></activity>
         <activity android:name=".TimelineDetailsActivity"></activity>
 
         <service android:name="com.slt.services.ActivityService" />

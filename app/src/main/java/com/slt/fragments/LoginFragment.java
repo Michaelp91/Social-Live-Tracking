@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -42,7 +41,6 @@ import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.UsefulMethods;
 import com.slt.statistics.GeneralViewOfStatistics;
 import com.slt.utils.Constants;
-import com.slt.TimelineActivity;
 import com.slt.data.User;
 import com.slt.network.RetrofitInterface;
 import com.slt.restapi.TemporaryDB;
@@ -371,14 +369,6 @@ public class LoginFragment extends Fragment {
         mProgressBar.setVisibility(View.GONE);
 
         Intent intent = new Intent(getActivity(), MainProfile.class);
-        startActivity(intent);
-    }
-
-
-    public void openTimelineActivity() {
-        Intent intent = new Intent(getActivity(), TimelineActivity.class);
-        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
-        intent.putExtra(com.slt.restapi.data.Constants.USERID, r_u_f._id);
         startActivity(intent);
     }
 

@@ -136,6 +136,7 @@ public class DataUpdater implements Runnable{
             }
 
             iterator = h_queue_locationEntries.entrySet().iterator();
+
             while (iterator.hasNext()) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 REST_LocationEntry r_l_e = (REST_LocationEntry) entry.getValue();
@@ -150,7 +151,8 @@ public class DataUpdater implements Runnable{
                     if (requestSuccessful) {
 
                         Log.d("Create", "Location Entry is created.");
-                        iterator.remove();
+                        //iterator.remove();
+                        h_queue_locationEntries.remove(entry.getKey());
                     } else {
               //          Log.d("Create", "Location Entry is not created.");
                     }
