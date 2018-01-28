@@ -304,6 +304,7 @@ public class OtherRestCalls {
         r_u_f.email = user.getEmail();
         r_u_f.foreName = user.getForeName();
         r_u_f.lastName = user.getLastName();
+        r_u_f.userName = user.getUserName();
 
         if(includeFriendsUpdate) {
             LinkedList<User> users = user.getUserList();

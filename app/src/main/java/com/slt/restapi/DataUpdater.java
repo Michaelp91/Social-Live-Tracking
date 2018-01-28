@@ -191,14 +191,20 @@ public class DataUpdater implements Runnable{
             Iterator iterator = h_queue_timelinesegments_update.entrySet().iterator();
 
             while(iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_TimelineSegment r_t_s = (REST_TimelineSegment) entry.getValue();
                 TimelineSegment t_s = (TimelineSegment) entry.getKey();
                 boolean requestSuccessful = UpdateOperations_Synchron.updateTimelineSegment(t_s, r_t_s);
 
                 if (requestSuccessful) {
                     Log.d("Create", "Timeline Segment is updated.");
-                    iterator.remove();
+                    h_queue_timelinesegments_update.remove(entry.getKey());
                 } else {
             //        Log.d("Create", "Timeline Segment is not updated.");
                 }
@@ -207,14 +213,20 @@ public class DataUpdater implements Runnable{
             iterator = h_queue_timelineDays_update.entrySet().iterator();
 
             while(iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
+
                 REST_TimelineDay r_t_d = (REST_TimelineDay) entry.getValue();
                 TimelineDay t_d = (TimelineDay) entry.getKey();
                 boolean requestSuccessful = UpdateOperations_Synchron.updateTimelineDay(t_d, r_t_d);
 
                 if (requestSuccessful) {
                     Log.d("Create", "Timeline Day is updated.");
-                    iterator.remove();
+                    h_queue_timelineDays_update.remove(entry.getKey());
                 } else {
             //        Log.d("Create", "Timeline Day is not updated.");
                 }
@@ -229,14 +241,19 @@ public class DataUpdater implements Runnable{
             Iterator iterator = h_queue_timelinesegments_delete.entrySet().iterator();
 
             while(iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_TimelineSegment r_t_s = (REST_TimelineSegment) entry.getValue();
                 TimelineSegment t_s = (TimelineSegment) entry.getKey();
                 boolean requestSuccessful = UpdateOperations_Synchron.deleteTimelineSegment(t_s, r_t_s);
 
                 if (requestSuccessful) {
                     Log.d("Create", "Timeline Segment is deleted.");
-                    iterator.remove();
+                    h_queue_timelinesegments_delete.remove(entry.getKey());
                 } else {
            //         Log.d("Create", "Timeline Segment is not deleted.");
                 }
@@ -245,14 +262,19 @@ public class DataUpdater implements Runnable{
             iterator = h_queue_locationEntries_delete.entrySet().iterator();
 
             while(iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_LocationEntry r_l_e = (REST_LocationEntry) entry.getValue();
                 LocationEntry l_e = (LocationEntry) entry.getKey();
                 boolean requestSuccessful = UpdateOperations_Synchron.deleteLocationEntry(l_e, r_l_e);
 
                 if (requestSuccessful) {
                     Log.d("Create", "Location Entry is deleted.");
-                    iterator.remove();
+                    h_queue_locationEntries_delete.remove(entry.getKey());
                 } else {
            //         Log.d("Create", "Location Entry is not deleted.");
                 }

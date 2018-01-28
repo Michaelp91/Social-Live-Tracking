@@ -66,6 +66,7 @@
         <activity
             android:name=".MainProfile"
             android:label="@string/title_activity_main_profile"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Social_Live_Theme">
             <meta-data

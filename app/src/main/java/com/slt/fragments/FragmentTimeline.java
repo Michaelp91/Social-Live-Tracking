@@ -199,7 +199,11 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             LayoutInflater inflater = LayoutInflater.from(this.getActivity());
 
 
-            timeLineDays = t.getTimelineDays();
+            try {
+                timeLineDays = t.getTimelineDays();
+            }catch (NullPointerException e) {
+                return;
+            }
             counter_timelinedays = 0;
             //view_timelineDays.removeAllViews();
             for (TimelineDay t_d : timeLineDays) {
@@ -275,7 +279,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 final DetectedActivity detectedActivity = tSegment.getMyActivity();
 
                 if (!locationEntries.isEmpty() && detectedActivity.getType() !=
-                        com.slt.definitions.Constants.TIMELINEACTIVITY.STILL) {
+                        com.slt.definitions.Constants.TIMELINEACTIVITY.STILL && detectedActivity.getType() !=
+                        com.slt.definitions.Constants.TIMELINEACTIVITY.TILTING) {
                     LocationEntry fstPoint = locationEntries.get(0);
 
                     view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
@@ -297,11 +302,12 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         final TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
                         final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
                         final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
-                        LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
+                        final LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
                         tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
                         tv_usercomments.setTag(tSegment);
 
-                        ll_pictures = AddPictures(tSegment, ll_pictures);
+                        //TODO: DownloadPictures(tSegment);
+                        //ll_pictures = AddPictures(ll_pictures);
                         ll_pictures.setTag(tSegment);
                         AddUserComments(tSegment.getStrUserComments(), ll_line);
 
@@ -371,6 +377,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                AddPictures(ll_pictures);
+
                                 switch(detectedActivity.getType()) {
                                     case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
                                         activity.setImageResource(R.drawable.walking);
@@ -429,7 +437,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                     }
 
-                } else if (timeLineSegments.indexOf(tSegment) == timeLineSegments.size() - 1 && !locationEntries.isEmpty()){
+                } else if (timeLineSegments.indexOf(tSegment) == timeLineSegments.size() - 1 && !locationEntries.isEmpty()
+                        && tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.STILL){
                     LocationEntry fstPoint = locationEntries.get(0);
 
                     view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
@@ -552,7 +561,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 Uri selectedImage = data.getData();
                 bitmap = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                tmpImageView = new ImageView(getActivity());
 
 
                 float aspectRatio = bitmap.getWidth() /
@@ -569,8 +577,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
 
                 this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
-
-                tmpImageView.setImageBitmap(bitmap);
                 downloadedImages.add(bitmap);
 
 
@@ -673,20 +679,21 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 Integer imageId = downloadedImages.size() + 1;
-                Bitmap bmp = ((BitmapDrawable)tmpImageView.getDrawable()).getBitmap();
 
 
-                final boolean uploaded = UsefulMethods.UploadImageView(bmp, imageId.toString() + ".png");
+                final boolean uploaded = UsefulMethods.UploadImageView(bitmap, imageId.toString() + ".png");
                 final TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
                 timelineSegment.addImage(imageId.toString() + ".png");
                 final boolean timelinesegmentUpdated = OtherRestCalls.updateTimelineSegmentForImages(timelineSegment);
+
+                DownloadPictures(timelineSegment);
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (uploaded || timelinesegmentUpdated) {
+                            AddPictures(choosedPicView);
                             Toast.makeText(getActivity(), "Image is uploaded successfully.", Toast.LENGTH_SHORT).show();
-                            AddPictures(timelineSegment, choosedPicView);
                         }
                         else
                             Toast.makeText(getActivity(), "Image is not successfully uploaded", Toast.LENGTH_SHORT).show();
@@ -696,16 +703,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         }).start();
     }
 
-    private LinearLayout AddPictures(TimelineSegment tSegment, final LinearLayout ll_pictures) {
-        ImageView iv_pic1 = ll_pictures.findViewById(R.id.iv_pic1);
-        ImageView iv_pic2 = ll_pictures.findViewById(R.id.iv_pic2);
-        ImageView iv_pic3 = ll_pictures.findViewById(R.id.iv_pic3);
-        TextView tv_noPicAvailable = ll_pictures.findViewById(R.id.tv_noPicAvailable);
-
-        iv_pic1.setVisibility(View.GONE);
-        iv_pic2.setVisibility(View.GONE);
-        iv_pic3.setVisibility(View.GONE);
-        tv_noPicAvailable.setVisibility(View.VISIBLE);
+    private void DownloadPictures(TimelineSegment tSegment) {
 
 
 
@@ -715,6 +713,32 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             Bitmap bmp = UsefulMethods.LoadImage(image);
             downloadedImages.add(bmp);
         }
+
+        /*
+        if(max == 0) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    final LinearLayout ll_nonpicture = (LinearLayout) inflater.inflate(R.layout.timelinesegment_nopictures, null);
+                    ll_pictures.addView(ll_nonpicture);
+                }
+            });
+        }
+        */
+
+
+    }
+
+    private LinearLayout AddPictures(LinearLayout ll_pictures) {
+        ImageView iv_pic1 = ll_pictures.findViewById(R.id.iv_pic1);
+        ImageView iv_pic2 = ll_pictures.findViewById(R.id.iv_pic2);
+        ImageView iv_pic3 = ll_pictures.findViewById(R.id.iv_pic3);
+        TextView tv_noPicAvailable = ll_pictures.findViewById(R.id.tv_noPicAvailable);
+
+        iv_pic1.setVisibility(View.GONE);
+        iv_pic2.setVisibility(View.GONE);
+        iv_pic3.setVisibility(View.GONE);
+        tv_noPicAvailable.setVisibility(View.VISIBLE);
 
         int max = (downloadedImages.size() >= 3)?3: downloadedImages.size();
         for(int i = 0; i < max; i++) {
@@ -742,20 +766,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             }
         }
 
-        /*
-        if(max == 0) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    final LinearLayout ll_nonpicture = (LinearLayout) inflater.inflate(R.layout.timelinesegment_nopictures, null);
-                    ll_pictures.addView(ll_nonpicture);
-                }
-            });
-        }
-        */
 
         return ll_pictures;
-
     }
 
     @Override
@@ -771,7 +783,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 if(h_alreadyChoosedDay.get(choosedTimelineDay.getID()) == null) {
                         h_alreadyChoosedDay = new HashMap<>();
                         h_alreadyChoosedDay.put(choosedTimelineDay.getID(), choosedTimelineDay);
-                        updateTimelineView();
+                    updateTimelineView();
                 } else {
                     h_alreadyChoosedDay = new HashMap<>();
                     downloadedImages = new LinkedList<>();
