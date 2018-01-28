@@ -38,7 +38,7 @@ import static com.slt.utils.Validation.validateEmail;
 import static com.slt.utils.Validation.validateFields;
 
 public class LoginFragment extends Fragment {
-
+//test
     public static final String TAG = LoginFragment.class.getSimpleName();
 
     private EditText mEtEmail;
