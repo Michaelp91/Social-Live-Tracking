@@ -9,6 +9,13 @@ public class Constants {
      */
 
     public interface TIMELINEACTIVITY {
+        public static int IN_VEHICLE = 0;
+        public static int ON_BICYCLE = 1;
+        public static int ON_FOOT = 2;
+        public static int STILL = 3;
+        public static int UNKNOWN = 4;
+        public static int TILTING = 5;
+
         public static int WALKING = 7;
         public static int RUNNING = 8;
 

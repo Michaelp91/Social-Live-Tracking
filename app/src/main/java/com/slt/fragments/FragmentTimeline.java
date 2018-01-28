@@ -272,8 +272,10 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 RelativeLayout view_FirstPoint = null;
                 RelativeLayout view_segment = null;
                 RelativeLayout view_LastPoint = null;
+                final DetectedActivity detectedActivity = tSegment.getMyActivity();
 
-                if (!locationEntries.isEmpty()) {
+                if (!locationEntries.isEmpty() && detectedActivity.getType() !=
+                        com.slt.definitions.Constants.TIMELINEACTIVITY.STILL) {
                     LocationEntry fstPoint = locationEntries.get(0);
 
                     view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
@@ -292,7 +294,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                         view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
                         TextView activeTime = (TextView) view_segment.findViewById(R.id.tv_activeTime);
-                        TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
+                        final TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
                         final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
                         final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
                         LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
@@ -364,7 +366,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
 
 
-                        final DetectedActivity detectedActivity = tSegment.getMyActivity();
+
 
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -378,6 +380,26 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                         activity.setImageResource(R.drawable.running);
                                         ll_line.setBackgroundResource(R.color.md_amber_800);
                                         break;
+
+                                    case com.slt.definitions.Constants.TIMELINEACTIVITY.IN_VEHICLE:
+                                        activity.setImageResource(R.drawable.in_vehicle);
+                                        ll_line.setBackgroundResource(R.color.md_red_500);
+                                        break;
+
+                                    case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
+                                        activity.setImageResource(R.drawable.walking);
+                                        ll_line.setBackgroundResource(R.color.md_blue_400);
+                                        break;
+
+                                    case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE:
+                                        activity.setImageResource(R.drawable.biking);
+                                        ll_line.setBackgroundResource(R.color.md_light_green_600);
+                                        break;
+
+                                    case com.slt.definitions.Constants.TIMELINEACTIVITY.STILL:
+                                        activity.setVisibility(View.GONE);
+                                        break;
+
                                     default:
                                         activity.setVisibility(View.GONE);
                                         break;
@@ -407,6 +429,19 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                     }
 
+                } else if (timeLineSegments.indexOf(tSegment) == timeLineSegments.size() - 1 && !locationEntries.isEmpty()){
+                    LocationEntry fstPoint = locationEntries.get(0);
+
+                    view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
+                    TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeAndaddress);
+                    TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                    String strDate = sdf.format(fstPoint.getMyEntryDate());
+
+
+                    myEntryDate.setText(strDate);
+                    placeAndaddress.setText(tSegment.getStartAddress());
                 }
 
 

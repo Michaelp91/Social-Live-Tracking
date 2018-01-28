@@ -8,6 +8,7 @@ import com.slt.data.*;
 import com.slt.restapi.data.*;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -96,7 +97,12 @@ public class DataUpdater implements Runnable{
         if(timeLine != null) {
             Iterator iterator = h_queue_timelineDays.entrySet().iterator();
             while (iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry =(Map.Entry) iterator.next();
+                } catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_TimelineDay r_t_d = (REST_TimelineDay) entry.getValue();
 
                 r_t_d.timeline = timeLine._id;
@@ -105,7 +111,7 @@ public class DataUpdater implements Runnable{
 
                 if (requestSuccessful) {
                     Log.d("Create", "Timeline Day is created.");
-                    iterator.remove();
+                    h_queue_timelineDays.remove(entry.getKey());
                 } else {
           //          Log.d("Create", "Timeline Day is not created.");
                 }
@@ -113,7 +119,13 @@ public class DataUpdater implements Runnable{
 
             iterator = h_queue_timelinesegments.entrySet().iterator();
             while(iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+                Map.Entry entry = null;
+
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_TimelineSegment r_t_s = (REST_TimelineSegment) entry.getValue();
                 REST_TimelineDay timeLineDayToFind = r_t_s.timeLineDayObject;
                 REST_TimelineDay timeLineDay = TemporaryDB.getInstance().findTimeLineDayByObject(timeLineDayToFind);
@@ -125,7 +137,7 @@ public class DataUpdater implements Runnable{
 
                     if (requestSuccessful) {
                         Log.d("Create", "Timeline Segment is created.");
-                        iterator.remove();
+                        h_queue_timelinesegments.remove(entry.getKey());
                     } else {
                //         Log.d("Create", "Timeline Segment is not created.");
                     }
@@ -138,7 +150,12 @@ public class DataUpdater implements Runnable{
             iterator = h_queue_locationEntries.entrySet().iterator();
 
             while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException ex) {
+                    break;
+                }
                 REST_LocationEntry r_l_e = (REST_LocationEntry) entry.getValue();
                 REST_TimelineSegment search = r_l_e.timelinesegmentObject;
                 REST_TimelineSegment timeLineSegment = TemporaryDB.getInstance().findTimeLineSegmentByObject(search);
