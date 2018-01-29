@@ -1,41 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:baselineAligned="false">
+    android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:id="@+id/live_layout"
+        android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/live_map_progressBar"
-            style="?android:attr/progressBarStyle"
+        <TextView
+            android:id="@+id/livemap_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="168dp"
-            android:layout_marginTop="200dp"
-            android:layout_weight="1"
-            app:layout_constraintStart_toStartOf="@+id/mapView"
-            app:layout_constraintTop_toTopOf="@+id/mapView" />
+            android:text="Live Map:"
+            android:textSize="36dp"
+            android:fontFamily="cursive"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFF" />
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="351dp" />
+            android:layout_height="250dp" />
+
+
+        <ProgressBar
+            android:id="@+id/live_map_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:visibility="gone"/>
+
+
 
         <ListView
             android:id="@+id/live_map_listview"
-            android:layout_width="367dp"
-            android:layout_height="199dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mapView" />
-    </android.support.constraint.ConstraintLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:dividerHeight="16dp"
+            android:divider="@null"
+            app:layout_constraintBottom_toBottomOf="@+id/live_layout"
+            app:layout_constraintStart_toStartOf="parent" />
 
-
-</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
