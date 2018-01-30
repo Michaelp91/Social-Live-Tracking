@@ -45,7 +45,7 @@ public class FragmentSportTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragmentForSportTab, container, false);
+        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_for_sport_tab, container, false);
 
 
         ListView l = (ListView) viewGroup.findViewById(R.id.list_in_Frag);

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
+import com.slt.control.AchievementCalculator;
 import com.slt.data.Achievement;
 import com.slt.fragments.FragmentSportTab;
 import com.slt.statistics.data.DataObjectsCollection;
@@ -62,8 +63,8 @@ public class ViewStatistics extends AppCompatActivity {
 
             // achievements
             // TODO--------------------- replace with real date from data provider
-            LinkedList<Achievement> achievements = new LinkedList<>();
-            // AchievementCalculator.getAchievements(i);
+            LinkedList<Achievement> achievements = //new LinkedList<>();
+             AchievementCalculator.getAchievements(i);
             // TODO the end---------------------
 
             fragmentSportTab.setAchievements(achievements);
