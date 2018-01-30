@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#B3e5FC</color>
+    <color name="colorPrimaryDark">#82B3C9</color>
+    <color name="colorAccent">#75a478</color>
     <color name="colorDarkGrey">#455A64</color>
+    <color name="startcolor">#BBD2C5</color>
+    <color name="centercolor">#536976</color>
+    <color name="endcolor">#292E49</color>
+    <color name="popup_button">#4791D2</color>
+    <color name="buttonForeground">#FFFFFF</color>
+    <color name="groupboxBodyBackground">#FFFFFF</color>
+    <color name="border_listitem">#C4C6C9</color>
+    <color name="appBackground">#F6F7FB</color>
+
 </resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:padding="30sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/appBackground"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/ll_titel"
+            android:layout_width="fill_parent"
+            android:layout_height="50sp"
+            android:background="@drawable/groupboxbody"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/et_titel"
+                android:layout_width="fill_parent"
+                android:layout_height="50sp"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="opensans"
+                android:hint="Titel..."
+                android:background="@drawable/groupboxbody"
+                android:textColor="#000000"
+                android:paddingLeft="10sp"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:textColorHint="#000000"
+                android:textSize="14dp" />
+        </LinearLayout>
+        <Button
+            android:layout_below="@id/ll_titel"
+            android:layout_marginTop="30sp"
+            android:layout_gravity="bottom"
+            android:background="@color/popup_button"
+            android:textColor="@drawable/buttonanimation"
+            android:id="@+id/btn_ok"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="Bestätigen"
+            android:fontFamily="opensans" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:layout_marginTop="5dp">
+
+    <LinearLayout
+        android:id="@+id/startcircle"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:orientation="vertical"
+        android:background="@drawable/shape"    >
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_station"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/startcircle"
+        android:layout_marginLeft="5dp"
+        android:text="City Gallerie"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:id="@+id/ll_line"
+        android:layout_below="@id/startcircle"
+        android:layout_width="1dp"
+        android:layout_height="80dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="9dp"
+        android:background="#888888"    >
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_anschrift"
+        android:layout_toRightOf="@id/startcircle"
+        android:layout_marginTop="2dp"
+        android:layout_below="@id/tv_station"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:paddingLeft="5dp"
+        android:text="Goldbacher Str. 2, 63739 Aschaffenburg"
+        />
+
+
+    <LinearLayout
+        android:id="@+id/ll_linedetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/tv_anschrift"
+        android:layout_toRightOf="@id/ll_line"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:layout_marginLeft="10dp">
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/tv_aktivitaet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Laufen"/>
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/tv_laufdaten"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:gravity="right"
+            android:text="11:00  - 11:30, 10 km"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/endcircle"
+        android:layout_below="@id/ll_line"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:orientation="vertical"
+        android:background="@drawable/shape"    >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_shortline"
+        android:layout_below="@id/endcircle"
+        android:layout_width="1dp"
+        android:layout_height="15dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="9dp"
+        android:background="#888888"    >
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_endstation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_line"
+        android:layout_toRightOf="@id/endcircle"
+        android:layout_marginLeft="5dp"
+        android:text="City Gallerie"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_endanschrift"
+        android:layout_toRightOf="@id/endcircle"
+        android:layout_marginTop="2dp"
+        android:layout_below="@id/tv_endstation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:paddingLeft="5dp"
+        android:text="Goldbacher Str. 2, 63739 Aschaffenburg"
+        />
+
+
+
+
+</RelativeLayout>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" android:id="@+id/friend_layout"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/friends_search_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Search Your Friends by:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Radio Buttons-->
+        <RadioGroup
+            android:id="@+id/friends_search_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@+id/friends_search_title">
+
+
+            <RadioButton
+                android:id="@+id/friends_search_option_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="E-Mail" />
+
+            <RadioButton
+                android:id="@+id/friends_search_option_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username" />
+
+            <RadioButton
+                android:id="@+id/friends_search_option_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name" />
+
+            <RadioButton
+                android:id="@+id/friends_search_option_nearby"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nearby Users" />
+
+        </RadioGroup>
+
+        <!-- Search Word -->
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/friends_search_tv_text_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toTopOf="@+id/friends_search_options">
+
+            <EditText
+                android:id="@+id/friends_search_t_text_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/transparent"
+                android:drawablePadding="12dp"
+                android:drawableStart="@drawable/ic_person"
+                android:ems="10"
+                android:hint="Search Word"
+                android:imeOptions="actionDone"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:padding="8dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#fff" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#D3D3D3" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <!-- Button Search !-->
+        <Button
+            android:id="@+id/friend_search_btn_search"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/background_login"
+            android:clickable="true"
+            android:padding="16dp"
+            android:text="Search !"
+            android:textAllCaps="false"
+            android:textColor="#000000" />
+
+            <ProgressBar
+                android:id="@+id/search_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/button_margin"
+                android:visibility="gone"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/friends_search_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/friend_layout"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</RelativeLayout>

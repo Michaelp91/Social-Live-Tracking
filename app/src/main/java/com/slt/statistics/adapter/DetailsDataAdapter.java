@@ -26,11 +26,11 @@ import com.github.mikephil.charting.data.LineData;
 import com.slt.MainActivity;
 import com.slt.R;
 import com.slt.statistics.ViewStatistics;
-import com.slt.statistics.achievements.DetailsActivity;
+import com.slt.statistics.adapter.details_infos_list.*;
+// macht momentan Fehler bei mir:
+//import com.slt.statistics.achievements.DetailsActivity;
 import com.slt.statistics.achievements.GridViewAdapter;
 import com.slt.statistics.achievements.ImageItem;
-import com.slt.statistics.adapter.details_infos_list.ArrayAdapterItem;
-import com.slt.statistics.adapter.details_infos_list.ObjectItem;
 import com.slt.statistics.data.DataObjectsCollection;
 import com.slt.statistics.graphs.ChartItem;
 
@@ -42,7 +42,7 @@ import java.util.List;
  * Created by matze on 02.01.18.
  */
 
-public class DetailsDataAdapter  extends ArrayAdapter {
+public class DetailsDataAdapter extends ArrayAdapter {
     private GridView gridView;
 
     public DetailsDataAdapter(@NonNull Context context, List list) {
@@ -91,7 +91,7 @@ public class DetailsDataAdapter  extends ArrayAdapter {
             ImageView imageView = new ImageView(getContext());
             imageView.setId(i);
             imageView.setPadding(2, 2, 2, 2);
-                           imageView.setImageBitmap(BitmapFactory.decodeResource(
+            imageView.setImageBitmap(BitmapFactory.decodeResource(
                     getContext().getResources(), R.drawable.running_cup));
 
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -129,13 +129,10 @@ public class DetailsDataAdapter  extends ArrayAdapter {
     }
 
 
-
     private View getViewOfDetailsText(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
-
-
         View rowView = inflater.inflate(R.layout.details_infos_list, parent, false);
 
-       /* HashMap<String, String> infos = (HashMap<String, String>) getItem(position);
+        /*HashMap<String, String> infos = (HashMap<String, String>) getItem(position);
 
         TextView textView_infos_1 = (TextView) rowView.findViewById(R.id.infos_1);
         String info = "Blah 0:";
@@ -145,8 +142,6 @@ public class DetailsDataAdapter  extends ArrayAdapter {
         info = infos.get("Blah 0:");
         textView_infos_2.setText(info);*/
 
-        // add your items, this can be done programatically
-        // your items can be from a database
         List<ObjectItem> ObjectItemData = new ArrayList<>();
 
         ObjectItemData.add(new ObjectItem("91", "Mercury"));
@@ -154,7 +149,6 @@ public class DetailsDataAdapter  extends ArrayAdapter {
         ObjectItemData.add(new ObjectItem("93", "Nissan"));
         ObjectItemData.add(new ObjectItem("94", "Puregold"));
         ObjectItemData.add(new ObjectItem("95", "SM"));
-
 
 
         // our adapter instance
@@ -165,11 +159,8 @@ public class DetailsDataAdapter  extends ArrayAdapter {
         listViewItems.setAdapter(adapter);
 
 
-
-
         return rowView;
     }
-
 
     private View getViewOfLineChart(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
 

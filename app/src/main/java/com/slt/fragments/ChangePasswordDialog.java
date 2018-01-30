@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.slt.MainActivity;
 import com.slt.ProfileActivity;
 import com.slt.R;
 import com.slt.model.Response;
@@ -26,6 +27,7 @@ import java.io.IOException;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -67,6 +69,10 @@ public class ChangePasswordDialog extends DialogFragment {
         return view;
     }
 
+    public void setListener(ChangePasswordDialog.Listener listener){
+        this.mListener = listener;
+    }
+
     private void getData() {
 
         Bundle bundle = getArguments();
@@ -78,7 +84,6 @@ public class ChangePasswordDialog extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (ProfileActivity)context;
     }
 
     private void initViews(View v) {
@@ -92,8 +97,17 @@ public class ChangePasswordDialog extends DialogFragment {
         mBtCancel = (Button) v.findViewById(R.id.btn_cancel);
         mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
 
-        mBtChangePassword.setOnClickListener(view -> changePassword());
-        mBtCancel.setOnClickListener(view -> dismiss());
+        mBtChangePassword.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+             changePassword();
+            }
+        });
+
+        mBtCancel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
     private void changePassword() {
@@ -139,7 +153,22 @@ public class ChangePasswordDialog extends DialogFragment {
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changePassword(mEmail,user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+
+         .subscribe(new Action1<Response>() {
+            @Override
+            public void call(Response response) {
+                handleResponse(response);
+
+            }
+        }, new Action1<Throwable>(){
+            @Override
+            public void call(Throwable error) {
+                handleError(error);
+            }
+        } ));
+
+
+
     }
 
     private void handleResponse(Response response) {
@@ -168,7 +197,7 @@ public class ChangePasswordDialog extends DialogFragment {
             }
         } else {
 
-            showMessage("Network Error !");
+            showMessage("Network Error!");
         }
     }
 

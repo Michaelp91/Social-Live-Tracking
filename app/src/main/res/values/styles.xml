@@ -28,7 +28,14 @@
         <item name="colorPrimary">@android:color/black</item>
     </style>
 
+    <style name="Social_Live_Theme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">?attr/colorPrimary</item>
+        <item name="android:colorForeground">@android:color/black</item>
+    </style>
 
+    <style name="Social_Live_Theme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Social_Live_Theme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>
