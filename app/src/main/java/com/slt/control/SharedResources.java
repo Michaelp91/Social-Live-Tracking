@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.widget.ImageView;
@@ -15,10 +16,14 @@ import android.app.NotificationManager;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.DetectedActivity;
 import com.slt.R;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 import com.slt.definitions.Constants;
+
+import java.sql.Date;
+import java.sql.Timestamp;
 
 import static com.slt.R.mipmap.ic_launcher;
 
@@ -121,6 +126,21 @@ public class SharedResources {
     private User myUser;
 
     /**
+     *  Our notification Manager
+     */
+    private NotificationManager mNotificationManager;
+
+    /**
+     * Notification Compat Builder
+     */
+    private NotificationCompat.Builder cBuilder = null;
+
+    /**
+     * Normal notification Builder
+     */
+    private Notification.Builder builder = null;
+
+    /**
      * Set the instance of the Google API Client
      *
      * @param myGoogleApiClient The instance that should be stored
@@ -157,7 +177,7 @@ public class SharedResources {
 
         if (foregroundNotification == null) {
             if (Build.VERSION.SDK_INT < 26) {
-                NotificationManager mNotificationManager =
+                mNotificationManager =
                         (NotificationManager) ApplicationController.getContext()
                                 .getSystemService(ApplicationController.getContext().NOTIFICATION_SERVICE);
 
@@ -165,17 +185,18 @@ public class SharedResources {
                 Bitmap icon = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), ic_launcher);
 
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(ApplicationController.getContext(), Constants.NOTIFICATION_ID.id);
 
-                foregroundNotification =  builder.setContentTitle("Timeline")
+                cBuilder = new NotificationCompat.Builder(ApplicationController.getContext(), Constants.NOTIFICATION_ID.id);
+
+                foregroundNotification =  cBuilder.setContentTitle("Timeline")
                         .setTicker("Location & Activity Tracking Active")
                         .setContentText("Location & Activity Tracking")
                         .setSmallIcon(ic_launcher)
                         .setBadgeIconType(R.mipmap.ic_launcher)
-                        .setNumber(5)
                         .setVisibility(Notification.VISIBILITY_PUBLIC)
                         .setSmallIcon(ic_launcher)
                         .setAutoCancel(true)
+                        .setNumber(0)
                         .setOngoing(true)
                         .build();
 
@@ -183,7 +204,7 @@ public class SharedResources {
 
             } else {
 
-                NotificationManager mNotificationManager =
+                mNotificationManager =
                         (NotificationManager) ApplicationController.getContext()
                                 .getSystemService(ApplicationController.getContext().NOTIFICATION_SERVICE);
 
@@ -203,15 +224,15 @@ public class SharedResources {
                 mChannel.enableLights(true);
                 mNotificationManager.createNotificationChannel(mChannel);
 
-                foregroundNotification = new Notification.Builder(ApplicationController.getContext().getApplicationContext(), id)
+                builder = new Notification.Builder(ApplicationController.getContext().getApplicationContext(), id);
+
+                foregroundNotification = builder
                         .setContentTitle("Timeline")
-                        .setTicker("Location & Activity Tracking Active")
                         .setContentText("Location & Activity Tracking")
                         .setSmallIcon(ic_launcher)
                         .setBadgeIconType(R.mipmap.ic_launcher)
-                        .setNumber(5)
-                        .setSmallIcon(ic_launcher)
                         .setAutoCancel(true)
+                        .setNumber(0)
                         .setOngoing(true)
                         .build();
 
@@ -221,6 +242,78 @@ public class SharedResources {
         }
 
         return foregroundNotification;
+    }
+
+    /**
+     * Updates the notification to show changes in the data
+     * @param location The GPS location
+     * @param data The data of the last segment
+     * @param date The date of the last change
+     * @param activity The activity that was detected
+     */
+    void updateNotification(Location location, TimelineSegment data, java.util.Date date, DetectedActivity activity){
+        String locationString = "Location: Unknown";
+        String segmentData = "Current Segment: None";
+        String activityData = "Detected Activity: None";
+        String segmentDataTwo = "None";
+
+        if(activity != null) {
+            activityData =  "Detected Activity: " + activity.getType();
+        }
+
+        if(location != null) {
+            locationString = "Location: " + location.getLatitude() + "- Lat, " + location.getLongitude() + "-Long";
+        }
+
+        if(data != null){
+            double distance = data.getActiveDistance() + data.getInactiveDistance();
+            segmentData = "Current Segment: " + data.getMyActivity().getType() + ", Duration: " + Double.toString(data.getDuration()) + ", Steps: "
+                    + Integer.toString(data.getUserSteps());
+            segmentDataTwo = "Distance: " + Double.toString(distance);
+        }
+
+        String dateString =  date.toString() + " - detected Details:";
+
+        if(cBuilder != null){
+
+            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+            //Sets a title for the Inbox in expanded layout
+            inboxStyle.setBigContentTitle(dateString);
+
+            //add aditional information
+            inboxStyle.addLine(locationString);
+            inboxStyle.addLine(activityData);
+            inboxStyle.addLine(segmentData);
+            inboxStyle.addLine(segmentDataTwo);
+
+            cBuilder.setStyle(inboxStyle);
+
+            foregroundNotification = cBuilder.build();
+        }
+
+        if(builder != null) {
+
+            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+            //Sets a title for the Inbox in expanded layout
+            inboxStyle.setBigContentTitle(dateString);
+
+            //add aditional information
+            inboxStyle.addLine(locationString);
+            inboxStyle.addLine(activityData);
+            inboxStyle.addLine(segmentData);
+            inboxStyle.addLine(segmentDataTwo);
+
+            cBuilder.setStyle(inboxStyle);
+
+
+
+            foregroundNotification = builder.build();
+        }
+
+
+        mNotificationManager.notify(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, foregroundNotification);
     }
 
     /**

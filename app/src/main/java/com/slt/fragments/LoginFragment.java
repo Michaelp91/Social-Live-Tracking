@@ -327,31 +327,6 @@ public class LoginFragment extends Fragment {
                             //start the REST Updater
                             DataUpdater.getInstance().Start();
 
-                            //if we already have the timeline check if we already have entries
-                            if(timeline != null){
-
-                                if(timeline.getHistorySize() > 0){
-                                    TimelineDay day = timeline.getTimelineDays().getLast();
-
-                                    if(!day.getMySegments().isEmpty()){
-                                        TimelineSegment seg = day.getMySegments().getLast();
-                                        LocationEntry entry = null;
-
-                                        if(!seg.getLocationPoints().isEmpty()) {
-                                            entry = seg.getMyLocationPoints().getLast();
-                                        }
-
-                                        //add a unknown entry if we had switched off a while
-                                        if(entry != null){
-                                            DetectedActivity activity = new DetectedActivity(DetectedActivity.UNKNOWN, 100);
-                                            timeline.addUserStatus(entry.getMyLocation(), entry.getMyEntryDate(), activity);
-                                        }
-                                    }
-
-
-                                }
-                            }
-
                         } else {
                             showSnackBarMessage("Error retrieving User!");
                         }

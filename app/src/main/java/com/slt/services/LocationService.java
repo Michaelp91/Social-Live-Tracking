@@ -57,6 +57,11 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
      */
     private ServiceInterface myDataProvider;
 
+    /**
+     * used to stop the service
+     */
+    public static volatile boolean shouldContinue = true;
+
     /***
      *  Default onCreate Method
      */
@@ -149,6 +154,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
      */
     @Override
     public void onLocationChanged(Location location) {
+        // check the condition
+        if (!shouldContinue) {
+            stopSelf();
+            return;
+        }
+
+
         Log.i(TAG, "Location Changed");
 
         // Neglect location updates with low accuracy

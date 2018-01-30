@@ -324,14 +324,16 @@ public class MainProfile extends AppCompatActivity
             DataProvider.getInstance().clearData();
 
             //Disconnect Activity Listener if App has been stopped
-            if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
-                ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
-                        SharedResources.getInstance().getMyGoogleApiClient(),
-                        getActivityDetectionPendingIntent()
-                ).setResultCallback(this);
+            if(SharedResources.getInstance().getMyGoogleApiClient() != null) {
+                if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
+                    ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
+                            SharedResources.getInstance().getMyGoogleApiClient(),
+                            getActivityDetectionPendingIntent()
+                    ).setResultCallback(this);
+                }
             }
 
-            stopService(new Intent(this, LocationService.class));
+            LocationService.shouldContinue = false;
 
             SharedResources.getInstance().removeNotification();
         }
@@ -480,6 +482,7 @@ public class MainProfile extends AppCompatActivity
 
         //connect API client
         SharedResources.getInstance().getMyGoogleApiClient().connect();
+        LocationService.shouldContinue = true;
 
         //Start Location Service
         Intent serviceIntent = new Intent(this, LocationService.class);
@@ -615,7 +618,8 @@ public class MainProfile extends AppCompatActivity
                 ).setResultCallback(this);
             }
 
-            stopService(new Intent(this, LocationService.class));
+            LocationService.shouldContinue = false;
+            SharedResources.getInstance().setMyGoogleApiClient(null);
 
             SharedResources.getInstance().removeNotification();
             logout();

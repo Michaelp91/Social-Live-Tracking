@@ -1,5 +1,6 @@
 package com.slt;
 
+import com.slt.control.SharedResources;
 import com.slt.fragments.ResetPasswordFragment;
 import android.app.Activity;
 import android.content.Intent;
@@ -21,16 +22,6 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordFrag
      */
     public static final String TAG = MainActivity.class.getSimpleName();
 
-    /**
-     * Definitions for the permissions that have to be requested by the user
-     */
-    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
-    private static final int PERMISSION_REQUEST_FINE_LOCATION = 2;
-
-    /**
-     * Update interval for the activity detection
-     */
-    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 1000;
 
     private Activity myActivity;
     private LoginFragment mLoginFragment;
