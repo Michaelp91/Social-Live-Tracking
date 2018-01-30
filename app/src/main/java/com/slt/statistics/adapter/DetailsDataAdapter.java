@@ -39,6 +39,7 @@ import com.slt.statistics.achievements.GridViewAdapter;
 import com.slt.statistics.achievements.ImageItem;
 import com.slt.statistics.data.DataObjectsCollection;
 import com.slt.statistics.graphs.ChartItem;
+import com.slt.statistics.graphs.LineChartItem;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,9 +55,18 @@ public class DetailsDataAdapter extends ArrayAdapter {
     private GridView gridView;
     public Sport sport = null;
     public String period = "";
+    public LineChartItem lineData = null;
+    public HashMap<String, String> infos = null;
+    public LinkedList<Achievement> achievements = null;
+
 
     public DetailsDataAdapter(@NonNull Context context, List list) {
         super(context, 0, list);
+
+        lineData = (LineChartItem) list.get(0);
+        infos = (HashMap<String, String>) list.get(1);
+        achievements = (LinkedList<Achievement>) list.get(2);
+
 
 
     }
@@ -100,15 +110,21 @@ public class DetailsDataAdapter extends ArrayAdapter {
         layoutParams.setMargins(10, 10, 10, 10);
 
 
+       // LinkedList<Tupeln_AchievementImage_and_Info> achievements = listAchievements;//AchievementCalculator.getOwnUserAchievements(0);
 
-       // LinkedList<Tupeln_AchievementImage_and_Info> achievements = listAchievements;//AchievementCalculator.getAchievements(0);
+        Achievement a;
+        int drawableID;
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < this.achievements.size(); i++) {
+            a = this.achievements.get(i);
+
+            drawableID = a.getDrawableOfAchievement();
+
             ImageView imageView = new ImageView(getContext());
             imageView.setId(i);
             imageView.setPadding(2, 2, 2, 2);
             imageView.setImageBitmap(BitmapFactory.decodeResource(
-                    getContext().getResources(), R.drawable.running_cup));
+                    getContext().getResources(), drawableID));
 
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             layout.addView(imageView, layoutParams);

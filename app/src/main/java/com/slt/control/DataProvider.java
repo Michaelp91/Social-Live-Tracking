@@ -1,25 +1,15 @@
 package com.slt.control;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.slt.R;
+import com.slt.data.Achievement;
 import com.slt.data.User;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.data.Timeline;
-import com.slt.data.TimelineSegment;
-import com.slt.data.LocationEntry;
 import com.slt.data.inferfaces.ServiceInterface;
-import com.slt.definitions.Constants;
-import com.slt.restapi.DataUpdater;
 import com.slt.restapi.OtherRestCalls;
-import com.slt.restapi.RetrieveOperations;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -270,6 +260,10 @@ public class DataProvider implements ServiceInterface{
      */
     public User getOwnUser() {
         return ownUser;
+    }
+
+    public LinkedList<Achievement> getOwnUserAchievements(int period) {
+        return getUserTimeline().getOwnUserAchievements(period);
     }
 
     /**
