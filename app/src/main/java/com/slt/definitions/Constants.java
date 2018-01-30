@@ -1,5 +1,7 @@
 package com.slt.definitions;
 
+import com.slt.R;
+
 /**
  * Constants to use in the classes
  */
@@ -102,6 +104,20 @@ public class Constants {
         public static int  SPORT_WEEK_STREAK = 6;
         public static int  SPORT_MONTH_STREAK =7;
     };
+
+    /**
+     * todo include new drawable for diversity
+     */
+    public interface ACHIVEMENTS_DRAWABLE {
+        public static int  SPORT_ENDURANCE_SEGMENT = R.drawable.running_cup;
+        public static int  SPORT_DISTANCE_SEGMENT = R.drawable.running_cup;
+        public static int  SPORT_STEPS_SEGMENT = R.drawable.running_cup;
+        public static int  SPORT_DAY_DURATION = R.drawable.running_cup;
+        public static int  SPORT_DAY_DISTANCE = R.drawable.running_cup;
+        public static int  SPORT_DAY_STEPS= R.drawable.running_cup;
+        public static int  SPORT_WEEK_STREAK = R.drawable.running_cup;
+        public static int  SPORT_MONTH_STREAK = R.drawable.running_cup;
+    }
 
     /**
      * Definitions for the achievements

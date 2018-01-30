@@ -128,6 +128,9 @@ public class DataProvider implements ServiceInterface{
 
     }
 
+    public Timeline getUserTimeline() {
+        return userTimeline;
+    }
 
     public void clearData() {
         this.ownUser = null;

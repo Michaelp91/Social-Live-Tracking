@@ -25,6 +25,11 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
 import com.slt.MainActivity;
 import com.slt.R;
+import com.slt.control.AchievementCalculator;
+import com.slt.data.Achievement;
+import com.slt.data.Timeline;
+import com.slt.data.TimelineDay;
+import com.slt.restapi.RetrieveOperations;
 import com.slt.statistics.ViewStatistics;
 import com.slt.statistics.adapter.details_infos_list.*;
 // macht momentan Fehler bei mir:
@@ -35,7 +40,9 @@ import com.slt.statistics.data.DataObjectsCollection;
 import com.slt.statistics.graphs.ChartItem;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -47,6 +54,8 @@ public class DetailsDataAdapter extends ArrayAdapter {
 
     public DetailsDataAdapter(@NonNull Context context, List list) {
         super(context, 0, list);
+
+
     }
 
     @Override
@@ -86,6 +95,10 @@ public class DetailsDataAdapter extends ArrayAdapter {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         layoutParams.setMargins(10, 10, 10, 10);
+
+
+
+       // LinkedList<Tupeln_AchievementImage_and_Info> achievements = listAchievements;//AchievementCalculator.getAchievements(0);
 
         for (int i = 0; i < 10; i++) {
             ImageView imageView = new ImageView(getContext());

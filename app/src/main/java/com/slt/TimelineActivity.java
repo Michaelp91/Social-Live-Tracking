@@ -63,8 +63,8 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         DrawerUtil.getDrawer(this,toolBar);*/
         /*
             Test t = new Test("Hello World");
-            Achievement newAchievement = new Achievement(0);
-            ArrayList<Achievement> myAchievements = new ArrayList<>();
+            Tupeln_AchievementImage_and_Info newAchievement = new Tupeln_AchievementImage_and_Info(0);
+            ArrayList<Tupeln_AchievementImage_and_Info> myAchievements = new ArrayList<>();
             myAchievements.add(newAchievement);
             TimeLine obj = new TimeLine("5a196bf8d17b7926882f5413", myAchievements);
             TimeLineDay timelineday = new TimeLineDay(new Date(), myAchievements, obj);

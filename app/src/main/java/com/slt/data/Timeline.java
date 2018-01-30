@@ -99,8 +99,26 @@ public class Timeline {
 
     /**
      * Get the number of achievements in the last week
-     * @return The number of achievements
+     * @return achievements from last week
      */
+    public LinkedList<Achievement> getAchievementsListForWeek() {
+        int achievementPoints = 0;
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
+
+        return AchievementCalculator.calculateWeekAchievements(week, new LinkedList<Achievement>());
+    }
+
+    public LinkedList<Achievement> getAchievementsListForDay() {
+        return this.myHistory.getLast().getMyAchievements();
+    }
+
+        /**
+         * Get the number of achievements in the last week
+         * @return The number of achievements
+         */
     public int getAchievementsForWeek() {
         int achievementPoints = 0;
         Date current = new Date();
@@ -142,9 +160,27 @@ public class Timeline {
     }
 
     /**
-     * Get the number of achievements in the last month
-     * @return The number of achievements
+     * Get the achievements in the last month
+     * @return achievements in last month
      */
+    public LinkedList<Achievement> getAchievementsListForMonth() {
+        int achievementPoints = 0;
+        Date current = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        //get days of week
+        LinkedList<TimelineDay> month = this.getDaysOfWeekOrMonth(current, 1);
+
+        int monthLength = calendar.getActualMaximum(Calendar.DATE);
+
+        return AchievementCalculator.calculateMonthAchievements(month, new LinkedList<Achievement>(), monthLength);
+    }
+
+        /**
+         * Get the number of achievements in the last month
+         * @return The number of achievements
+         */
     public int getAchievementsForMonth() {
         int achievementPoints = 0;
         Date current = new Date();
@@ -530,7 +566,7 @@ public class Timeline {
         this.myAchievements.addAll(achievements);
 
         //if new achievements -> send intent
-        if(!achievements.isEmpty()){
+        if(! achievements.isEmpty()){
             //REST Call to update Timeline
             //TODO: Update for achievements of a timeline
 

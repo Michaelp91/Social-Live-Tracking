@@ -2,9 +2,11 @@ package com.slt.control;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.data.Achievement;
+import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.definitions.Constants;
+import com.slt.restapi.RetrieveOperations;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +20,7 @@ public class AchievementCalculator {
     /**
      * Tag for the Logger
      */
-    private static final String TAG = "Achievement Calculator";
+    private static final String TAG = "Tupeln_AchievementImage_and_Info Calculator";
 
     /**
      * Checks if the achievement is already in the list
@@ -143,7 +145,7 @@ public class AchievementCalculator {
             }
         }
 
-        //Check if condition for segment achievement is fullfilled and if achievement not
+        // Check if condition for segment achievement is fullfilled and if achievement not
         // already set
         if(activeDistance >= Constants.ACHIEVEMENT_DEFINITIONS.SPORT_DAY_DISTANCE_METERS){
             if(isAchievementInList(Constants.ACHIEVEMENT.SPORT_DAY_DISTANCE, achievementList)){
@@ -228,5 +230,24 @@ public class AchievementCalculator {
         }
 
         return achievements;
+    }
+
+    public static LinkedList<Achievement> getAchievements(int period) {
+
+        Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
+
+        switch(period) {
+            case 0: // day
+                return timeline.getAchievementsListForDay();
+            case 1: // week
+                return timeline.getAchievementsListForWeek();
+            case 2: // month
+                return timeline.getAchievementsListForMonth();
+            default:
+                System.err.println("No such period od time.");
+                break;
+        }
+
+        return null;
     }
 }

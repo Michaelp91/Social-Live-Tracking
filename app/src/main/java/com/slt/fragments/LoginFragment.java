@@ -147,11 +147,6 @@ public class LoginFragment extends Fragment {
                 String email = mEtEmail.getText().toString();
                 String password = mEtPassword.getText().toString();
 
-                // TODO to be deleted!!!
-                email = "live.tr@gmx.de";
-                password = "app";
-                // TODO the end
-
 
                 int err = 0;
 

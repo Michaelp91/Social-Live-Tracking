@@ -5,20 +5,21 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Toast;
 
 
+import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
-import com.slt.fragments.global.FragmentFour;
+import com.slt.control.AchievementCalculator;
+import com.slt.data.Achievement;
 import com.slt.fragments.global.FragmentOne;
-import com.slt.fragments.global.FragmentThree;
-import com.slt.fragments.global.FragmentTwo;
+import com.slt.statistics.achievements.Tupeln_AchievementImage_and_Info;
+import com.slt.statistics.data.DataObjectsCollection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ViewStatistics extends AppCompatActivity {
@@ -30,14 +31,36 @@ public class ViewStatistics extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_statistics);
-
+        String[] periodNames = new String[]{"Today", "Week", "Month"};
         ViewPagerAdapter adapter;
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FragmentOne(), "Today");
-        adapter.addFragment(new FragmentOne(), "Week");
-        adapter.addFragment(new FragmentOne(), "Month");
-        adapter.addFragment(new FragmentOne(), "Year");
+
+        for (int i = 0; i < 3; i++) {
+            // line chart
+            LineData lineData = DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), 2, "walking");
+
+            FragmentOne fragmentOne = new FragmentOne();
+            fragmentOne.setLineData(lineData);
+
+            // infos
+            HashMap<String, String> infos = new HashMap<>();
+
+            for (int j = 0; j < 5; j++) {
+                infos.put("Blah " + j + ":", "blah " + j);
+            }
+            fragmentOne.setInfos(infos);
+
+            // achievements
+            // todo
+            LinkedList<Achievement> achievements = new LinkedList<>(); // AchievementCalculator.getAchievements(i);
+
+            fragmentOne.setAchievements(achievements);
+
+
+            adapter.addFragment(fragmentOne, periodNames[i]);
+        }
+
         viewPager.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -83,7 +106,7 @@ public class ViewStatistics extends AppCompatActivity {
         public int removeFragment(String title) {
             int index = -1;
 
-            if(mFragmentTitleList.contains(title))
+            if (mFragmentTitleList.contains(title))
                 index = mFragmentTitleList.indexOf(title);
             else
                 return -1;
@@ -104,7 +127,7 @@ public class ViewStatistics extends AppCompatActivity {
 
             int removedIndex = removeFragment(titelOld);
 
-            if(removedIndex < 0)
+            if (removedIndex < 0)
                 return;
 
 
