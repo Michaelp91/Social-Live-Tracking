@@ -18,6 +18,8 @@ import com.slt.restapi.UpdateOperations_Synchron;
 
 import org.w3c.dom.Comment;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -25,6 +27,32 @@ import java.util.LinkedList;
  * A TimelineSegment stores all location points and statistics for a single activity
  */
 public class TimelineSegment {
+
+    /**
+     * Implementation of a comparator used to sort the location points by time
+     */
+    public class SortLocationEntry implements Comparator<LocationEntry> {
+        /**
+         * Overwritten comparision method
+         * @param loc1 The first location to compare
+         * @param loc2 The second location to compare
+         * @return 0 if both are the same, positive if u1 > u2, negative if u1 < u2
+         */
+        @Override
+        public int compare(LocationEntry loc1, LocationEntry loc2) {
+            //get the values
+           Date d1 = loc1.getMyEntryDate();
+           Date d2 = loc2.getMyEntryDate();
+
+            //return the comparision results
+            if(d1.equals(d2))
+                return 0;
+            if(d1.after(d2))
+                return 1;
+            else
+                return -1;
+        }
+    }
 
     /*
     * Tag for the Logger
@@ -111,39 +139,11 @@ public class TimelineSegment {
 
     /**
      * Constructor to initialize all data
-     * @param location The location for a new Segment
-     * @param date The date the location was detected
-     * @param activity The activity the segment was created for
-     */
-    public TimelineSegment(Location location, Date date, DetectedActivity activity, Date startTime){
-        strUserComments = new LinkedList<>();
-        myLocationPoints = new LinkedList<>();
-        myAchievements = new LinkedList<>();
-        myImages = new LinkedList<>();
-        myActivity = activity;
-        this.startTime = startTime;
-        userComments = new LinkedList<>();
-        userSteps = 0;
-        activeDistance = 0.0;
-        activeTime = 0;
-        inactiveTime = 0;
-        startAddress = "";
-        this.ID = null;
-
-        //start a step counter, might not be needed, but want to have the data in case the user
-        // changes the type of activity later
-        this.myStepSensor = new StepSensor();
-
-        //add a new location point
-     //   this.addLocationPoint(location, date);
-    }
-
-    /**
-     * Simple Constructor for use in the REST API
      * @param activity The activity to set
      * @param startTime The start Time of the segment
+     * @param addStepSensor If we want to add a step sensor
      */
-    public TimelineSegment(DetectedActivity activity, Date startTime){
+    public TimelineSegment(DetectedActivity activity, Date startTime, Boolean addStepSensor){
         strUserComments = new LinkedList<>();
         myLocationPoints = new LinkedList<>();
         myAchievements = new LinkedList<>();
@@ -157,6 +157,15 @@ public class TimelineSegment {
         inactiveTime = 0;
         startAddress = "";
         this.ID = null;
+
+        //check if we want to add a step sensor in case we loaded the data from the DB
+        if(addStepSensor) {
+            //start a step counter, might not be needed, but want to have the data in case the user
+            // changes the type of activity later
+            this.myStepSensor = new StepSensor();
+        } else {
+            this.myStepSensor = null;
+        }
     }
 
     /**
@@ -180,15 +189,45 @@ public class TimelineSegment {
         }
     }
 
+    /**
+     *  Set the user Comments
+     * @param userComments The user comments to set
+     */
     public void setStrUserComments(LinkedList<String> userComments) {
-        this.strUserComments = strUserComments;
+        this.strUserComments = userComments;
     }
 
+    public void addStrUserComment(String comment) {
+        this.strUserComments.add(comment);
+    }
+
+
+    /**
+     * Get the user comments
+     * @return The user comments in a linked list
+     */
     public LinkedList<String> getStrUserComments() {
         return strUserComments;
     }
 
+    /**
+     * Delete the sensor if no longer needed
+     */
+    public void deleteSensor(){
+        if(this.myStepSensor != null) {
+            this.myStepSensor.unregisterListeners();
+            this.myStepSensor = null;
+        }
+    }
 
+    /**
+     * Add a step sensor
+     */
+    public void addSensor(){
+        if(this.myStepSensor == null) {
+            this.myStepSensor = new StepSensor();
+        }
+    }
 
     /**
      *  Method to add a new location point to the segment
@@ -213,8 +252,9 @@ public class TimelineSegment {
         this.activeTime += newEntry.getMyDuration();
 
         // update the statistics for the steps
-        //TODO: myStepSensor is null, please fix this
-        //this.userSteps = myStepSensor.getSteps();
+        if(myStepSensor != null) {
+            this.userSteps += myStepSensor.getSteps();
+        }
 
         this.myLocationPoints.add(newEntry);
         this.calculateAchievements();
@@ -235,7 +275,9 @@ public class TimelineSegment {
      * @param userID The DB ID of the user
      */
     public void addLocationEntry(LocationEntry locationEntry, String userID){
+        //sort after adding to make sure the order is correct
         this.myLocationPoints.add(locationEntry);
+        Collections.sort(this.myLocationPoints, new SortLocationEntry());
 
         //Send intent to inform about update
         Intent intent = new Intent();
@@ -342,19 +384,6 @@ public class TimelineSegment {
      * @return The comments for the user, null if none are found
      */
     public UserComment getUserComment(String user){
-        /*
-        UserComment comment = null;
-
-        //check if we have a comment from the user
-        for(UserComment com : this.userComments){
-            if(com.getUserName().equals(user)){
-                comment = com;
-            }
-        }
-
-        return comment;
-        */
-
         return new UserComment("", "");
     }
 
@@ -382,12 +411,14 @@ public class TimelineSegment {
      */
     public void mergeTimelineSegments(TimelineSegment segment){
 
-        //REST Call to remove the last location point
-        DataUpdater.getInstance().deleteLocationEntry(this.myLocationPoints.getLast());
+        //check if we have location points added
+        if(!this.myLocationPoints.isEmpty()) {
+            //REST Call to remove the last location point
+            DataUpdater.getInstance().deleteLocationEntry(this.myLocationPoints.getLast());
 
-        //Remove the last location point since it is double in both segment
-        this.myLocationPoints.removeLast();
-
+            //Remove the last location point since it is double in both segment
+            this.myLocationPoints.removeLast();
+        }
         //merge all the remaining data
         this.myLocationPoints.addAll(segment.getLocationPoints());
         this.myAchievements.addAll(segment.getMyAchievements());
@@ -397,7 +428,6 @@ public class TimelineSegment {
         for(LocationEntry entry : segment.getLocationPoints()){
             DataUpdater.getInstance().addLocationEntry(entry, this);
         }
-
 
         //check which activity type our activity is
         switch(segment.getMyActivity().getType())
@@ -471,50 +501,22 @@ public class TimelineSegment {
         LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
     }
 
-
     /**
-     * Add an image from the DB
-     * @param image The image to add
-     * @param id  The DB ID of the owning user
+     * Set the images from the DB
+     * @param images The images to add in a list
      */
-
-    public void addImage(Image image, String id) {
-
-        /*
-        this.myImages.add(image);
-
-        //Send intent to inform about update
-        Intent intent = new Intent();
-        intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_INFO_CHANGED);
-        intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
-        intent.putExtra(Constants.INTENT_EXTRAS.USERID, id);
-        LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
-        */
-    }
-
-
     public void setImages(LinkedList<String> images) {
         this.myImages = images;
     }
 
-
     /**
-     * Add am image to the segment
-     * @param image The image to add to the list
+     * Add a single image
+     * @param image Add a single image
      */
-    public void addImages(Image image) {
-        /*
-        if(image != null) {
-            this.myImages.add(image);
-
-            //Send intent to inform about update
-            Intent intent = new Intent();
-            intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OWN_INFO_CHANGED);
-            intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
-            LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
-        }
-        */
+    public void addImage(String image) {
+        this.myImages.add(image);
     }
+
 
     /**
      * Used in Case the user wants to change the activity, can only be called from the TimelineDay

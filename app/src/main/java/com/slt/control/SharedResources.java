@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.slt.R;
+import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 import com.slt.definitions.Constants;
 
@@ -34,6 +35,11 @@ public class SharedResources {
      * Stores the instance of the shared resources
      */
     private static final SharedResources ourInstance = new SharedResources();
+
+    /**
+     * Used to communicate timeline segments between fragments
+     */
+    private TimelineSegment onclickedTimelineSegment;
 
     /**
      * Stores the instance of the API Client
@@ -82,7 +88,11 @@ public class SharedResources {
         return this.navProfilePhoto;
     }
 
-
+    /**
+     * Set the Image View for the Profile Photo in the nav bar
+     *
+     * @param navProfilePhoto The Image view that should be stored
+     */
     public void setNavProfilePhoto(ImageView navProfilePhoto) {
         this.navProfilePhoto = navProfilePhoto;
     }
@@ -106,7 +116,7 @@ public class SharedResources {
     }
 
     /**
-     *
+     * User to pass along between segments
      */
     private User myUser;
 
@@ -120,6 +130,24 @@ public class SharedResources {
     }
 
     /**
+     * Store a timeline segment that should be shared between segments
+     *
+     * @param onclickedTimelineSegment The Timeline segment to store
+     */
+    public void setOnClickedTimelineSegmentForDetails(TimelineSegment onclickedTimelineSegment) {
+        this.onclickedTimelineSegment = onclickedTimelineSegment;
+    }
+
+    /**
+     * Get the stored timeline segment
+     *
+     * @return The stored timeline segment
+     */
+    public TimelineSegment getOnClickedTimelineSegmentForDetails() {
+        return onclickedTimelineSegment;
+    }
+
+    /**
      * Get the foreground notification
      *
      * @return The foreground notification
@@ -129,17 +157,30 @@ public class SharedResources {
 
         if (foregroundNotification == null) {
             if (Build.VERSION.SDK_INT < 26) {
+                NotificationManager mNotificationManager =
+                        (NotificationManager) ApplicationController.getContext()
+                                .getSystemService(ApplicationController.getContext().NOTIFICATION_SERVICE);
+
                 RemoteViews notificationView = new RemoteViews(ApplicationController.getContext().getPackageName(), R.layout.foreground);
                 Bitmap icon = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), ic_launcher);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(ApplicationController.getContext());
-                builder.setContentTitle("Timeline");
-                builder.setTicker("Location & Activity Tracking Active");
-                builder.setContentText("Location & Activity Tracking");
-                builder.setSmallIcon(ic_launcher);
-                builder.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false));
-                builder.setContent(notificationView);
-                builder.setOngoing(true);
-                foregroundNotification = builder.build();
+
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(ApplicationController.getContext(), Constants.NOTIFICATION_ID.id);
+
+                foregroundNotification =  builder.setContentTitle("Timeline")
+                        .setTicker("Location & Activity Tracking Active")
+                        .setContentText("Location & Activity Tracking")
+                        .setSmallIcon(ic_launcher)
+                        .setBadgeIconType(R.mipmap.ic_launcher)
+                        .setNumber(5)
+                        .setVisibility(Notification.VISIBILITY_PUBLIC)
+                        .setSmallIcon(ic_launcher)
+                        .setAutoCancel(true)
+                        .setOngoing(true)
+                        .build();
+
+                mNotificationManager.notify(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, foregroundNotification);
+
             } else {
 
                 NotificationManager mNotificationManager =

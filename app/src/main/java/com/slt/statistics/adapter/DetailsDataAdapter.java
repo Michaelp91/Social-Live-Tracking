@@ -30,6 +30,7 @@ import com.slt.data.Achievement;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.restapi.RetrieveOperations;
+import com.slt.statistics.Sport;
 import com.slt.statistics.ViewStatistics;
 import com.slt.statistics.adapter.details_infos_list.*;
 // macht momentan Fehler bei mir:
@@ -51,6 +52,8 @@ import java.util.List;
 
 public class DetailsDataAdapter extends ArrayAdapter {
     private GridView gridView;
+    public Sport sport = null;
+    public String period = "";
 
     public DetailsDataAdapter(@NonNull Context context, List list) {
         super(context, 0, list);
@@ -173,6 +176,14 @@ public class DetailsDataAdapter extends ArrayAdapter {
 
 
         return rowView;
+    }
+
+    public void setSport(Sport sport) {
+        this.sport = sport;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
     }
 
     private View getViewOfLineChart(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {

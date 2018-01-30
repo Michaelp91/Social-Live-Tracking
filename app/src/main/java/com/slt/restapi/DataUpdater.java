@@ -8,6 +8,7 @@ import com.slt.data.*;
 import com.slt.restapi.data.*;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -87,7 +88,7 @@ public class DataUpdater implements Runnable{
                 Log.d("Create", "Timeline is created.");
                 timeline = null;
             } else {
-                Log.d("Create", "Timeline is not created.");
+          //      Log.d("Create", "Timeline is not created.");
             }
         }
 
@@ -96,7 +97,12 @@ public class DataUpdater implements Runnable{
         if(timeLine != null) {
             Iterator iterator = h_queue_timelineDays.entrySet().iterator();
             while (iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry =(Map.Entry) iterator.next();
+                } catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_TimelineDay r_t_d = (REST_TimelineDay) entry.getValue();
 
                 r_t_d.timeline = timeLine._id;
@@ -105,15 +111,21 @@ public class DataUpdater implements Runnable{
 
                 if (requestSuccessful) {
                     Log.d("Create", "Timeline Day is created.");
-                    iterator.remove();
+                    h_queue_timelineDays.remove(entry.getKey());
                 } else {
-                    Log.d("Create", "Timeline Day is not created.");
+          //          Log.d("Create", "Timeline Day is not created.");
                 }
             }
 
             iterator = h_queue_timelinesegments.entrySet().iterator();
             while(iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+                Map.Entry entry = null;
+
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_TimelineSegment r_t_s = (REST_TimelineSegment) entry.getValue();
                 REST_TimelineDay timeLineDayToFind = r_t_s.timeLineDayObject;
                 REST_TimelineDay timeLineDay = TemporaryDB.getInstance().findTimeLineDayByObject(timeLineDayToFind);
@@ -125,19 +137,25 @@ public class DataUpdater implements Runnable{
 
                     if (requestSuccessful) {
                         Log.d("Create", "Timeline Segment is created.");
-                        iterator.remove();
+                        h_queue_timelinesegments.remove(entry.getKey());
                     } else {
-                        Log.d("Create", "Timeline Segment is not created.");
+               //         Log.d("Create", "Timeline Segment is not created.");
                     }
 
                 } else {
-                    Log.d("Create", "Timeline Segment is not Created.");
+            //        Log.d("Create", "Timeline Segment is not Created.");
                 }
             }
 
             iterator = h_queue_locationEntries.entrySet().iterator();
+
             while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException ex) {
+                    break;
+                }
                 REST_LocationEntry r_l_e = (REST_LocationEntry) entry.getValue();
                 REST_TimelineSegment search = r_l_e.timelinesegmentObject;
                 REST_TimelineSegment timeLineSegment = TemporaryDB.getInstance().findTimeLineSegmentByObject(search);
@@ -150,16 +168,17 @@ public class DataUpdater implements Runnable{
                     if (requestSuccessful) {
 
                         Log.d("Create", "Location Entry is created.");
-                        iterator.remove();
+                        //iterator.remove();
+                        h_queue_locationEntries.remove(entry.getKey());
                     } else {
-                        Log.d("Create", "Location Entry is not created.");
+              //          Log.d("Create", "Location Entry is not created.");
                     }
                 } else {
-                    Log.d("Create", "Location Entry is not created.");
+            //        Log.d("Create", "Location Entry is not created.");
                 }
             }
 
-            Log.d("Create", "End");
+       //     Log.d("Create", "End");
 
         }
 
@@ -172,32 +191,44 @@ public class DataUpdater implements Runnable{
             Iterator iterator = h_queue_timelinesegments_update.entrySet().iterator();
 
             while(iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_TimelineSegment r_t_s = (REST_TimelineSegment) entry.getValue();
                 TimelineSegment t_s = (TimelineSegment) entry.getKey();
                 boolean requestSuccessful = UpdateOperations_Synchron.updateTimelineSegment(t_s, r_t_s);
 
                 if (requestSuccessful) {
                     Log.d("Create", "Timeline Segment is updated.");
-                    iterator.remove();
+                    h_queue_timelinesegments_update.remove(entry.getKey());
                 } else {
-                    Log.d("Create", "Timeline Segment is not updated.");
+            //        Log.d("Create", "Timeline Segment is not updated.");
                 }
             }
 
             iterator = h_queue_timelineDays_update.entrySet().iterator();
 
             while(iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
+
                 REST_TimelineDay r_t_d = (REST_TimelineDay) entry.getValue();
                 TimelineDay t_d = (TimelineDay) entry.getKey();
                 boolean requestSuccessful = UpdateOperations_Synchron.updateTimelineDay(t_d, r_t_d);
 
                 if (requestSuccessful) {
                     Log.d("Create", "Timeline Day is updated.");
-                    iterator.remove();
+                    h_queue_timelineDays_update.remove(entry.getKey());
                 } else {
-                    Log.d("Create", "Timeline Day is not updated.");
+            //        Log.d("Create", "Timeline Day is not updated.");
                 }
             }
         }
@@ -210,32 +241,42 @@ public class DataUpdater implements Runnable{
             Iterator iterator = h_queue_timelinesegments_delete.entrySet().iterator();
 
             while(iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_TimelineSegment r_t_s = (REST_TimelineSegment) entry.getValue();
                 TimelineSegment t_s = (TimelineSegment) entry.getKey();
                 boolean requestSuccessful = UpdateOperations_Synchron.deleteTimelineSegment(t_s, r_t_s);
 
                 if (requestSuccessful) {
                     Log.d("Create", "Timeline Segment is deleted.");
-                    iterator.remove();
+                    h_queue_timelinesegments_delete.remove(entry.getKey());
                 } else {
-                    Log.d("Create", "Timeline Segment is not deleted.");
+           //         Log.d("Create", "Timeline Segment is not deleted.");
                 }
             }
 
             iterator = h_queue_locationEntries_delete.entrySet().iterator();
 
             while(iterator.hasNext()) {
-                Map.Entry entry =(Map.Entry) iterator.next();
+                Map.Entry entry = null;
+                try {
+                    entry = (Map.Entry) iterator.next();
+                }catch(ConcurrentModificationException e) {
+                    break;
+                }
                 REST_LocationEntry r_l_e = (REST_LocationEntry) entry.getValue();
                 LocationEntry l_e = (LocationEntry) entry.getKey();
                 boolean requestSuccessful = UpdateOperations_Synchron.deleteLocationEntry(l_e, r_l_e);
 
                 if (requestSuccessful) {
                     Log.d("Create", "Location Entry is deleted.");
-                    iterator.remove();
+                    h_queue_locationEntries_delete.remove(entry.getKey());
                 } else {
-                    Log.d("Create", "Location Entry is not deleted.");
+           //         Log.d("Create", "Location Entry is not deleted.");
                 }
             }
         }
@@ -260,6 +301,7 @@ public class DataUpdater implements Runnable{
                             && ourInstance.h_queue_timelineDays_update.isEmpty()
                             && ourInstance.h_queue_timelinesegments_delete.isEmpty()
                             && ourInstance.h_queue_locationEntries_delete.isEmpty()) {
+
                         Locks.getInstance().lock.wait();
                     }
                     //TODO: Might REMOVE , could LEAD TO CONTENTIONS

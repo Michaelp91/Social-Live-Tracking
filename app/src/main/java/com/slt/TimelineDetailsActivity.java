@@ -5,6 +5,7 @@ import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
@@ -19,16 +20,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.slt.control.DataProvider;
+import com.slt.control.SharedResources;
+import com.slt.data.LocationEntry;
 import com.slt.data.TimelineSegment;
 import com.slt.restapi.data.Constants;
 
+import java.util.LinkedList;
 
+//TODO: Test Timeline Details
 public class TimelineDetailsActivity extends AppCompatActivity {
     private GoogleMap googleMap;
     MapView mMapView;
 
-    private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
-    private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
+    private LinkedList<LocationEntry> locationEntries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +50,29 @@ public class TimelineDetailsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        TimelineSegment segment = SharedResources.getInstance().getOnClickedTimelineSegmentForDetails();
+
+        locationEntries = segment.getLocationPoints();
+
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
 
-                googleMap.addMarker(new MarkerOptions().position(DARMSTADT_NORD).title("Times Square"));
-                googleMap.addMarker(new MarkerOptions().position(WILLYBRANDTPLATZ).title("Brooklyn Bridge"));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(DARMSTADT_NORD));
-                addLines();
+                if(locationEntries.size() >= 2) {
+                    LatLng start = new LatLng(locationEntries.get(0).getLatitude(), locationEntries.get(0).getLongitude());
+                    LatLng end = new LatLng(locationEntries.get(locationEntries.size() - 1).getLatitude(), locationEntries.get(locationEntries.size() - 1).getLongitude());
+
+
+                    googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                    googleMap.addMarker(new MarkerOptions().position(end).title(""));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(start));
+                    addLines(start, end);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Only one or no Locationpoints available!", Toast.LENGTH_LONG).show();
+                }
             }
         });
-
-
-        TimelineSegment segment = DataProvider.getInstance().getOnClickedTimelineSegmentForDetails();
 
         TextView tvAktivitaet = (TextView) findViewById(R.id.tv_aktivitaet);
         TextView tvDauer = (TextView) findViewById(R.id.tv_dauer);
@@ -87,24 +100,23 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         tvStrecke.setText(Double.toString(segment.getActiveDistance()) + "km" );
     }
 
-    private void addLines() {
-
+    private void addLines(LatLng start, LatLng end) {
         googleMap.addPolyline((new PolylineOptions())
-                .add(DARMSTADT_NORD, WILLYBRANDTPLATZ).width(5).color(Color.BLUE)
+                .add(start, end).width(5).color(Color.BLUE)
                 .geodesic(true));
         // move camera to zoom on map
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DARMSTADT_NORD,
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start,
                 10));
 
 
         //Src: https://stackoverflow.com/questions/34357660/calculating-the-distance-between-two-markers-in-android
         Location markerLocation = new Location("");
-        markerLocation.setLatitude(DARMSTADT_NORD.latitude);
-        markerLocation.setLongitude(DARMSTADT_NORD.longitude);
+        markerLocation.setLatitude(start.latitude);
+        markerLocation.setLongitude(start.longitude);
 
         Location distanceLocation = new Location("");
-        distanceLocation.setLatitude(WILLYBRANDTPLATZ.latitude);
-        distanceLocation.setLongitude(WILLYBRANDTPLATZ.longitude);
+        distanceLocation.setLatitude(end.latitude);
+        distanceLocation.setLongitude(end.longitude);
 
 
     }

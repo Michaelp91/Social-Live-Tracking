@@ -210,7 +210,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         LayoutInflater inflater = LayoutInflater.from(this);
 
         list_TimelineDays = new ArrayList<>();
-        timeLineDays = TemporaryDB.getInstance().getTimelineDays();
+        timeLineDays =null; //TemporaryDB.getInstance().getTimelineDays();
         counter_timelinedays = 0;
         view_timelineDays.removeAllViews();
         for(REST_TimelineDay t_d: timeLineDays) {
@@ -242,7 +242,7 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
         LayoutInflater inflater = LayoutInflater.from(this);
 
         list_TimelineDays = new ArrayList<>();
-        timeLineDays = TemporaryDB.getInstance().getTimelineDays();
+        timeLineDays = null; //TemporaryDB.getInstance().getTimelineDays();
         counter_timelinedays = 0;
         //view_timelineDays.removeAllViews();
         for(REST_TimelineDay t_d: timeLineDays) {
@@ -279,14 +279,14 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
     public void updateTimelineView() {
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        ArrayList<REST_TimelineSegment> timeLineSegments = TemporaryDB.getInstance().
-                findTimelineSegmentsByTDayId(choosedTimelineDay._id);
+        ArrayList<REST_TimelineSegment> timeLineSegments =null; // TemporaryDB.getInstance().
+               // findTimelineSegmentsByTDayId(choosedTimelineDay._id);
         boolean firstLoop = true;
 
 
         for(REST_TimelineSegment tSegment: timeLineSegments) {
-            ArrayList<REST_LocationEntry> locationEntries = TemporaryDB.getInstance()
-                    .findLocationEntriesByTSegmentId(tSegment._id);
+            ArrayList<REST_LocationEntry> locationEntries = null; // TemporaryDB.getInstance()
+                   // .findLocationEntriesByTSegmentId(tSegment._id);
 
             RelativeLayout view_FirstPoint = null;
             RelativeLayout view_segment = null;
@@ -348,14 +348,14 @@ public class TimelineActivity extends AppCompatActivity implements View.OnClickL
     public void initTimelineView() {
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        ArrayList<REST_TimelineSegment> timeLineSegments = TemporaryDB.getInstance().
-                                                findTimelineSegmentsByTDayId(choosedTimelineDay._id);
+        ArrayList<REST_TimelineSegment> timeLineSegments = null; // TemporaryDB.getInstance().
+                                              //  findTimelineSegmentsByTDayId(choosedTimelineDay._id);
         boolean firstLoop = true;
 
 
         for(REST_TimelineSegment tSegment: timeLineSegments) {
-            ArrayList<REST_LocationEntry> locationEntries = TemporaryDB.getInstance()
-                                                        .findLocationEntriesByTSegmentId(tSegment._id);
+            ArrayList<REST_LocationEntry> locationEntries = null; //TemporaryDB.getInstance()
+                                                        //.findLocationEntriesByTSegmentId(tSegment._id);
 
             RelativeLayout view_FirstPoint = null;
             RelativeLayout view_segment = null;

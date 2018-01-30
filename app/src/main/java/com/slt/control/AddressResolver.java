@@ -57,7 +57,7 @@ public class AddressResolver extends AsyncTask<Object, String, String> {
      */
     public AddressResolver(){
         //Create a new geo coder
-        myGeocoder = new Geocoder(ApplicationController.getContext(), Locale.getDefault());
+        myGeocoder = new Geocoder(ApplicationController.getContext().getApplicationContext(), Locale.getDefault());
         myAddress = "";
     }
 
@@ -157,10 +157,9 @@ public class AddressResolver extends AsyncTask<Object, String, String> {
                     myLocation.getLongitude(), illegalArgumentException);
         }
 
-        //If we find no address return the latitude and longitude as the address
+        //If we find no address return Unknown
         if (addresses == null || addresses.size()  == 0) {
-            return  "Latitude: " + myLocation.getLatitude() + ", Longitude: " +
-                    myLocation.getLongitude();
+            return  "Unknown";
         } else {
             //In all other cases build a string from the first address we dound
             Address address = addresses.get(0);

@@ -17,6 +17,7 @@ import retrofit2.Response;
 public class UpdateOperations extends Thread {
     private static Object lock = new Object();
 
+    /*
     public static boolean updateTimelineSegmentManually(TimelineSegment t_s) {
         REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
         Endpoints api = RetroClient.getApiService();
@@ -33,6 +34,7 @@ public class UpdateOperations extends Thread {
 
         return true;
     }
+    */
 
     public static void createUser_Functionalities(REST_User_Functionalities rest_user_functionalities, LoginFragment loginFragment) {
 

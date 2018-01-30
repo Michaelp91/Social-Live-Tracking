@@ -11,10 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
-import com.slt.control.AchievementCalculator;
 import com.slt.data.Achievement;
-import com.slt.fragments.global.FragmentOne;
-import com.slt.statistics.achievements.Tupeln_AchievementImage_and_Info;
+import com.slt.fragments.FragmentSportTab;
 import com.slt.statistics.data.DataObjectsCollection;
 
 import java.util.ArrayList;
@@ -36,29 +34,42 @@ public class ViewStatistics extends AppCompatActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        // TODO statt 3 sollte hier getNumberOfAchievements sein
         for (int i = 0; i < 3; i++) {
             // line chart
+            // TODO--------------------- replace with real date from data provider
             LineData lineData = DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), 2, "walking");
+            // TODO the end---------------------
 
-            FragmentOne fragmentOne = new FragmentOne();
-            fragmentOne.setLineData(lineData);
+            FragmentSportTab fragmentSportTab = new FragmentSportTab();
+
+            fragmentSportTab.setPeriod(periodNames[i]);
+
+            fragmentSportTab.setSport(ViewStatistics.getSelectedSportStatistics());
+
+            fragmentSportTab.setLineData(lineData);
 
             // infos
+            // TODO--------------------- replace with real date from data provider
             HashMap<String, String> infos = new HashMap<>();
 
             for (int j = 0; j < 5; j++) {
                 infos.put("Blah " + j + ":", "blah " + j);
             }
-            fragmentOne.setInfos(infos);
+            // TODO the end---------------------
+
+            fragmentSportTab.setInfos(infos);
 
             // achievements
-            // todo
-            LinkedList<Achievement> achievements = new LinkedList<>(); // AchievementCalculator.getAchievements(i);
+            // TODO--------------------- replace with real date from data provider
+            LinkedList<Achievement> achievements = new LinkedList<>();
+            // AchievementCalculator.getAchievements(i);
+            // TODO the end---------------------
 
-            fragmentOne.setAchievements(achievements);
+            fragmentSportTab.setAchievements(achievements);
 
 
-            adapter.addFragment(fragmentOne, periodNames[i]);
+            adapter.addFragment(fragmentSportTab, periodNames[i]);
         }
 
         viewPager.setAdapter(adapter);

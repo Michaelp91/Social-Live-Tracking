@@ -1,13 +1,10 @@
 package com.slt.restapi;
 
 import android.location.Location;
-import android.support.v4.app.FragmentTransitionImpl;
-import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.slt.TimelineActivity;
 import com.slt.data.Achievement;
 import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
@@ -110,10 +107,13 @@ public class RetrieveOperations {
 
         for(REST_TimelineSegment r_t_s: responses.timelinesegments) {
             DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, 100);
-            TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime);
+            TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime, false);
             t_s.setStartAddress(r_t_s.startAddress);
             t_s.setStartPlace(r_t_s.startPlace);
             t_s.setID(r_t_s._id);
+            t_s.setStrUserComments(r_t_s.usercomments);
+            t_s.setImages(r_t_s.images);
+
             for(REST_Achievement r_a: r_t_s.myAchievements) {
                 Achievement a = new Achievement(r_a.achievement, null);
                 t_s.addAchievement(a, null); //TODO: Fill Userid in buildcompleteUserObjects

@@ -1,4 +1,4 @@
-package com.slt.fragments.global;
+package com.slt.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +10,7 @@ import android.widget.ListView;
 import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
 import com.slt.data.Achievement;
-import com.slt.statistics.achievements.Tupeln_AchievementImage_and_Info;
+import com.slt.statistics.Sport;
 import com.slt.statistics.adapter.DetailsDataAdapter;
 import com.slt.statistics.graphs.LineChartItem;
 
@@ -20,16 +20,18 @@ import java.util.LinkedList;
 
 
 /**
- * Created by Anu on 22/04/17.
+ * Created by Matze
  */
-public class FragmentOne extends Fragment {
+public class FragmentSportTab extends Fragment {
 
+    public Sport sport = null;
+    public String period = "";
     public LineData lineData = null;
     public HashMap<String, String> infos = null;
     public LinkedList<Achievement> achievements = null;
 
 
-    public FragmentOne() {
+    public FragmentSportTab() {
         // Required empty public constructor
     }
 
@@ -43,28 +45,25 @@ public class FragmentOne extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_one, container, false);
+        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragmentForSportTab, container, false);
 
 
         ListView l = (ListView) viewGroup.findViewById(R.id.list_in_Frag);
 
 
-        ArrayList<Object> list = new ArrayList<>();
+        ArrayList<Object> listWithData = new ArrayList<>();
 
         // chart
-        //LineData lineData = DataObjectsCollection.dataSupplier.getLineData(getContext().getApplicationContext(), 2, "walking");
-
-        list.add(new LineChartItem(this.lineData, getContext().getApplicationContext()));
+        listWithData.add(new LineChartItem(this.lineData, getContext().getApplicationContext()));
 
         // infos
-        list.add(this.infos);
+        listWithData.add(this.infos);
 
         // achivements
-        //LinkedList< LinkedList<Tupeln_AchievementImage_and_Info> > achievements = new ArrayList<>();
-        list.add(this.achievements);
+        listWithData.add(this.achievements);
 
         // todo create adapter for the details within time period
-        DetailsDataAdapter adapter = new DetailsDataAdapter(getContext(), list);
+        DetailsDataAdapter adapter = new DetailsDataAdapter(getContext(), listWithData);
 
         l.setAdapter(adapter);
 
@@ -81,5 +80,13 @@ public class FragmentOne extends Fragment {
 
     public void setAchievements(LinkedList<Achievement> achievements) {
         this.achievements = achievements;
+    }
+
+    public void setSport(Sport sport) {
+        this.sport = sport;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
     }
 }

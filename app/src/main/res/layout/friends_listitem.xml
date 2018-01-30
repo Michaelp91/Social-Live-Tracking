@@ -2,130 +2,148 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@drawable/button_2"
+    android:layout_margin="@dimen/activity_vertical_margin"
+    android:background="@drawable/background_reset"
     android:paddingBottom="10dp"
     android:paddingTop="10dp"
     android:paddingRight="10dp"
     android:paddingLeft="10dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/friends_list_item_image"
-        android:layout_width="64dp"
-        android:layout_height="71dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/profile_pic" />
-
-
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/friends_list_item_title_username"
-            android:layout_width="151dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:paddingTop="8dp"
-            android:text="Username"
-            android:textSize="8sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!--Profile Pic-->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/friends_list_item_image"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center"
+            android:src="@drawable/profile_pic"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="2dp"/>
 
-        <TextView
-            android:id="@+id/friends_list_item_username"
-            android:layout_width="151dp"
-            android:layout_height="23dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
-            android:layout_weight="1"
-            android:paddingTop="5dp"
-            android:text="Username"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/friends_list_item_title_username" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <RelativeLayout
+                android:id="@+id/relative_0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="2dp">
 
-        <TextView
-            android:id="@+id/friends_list_item_title_name"
-            android:layout_width="151dp"
-            android:layout_height="17dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
-            android:layout_weight="1"
-            android:paddingTop="8dp"
-            android:text="Name"
-            android:textSize="8sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/friends_list_item_title_username" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/relative_1"
+                    android:gravity="left">
 
+                    <!-- Username -->
+                    <TextView
+                        android:id="@+id/friends_list_item_title_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Username"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:textStyle="italic|bold"
+                        android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/friends_list_item_name"
-            android:layout_width="151dp"
-            android:layout_height="27dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:paddingTop="12dp"
-            android:text="Name"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/friends_list_item_username" />
+                    <TextView
+                        android:id="@+id/friends_list_item_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Username"
+                        android:textSize="16sp"
+                        android:layout_below="@id/friends_list_item_title_username"/>
+                </RelativeLayout>
 
-        <TextView
-            android:id="@+id/friends_list_item_title_email"
-            android:layout_width="124dp"
-            android:layout_height="18dp"
-            android:layout_marginStart="180dp"
-            android:layout_weight="1"
-            android:paddingTop="8dp"
-            android:text="E-Mail"
-            android:textSize="8sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom"
+                    android:layout_below="@id/relative_1">
 
-        <TextView
-            android:id="@+id/friends_list_item_email"
-            android:layout_width="124dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="180dp"
-            android:layout_marginTop="12dp"
-            android:layout_weight="1"
-            android:paddingTop="12dp"
-            android:text="email"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/friends_list_item_title_username" />
+                    <!-- Name -->
+                    <TextView
+                        android:id="@+id/friends_list_item_title_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="italic|bold"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:text="Name"
+                        android:textSize="12sp"/>
 
+                    <TextView
+                        android:id="@+id/friends_list_item_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:textSize="16sp"
+                        android:layout_below="@id/friends_list_item_title_name"/>
+                </RelativeLayout>
 
-        <TextView
-            android:id="@+id/friends_list_item_title_age"
-            android:layout_width="124dp"
-            android:layout_height="17dp"
-            android:layout_marginStart="180dp"
-            android:layout_marginTop="12dp"
-            android:layout_weight="1"
-            android:paddingTop="8dp"
-            android:text="Age"
-            android:textSize="8sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/friends_list_item_title_username" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="end">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/relative_3">
+                        <!--E-Mail-->
+                        <TextView
+                            android:id="@+id/friends_list_item_title_email"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:textStyle="italic|bold"
+                            android:text="E-Mail"
+                            android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/friends_list_item_age"
-            android:layout_width="124dp"
-            android:layout_height="26dp"
-            android:layout_marginStart="180dp"
-            android:layout_weight="1"
-            android:paddingTop="12dp"
-            android:text="23"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/friends_list_item_username" />
-    </android.support.constraint.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/friends_list_item_email"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="E-Mail"
+                            android:textSize="16sp"
+                            android:layout_below="@id/friends_list_item_title_email"/>
+                    </RelativeLayout>
 
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/relative_3"
+                        android:layout_alignStart="@id/relative_3"
+                        android:gravity="bottom">
 
+                        <!--Age -->
+                        <TextView
+                            android:id="@+id/friends_list_item_title_age"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:textStyle="italic|bold"
+                            android:text="Age"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/friends_list_item_age"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="23"
+                            android:textSize="16sp"
+                            android:layout_below="@id/friends_list_item_title_age"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

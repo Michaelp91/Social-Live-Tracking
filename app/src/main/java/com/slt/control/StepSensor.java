@@ -14,6 +14,16 @@ import android.util.Log;
 public class StepSensor implements SensorEventListener {
 
     /**
+     * used to get an ID for each sensor
+     */
+    private static int ID = 0;
+
+    /**
+     * ID of the sensor
+     */
+    private int sensorID;
+
+    /**
      * Tag for the logger
      */
     public static final String TAG = "StepSensor";
@@ -41,13 +51,14 @@ public class StepSensor implements SensorEventListener {
         this.myStartSteps = 0;
         this.myCurrentSteps = 0;
         registerEventListener();
+        this.sensorID = ++StepSensor.ID;
     }
 
     /**
-     *
+     *  Unregister listeners on destroy
      */
     @Override
-    public void finalize(){
+     protected void finalize(){
         unregisterListeners();
     }
 
@@ -68,13 +79,13 @@ public class StepSensor implements SensorEventListener {
         final boolean batchMode = sensorManager.registerListener(
                 this, sensor, SensorManager.SENSOR_DELAY_NORMAL, StepSensor.SENSOR_LATENCY);
 
-        Log.i(TAG, "Sensor listener registered.");
+        Log.i(TAG, "Sensor listener "+ sensorID + " registered.");
     }
 
     /**
      * Unregisters the sensor listener if it is registered.
      */
-    private void unregisterListeners() {
+    public void unregisterListeners() {
         SensorManager sensorManager =
                 (SensorManager) ApplicationController.getContext().getSystemService(Activity.SENSOR_SERVICE);
         sensorManager.unregisterListener(this);
@@ -94,14 +105,11 @@ public class StepSensor implements SensorEventListener {
             // initialize value
             myCurrentSteps = myStartSteps = (int) event.values[0];
 
-            Log.i(TAG, "New step detected by STEP_COUNTER sensor. Init Start Steps: " + myStartSteps);
+
         }
 
         // Calculate steps taken based on first counter value received.
         this.myCurrentSteps = (int) event.values[0];
-
-        Log.i(TAG, "New step detected by STEP_COUNTER sensor. Current Step Count: " + myCurrentSteps);
-
     }
 
     /**
@@ -119,7 +127,10 @@ public class StepSensor implements SensorEventListener {
      * @return The counted steps
      */
     public int getSteps(){
-        return this.myCurrentSteps - this.myStartSteps;
+        int steps = this.myCurrentSteps - this.myStartSteps;
+        this.myStartSteps = this.myCurrentSteps;
+        Log.i(TAG, "Step detected by STEP_COUNTER sensor "+ sensorID + ". Steps: " + steps);
+        return steps;
     }
 
 }

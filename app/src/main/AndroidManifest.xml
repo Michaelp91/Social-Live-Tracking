@@ -30,15 +30,10 @@
 
 
 
-        <!-- TODO: This API KEY DOESN'T SHOW THE MAP CORRECTLY, SO I HAVE INSERTED THE ANOTHER KEY
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>-->
-
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"/>
 
         <activity
             android:name=".MainActivity"
@@ -71,13 +66,13 @@
         <activity
             android:name=".MainProfile"
             android:label="@string/title_activity_main_profile"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Social_Live_Theme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.slt.MainActivity" />
         </activity>
-        <activity android:name=".TimelineActivity"></activity>
         <activity android:name=".TimelineDetailsActivity"></activity>
 
         <service android:name="com.slt.services.ActivityService" />

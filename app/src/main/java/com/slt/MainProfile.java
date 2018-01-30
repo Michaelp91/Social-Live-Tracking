@@ -5,14 +5,19 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -95,7 +100,7 @@ public class MainProfile extends AppCompatActivity
     /**
      * Update interval for the activity detection
      */
-    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 1000;
+    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 500;
 
     /**
      * TAG for the Logger
@@ -104,6 +109,11 @@ public class MainProfile extends AppCompatActivity
 
     //creating fragment object
     Fragment fragment;
+
+    /**
+     * Stores the application context
+     */
+    Context context;
 
     private ImageView mProfilePhoto;
     private TextView mUsername;
@@ -116,7 +126,7 @@ public class MainProfile extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         fragment = null;
-
+        context = this;
         setContentView(R.layout.activity_main_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         super.setTitle("Social Live Tracking");
@@ -157,9 +167,8 @@ public class MainProfile extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .addApi(ActivityRecognition.API)
                     .build());
-
-            SharedResources.getInstance().getMyGoogleApiClient().connect();
         }
+        SharedResources.getInstance().getMyGoogleApiClient().connect();
 
         //check if we have the camera permission
         if (ContextCompat.checkSelfPermission(this,
@@ -185,7 +194,94 @@ public class MainProfile extends AppCompatActivity
         } else {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
+
+
+        checkSettings();
+
+        // show a message to inform the user if step detection is not supported
+        if(!isVersionWithStepSensor()){
+            android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
+            dialog.setMessage("Step Detection not supported!");
+            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                }
+            });
+            dialog.show();
+        }
     }
+
+    /**
+     * Check and ask the user to set network and location services to on
+     */
+    private void checkSettings() {
+        LocationManager locationManager = null;
+        boolean gps_enabled = false, network_enabled = false;
+
+
+        if (locationManager == null)
+            locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        try {
+            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            if (!gps_enabled) {
+
+                android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
+                dialog.setMessage("Location not enabled!");
+                dialog.setPositiveButton("Location settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        context.startActivity(myIntent);
+                    }
+                });
+
+                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                    }
+                });
+                dialog.show();
+            }
+        } catch (Exception ex) {
+            Log.i(TAG, "Exception when trying to check GPS Settings");
+        }
+
+        try {
+            ConnectivityManager conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            network_enabled = conMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.DISCONNECTED
+                    || conMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.DISCONNECTED;
+
+            if (!network_enabled) {
+
+                android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
+                dialog.setMessage("Network not enabled!");
+                dialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_APPLICATION_SETTINGS);
+                        context.startActivity(myIntent);
+                    }
+                });
+
+                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                    }
+                });
+                dialog.show();
+
+            }
+        } catch (Exception ex) {
+            Log.i(TAG, "Exception when trying to check Network Settings");
+        }
+    }
+
 
     /**
      * Set the picture for the nav drawer
@@ -218,21 +314,27 @@ public class MainProfile extends AppCompatActivity
 
     }
 
+    /**
+     * On Activity Destroy do the cleanup of the services, notification and Data Provider
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (isFinishing()) {
+            DataProvider.getInstance().clearData();
 
-        //Disconnect Activity Listener if App has been stopped
-        if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
-            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
-                    SharedResources.getInstance().getMyGoogleApiClient(),
-                    getActivityDetectionPendingIntent()
-            ).setResultCallback(this);
+            //Disconnect Activity Listener if App has been stopped
+            if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
+                ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
+                        SharedResources.getInstance().getMyGoogleApiClient(),
+                        getActivityDetectionPendingIntent()
+                ).setResultCallback(this);
+            }
+
+            stopService(new Intent(this, LocationService.class));
+
+            SharedResources.getInstance().removeNotification();
         }
-
-        stopService(new Intent(this, LocationService.class));
-
-        SharedResources.getInstance().removeNotification();
     }
 
 
@@ -242,7 +344,6 @@ public class MainProfile extends AppCompatActivity
      * @return True if the device has support for Step Sensing
      */
     private boolean isVersionWithStepSensor() {
-        //TODO might want to check
         // BEGIN_INCLUDE(iskitkatsensor)
         // Require at least Android KitKat
         int currentApiVersion = android.os.Build.VERSION.SDK_INT;
@@ -342,7 +443,6 @@ public class MainProfile extends AppCompatActivity
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Connection suspended");
-        SharedResources.getInstance().getMyGoogleApiClient().connect();
     }
 
     /**
@@ -394,15 +494,6 @@ public class MainProfile extends AppCompatActivity
     protected void onStop() {
         super.onStop();
 
-        //Disconnect Activity Listener if App has been stopped
-        if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
-            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
-                    SharedResources.getInstance().getMyGoogleApiClient(),
-                    getActivityDetectionPendingIntent()
-            ).setResultCallback(this);
-        }
-
-        stopService(new Intent(this, LocationService.class));
 
     }
 
@@ -448,20 +539,6 @@ public class MainProfile extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
     private void displaySelectedScreen(int itemId) {
@@ -515,6 +592,18 @@ public class MainProfile extends AppCompatActivity
 
         if (id == R.id.nav_btn_logout) {
             DataProvider.getInstance().clearData();
+
+            //Disconnect Activity Listener if App has been stopped
+            if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
+                ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
+                        SharedResources.getInstance().getMyGoogleApiClient(),
+                        getActivityDetectionPendingIntent()
+                ).setResultCallback(this);
+            }
+
+            stopService(new Intent(this, LocationService.class));
+
+            SharedResources.getInstance().removeNotification();
             logout();
         }
 

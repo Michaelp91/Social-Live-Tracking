@@ -38,6 +38,64 @@ import retrofit2.Response;
 
 public class OtherRestCalls {
 
+    public static boolean updateTimelineSegmentForActivity(TimelineSegment t_s) {
+        REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
+        r_t_s.myActivity = t_s.getMyActivity().getType();
+        LinkedList<String> userComments =  t_s.getStrUserComments();
+        r_t_s.usercomments = userComments;
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.updateTimelineSegment(r_t_s);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().h_timelineSegments.put(t_s, r_t_s);
+
+        return true;
+    }
+
+    public static boolean updateTimelineSegmentForComments(TimelineSegment t_s) {
+        REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
+        LinkedList<String> userComments =  t_s.getStrUserComments();
+        r_t_s.usercomments = userComments;
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.updateTimelineSegment(r_t_s);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().h_timelineSegments.put(t_s, r_t_s);
+
+        return true;
+    }
+
+    public static boolean updateTimelineSegmentForImages(TimelineSegment t_s) {
+        REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
+        LinkedList<String> images =  t_s.getMyImages();
+        r_t_s.images = images;
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.updateTimelineSegment(r_t_s);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().h_timelineSegments.put(t_s, r_t_s);
+
+        return true;
+    }
+
     public static User createUser_Functionalities(String email) {
 
         REST_User_Functionalities r_u_f = new REST_User_Functionalities();
@@ -210,7 +268,7 @@ public class OtherRestCalls {
 
             for(REST_TimelineSegment r_t_s: rest_timelinesegments) {
                 DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, 100);
-                TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime);
+                TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime, false);
                 t_s.setID(r_t_s._id);
                 for(REST_Achievement r_a: r_t_s.myAchievements) {
                     Achievement a = new Achievement(r_a.achievement, null);
@@ -246,6 +304,7 @@ public class OtherRestCalls {
         r_u_f.email = user.getEmail();
         r_u_f.foreName = user.getForeName();
         r_u_f.lastName = user.getLastName();
+        r_u_f.userName = user.getUserName();
 
         if(includeFriendsUpdate) {
             LinkedList<User> users = user.getUserList();
