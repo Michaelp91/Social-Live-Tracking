@@ -25,6 +25,12 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
 import com.slt.MainActivity;
 import com.slt.R;
+import com.slt.control.AchievementCalculator;
+import com.slt.data.Achievement;
+import com.slt.data.Timeline;
+import com.slt.data.TimelineDay;
+import com.slt.restapi.RetrieveOperations;
+import com.slt.statistics.Sport;
 import com.slt.statistics.ViewStatistics;
 import com.slt.statistics.adapter.details_infos_list.*;
 // macht momentan Fehler bei mir:
@@ -33,9 +39,12 @@ import com.slt.statistics.achievements.GridViewAdapter;
 import com.slt.statistics.achievements.ImageItem;
 import com.slt.statistics.data.DataObjectsCollection;
 import com.slt.statistics.graphs.ChartItem;
+import com.slt.statistics.graphs.LineChartItem;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -44,9 +53,22 @@ import java.util.List;
 
 public class DetailsDataAdapter extends ArrayAdapter {
     private GridView gridView;
+    public Sport sport = null;
+    public String period = "";
+    public LineChartItem lineData = null;
+    public HashMap<String, String> infos = null;
+    public LinkedList<Achievement> achievements = null;
+
 
     public DetailsDataAdapter(@NonNull Context context, List list) {
         super(context, 0, list);
+
+        lineData = (LineChartItem) list.get(0);
+        infos = (HashMap<String, String>) list.get(1);
+        achievements = (LinkedList<Achievement>) list.get(2);
+
+
+
     }
 
     @Override
@@ -87,12 +109,22 @@ public class DetailsDataAdapter extends ArrayAdapter {
 
         layoutParams.setMargins(10, 10, 10, 10);
 
-        for (int i = 0; i < 10; i++) {
+
+       // LinkedList<Tupeln_AchievementImage_and_Info> achievements = listAchievements;//AchievementCalculator.getOwnUserAchievements(0);
+
+        Achievement a;
+        int drawableID;
+
+        for (int i = 0; i < this.achievements.size(); i++) {
+            a = this.achievements.get(i);
+
+            drawableID = a.getDrawableOfAchievement();
+
             ImageView imageView = new ImageView(getContext());
             imageView.setId(i);
             imageView.setPadding(2, 2, 2, 2);
             imageView.setImageBitmap(BitmapFactory.decodeResource(
-                    getContext().getResources(), R.drawable.running_cup));
+                    getContext().getResources(), drawableID));
 
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             layout.addView(imageView, layoutParams);
@@ -160,6 +192,14 @@ public class DetailsDataAdapter extends ArrayAdapter {
 
 
         return rowView;
+    }
+
+    public void setSport(Sport sport) {
+        this.sport = sport;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
     }
 
     private View getViewOfLineChart(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {

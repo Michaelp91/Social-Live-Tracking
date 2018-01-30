@@ -1,6 +1,12 @@
 package com.slt.data;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
+
+import com.slt.R;
+import com.slt.definitions.Constants;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -12,7 +18,7 @@ public class Achievement {
     /*
     * Tag for the Logger
     */
-    private static final String TAG = "Achievement";
+    private static final String TAG = "Tupeln_AchievementImage_and_Info";
 
     /**
      * Stores our achievement as an Integer
@@ -95,5 +101,37 @@ public class Achievement {
         Date truncatedDate = calendar.getTime();
 
         return timestamp.compareTo(truncatedDate) == 0;
+    }
+
+    /**
+     * method returns the image that is appropriate for the particular type of achievement
+     * @return drawable id of the image of the achievement
+     */
+    public int getDrawableOfAchievement() {
+        int type = this.achievement;
+
+        switch(type) {
+            case Constants.ACHIEVEMENT.SPORT_ENDURANCE_SEGMENT:
+                return Constants.ACHIVEMENTS_DRAWABLE.SPORT_ENDURANCE_SEGMENT;
+            case Constants.ACHIEVEMENT.SPORT_DISTANCE_SEGMENT:
+                return Constants.ACHIVEMENTS_DRAWABLE.SPORT_DISTANCE_SEGMENT;
+            case Constants.ACHIEVEMENT.SPORT_STEPS_SEGMENT:
+                return Constants.ACHIVEMENTS_DRAWABLE.SPORT_STEPS_SEGMENT;
+            case Constants.ACHIEVEMENT.SPORT_DAY_DURATION:
+                return Constants.ACHIVEMENTS_DRAWABLE.SPORT_DAY_DURATION;
+            case Constants.ACHIEVEMENT.SPORT_DAY_DISTANCE:
+                return Constants.ACHIVEMENTS_DRAWABLE.SPORT_DAY_DISTANCE;
+            case Constants.ACHIEVEMENT.SPORT_DAY_STEPS:
+                return Constants.ACHIVEMENTS_DRAWABLE.SPORT_DAY_STEPS;
+            case Constants.ACHIEVEMENT.SPORT_WEEK_STREAK:
+                return Constants.ACHIVEMENTS_DRAWABLE.SPORT_WEEK_STREAK;
+            case Constants.ACHIEVEMENT.SPORT_MONTH_STREAK:
+                return Constants.ACHIVEMENTS_DRAWABLE.SPORT_MONTH_STREAK;
+            default:
+                System.err.println("Unknown achievement type.");
+                break;
+        }
+
+        return 0;
     }
 }

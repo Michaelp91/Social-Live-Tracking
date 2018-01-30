@@ -1,14 +1,9 @@
 package com.slt.statistics.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -21,10 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
@@ -33,13 +25,13 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.slt.R;
-import com.slt.fragments.global.FragmentThree;
-import com.slt.statistics.GeneralViewOfStatistics;
+import com.slt.control.AchievementCalculator;
+import com.slt.control.DataProvider;
+import com.slt.data.Timeline;
 import com.slt.statistics.Sport;
 import com.slt.statistics.ViewStatistics;
 import com.slt.statistics.graphs.ChartItem;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +48,8 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        View.OnClickListener listener;
         LayoutInflater inflater = (LayoutInflater) getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -64,7 +57,7 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
         String[] values = new String[]{"Walking", "Running", "Biking"};
         //View rowView;
 
-        if(ViewStatistics.getSelectedSportStatistics() != Sport.NONE) {
+        if (ViewStatistics.getSelectedSportStatistics() != Sport.NONE) {
             // switch activity
         }
 
@@ -72,7 +65,6 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
         // holder.chart.setValueTypeface(mTf);
         if (position > 0) {
             rowView = inflater.inflate(R.layout.rowlayout_linechart, parent, false);
-
 
 
             ChartItem chartItem = getItem(position);
@@ -143,17 +135,44 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
             info = "Something 3: " + "15 km";
             textView_infos_3.setText(info);
 
+            rowView.setTag(position);
+
         } else {
             ChartItem chartItem = getItem(position);
 
             rowView = chartItem.getView(position, convertView, getContext());
         }
 
-        rowView.setOnClickListener( new View.OnClickListener() {
+
+        rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Inform the user the button has been clicked
-                Toast.makeText(getContext().getApplicationContext(), "Button1 clicked.", Toast.LENGTH_SHORT).show();
+                int position = (Integer) v.getTag();
+                Sport sport;
+                switch (position) {
+                    case 1:
+                        sport = Sport.WALKING;
+                        break;
+                    case 2:
+                        sport = Sport.RUNNING;
+                        break;
+                    case 3:
+                        sport = Sport.BIKING;
+                        break;
+                    default:
+                        sport = Sport.NONE;
+                        break;
+                }
+
+                ViewStatistics.setSelectedSportStatistics(sport);
+                Timeline timeline = DataProvider.getInstance().getUserTimeline();
+
+                //Inform the user which listitem has been clicked
+                Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " +
+                                ViewStatistics.getSelectedSportStatistics() +
+                                ", timelineID = " +
+                                timeline.getAchievementsListForMonth().size()
+                        , Toast.LENGTH_SHORT).show();
 
                 // start new activity with tabs and details
                 viewStatisticsDetails();
@@ -180,7 +199,7 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
     }
 
     private void viewStatisticsDetails() {
-        Intent intent = new Intent(  getContext()  , ViewStatistics.class);
+        Intent intent = new Intent(getContext(), ViewStatistics.class);
 
         getContext().startActivity(intent);
     }
@@ -194,6 +213,7 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
 
     /**
      * generates less data (1 DataSet, 4 values)
+     *
      * @return
      */
     protected PieData generatePieData() {
@@ -203,8 +223,8 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
 
         ArrayList<PieEntry> entries1 = new ArrayList<PieEntry>();
 
-        for(int i = 0; i < count; i++) {
-            entries1.add(new PieEntry((float) ((Math.random() * 60) + 40), "Quarter " + (i+1)));
+        for (int i = 0; i < count; i++) {
+            entries1.add(new PieEntry((float) ((Math.random() * 60) + 40), "Quarter " + (i + 1)));
         }
 
         PieDataSet ds1 = new PieDataSet(entries1, "Quarterly Revenues 2015");

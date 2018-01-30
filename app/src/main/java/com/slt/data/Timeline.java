@@ -5,6 +5,7 @@ import android.location.Location;
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.control.AchievementCalculator;
 import com.slt.control.ApplicationController;
+import com.slt.control.DataProvider;
 import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
 
@@ -133,9 +134,41 @@ public class Timeline {
 
     /**
      * Get the number of achievements in the last week
+<<<<<<< HEAD
+     * @return achievements from last week
+=======
      *
      * @return The number of achievements
+>>>>>>> d4d817a80d74905efb59914e40cde7496881d67d
      */
+    public LinkedList<Achievement> getAchievementsListForWeek() {
+        Date current = new Date();
+
+        // get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
+
+        LinkedList<Achievement> achievements = new LinkedList<>();
+        for (TimelineDay day : week) {
+            achievements.addAll( day.getMyAchievements() );
+        }
+
+        return achievements;
+    }
+
+    public LinkedList<Achievement> getAchievementsListForDay() {
+        Date current = new Date();
+
+        if(this.myHistory.getLast().isSameDay(current))
+            return this.myHistory.getLast().getMyAchievements();
+        else
+            return new LinkedList<>();
+
+    }
+
+        /**
+         * Get the number of achievements in the last week
+         * @return The number of achievements
+         */
     public int getAchievementsForWeek() {
         int achievementPoints = 0;
         Date current = new Date();
@@ -177,10 +210,38 @@ public class Timeline {
     }
 
     /**
+<<<<<<< HEAD
+     * Get the achievements in the last month
+     * @return achievements in last month
+=======
      * Get the number of achievements in the last month
      *
      * @return The number of achievements
+>>>>>>> d4d817a80d74905efb59914e40cde7496881d67d
      */
+    public LinkedList<Achievement> getAchievementsListForMonth() {
+        int achievementPoints = 0;
+        Date current = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        //get days of week
+        LinkedList<TimelineDay> month = this.getDaysOfWeekOrMonth(current, 1);
+
+        int monthLength = calendar.getActualMaximum(Calendar.DATE);
+
+        LinkedList<Achievement> achievements = new LinkedList<>();
+        for (TimelineDay day : month) {
+            achievements.addAll( day.getMyAchievements() );
+        }
+
+        return achievements;//AchievementCalculator.calculateMonthAchievements(month, new LinkedList<Achievement>(), monthLength);
+    }
+
+        /**
+         * Get the number of achievements in the last month
+         * @return The number of achievements
+         */
     public int getAchievementsForMonth() {
         int achievementPoints = 0;
         Date current = new Date();
@@ -217,6 +278,39 @@ public class Timeline {
         }
 
         return achievementPoints;
+    }
+
+    public LinkedList<Achievement> getOwnUserAchievements(int period) {
+
+
+        //Timeline timeline = DataProvider.getInstance().getOwnUser().getMyTimeline();
+
+       /* TimelineDay t_d = timeline.getTimelineDay(0);
+        TimelineSegment t_s = t_d.getSegment(0);
+
+        DetectedActivity activity = t_s.getMyActivity();
+        int intActivity = activity.getType();
+
+        switch(intActivity) {
+            case Constants.TIMELINEACTIVITY.RUNNING:
+                //RUNNING
+                break;
+                //...
+        }*/
+
+        switch(period) {
+            case 0: // day
+                return this.getAchievementsListForDay();
+            case 1: // week
+                return this.getAchievementsListForWeek();
+            case 2: // month
+                return this.getAchievementsListForMonth();
+            default:
+                System.err.println("No such period od time.");
+                break;
+        }
+
+        return null;
     }
 
     /**
@@ -581,7 +675,8 @@ public class Timeline {
         this.myAchievements.addAll(achievements);
 
         //if new achievements -> send intent
-        if (!achievements.isEmpty()) {
+        if(! achievements.isEmpty()){
+
             //REST Call to update Timeline
             //TODO: Update for achievements of a timeline
 

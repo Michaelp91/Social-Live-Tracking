@@ -542,20 +542,6 @@ public class MainProfile extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
     private void displaySelectedScreen(int itemId) {
@@ -566,7 +552,7 @@ public class MainProfile extends AppCompatActivity
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_timeline:
-                //TODO: Not sure which Activity, please ask Usman/Thorsten; TimelineActivity or TimelineDetailsActivity
+                //TODO: Not sure which Activity, please ask Usman/Thorsten; TimelineActivit1y or TimelineDetailsActivity
                 fragment = new FragmentTimeline();
                 break;
             case R.id.nav_summaries:

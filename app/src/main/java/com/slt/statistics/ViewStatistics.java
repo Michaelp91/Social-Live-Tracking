@@ -5,20 +5,22 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Toast;
 
 
+import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
-import com.slt.fragments.global.FragmentFour;
-import com.slt.fragments.global.FragmentOne;
-import com.slt.fragments.global.FragmentThree;
-import com.slt.fragments.global.FragmentTwo;
+import com.slt.control.AchievementCalculator;
+import com.slt.control.DataProvider;
+import com.slt.data.Achievement;
+import com.slt.data.Timeline;
+import com.slt.fragments.FragmentSportTab;
+import com.slt.statistics.data.DataObjectsCollection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ViewStatistics extends AppCompatActivity {
@@ -30,14 +32,47 @@ public class ViewStatistics extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_statistics);
-
+        String[] periodNames = new String[]{"Today", "Week", "Month"};
         ViewPagerAdapter adapter;
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FragmentOne(), "Today");
-        adapter.addFragment(new FragmentOne(), "Week");
-        adapter.addFragment(new FragmentOne(), "Month");
-        adapter.addFragment(new FragmentOne(), "Year");
+
+
+        // TODO statt 3 sollte hier getNumberOfAchievements sein
+        for (int i = 0; i < 3; i++) {
+            // line chart
+            // TODO--------------------- replace with real date from data provider
+            LineData lineData = DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), 2, "walking");
+            // TODO the end---------------------
+
+            FragmentSportTab fragmentSportTab = new FragmentSportTab();
+
+            fragmentSportTab.setPeriod(periodNames[i]);
+
+            fragmentSportTab.setSport(ViewStatistics.getSelectedSportStatistics());
+
+            fragmentSportTab.setLineData(lineData);
+
+            // infos
+            // TODO--------------------- replace with real date from data provider
+            HashMap<String, String> infos = new HashMap<>();
+
+            for (int j = 0; j < 5; j++) {
+                infos.put("Blah " + j + ":", "blah " + j);
+            }
+            // TODO the end---------------------
+
+            fragmentSportTab.setInfos(infos);
+
+            // achievements
+            LinkedList<Achievement> achievements = DataProvider.getInstance().getOwnUserAchievements(i);
+
+            fragmentSportTab.setAchievements(achievements);
+
+
+            adapter.addFragment(fragmentSportTab, periodNames[i]);
+        }
+
         viewPager.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -83,7 +118,7 @@ public class ViewStatistics extends AppCompatActivity {
         public int removeFragment(String title) {
             int index = -1;
 
-            if(mFragmentTitleList.contains(title))
+            if (mFragmentTitleList.contains(title))
                 index = mFragmentTitleList.indexOf(title);
             else
                 return -1;
@@ -104,7 +139,7 @@ public class ViewStatistics extends AppCompatActivity {
 
             int removedIndex = removeFragment(titelOld);
 
-            if(removedIndex < 0)
+            if (removedIndex < 0)
                 return;
 
 
