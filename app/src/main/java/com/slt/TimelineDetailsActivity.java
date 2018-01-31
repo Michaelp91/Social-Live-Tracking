@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -58,17 +59,32 @@ public class TimelineDetailsActivity extends AppCompatActivity {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
+                LocationEntry last = null;
+                if (locationEntries.size() >= 2) {
 
-                if(locationEntries.size() >= 2) {
-                    LatLng start = new LatLng(locationEntries.get(0).getLatitude(), locationEntries.get(0).getLongitude());
-                    LatLng end = new LatLng(locationEntries.get(locationEntries.size() - 1).getLatitude(), locationEntries.get(locationEntries.size() - 1).getLongitude());
+                    for (LocationEntry entry : locationEntries) {
+                        if(last != null){
+
+                            LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
+                            LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
 
 
-                    googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(end));
+                            addLines(start, end);
+                        } else {
+                            LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
+                            googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                        }
+                        last = entry;
+                    }
+
+                    LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
                     googleMap.addMarker(new MarkerOptions().position(end).title(""));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(start));
-                    addLines(start, end);
+
                 } else {
+                    LatLng start = new LatLng(locationEntries.get(0).getLatitude(), locationEntries.get(0).getLongitude());
+                    googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(start));
                     Toast.makeText(getApplicationContext(), "Only one or no Locationpoints available!", Toast.LENGTH_LONG).show();
                 }
             }
@@ -80,24 +96,45 @@ public class TimelineDetailsActivity extends AppCompatActivity {
 
         tvDauer.setText(segment.getDuration() + "min. ");
         String activity = "";
-        if(segment.getMyActivity() != null) {
+        if (segment.getMyActivity() != null) {
             switch (segment.getMyActivity().getType()) {
-                case com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING:
+                case DetectedActivity.RUNNING:
                     activity = "Running";
                     break;
 
-                case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
+                case DetectedActivity.IN_VEHICLE:
+                    activity = "In Vehicle";
+                    break;
+                case DetectedActivity.ON_BICYCLE:
+                    activity = "On Bicycle";
+                    break;
+                case DetectedActivity.ON_FOOT:
+                    activity = "On Foot";
+                    break;
+
+                case DetectedActivity.STILL:
+                    activity = "Still";
+                    break;
+                case DetectedActivity.TILTING:
+                    activity = "Tilting";
+                    break;
+                case DetectedActivity.UNKNOWN:
+                    activity = "Unknown";
+                    break;
+
+
+                case DetectedActivity.WALKING:
                     activity = "Walking";
                     break;
 
                 default:
-                    activity = "Unknown";
+                    activity = "Undefined";
                     break;
             }
         }
 
         tvAktivitaet.setText(activity);
-        tvStrecke.setText(Double.toString(segment.getActiveDistance()) + "km" );
+        tvStrecke.setText(Double.toString(segment.getActiveDistance()) + "km");
     }
 
     private void addLines(LatLng start, LatLng end) {

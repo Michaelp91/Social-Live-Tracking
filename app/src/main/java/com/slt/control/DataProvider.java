@@ -63,7 +63,7 @@ public class DataProvider implements ServiceInterface {
     /**
      * Defines the min. time a new activity has to be present before it gets active
      */
-    private static final int MIN_CHANGE_ACTIVITY_INTERVAL = 10;
+    private static final int MIN_CHANGE_ACTIVITY_INTERVAL = 3;
 
     /**
      * Defines the min. distance that has to be between two locations before it is accepted
@@ -174,7 +174,7 @@ public class DataProvider implements ServiceInterface {
         if (myCurrentActivity == null) {
             myCurrentActivity = activity;
             userTimeline.addUserStatus(myCurrentLocation, timestamp, myCurrentActivity);
-            SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast().getMySegments().getLast(), timestamp, this.myCurrentActivity);
+            SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast(), timestamp, this.myCurrentActivity);
 
             Log.i(TAG, "updateActivity, init current Activity, location set, add point.");
             return 3;
@@ -184,7 +184,7 @@ public class DataProvider implements ServiceInterface {
         if (myCurrentActivity.getType() != activity.getType() && nextActivity == null) {
             nextActivity = activity;
             changeDate = timestamp;
-            SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast().getMySegments().getLast(), timestamp, nextActivity);
+            SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast(), timestamp, nextActivity);
 
             Log.i(TAG, "updateActivity, set next Activity and change timestamp.");
             return 2;
@@ -199,7 +199,7 @@ public class DataProvider implements ServiceInterface {
                 Log.i(TAG, "updateActivity, update User Activity.");
                 myCurrentActivity = activity;
                 userTimeline.addUserStatus(myCurrentLocation, changeDate, myCurrentActivity);
-                SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast().getMySegments().getLast(), timestamp, this.myCurrentActivity);
+                SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast(), timestamp, this.myCurrentActivity);
 
                 nextActivity = null;
                 changeDate = null;
@@ -210,7 +210,7 @@ public class DataProvider implements ServiceInterface {
             else if (nextActivity.getType() != activity.getType()) {
                 nextActivity = activity;
                 changeDate = timestamp;
-                SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast().getMySegments().getLast(), timestamp, nextActivity);
+                SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast(), timestamp, nextActivity);
 
                 Log.i(TAG, "updateActivity, change Activity, different activity");
                 return 2;
@@ -405,7 +405,7 @@ public class DataProvider implements ServiceInterface {
 
             this.userTimeline.manualAddLocation(timestamp, location);
 
-            SharedResources.getInstance().updateNotification(location, userTimeline.getTimelineDays().getLast().getMySegments().getLast(), timestamp, this.myCurrentActivity);
+            SharedResources.getInstance().updateNotification(location, userTimeline.getTimelineDays().getLast(), timestamp, this.myCurrentActivity);
 
             return 0;
         }
@@ -439,7 +439,7 @@ public class DataProvider implements ServiceInterface {
         myCurrentLocation = location;
         userTimeline.addUserStatus(myCurrentLocation, timestamp, myCurrentActivity);
         this.ownUser.setLastLocation(location, timestamp);
-        SharedResources.getInstance().updateNotification(location, userTimeline.getTimelineDays().getLast().getMySegments().getLast(), timestamp, this.myCurrentActivity);
+        SharedResources.getInstance().updateNotification(location, userTimeline.getTimelineDays().getLast(), timestamp, this.myCurrentActivity);
         Log.i(TAG, "updatePosition, add new location point.");
         return 2;
     }

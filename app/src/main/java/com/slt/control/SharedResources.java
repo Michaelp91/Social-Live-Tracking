@@ -18,12 +18,15 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.R;
+import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 import com.slt.definitions.Constants;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import static com.slt.R.mipmap.ic_launcher;
 
@@ -126,7 +129,7 @@ public class SharedResources {
     private User myUser;
 
     /**
-     *  Our notification Manager
+     * Our notification Manager
      */
     private NotificationManager mNotificationManager;
 
@@ -185,10 +188,9 @@ public class SharedResources {
                 Bitmap icon = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), ic_launcher);
 
 
-
                 cBuilder = new NotificationCompat.Builder(ApplicationController.getContext(), Constants.NOTIFICATION_ID.id);
 
-                foregroundNotification =  cBuilder.setContentTitle("Timeline")
+                foregroundNotification = cBuilder.setContentTitle("Timeline")
                         .setTicker("Location & Activity Tracking Active")
                         .setContentText("Location & Activity Tracking")
                         .setSmallIcon(ic_launcher)
@@ -245,36 +247,131 @@ public class SharedResources {
     }
 
     /**
+     * Changes the Detected Activity to a custom string
+     * @param activity The activity to decode
+     * @return The activity as a string
+     */
+    private String activityToString(DetectedActivity activity){
+        String ret = "Undefined";
+
+        switch (activity.getType()){
+            case DetectedActivity.IN_VEHICLE:
+                ret= "In Vehicle";
+                break;
+            case DetectedActivity.ON_BICYCLE:
+                ret= "On Bicycle";
+                break;
+            case DetectedActivity.ON_FOOT:
+                ret= "On Foot";
+                break;
+            case DetectedActivity.RUNNING:
+                ret= "Running";
+                break;
+            case DetectedActivity.STILL:
+                ret= "Still";
+                break;
+            case DetectedActivity.TILTING:
+                ret= "Tilting";
+                break;
+            case DetectedActivity.UNKNOWN:
+                ret= "Unknown";
+                break;
+            case DetectedActivity.WALKING:
+                ret= "Walking";
+                break;
+        }
+
+        return ret;
+    }
+
+
+    /**
      * Updates the notification to show changes in the data
+     *
      * @param location The GPS location
-     * @param data The data of the last segment
-     * @param date The date of the last change
+     * @param data     The data of the last segment
+     * @param date     The date of the last change
      * @param activity The activity that was detected
      */
-    void updateNotification(Location location, TimelineSegment data, java.util.Date date, DetectedActivity activity){
+    void updateNotification(Location location, TimelineDay data, java.util.Date date, DetectedActivity activity) {
         String locationString = "Location: Unknown";
-        String segmentData = "Current Segment: None";
-        String activityData = "Detected Activity: None";
+        String segmentDataHeader = "Current Segment: None";
+        String segmentData = "";
         String segmentDataTwo = "None";
+        String activityData = "Detected Activity: None";
 
-        if(activity != null) {
-            activityData =  "Detected Activity: " + activity.getType();
+        String segment2DataHeader = "Current Segment: None";
+        String segment2Data = "";
+        String segment2DataTwo = "None";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+
+        if (activity != null) {
+            activityData = ", Act: " + this.activityToString(activity);
         }
 
-        if(location != null) {
-            locationString = "Location: " + location.getLatitude() + "- Lat, " + location.getLongitude() + "-Long";
+        if (location != null) {
+            locationString = "Loc: " + location.getLatitude() + "- Lat, " + location.getLongitude() + "-Long";
         }
 
-        if(data != null){
-            double distance = data.getActiveDistance() + data.getInactiveDistance();
-            segmentData = "Current Segment: " + data.getMyActivity().getType() + ", Duration: " + Double.toString(data.getDuration()) + ", Steps: "
-                    + Integer.toString(data.getUserSteps());
-            segmentDataTwo = "Distance: " + Double.toString(distance);
+        if (data != null) {
+
+            String sDate = "None";
+
+            if (data.getMySegments().getLast() != null) {
+                if (data.getMySegments().getLast().getLocationPoints().getFirst() != null) {
+                    sDate = simpleDateFormat.format(data.getMySegments().getLast().getLocationPoints().getFirst().getMyEntryDate());
+                }
+
+                String eDate = "None";
+                if (data.getMySegments().getLast().getLocationPoints().getLast() != null) {
+                    eDate = simpleDateFormat.format(data.getMySegments().getLast().getLocationPoints().getFirst().getMyEntryDate());
+                }
+
+                String  distance =  String.format( "%.2f",
+                        (data.getMySegments().getLast().getActiveDistance()
+                                + data.getMySegments().getLast().getInactiveDistance()));
+
+                segmentDataHeader = "Current Segment: " + this.activityToString(data.getMySegments().getLast().getMyActivity()) +
+                        " - " + data.getMySegments().size() + ". Segment";
+                segmentData = "Start: " + sDate + " - End: " + eDate  + " - Points: " + data.getMySegments().getLast().getLocationPoints().size();
+                segmentDataTwo =  "Dur: " + Double.toString(data.getMySegments().getLast().getDuration()/1000) + "s, Steps: "
+                        + Integer.toString(data.getMySegments().getLast().getUserSteps()) +
+                " Dist: " + distance + "m";
+            }
+
+            if(data.getMySegments().size() > 1) {
+                int index = data.getMySegments().size() -2;
+
+                TimelineSegment seg = data.getMySegments().get(index);
+                if (seg.getLocationPoints().getFirst() != null) {
+                    sDate = simpleDateFormat.format(seg.getLocationPoints().getFirst().getMyEntryDate());
+                }
+
+                String eDate = "None";
+                if (seg.getLocationPoints().getLast() != null) {
+                    eDate = simpleDateFormat.format(seg.getLocationPoints().getFirst().getMyEntryDate());
+                }
+
+                String  distance =  String.format( "%.2f",
+                        (seg.getActiveDistance()  + seg.getInactiveDistance()));
+
+                segment2DataHeader = "Current Segment: " + this.activityToString(seg.getMyActivity()) +
+                        " - " + (data.getMySegments().size()-1) + ". Segment";
+                segment2Data = "Start: " + sDate + " - End: " + eDate + " - Points: " + seg.getLocationPoints().size();
+                segment2DataTwo =  "Dur: " + Double.toString(seg.getDuration()/1000) + "s, Steps: "
+                        + Integer.toString(seg.getUserSteps()) +
+                        " Dist: " + distance + "m";
+
+            }
+
+
+
         }
 
-        String dateString =  date.toString() + " - detected Details:";
+        String dateString = simpleDateFormat.format(date) + " - detected Details:";
 
-        if(cBuilder != null){
+        if (cBuilder != null) {
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
@@ -282,17 +379,20 @@ public class SharedResources {
             inboxStyle.setBigContentTitle(dateString);
 
             //add aditional information
-            inboxStyle.addLine(locationString);
-            inboxStyle.addLine(activityData);
+            inboxStyle.addLine(locationString + activityData);
+            inboxStyle.addLine(segmentDataHeader);
             inboxStyle.addLine(segmentData);
             inboxStyle.addLine(segmentDataTwo);
+            inboxStyle.addLine(segment2DataHeader);
+            inboxStyle.addLine(segment2Data);
+            inboxStyle.addLine(segment2DataTwo);
 
             cBuilder.setStyle(inboxStyle);
 
             foregroundNotification = cBuilder.build();
         }
 
-        if(builder != null) {
+        if (builder != null) {
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
@@ -300,13 +400,15 @@ public class SharedResources {
             inboxStyle.setBigContentTitle(dateString);
 
             //add aditional information
-            inboxStyle.addLine(locationString);
-            inboxStyle.addLine(activityData);
+            inboxStyle.addLine(locationString + activityData);
+            inboxStyle.addLine(segmentDataHeader);
             inboxStyle.addLine(segmentData);
             inboxStyle.addLine(segmentDataTwo);
+            inboxStyle.addLine(segment2DataHeader);
+            inboxStyle.addLine(segment2Data);
+            inboxStyle.addLine(segment2DataTwo);
 
             cBuilder.setStyle(inboxStyle);
-
 
 
             foregroundNotification = builder.build();
