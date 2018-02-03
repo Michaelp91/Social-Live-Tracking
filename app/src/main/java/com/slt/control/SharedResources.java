@@ -394,7 +394,7 @@ public class SharedResources {
 
         if (builder != null) {
 
-            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+            Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
 
             //Sets a title for the Inbox in expanded layout
             inboxStyle.setBigContentTitle(dateString);
@@ -408,7 +408,7 @@ public class SharedResources {
             inboxStyle.addLine(segment2Data);
             inboxStyle.addLine(segment2DataTwo);
 
-            cBuilder.setStyle(inboxStyle);
+            builder.setStyle(inboxStyle);
 
 
             foregroundNotification = builder.build();

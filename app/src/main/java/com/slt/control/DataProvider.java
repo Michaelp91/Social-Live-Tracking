@@ -403,7 +403,7 @@ public class DataProvider implements ServiceInterface {
             OtherRestCalls.updateUser(false);
 
 
-            this.userTimeline.manualAddLocation(timestamp, location);
+            this.userTimeline.addUserStatus(location, timestamp, this.myCurrentActivity);
 
             SharedResources.getInstance().updateNotification(location, userTimeline.getTimelineDays().getLast(), timestamp, this.myCurrentActivity);
 

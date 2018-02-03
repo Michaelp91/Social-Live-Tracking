@@ -134,12 +134,7 @@ public class Timeline {
 
     /**
      * Get the number of achievements in the last week
-<<<<<<< HEAD
      * @return achievements from last week
-=======
-     *
-     * @return The number of achievements
->>>>>>> d4d817a80d74905efb59914e40cde7496881d67d
      */
     public LinkedList<Achievement> getAchievementsListForWeek() {
         Date current = new Date();
@@ -210,14 +205,8 @@ public class Timeline {
     }
 
     /**
-<<<<<<< HEAD
      * Get the achievements in the last month
-     * @return achievements in last month
-=======
-     * Get the number of achievements in the last month
-     *
      * @return The number of achievements
->>>>>>> d4d817a80d74905efb59914e40cde7496881d67d
      */
     public LinkedList<Achievement> getAchievementsListForMonth() {
         int achievementPoints = 0;

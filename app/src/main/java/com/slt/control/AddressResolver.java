@@ -163,17 +163,12 @@ public class AddressResolver extends AsyncTask<Object, String, String> {
         } else {
             //In all other cases build a string from the first address we dound
             Address address = addresses.get(0);
-            StringBuilder completeAddress = new StringBuilder();
 
-            //Build the String
-            for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                completeAddress.append(address.getAddressLine(i));
-                if(0 == i)
-                    completeAddress.append(", ");
-            }
+            String completeAddress =  address.getFeatureName() + ", " + address.getAdminArea() + ", "
+                    + address.getPostalCode() + " " + address.getLocality() + ", " + address.getCountryCode();
 
             Log.e(TAG, "Resolved Address: " + completeAddress);
-            return completeAddress.toString();
+            return completeAddress;
         }
     }
 }

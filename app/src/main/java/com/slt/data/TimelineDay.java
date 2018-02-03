@@ -70,7 +70,7 @@ public class TimelineDay {
     /**
      * Definition how long a segment has to be minimal
      */
-    private static final long MIN_SEGMENT_DURATION_IN_SECONDS  = 120;
+    private static final long MIN_SEGMENT_DURATION_IN_SECONDS  = 60 *1000;
 
     /**
      * The date of the Timeline Day

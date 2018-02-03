@@ -130,10 +130,10 @@ public class Constants {
      * Definitions for the achievements
      */
     public interface ACHIEVEMENT_DEFINITIONS {
-        public static int  SPORT_ENDURANCE_SEGMENT_MINUTES = 3600;
-        public static double SPORT_DISTANCE_SEGMENT_METER = 10000;
+        public static int  SPORT_ENDURANCE_SEGMENT_MINUTES = 3600 * 1000;
+        public static double SPORT_DISTANCE_SEGMENT_METER = 10000 ;
         public static int SPORT_STEPS_SEGMENT = 100000;
-        public static int SPORT_DAY_DURATION_MINUTES = 3600;
+        public static int SPORT_DAY_DURATION_MINUTES = 3600 * 1000;
         public static int SPORT_DAY_DISTANCE_METERS = 10000;
         public static int SPORT_DAY_STEPS_COUNT = 10000;
     };
