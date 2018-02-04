@@ -13,7 +13,7 @@
         android:id="@+id/ll_line"
         android:layout_below="@id/startcircle"
         android:layout_width="3dp"
-        android:layout_height="145dp"
+        android:layout_height="220dp"
         android:orientation="vertical"
         android:layout_marginLeft="13dp"
         android:background="#000000"    >
@@ -111,6 +111,60 @@
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
             android:text="No Comments available" />
+        
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/ll_horizontalline"
+            android:layout_toRightOf="@id/ll_line"
+            android:layout_below="@id/tv_usercomments"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#FFFFFF"></LinearLayout>
+
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/ll_line"
+            android:layout_below="@id/ll_horizontalline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_addDetails"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:background="@drawable/timeline_details"
+                />
+
+            <ImageView
+                android:id="@+id/iv_addComments"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="25dp"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:background="@drawable/timeline_comments"
+                />
+
+            <ImageView
+                android:id="@+id/iv_addPicture"
+                android:layout_marginLeft="25dp"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:background="@drawable/timeline_pictures"
+                />
+
+            <ImageView
+                android:id="@+id/iv_addActivity"
+                android:layout_marginLeft="25dp"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:background="@drawable/timeline_running"
+                />
+
+        </LinearLayout>
 
     </RelativeLayout>
 </RelativeLayout>

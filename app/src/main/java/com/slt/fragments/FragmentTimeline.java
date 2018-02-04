@@ -276,6 +276,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 RelativeLayout view_FirstPoint = null;
                 RelativeLayout view_segment = null;
                 RelativeLayout view_LastPoint = null;
+                ImageView iv_details = null;
                 final DetectedActivity detectedActivity = tSegment.getMyActivity();
 
                 if (!locationEntries.isEmpty() && detectedActivity.getType() !=
@@ -303,23 +304,28 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
                         final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
                         final LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
+                        final ImageView iv_pictures = (ImageView) view_segment.findViewById(R.id.iv_addPicture);
+                        final ImageView iv_comments = (ImageView) view_segment.findViewById(R.id.iv_addComments);
+                        iv_details = (ImageView) view_segment.findViewById(R.id.iv_addDetails);
                         tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
                         tv_usercomments.setTag(tSegment);
 
                         //TODO: DownloadPictures(tSegment);
                         //ll_pictures = AddPictures(ll_pictures);
                         ll_pictures.setTag(tSegment);
+                        iv_pictures.setTag(tSegment);
+                        choosedPicView = ll_pictures;
                         AddUserComments(tSegment.getStrUserComments(), ll_line);
 
-                        ll_pictures.setOnClickListener(new View.OnClickListener() {
+
+                        iv_pictures.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                choosedPicView = (LinearLayout) v;
                                 selectImage();
                             }
                         });
 
-                        tv_usercomments.setOnClickListener(new View.OnClickListener() {
+                        iv_comments.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 final Dialog commentDialog = new Dialog(getActivity());
@@ -456,6 +462,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                 final RelativeLayout finalView_FirstPoint = view_FirstPoint;
                 final RelativeLayout finalView_segment = view_segment;
+                final ImageView finalIv_details = iv_details;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -464,9 +471,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                             choosedChildren.addView(finalView_FirstPoint);
 
 
-                        if (finalView_segment != null) {
-                            finalView_segment.setTag(tSegment);
-                            finalView_segment.setOnClickListener(new View.OnClickListener() {
+                        if (finalIv_details != null) {
+                            finalIv_details.setTag(tSegment);
+                            finalIv_details.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     TimelineSegment tSegment = (TimelineSegment) view.getTag();

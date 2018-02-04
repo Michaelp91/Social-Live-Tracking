@@ -90,6 +90,14 @@ public class TimelineDetailsActivity extends AppCompatActivity {
                     activity = "Walking";
                     break;
 
+                case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
+                    activity = "On Foot";
+                    break;
+
+                case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE:
+                    activity = "On Bicycle";
+                    break;
+
                 default:
                     activity = "Unknown";
                     break;

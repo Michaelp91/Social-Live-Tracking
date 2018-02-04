@@ -234,7 +234,8 @@ public class AchievementCalculator {
 
     public static LinkedList<Achievement> getAchievements(int period) {
 
-        Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
+        //Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
+        Timeline timeline = DataProvider.getInstance().getOwnUser().getMyTimeline();
 
         switch(period) {
             case 0: // day

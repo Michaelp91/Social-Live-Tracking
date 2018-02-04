@@ -12,7 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
 import com.slt.control.AchievementCalculator;
+import com.slt.control.DataProvider;
 import com.slt.data.Achievement;
+import com.slt.data.Timeline;
 import com.slt.fragments.FragmentSportTab;
 import com.slt.statistics.data.DataObjectsCollection;
 
