@@ -66,6 +66,7 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
         //Create an API Client for places detection
         myGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addApi(Places.PLACE_DETECTION_API)
+
                 .addOnConnectionFailedListener(this)
                 .build();
         myGoogleApiClient.connect();

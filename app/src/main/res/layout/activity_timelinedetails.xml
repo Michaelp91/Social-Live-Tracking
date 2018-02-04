@@ -105,14 +105,67 @@
                     android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Jogging"
+                    android:text="None"
                     android:textColor="#000000"
                     android:layout_weight="1"
                     android:gravity="right"/>
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
 
+                <TextView
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="Start Address:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="Unknown"
+                    android:layout_weight="1"
+                    android:gravity="right"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="Start Place:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/tv_place"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="Unknown"
+                    android:layout_weight="1"
+                    android:gravity="right"/>
+            </LinearLayout>
 
 
             <LinearLayout
@@ -127,7 +180,7 @@
                     android:textColor="#000000"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Duration:"
+                    android:text="Duration (Active/Total):"
                     android:layout_weight="1"/>
 
                 <TextView
@@ -137,25 +190,25 @@
                     android:textColor="#000000"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="11 min"
+                    android:text="0.0 min"
                     android:layout_weight="1"
                     android:gravity="right"/>
 
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp">
-
                 <TextView
                     android:textSize="15dp"
                     android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
-                    android:text="Distance:"
+                    android:text="Distance (Active/Total):"
                     android:layout_weight="1"/>
 
                 <TextView
@@ -166,6 +219,33 @@
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
                     android:text="1,7 Km"
+                    android:layout_weight="1"
+                    android:gravity="right"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/tv_steps_title"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="Steps:"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/tv_steps"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="0 Steps"
                     android:layout_weight="1"
                     android:gravity="right"/>
 

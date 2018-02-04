@@ -332,8 +332,8 @@ public class SharedResources {
                         (data.getMySegments().getLast().getActiveDistance()
                                 + data.getMySegments().getLast().getInactiveDistance()));
 
-                segmentDataHeader = "Current Segment: " + this.activityToString(data.getMySegments().getLast().getMyActivity()) +
-                        " - " + data.getMySegments().size() + ". Segment";
+                segmentDataHeader = "CSt: " + this.activityToString(data.getMySegments().getLast().getMyActivity()) +
+                        " - " + data.getMySegments().size() + ". Seg, " +  data.getMySegments().getLast().getPlace() + ", " + data.getMySegments().getLast().getAddress();
                 segmentData = "Start: " + sDate + " - End: " + eDate  + " - Points: " + data.getMySegments().getLast().getLocationPoints().size();
                 segmentDataTwo =  "Dur: " + Double.toString(data.getMySegments().getLast().getDuration()/1000) + "s, Steps: "
                         + Integer.toString(data.getMySegments().getLast().getUserSteps()) +
@@ -353,15 +353,19 @@ public class SharedResources {
                     eDate = simpleDateFormat.format(seg.getLocationPoints().getFirst().getMyEntryDate());
                 }
 
+                String distance2 =  String.format( "%.2f",
+                        (seg.getActiveDistance()  ));
+
+
                 String  distance =  String.format( "%.2f",
                         (seg.getActiveDistance()  + seg.getInactiveDistance()));
 
                 segment2DataHeader = "Current Segment: " + this.activityToString(seg.getMyActivity()) +
                         " - " + (data.getMySegments().size()-1) + ". Segment";
                 segment2Data = "Start: " + sDate + " - End: " + eDate + " - Points: " + seg.getLocationPoints().size();
-                segment2DataTwo =  "Dur: " + Double.toString(seg.getDuration()/1000) + "s, Steps: "
-                        + Integer.toString(seg.getUserSteps()) +
-                        " Dist: " + distance + "m";
+                segment2DataTwo =  "Dur: " + Double.toString(seg.getActiveTime()/60000) +"min/"
+                        +Double.toString(seg.getDuration()/60000) + "min, Steps: "
+                        + Integer.toString(seg.getUserSteps()) + " Dist: " + distance2 + "m/" + distance + "m";
 
             }
 

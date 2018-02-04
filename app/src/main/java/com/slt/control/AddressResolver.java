@@ -164,7 +164,7 @@ public class AddressResolver extends AsyncTask<Object, String, String> {
             //In all other cases build a string from the first address we dound
             Address address = addresses.get(0);
 
-            String completeAddress =  address.getFeatureName() + ", " + address.getAdminArea() + ", "
+            String completeAddress = address.getThoroughfare() + " " + address.getFeatureName() + ", " + address.getAdminArea() + ", "
                     + address.getPostalCode() + " " + address.getLocality() + ", " + address.getCountryCode();
 
             Log.e(TAG, "Resolved Address: " + completeAddress);

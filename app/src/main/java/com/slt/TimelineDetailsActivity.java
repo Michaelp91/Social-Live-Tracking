@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,48 +94,82 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         TextView tvAktivitaet = (TextView) findViewById(R.id.tv_aktivitaet);
         TextView tvDauer = (TextView) findViewById(R.id.tv_dauer);
         TextView tvStrecke = (TextView) findViewById(R.id.tv_strecke);
+        TextView tvPlace = (TextView) findViewById(R.id.tv_place);
+        TextView tvAddress = (TextView) findViewById(R.id.tv_address);
+        TextView tvSteps = (TextView) findViewById(R.id.tv_steps);
+        TextView tvStepsTitle = (TextView) findViewById(R.id.tv_steps_title);
 
-        tvDauer.setText(segment.getDuration() + "min. ");
+        String duration = (segment.getActiveTime()/ (60*1000)) + "min / " +  (segment.getDuration()/ (60*1000)) + "min. ";
+
+        tvDauer.setText(duration);
+        tvPlace.setText(segment.getPlace());
+        tvAddress.setText(segment.getAddress());
+
         String activity = "";
         if (segment.getMyActivity() != null) {
             switch (segment.getMyActivity().getType()) {
                 case DetectedActivity.RUNNING:
                     activity = "Running";
+                    tvSteps.setText(segment.getUserSteps() + " Steps");
                     break;
 
                 case DetectedActivity.IN_VEHICLE:
                     activity = "In Vehicle";
+                    tvSteps.setVisibility(View.GONE);
+                    tvStepsTitle.setVisibility(View.GONE);
                     break;
                 case DetectedActivity.ON_BICYCLE:
                     activity = "On Bicycle";
                     break;
                 case DetectedActivity.ON_FOOT:
                     activity = "On Foot";
+                    tvSteps.setText(segment.getUserSteps() + " Steps");
                     break;
 
                 case DetectedActivity.STILL:
                     activity = "Still";
+                    tvSteps.setVisibility(View.GONE);
+                    tvStepsTitle.setVisibility(View.GONE);
                     break;
                 case DetectedActivity.TILTING:
                     activity = "Tilting";
+                    tvSteps.setVisibility(View.GONE);
+                    tvStepsTitle.setVisibility(View.GONE);
                     break;
                 case DetectedActivity.UNKNOWN:
                     activity = "Unknown";
+                    tvSteps.setVisibility(View.GONE);
+                    tvStepsTitle.setVisibility(View.GONE);
                     break;
 
 
                 case DetectedActivity.WALKING:
                     activity = "Walking";
+                    tvSteps.setText(segment.getUserSteps() + " Steps");
                     break;
 
                 default:
                     activity = "Undefined";
+                    tvSteps.setVisibility(View.GONE);
+                    tvStepsTitle.setVisibility(View.GONE);
                     break;
             }
         }
 
         tvAktivitaet.setText(activity);
-        tvStrecke.setText(Double.toString(segment.getActiveDistance()) + "km");
+
+        String dist = String.format( "%.2f", segment.getActiveDistance()) + "m"
+                + " / " + String.format( "%.2f", (segment.getActiveDistance()  +
+                segment.getInactiveDistance()))    + "m";
+
+
+        tvStrecke.setText( dist);
+
+
+
+
+
+
     }
 
     private void addLines(LatLng start, LatLng end) {
