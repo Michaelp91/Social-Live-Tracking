@@ -37,6 +37,7 @@ public class ViewStatistics extends AppCompatActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+
         // TODO statt 3 sollte hier getNumberOfAchievements sein
         for (int i = 0; i < 3; i++) {
             // line chart
@@ -64,10 +65,7 @@ public class ViewStatistics extends AppCompatActivity {
             fragmentSportTab.setInfos(infos);
 
             // achievements
-            // TODO--------------------- replace with real date from data provider
-            LinkedList<Achievement> achievements = //new LinkedList<>();
-             AchievementCalculator.getAchievements(i);
-            // TODO the end---------------------
+            LinkedList<Achievement> achievements = DataProvider.getInstance().getOwnUserAchievements(i);
 
             fragmentSportTab.setAchievements(achievements);
 

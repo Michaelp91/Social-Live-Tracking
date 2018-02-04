@@ -5,6 +5,7 @@ import android.location.Location;
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.control.AchievementCalculator;
 import com.slt.control.ApplicationController;
+import com.slt.control.DataProvider;
 import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
 
@@ -141,17 +142,27 @@ public class Timeline {
 >>>>>>> d4d817a80d74905efb59914e40cde7496881d67d
      */
     public LinkedList<Achievement> getAchievementsListForWeek() {
-        int achievementPoints = 0;
         Date current = new Date();
 
-        //get days of week
+        // get days of week
         LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
 
-        return AchievementCalculator.calculateWeekAchievements(week, new LinkedList<Achievement>());
+        LinkedList<Achievement> achievements = new LinkedList<>();
+        for (TimelineDay day : week) {
+            achievements.addAll( day.getMyAchievements() );
+        }
+
+        return achievements;
     }
 
     public LinkedList<Achievement> getAchievementsListForDay() {
-        return this.myHistory.getLast().getMyAchievements();
+        Date current = new Date();
+
+        if(this.myHistory.getLast().isSameDay(current))
+            return this.myHistory.getLast().getMyAchievements();
+        else
+            return new LinkedList<>();
+
     }
 
         /**
@@ -219,7 +230,12 @@ public class Timeline {
 
         int monthLength = calendar.getActualMaximum(Calendar.DATE);
 
-        return AchievementCalculator.calculateMonthAchievements(month, new LinkedList<Achievement>(), monthLength);
+        LinkedList<Achievement> achievements = new LinkedList<>();
+        for (TimelineDay day : month) {
+            achievements.addAll( day.getMyAchievements() );
+        }
+
+        return achievements;//AchievementCalculator.calculateMonthAchievements(month, new LinkedList<Achievement>(), monthLength);
     }
 
         /**
@@ -262,6 +278,39 @@ public class Timeline {
         }
 
         return achievementPoints;
+    }
+
+    public LinkedList<Achievement> getOwnUserAchievements(int period) {
+
+
+        //Timeline timeline = DataProvider.getInstance().getOwnUser().getMyTimeline();
+
+       /* TimelineDay t_d = timeline.getTimelineDay(0);
+        TimelineSegment t_s = t_d.getSegment(0);
+
+        DetectedActivity activity = t_s.getMyActivity();
+        int intActivity = activity.getType();
+
+        switch(intActivity) {
+            case Constants.TIMELINEACTIVITY.RUNNING:
+                //RUNNING
+                break;
+                //...
+        }*/
+
+        switch(period) {
+            case 0: // day
+                return this.getAchievementsListForDay();
+            case 1: // week
+                return this.getAchievementsListForWeek();
+            case 2: // month
+                return this.getAchievementsListForMonth();
+            default:
+                System.err.println("No such period od time.");
+                break;
+        }
+
+        return null;
     }
 
     /**

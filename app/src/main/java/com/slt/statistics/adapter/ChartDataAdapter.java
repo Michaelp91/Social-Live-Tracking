@@ -1,14 +1,9 @@
 package com.slt.statistics.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -21,10 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
@@ -33,12 +25,13 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.slt.R;
-import com.slt.statistics.GeneralViewOfStatistics;
+import com.slt.control.AchievementCalculator;
+import com.slt.control.DataProvider;
+import com.slt.data.Timeline;
 import com.slt.statistics.Sport;
 import com.slt.statistics.ViewStatistics;
 import com.slt.statistics.graphs.ChartItem;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -172,8 +165,14 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
                 }
 
                 ViewStatistics.setSelectedSportStatistics(sport);
+                Timeline timeline = DataProvider.getInstance().getUserTimeline();
+
                 //Inform the user which listitem has been clicked
-                Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " + ViewStatistics.getSelectedSportStatistics(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " +
+                                ViewStatistics.getSelectedSportStatistics() +
+                                ", timelineID = " +
+                                timeline.getAchievementsListForMonth().size()
+                        , Toast.LENGTH_SHORT).show();
 
                 // start new activity with tabs and details
                 viewStatisticsDetails();

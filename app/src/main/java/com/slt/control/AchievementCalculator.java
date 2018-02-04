@@ -232,23 +232,5 @@ public class AchievementCalculator {
         return achievements;
     }
 
-    public static LinkedList<Achievement> getAchievements(int period) {
 
-        //Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
-        Timeline timeline = DataProvider.getInstance().getOwnUser().getMyTimeline();
-
-        switch(period) {
-            case 0: // day
-                return timeline.getAchievementsListForDay();
-            case 1: // week
-                return timeline.getAchievementsListForWeek();
-            case 2: // month
-                return timeline.getAchievementsListForMonth();
-            default:
-                System.err.println("No such period od time.");
-                break;
-        }
-
-        return null;
-    }
 }
