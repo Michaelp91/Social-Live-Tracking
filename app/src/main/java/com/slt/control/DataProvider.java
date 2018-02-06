@@ -52,7 +52,7 @@ public class DataProvider implements ServiceInterface {
     /**
      * Defines the min. distance that has to be between two locations before it is accepted
      */
-    private static final double MIN_CHANGE_LOCATION_DISTANCE = 10;
+    private static final double MIN_CHANGE_LOCATION_DISTANCE = 25;
 
     /**
      * The timeline of the user of the application

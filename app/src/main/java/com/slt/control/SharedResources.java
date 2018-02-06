@@ -325,7 +325,7 @@ public class SharedResources {
 
                 String eDate = "None";
                 if (data.getMySegments().getLast().getLocationPoints().getLast() != null) {
-                    eDate = simpleDateFormat.format(data.getMySegments().getLast().getLocationPoints().getFirst().getMyEntryDate());
+                    eDate = simpleDateFormat.format(data.getMySegments().getLast().getLocationPoints().getLast().getMyEntryDate());
                 }
 
                 String  distance =  String.format( "%.2f",
@@ -350,27 +350,22 @@ public class SharedResources {
 
                 String eDate = "None";
                 if (seg.getLocationPoints().getLast() != null) {
-                    eDate = simpleDateFormat.format(seg.getLocationPoints().getFirst().getMyEntryDate());
+                    eDate = simpleDateFormat.format(seg.getLocationPoints().getLast().getMyEntryDate());
                 }
 
-                String distance2 =  String.format( "%.2f",
-                        (seg.getActiveDistance()  ));
+                String distance2 =  String.format( "%.2f", (seg.getActiveDistance()  ));
 
 
-                String  distance =  String.format( "%.2f",
-                        (seg.getActiveDistance()  + seg.getInactiveDistance()));
+                String  distance =  String.format( "%.2f", (seg.getActiveDistance()  + seg.getInactiveDistance()));
 
-                segment2DataHeader = "Current Segment: " + this.activityToString(seg.getMyActivity()) +
-                        " - " + (data.getMySegments().size()-1) + ". Segment";
-                segment2Data = "Start: " + sDate + " - End: " + eDate + " - Points: " + seg.getLocationPoints().size();
-                segment2DataTwo =  "Dur: " + Double.toString(seg.getActiveTime()/60000) +"min/"
-                        +Double.toString(seg.getDuration()/60000) + "min, Steps: "
-                        + Integer.toString(seg.getUserSteps()) + " Dist: " + distance2 + "m/" + distance + "m";
+                segment2DataHeader = "CSt: " + this.activityToString(seg.getMyActivity()) +
+                        " - " + (data.getMySegments().size()-1) + ". Seg, " +  seg.getPlace() + ", " + seg.getAddress();
+                segment2Data = "Start: " + sDate + " - End: " + eDate  + " - Points: " + seg.getLocationPoints().size();
+                segment2DataTwo =  "Dur: " + Double.toString(seg.getDuration()/1000) + "s, Steps: "
+                        + Integer.toString(seg.getUserSteps()) +
+                        " Dist: " + distance + "m";
 
             }
-
-
-
         }
 
         String dateString = simpleDateFormat.format(date) + " - detected Details:";
