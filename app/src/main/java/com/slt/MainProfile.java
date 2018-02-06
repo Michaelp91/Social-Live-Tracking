@@ -100,7 +100,7 @@ public class MainProfile extends AppCompatActivity
     /**
      * Update interval for the activity detection
      */
-    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 3000;
+    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 1;
 
     /**
      * TAG for the Logger
@@ -508,7 +508,7 @@ public class MainProfile extends AppCompatActivity
     private PendingIntent getActivityDetectionPendingIntent() {
         Intent intent = new Intent(this, ActivityService.class);
 
-        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
