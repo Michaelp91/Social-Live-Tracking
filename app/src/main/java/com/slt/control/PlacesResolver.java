@@ -54,8 +54,10 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
      */
     private GoogleApiClient myGoogleApiClient;
 
+
     /**
-     *  Overwritten doInBackground Method, extracts the parameters and starts the place resolving
+     * Overwritten doInBackground Method, extracts the parameters and starts the place resolving
+     *
      * @param objects Parameters the task was called with, the first has to be a TimelineSegment
      *                used to store the result, the second has to be a Location the device is
      *                currently at.
@@ -63,16 +65,17 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
      */
     @Override
     protected String doInBackground(Object... objects) {
+
         //Create an API Client for places detection
         myGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
-
                 .addOnConnectionFailedListener(this)
                 .build();
         myGoogleApiClient.connect();
 
         //Check and wait for network connection
-        while(!isNetworkAvailable()) {
+        while (!isNetworkAvailable()) {
             synchronized (this) {
                 try {
                     wait(1000);
@@ -90,7 +93,7 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
             myLocation = (Location) objects[1];
 
             //Check and wait for the API to be connected
-            while(!myGoogleApiClient.isConnected()) {
+            while (!myGoogleApiClient.isConnected()) {
                 synchronized (this) {
                     try {
                         wait(200);
@@ -119,6 +122,7 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
 
     /**
      * Overwritten default onConnectionFailed Method, simply writes to a logger
+     *
      * @param connectionResult The result we got from trying to connect the API
      */
     @Override
@@ -130,13 +134,14 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
 
     /**
      * Checks the Network Status to return if we have a network connection
+     *
      * @return A Boolean saying if the network is up or down
      */
     private boolean isNetworkAvailable() {
         //Get a ConnectivityManager for the network status
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getInstance()
-                 .getSystemService(Context.CONNECTIVITY_SERVICE);
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetworkInfo = null;
 
@@ -149,7 +154,6 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
     }
 
     /**
-     *
      * @throws SecurityException Send if we do not have the required permission
      */
     private void callPlaceDetectionApi() throws SecurityException {
@@ -164,30 +168,28 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
 
 
                 //Store the first, most likely place we found if it is likely at all
-                if(likelyPlaces.getCount() > 0) {
+                if (likelyPlaces.getStatus().isSuccess()) {
 
-                    if (0 > likelyPlaces.get(0).getLikelihood()) {
+                    //Create a Location from the place
+                    Location targetLocation = new Location("");
+                    targetLocation.setLatitude(likelyPlaces.get(0).getPlace().getLatLng().latitude);
+                    targetLocation.setLongitude(likelyPlaces.get(0).getPlace().getLatLng().longitude);
 
-                        //Create a Location from the place
-                        Location targetLocation = new Location("");
-                        targetLocation.setLatitude(likelyPlaces.get(0).getPlace().getLatLng().latitude);
-                        targetLocation.setLongitude(likelyPlaces.get(0).getPlace().getLatLng().longitude);
+                    //Calculate distance between last detected location and the place
+                    float distance = myLocation.distanceTo(targetLocation);
 
-                        //Calculate distance between last detected location and the place
-                        float distance = myLocation.distanceTo(targetLocation);
+                    Log.i(TAG, String.format("Place '%s' with " +
+                                    "likelihood: %g, Latitude: %g, Longitude: %g, Distance: %g",
+                            likelyPlaces.get(0).getPlace().getName(),
+                            likelyPlaces.get(0).getLikelihood(),
+                            likelyPlaces.get(0).getPlace().getLatLng().latitude,
+                            likelyPlaces.get(0).getPlace().getLatLng().longitude, distance));
 
-                        Log.i(TAG, String.format("Place '%s' with " +
-                                        "likelihood: %g, Latitude: %g, Longitude: %g, Distance: %g",
-                                likelyPlaces.get(0).getPlace().getName(),
-                                likelyPlaces.get(0).getLikelihood(),
-                                likelyPlaces.get(0).getPlace().getLatLng().latitude,
-                                likelyPlaces.get(0).getPlace().getLatLng().longitude, distance));
-
-                        myPlace = (String) likelyPlaces.get(0).getPlace().getName();
-                    } else {
-                        myPlace = "Unknown";
-                    }
+                    myPlace = (String) likelyPlaces.get(0).getPlace().getName();
+                } else {
+                    myPlace = "Unknown";
                 }
+
 
                 //Store the result in the TimelineSegment
                 myTimelineSegment.setPlace(myPlace);

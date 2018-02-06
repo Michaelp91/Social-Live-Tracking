@@ -50,22 +50,6 @@ public class DataProvider implements ServiceInterface {
     private Location myCurrentLocation;
 
     /**
-     * The last time the activity has changed
-     */
-    private Date changeDate;
-
-    /**
-     * The next activity, activity might be already detected but is not the current activity until a
-     * fixed time has passed
-     */
-    private DetectedActivity nextActivity;
-
-    /**
-     * Defines the min. time a new activity has to be present before it gets active
-     */
-    private static final int MIN_CHANGE_ACTIVITY_INTERVAL = 3;
-
-    /**
      * Defines the min. distance that has to be between two locations before it is accepted
      */
     private static final double MIN_CHANGE_LOCATION_DISTANCE = 10;
@@ -107,7 +91,6 @@ public class DataProvider implements ServiceInterface {
         //at the beginning we do not have any information
         myCurrentActivity = null;
         myCurrentLocation = null;
-        this.changeDate = new Date();
         this.manualMode = false;
         this.userTimeline = null;
 
@@ -131,7 +114,6 @@ public class DataProvider implements ServiceInterface {
 
         myCurrentActivity = null;
         myCurrentLocation = null;
-        this.changeDate = null;
         this.manualMode = false;
         this.userTimeline = null;
 
@@ -181,47 +163,14 @@ public class DataProvider implements ServiceInterface {
         }
 
         //if we do have the first occurrence of another activity, store it and the timestamp
-        if (myCurrentActivity.getType() != activity.getType() && nextActivity == null) {
-            nextActivity = activity;
-            changeDate = timestamp;
-            SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast(), timestamp, nextActivity);
+        if (myCurrentActivity.getType() != activity.getType()) {
+            SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast(), timestamp, myCurrentActivity);
 
-            Log.i(TAG, "updateActivity, set next Activity and change timestamp.");
+            userTimeline.addUserStatus(myCurrentLocation, timestamp, myCurrentActivity);
+            Log.i(TAG, "updateActivity, add next Activity.");
             return 2;
         }
 
-        //if we do already have a next activity
-        if (nextActivity != null) {
-            //if the next activity is the same and enough time has passed
-            if (nextActivity.getType() == activity.getType() && TimeUnit.MILLISECONDS.toSeconds(
-                    timestamp.getTime() - changeDate.getTime()) > MIN_CHANGE_ACTIVITY_INTERVAL) {
-
-                Log.i(TAG, "updateActivity, update User Activity.");
-                myCurrentActivity = activity;
-                userTimeline.addUserStatus(myCurrentLocation, changeDate, myCurrentActivity);
-                SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast(), timestamp, this.myCurrentActivity);
-
-                nextActivity = null;
-                changeDate = null;
-
-                return 3;
-            }
-            //if not enough time has passed and the activity is not the same
-            else if (nextActivity.getType() != activity.getType()) {
-                nextActivity = activity;
-                changeDate = timestamp;
-                SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast(), timestamp, nextActivity);
-
-                Log.i(TAG, "updateActivity, change Activity, different activity");
-                return 2;
-            }
-            //in all other cases
-            else {
-                Log.i(TAG, "updateActivity, change Activity, interval not yet passed: "
-                        + TimeUnit.MILLISECONDS.toSeconds(timestamp.getTime() - changeDate.getTime()));
-                return 2;
-            }
-        }
         Log.i(TAG, "updateActivity, no change, nothing to do.");
         return 0;
     }
