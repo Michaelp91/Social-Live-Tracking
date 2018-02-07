@@ -164,6 +164,7 @@ public class DataProvider implements ServiceInterface {
 
         //if we do have the first occurrence of another activity, store it and the timestamp
         if (myCurrentActivity.getType() != activity.getType()) {
+            myCurrentActivity = activity;
             SharedResources.getInstance().updateNotification(myCurrentLocation, userTimeline.getTimelineDays().getLast(), timestamp, myCurrentActivity);
 
             userTimeline.addUserStatus(myCurrentLocation, timestamp, myCurrentActivity);
