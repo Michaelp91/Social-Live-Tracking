@@ -124,12 +124,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private HashMap<String, TimelineDay> h_viewedTimelineDays = new HashMap<>();
     private HashMap<String, TimelineSegment> h_viewedTimelineSegments = new HashMap<>();
     private HashMap<String, TimelineDay> h_alreadyChoosedDay = new HashMap<>();
-    private LinkedList<Bitmap> downloadedImages = new LinkedList<>();
     private LinkedList<Integer> randomPositions = new LinkedList<>();
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private Bitmap bitmap;
     ImageView tmpImageView;
     private LinearLayout choosedPicView;
+    private HashMap<String, LinearLayout> picViews = new HashMap<>();
+    private HashMap<String, LinkedList<Bitmap>>  downloadedImagesByTSegmentId = new HashMap<>();
 
     private int loggerCounter = 0;
 
@@ -339,18 +340,21 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         iv_pictures.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_pictures, 100, 100)));
                         iv_comments.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_comments, 100, 100)));
                         iv_details.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_details, 100, 100)));
+                        AddPictures(ll_pictures, tSegment);
 
-                        //TODO: DownloadPictures(tSegment);
-                        //ll_pictures = AddPictures(ll_pictures);
-                        ll_pictures.setTag(tSegment);
+                                ll_pictures.setTag(tSegment);
                         iv_pictures.setTag(tSegment);
-                        choosedPicView = ll_pictures;
+
+                        picViews.put(tSegment.getID(), ll_pictures);
                         AddUserComments(tSegment.getStrUserComments(), ll_line, tv_usercomments);
+
 
                         iv_pictures.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //choosedPicView = (LinearLayout) v;
+                                TimelineSegment tSegment = (TimelineSegment) v.getTag();
+                                choosedPicView = picViews.get(tSegment.getID());
                                 selectImage();
                             }
                         });
@@ -410,10 +414,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
 
                         final LinearLayout finalLl_shortLine = ll_shortLine;
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                AddPictures(ll_pictures);
 
                                 switch(detectedActivity.getType()) {
                                     case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
@@ -453,8 +453,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                         activity.setVisibility(View.GONE);
                                         break;
                                 }
-                            }
-                        });
+
 
 
 
@@ -503,9 +502,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 final RelativeLayout finalView_FirstPoint = view_FirstPoint;
                 final RelativeLayout finalView_segment = view_segment;
                 final ImageView finalIv_details = iv_details;
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
 
                         if (finalView_FirstPoint != null)
                             choosedChildren.addView(finalView_FirstPoint);
@@ -526,8 +522,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                             choosedChildren.addView(finalView_segment);
                         }
 
-                    }
-                });
+
 
             }
 
@@ -535,14 +530,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
 
         if(isAdded) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    LinearLayout whiteSpace = (LinearLayout) inflater.inflate(R.layout.timeline_whitespace, null);
-
-                    choosedChildren.addView(whiteSpace);
-                }
-            });
+            LinearLayout whiteSpace = (LinearLayout) inflater.inflate(R.layout.timeline_whitespace, null);
+            choosedChildren.addView(whiteSpace);
         }
 
     }
@@ -561,6 +550,16 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeResource(res, resId, options);
+    }
+
+    private Bitmap resizeImage(byte[] input, int width, int height) {
+        Bitmap original = BitmapFactory.decodeByteArray(input , 0, input.length);
+        Bitmap resized = Bitmap.createScaledBitmap(original, width, height, true);
+
+        ByteArrayOutputStream blob = new ByteArrayOutputStream();
+        resized.compress(Bitmap.CompressFormat.JPEG, 100, blob);
+
+        return resized;
     }
 
     public static int calculateInSampleSize(
@@ -686,29 +685,25 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
         if (requestCode == PICK_IMAGE_CAMERA) {
             try {
-                Uri selectedImage = data.getData();
                 bitmap = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-
-
-                float aspectRatio = bitmap.getWidth() /
-                        (float) bitmap.getHeight();
-                int width = 800;
-                int height = Math.round(width / aspectRatio);
-
-                bitmap = getResizedBitmap(bitmap, width, height);
 
                 //compress the picture -> reduces the quality to 90%
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
                 byte[] BYTE = bytes.toByteArray();
+                bitmap = resizeImage(BYTE, 100, 100);
 
-                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
+                //this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
 
-                this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
-                downloadedImages.add(bitmap);
+                //this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
+                TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
+                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(timelineSegment.getID());
+                bmps = (bmps == null)? new LinkedList<Bitmap>(): bmps;
 
+                bmps.add(bitmap);
+                downloadedImagesByTSegmentId.put(timelineSegment.getID(), bmps);
 
-                uploadImage();
+                uploadImage(bitmap);
 
                 Log.e(TAG, "Pick from Camera::>>> ");
             } catch (Exception e) {
@@ -720,26 +715,22 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 bitmap = MediaStore.Images.Media.getBitmap(ApplicationController.getContext().getContentResolver(), selectedImage);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-
-                float aspectRatio = bitmap.getWidth() /
-                        (float) bitmap.getHeight();
-                int width = 800;
-                int height = Math.round(width / aspectRatio);
-
-                bitmap = getResizedBitmap(bitmap, width, height);
-
                 //compress the picture -> reduces the quality to 90%
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
                 byte[] BYTE = bytes.toByteArray();
+                bitmap = resizeImage(BYTE, 100, 100);
 
-                this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
+                //this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
 
-                this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
+                //this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
+                TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
+                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(timelineSegment.getID());
+                bmps = (bmps == null)? new LinkedList<Bitmap>(): bmps;
 
-                downloadedImages.add(bitmap);
-                Log.e(TAG, "Pick from Gallery::>>> ");
+                bmps.add(bitmap);
+                downloadedImagesByTSegmentId.put(timelineSegment.getID(), bmps);
 
-                uploadImage();
+                uploadImage(bitmap);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -802,44 +793,45 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         return resizedBitmap;
     }
 
-    private void uploadImage() {
+    private void uploadImage(final Bitmap bitmap) {
+
+        final TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
+        AddPictures(choosedPicView, timelineSegment);
+        Toast.makeText(getActivity(), "Image is uploaded successfully.", Toast.LENGTH_SHORT).show();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Integer imageId = downloadedImages.size() + 1;
+                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(timelineSegment.getID());
+                Integer imageId = bmps.size() + 1;
 
 
                 final boolean uploaded = UsefulMethods.UploadImageView(bitmap, imageId.toString() + ".png");
-                final TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
+
                 timelineSegment.addImage(imageId.toString() + ".png");
                 final boolean timelinesegmentUpdated = OtherRestCalls.updateTimelineSegmentForImages(timelineSegment);
-
-                DownloadPictures(timelineSegment);
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (uploaded || timelinesegmentUpdated) {
-                            AddPictures(choosedPicView);
-                            Toast.makeText(getActivity(), "Image is uploaded successfully.", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                            Toast.makeText(getActivity(), "Image is not successfully uploaded", Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
         }).start();
     }
 
     private void DownloadPictures(TimelineSegment tSegment) {
 
-
-
+        //For Debug Purposes
+        if(tSegment.getMyImages().size() != 0) {
+            boolean debug = true;
+        }
 
         ArrayList<Integer> numbersInUse = new ArrayList<>();
         for(String image: tSegment.getMyImages()) {
             Bitmap bmp = UsefulMethods.LoadImage(image);
-            downloadedImages.add(bmp);
+
+            if(bmp != null) {
+                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(tSegment.getID());
+
+                bmps = (bmps == null)? new LinkedList<Bitmap>():bmps;
+                bmps.add(bmp);
+                downloadedImagesByTSegmentId.put(tSegment.getID(), bmps);
+            }
         }
 
         /*
@@ -857,7 +849,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
     }
 
-    private LinearLayout AddPictures(LinearLayout ll_pictures) {
+    private LinearLayout AddPictures(LinearLayout ll_pictures, TimelineSegment tSegment) {
+        LinkedList<Bitmap> downloadedImages =  downloadedImagesByTSegmentId.get(tSegment.getID());
+
         ImageView iv_pic1 = ll_pictures.findViewById(R.id.iv_pic1);
         ImageView iv_pic2 = ll_pictures.findViewById(R.id.iv_pic2);
         ImageView iv_pic3 = ll_pictures.findViewById(R.id.iv_pic3);
@@ -868,29 +862,31 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         iv_pic3.setVisibility(View.GONE);
         tv_noPicAvailable.setVisibility(View.VISIBLE);
 
-        int max = (downloadedImages.size() >= 3)?3: downloadedImages.size();
-        for(int i = 0; i < max; i++) {
-            int randomNum = ThreadLocalRandom.current().nextInt(0, downloadedImages.size());
+        if (downloadedImages != null) {
+            int max = (downloadedImages.size() >= 3) ? 3 : downloadedImages.size();
+            for (int i = 0; i < max; i++) {
+                int randomNum = ThreadLocalRandom.current().nextInt(0, downloadedImages.size());
 
-            Bitmap bmp = downloadedImages.get(randomNum);
+                Bitmap bmp = downloadedImages.get(randomNum);
 
 
-            switch (i) {
-                case 0:
-                    tv_noPicAvailable.setVisibility(View.GONE);
-                    iv_pic1.setVisibility(View.VISIBLE);
-                    iv_pic1.setImageBitmap(bmp);
-                    break;
-                case 1:
-                    tv_noPicAvailable.setVisibility(View.GONE);
-                    iv_pic1.setVisibility(View.VISIBLE);
-                    iv_pic2.setImageBitmap(bmp);
-                    break;
-                case 2:
-                    tv_noPicAvailable.setVisibility(View.GONE);
-                    iv_pic1.setVisibility(View.VISIBLE);
-                    iv_pic3.setImageBitmap(bmp);
-                    break;
+                switch (i) {
+                    case 0:
+                        tv_noPicAvailable.setVisibility(View.GONE);
+                        iv_pic1.setVisibility(View.VISIBLE);
+                        iv_pic1.setImageBitmap(bmp);
+                        break;
+                    case 1:
+                        tv_noPicAvailable.setVisibility(View.GONE);
+                        iv_pic1.setVisibility(View.VISIBLE);
+                        iv_pic2.setImageBitmap(bmp);
+                        break;
+                    case 2:
+                        tv_noPicAvailable.setVisibility(View.GONE);
+                        iv_pic1.setVisibility(View.VISIBLE);
+                        iv_pic3.setImageBitmap(bmp);
+                        break;
+                }
             }
         }
 
@@ -912,16 +908,39 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         h_alreadyChoosedDay = new HashMap<>();
                         h_alreadyChoosedDay.put(choosedTimelineDay.getID(), choosedTimelineDay);
 
-                    SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
-                    String strDate1 = sdf1.format(choosedTimelineDay.getMyDate());
 
-                    FunctionalityLogger.getInstance().AddLog("Tag: " + strDate1 + "\n");
-                    FunctionalityLogger.getInstance().AddLog("Timeline Daten: ");
+                        final LinkedList<TimelineSegment> tSegments = choosedTimelineDay.getMySegments();
 
-                    updateTimelineView();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for(TimelineSegment t: tSegments) {
+                                    DownloadPictures(t);
+
+                                    SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
+                                    String strDate1 = sdf1.format(choosedTimelineDay.getMyDate());
+
+                                    FunctionalityLogger.getInstance().AddLog("Tag: " + strDate1 + "\n");
+                                    FunctionalityLogger.getInstance().AddLog("Timeline Daten: ");
+
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            updateTimelineView();
+                                        }
+                                    });
+
+
+                                }
+                            }
+                        }).start();
+
+
+
+
                 } else {
                     h_alreadyChoosedDay = new HashMap<>();
-                    downloadedImages = new LinkedList<>();
+                    downloadedImagesByTSegmentId = new HashMap<>();
                     choosedTimelineDay = null;
                     choosedChildren = null;
                 }
