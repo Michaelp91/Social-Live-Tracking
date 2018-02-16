@@ -16,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.Layout;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,7 +129,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private Bitmap bitmap;
     ImageView tmpImageView;
-    private TextView tv_usercomments;
     private LinearLayout choosedPicView;
 
     private int loggerCounter = 0;
@@ -289,6 +290,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 RelativeLayout view_FirstPoint = null;
                 RelativeLayout view_segment = null;
                 RelativeLayout view_LastPoint = null;
+                ImageView iv_details = null;
                 final DetectedActivity detectedActivity = tSegment.getMyActivity();
 
                 //For Debug Purpose:
@@ -328,25 +330,38 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
                         final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
                         final LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
-                        tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
+                        final ImageView iv_pictures = (ImageView) view_segment.findViewById(R.id.iv_addPicture);
+                        final ImageView iv_comments = (ImageView) view_segment.findViewById(R.id.iv_addComments);
+                        iv_details = (ImageView) view_segment.findViewById(R.id.iv_addDetails);
+                        final TextView tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
                         tv_usercomments.setTag(tSegment);
+
+                        iv_pictures.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_pictures, 100, 100)));
+                        iv_comments.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_comments, 100, 100)));
+                        iv_details.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_details, 100, 100)));
 
                         //TODO: DownloadPictures(tSegment);
                         //ll_pictures = AddPictures(ll_pictures);
                         ll_pictures.setTag(tSegment);
-                        AddUserComments(tSegment.getStrUserComments(), ll_line);
+                        iv_pictures.setTag(tSegment);
+                        choosedPicView = ll_pictures;
+                        AddUserComments(tSegment.getStrUserComments(), ll_line, tv_usercomments);
 
-                        ll_pictures.setOnClickListener(new View.OnClickListener() {
+                        iv_pictures.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                choosedPicView = (LinearLayout) v;
+                                //choosedPicView = (LinearLayout) v;
                                 selectImage();
                             }
                         });
 
-                        tv_usercomments.setOnClickListener(new View.OnClickListener() {
+                        iv_comments.setTag(tSegment);
+
+                        tv_usercomments.setTag(tSegment.getID());
+                        iv_comments.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                TimelineSegment test_tSegment = (TimelineSegment) iv_comments.getTag();
                                 final Dialog commentDialog = new Dialog(getActivity());
                                 commentDialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
                                 commentDialog.setContentView(R.layout.popup_usercomment);
@@ -487,6 +502,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                 final RelativeLayout finalView_FirstPoint = view_FirstPoint;
                 final RelativeLayout finalView_segment = view_segment;
+                final ImageView finalIv_details = iv_details;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -496,8 +512,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
 
                         if (finalView_segment != null) {
-                            finalView_segment.setTag(tSegment);
-                            finalView_segment.setOnClickListener(new View.OnClickListener() {
+                            finalIv_details.setTag(tSegment);
+                            finalIv_details.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     TimelineSegment tSegment = (TimelineSegment) view.getTag();
@@ -531,8 +547,89 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
     }
 
-    private void AddUserComments(LinkedList<String> strUserComments, LinearLayout ll_line) {
-        String comments = "Keine Kommentare vorhanden";
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public Drawable resizeImage(int imageResource) {// R.drawable.icon
+        // Get device dimensions
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        double deviceWidth = display.getWidth();
+
+        BitmapDrawable bd = (BitmapDrawable) this.getResources().getDrawable(
+                imageResource);
+        double imageHeight = bd.getBitmap().getHeight();
+        double imageWidth = bd.getBitmap().getWidth();
+
+        double ratio = deviceWidth / imageWidth;
+        int newImageHeight = (int) (imageHeight * ratio);
+
+        Bitmap bMap = BitmapFactory.decodeResource(getResources(), imageResource);
+        Drawable drawable = new BitmapDrawable(this.getResources(),
+                getResizedBitmap2(bMap, newImageHeight, (int) deviceWidth));
+
+        return drawable;
+    }
+
+    /************************ Resize Bitmap *********************************/
+    public Bitmap getResizedBitmap2(Bitmap bm, int newHeight, int newWidth) {
+
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+
+        // create a matrix for the manipulation
+        Matrix matrix = new Matrix();
+
+        // resize the bit map
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // recreate the new Bitmap
+        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height,
+                matrix, false);
+
+        return resizedBitmap;
+    }
+
+    private void AddUserComments(LinkedList<String> strUserComments, LinearLayout ll_line, TextView tv_usercomments) {
+        String comments = (strUserComments.size() > 0)? "": "Keine Kommentare vorhanden";
 
 
         int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics());
@@ -543,9 +640,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             boolean debug = true;
         }
 
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)  ll_line.getLayoutParams();
-        params.height += heightToAdd;
-        ll_line.setLayoutParams(params);
+       RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)  ll_line.getLayoutParams();
+       params.height += heightToAdd;
+       ll_line.setLayoutParams(params);
 
 
         tv_usercomments.setText(comments);

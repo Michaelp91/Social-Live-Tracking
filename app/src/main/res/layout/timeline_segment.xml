@@ -9,15 +9,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_line"
-        android:layout_below="@id/startcircle"
-        android:layout_width="3dp"
-        android:layout_height="145dp"
-        android:orientation="vertical"
-        android:layout_marginLeft="13dp"
-        android:background="#000000"    >
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_line"
+            android:layout_below="@id/startcircle"
+            android:layout_width="3dp"
+            android:layout_height="220dp"
+            android:orientation="vertical"
+            android:layout_marginLeft="13dp"
+            android:background="#000000"    >
+        </LinearLayout>
 
 
 
@@ -29,25 +29,25 @@
             android:layout_width="25dp"
             android:layout_height="25dp" />
 
-    <TextView
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="15dp"
-        android:textColor="#FFFFFF"
-        android:id="@+id/tv_activeTime"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2.5 min"/>
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="15dp"
+            android:textColor="#FFFFFF"
+            android:id="@+id/tv_activeTime"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.5 min"/>
 
-    <TextView
-        android:layout_below="@id/tv_activeTime"
-        android:layout_marginRight="15dp"
-        android:textColor="#FFFFFF"
-        android:id="@+id/tv_activedistance"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2.5 min"/>
+        <TextView
+            android:layout_below="@id/tv_activeTime"
+            android:layout_marginRight="15dp"
+            android:textColor="#FFFFFF"
+            android:id="@+id/tv_activedistance"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.5 min"/>
 
         <LinearLayout
             android:id="@+id/ll_pictures"
@@ -111,6 +111,58 @@
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
             android:text="No Comments available" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/ll_horizontalline"
+            android:layout_toRightOf="@id/ll_line"
+            android:layout_below="@id/tv_usercomments"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#FFFFFF"></LinearLayout>
+
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/ll_line"
+            android:layout_below="@id/ll_horizontalline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_addDetails"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                />
+
+            <ImageView
+                android:id="@+id/iv_addComments"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="25dp"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                />
+
+            <ImageView
+                android:id="@+id/iv_addPicture"
+                android:layout_marginLeft="25dp"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                />
+
+            <!--
+            <ImageView
+                android:id="@+id/iv_addActivity"
+                android:layout_marginLeft="25dp"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:background="@drawable/timeline_running"
+                /> -->
+
+        </LinearLayout>
 
     </RelativeLayout>
 </RelativeLayout>
