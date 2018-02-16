@@ -14,8 +14,12 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.slt.R;
+import com.slt.control.AchievementCalculator;
+import com.slt.data.Timeline;
+import com.slt.data.TimelineDay;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by matze on 02.01.18.
@@ -53,15 +57,35 @@ public class TestDataGenerator_toBeRemoved {
      *
      * @return
      */
-    public static LineData generateDataLine(Context context, int cnt) {
+    public static LineData generateDataLine(Context context, int timePeriod, String sportType) {
 
         ArrayList<Entry> e1 = new ArrayList<Entry>();
+        int xAxisMaxSize = -1;
+        //Timeline timeline =
+        //LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
 
-        for (int i = 0; i < 12; i++) {
+
+
+        switch(timePeriod) {
+            case 0:
+                xAxisMaxSize = 24;
+                break;
+            case 1:
+                xAxisMaxSize = 7;
+                break;
+            case 2:
+                xAxisMaxSize = 30;
+
+                break;
+            default:
+                System.err.print("No such time period.");
+        }
+
+        for (int i = 0; i < xAxisMaxSize; i++) {
             e1.add(new Entry(i, (int) (Math.random() * 65) + 40));
         }
 
-        LineDataSet d1 = new LineDataSet(e1, "New DataSet " + cnt + ", (1)");
+        LineDataSet d1 = new LineDataSet(e1, "New DataSet " + timePeriod + ", (1)");
         d1.setLineWidth(2.5f);
 
         d1.setColor(Color.rgb(0, 153, 204));
@@ -82,7 +106,7 @@ public class TestDataGenerator_toBeRemoved {
             e2.add(new Entry(i, e1.get(i).getY() - 30));
         }
 
-        LineDataSet d2 = new LineDataSet(e2, "New DataSet " + cnt + ", (2)");
+        LineDataSet d2 = new LineDataSet(e2, "New DataSet " + timePeriod + ", (2)");
         d2.setLineWidth(2.5f);
         d2.setCircleRadius(4.5f);
         d2.setHighLightColor(Color.rgb(244, 117, 117));
