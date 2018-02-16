@@ -37,7 +37,7 @@ public class MainDataSupplier implements DataSupplier {
     @Override
     public LineData getLineData(Context context, int timePeriod, String walking) {
         if (lineData == null)
-            lineData = TestDataGenerator_toBeRemoved.generateDataLine(context, timePeriod);
+            lineData = TestDataGenerator_toBeRemoved.generateDataLine(context, timePeriod, walking);
 
         return lineData;
     }
