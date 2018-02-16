@@ -69,6 +69,7 @@ import com.slt.restapi.data.REST_LocationEntry;
 import com.slt.restapi.data.REST_TimelineDay;
 import com.slt.restapi.data.REST_TimelineSegment;
 import com.slt.utils.Constants;
+import com.slt.utils.FunctionalityLogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -129,6 +130,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private TextView tv_usercomments;
     private LinearLayout choosedPicView;
 
+    private int loggerCounter = 0;
 
     @Nullable
     @Override
@@ -265,10 +267,21 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         LinkedList<TimelineSegment> timeLineSegments = choosedTimelineDay.getMySegments();
         boolean isAdded = false;
 
-
         for(final TimelineSegment tSegment: timeLineSegments) {
 
+
+
             if (timelinesegmentIsNotViewed(tSegment.getID())) {
+                FunctionalityLogger.getInstance().AddLog("\nTimeline Segment: ");
+                FunctionalityLogger.getInstance().AddLog("Number: " + loggerCounter);
+                FunctionalityLogger.getInstance().AddLog("ObjectId: " + tSegment.getID());
+                FunctionalityLogger.getInstance().AddLog("Activity(IN_VEHICLE, ON_BICYCLE, ON_FOOT, STILL, UNKNOWN, TILTING, WALKING, RUNNING): " + tSegment.getMyActivity().getType());
+                FunctionalityLogger.getInstance().AddLog("Start: " + tSegment.getAddress());
+
+                FunctionalityLogger.getInstance().AddLog("");
+                loggerCounter++;
+
+
                 isAdded = true;
                 h_viewedTimelineSegments.put(tSegment.getID(), tSegment);
                 LinkedList<LocationEntry> locationEntries = tSegment.getLocationPoints();
@@ -278,21 +291,33 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 RelativeLayout view_LastPoint = null;
                 final DetectedActivity detectedActivity = tSegment.getMyActivity();
 
+                //For Debug Purpose:
+                if (detectedActivity.getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT) {
+                    boolean debug = true;
+                    int test = 2;
+                }
+
+                LinearLayout ll_shortLine = null;
+
                 if (!locationEntries.isEmpty() && detectedActivity.getType() !=
-                        com.slt.definitions.Constants.TIMELINEACTIVITY.STILL && detectedActivity.getType() !=
                         com.slt.definitions.Constants.TIMELINEACTIVITY.TILTING) {
                     LocationEntry fstPoint = locationEntries.get(0);
 
                     view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
-                    TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeAndaddress);
+                    TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
+                    ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
                     TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
                     String strDate = sdf.format(fstPoint.getMyEntryDate());
 
+                    FunctionalityLogger.getInstance().AddLog("Start: " + strDate);
+                    FunctionalityLogger.getInstance().AddLog("Location Point(Longitude, Lattitude): " + fstPoint.getLongitude() + ", " + fstPoint.getLatitude());
+
+
 
                     myEntryDate.setText(strDate);
-                    placeAndaddress.setText(tSegment.getStartAddress());
+                    placeAndaddress.setText(tSegment.getStartPlace());
 
                     if (timeLineSegments.indexOf(tSegment) < timeLineSegments.size() - 1) { //Draw Segment and the Endpoint
 
@@ -369,11 +394,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         });
 
 
-
-
-
-
-
+                        final LinearLayout finalLl_shortLine = ll_shortLine;
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -383,25 +404,30 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
                                         activity.setImageResource(R.drawable.walking);
                                         ll_line.setBackgroundColor(Color.GREEN);
+                                        finalLl_shortLine.setBackgroundColor(Color.GREEN);
                                         break;
                                     case com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING:
                                         activity.setImageResource(R.drawable.running);
                                         ll_line.setBackgroundResource(R.color.md_amber_800);
+                                        finalLl_shortLine.setBackgroundResource(R.color.md_amber_800);
                                         break;
 
                                     case com.slt.definitions.Constants.TIMELINEACTIVITY.IN_VEHICLE:
                                         activity.setImageResource(R.drawable.in_vehicle);
                                         ll_line.setBackgroundResource(R.color.md_red_500);
+                                        finalLl_shortLine.setBackgroundResource(R.color.md_red_500);
                                         break;
 
                                     case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
                                         activity.setImageResource(R.drawable.walking);
                                         ll_line.setBackgroundResource(R.color.md_blue_400);
+                                        finalLl_shortLine.setBackgroundResource(R.color.md_blue_400);
                                         break;
 
                                     case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE:
                                         activity.setImageResource(R.drawable.biking);
                                         ll_line.setBackgroundResource(R.color.md_light_green_600);
+                                        finalLl_shortLine.setBackgroundResource(R.color.md_light_green_600);
                                         break;
 
                                     case com.slt.definitions.Constants.TIMELINEACTIVITY.STILL:
@@ -435,18 +461,23 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         placeAndaddress_endlocation.setText("");
                         */
 
+                    } else {
+                        ll_shortLine.setVisibility(View.INVISIBLE);
                     }
 
                 } else if (timeLineSegments.indexOf(tSegment) == timeLineSegments.size() - 1 && !locationEntries.isEmpty()
-                        && tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.STILL){
+                        && (tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
+                            || tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN)){
                     LocationEntry fstPoint = locationEntries.get(0);
 
                     view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
-                    TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeAndaddress);
+                    TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
+
                     TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
                     String strDate = sdf.format(fstPoint.getMyEntryDate());
+                    ll_shortLine.setVisibility(View.INVISIBLE);
 
 
                     myEntryDate.setText(strDate);
@@ -783,6 +814,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 if(h_alreadyChoosedDay.get(choosedTimelineDay.getID()) == null) {
                         h_alreadyChoosedDay = new HashMap<>();
                         h_alreadyChoosedDay.put(choosedTimelineDay.getID(), choosedTimelineDay);
+
+                    SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
+                    String strDate1 = sdf1.format(choosedTimelineDay.getMyDate());
+
+                    FunctionalityLogger.getInstance().AddLog("Tag: " + strDate1 + "\n");
+                    FunctionalityLogger.getInstance().AddLog("Timeline Daten: ");
+
                     updateTimelineView();
                 } else {
                     h_alreadyChoosedDay = new HashMap<>();

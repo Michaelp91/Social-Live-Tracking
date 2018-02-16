@@ -467,6 +467,7 @@ public class TimelineDay {
         Log.i(TAG, "ManualEndSegment:  create new Segment, end last one.");
         TimelineSegment next = new TimelineSegment(activity, date, true);
         this.mySegments.add(next);
+        DataUpdater.getInstance().addTimeLineSegment(next, this);
         next.addLocationPoint(location, date);
 
         //REST Call to add new segment to DB

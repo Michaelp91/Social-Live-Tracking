@@ -63,6 +63,7 @@ public class RESTToDatamodel {
             Map.Entry entry =(Map.Entry) iterator.next();
             REST_TimelineSegment r_t_s = (REST_TimelineSegment) entry.getValue();
             TimelineSegment t_s = TemporaryDB.getInstance().h_timelinesegmentResolver.get(r_t_s._id);
+            t_s.setID(r_t_s._id);
 
             TimelineDay t_d = TemporaryDB.getInstance().h_timelinedayResolver.get(r_t_s.timeLineDay);
             t_d.insertTimelineSegment(t_s, null);
@@ -114,6 +115,7 @@ public class RESTToDatamodel {
             Map.Entry entry =(Map.Entry) iterator.next();
             REST_TimelineSegment r_t_s = (REST_TimelineSegment) entry.getValue();
             TimelineSegment t_s = TemporaryDB.getInstance().h_timelinesegmentResolver.get(r_t_s._id);
+            t_s.setID(r_t_s._id);
 
             TimelineDay t_d = TemporaryDB.getInstance().h_timelinedayResolver.get(r_t_s.timeLineDay);
             t_d.insertTimelineSegment(t_s, null);

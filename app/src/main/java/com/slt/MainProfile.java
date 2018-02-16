@@ -16,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -75,7 +76,10 @@ import com.slt.services.LocationService;
 import com.slt.statistics.GeneralViewOfStatistics;
 import com.slt.statistics.ViewStatistics;
 import com.slt.utils.Constants;
+import com.slt.utils.FunctionalityLogger;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Time;
 
@@ -471,6 +475,7 @@ public class MainProfile extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+        FunctionalityLogger.getInstance().FinishFileWriting();
     }
 
     /**
@@ -549,6 +554,8 @@ public class MainProfile extends AppCompatActivity
         //creating fragment object
         Fragment fragment = null;
 
+        //CreateLogFile();
+
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_timeline:
@@ -585,6 +592,30 @@ public class MainProfile extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    private void CreateLogFile() {
+
+            try {
+                File root = new File(Environment.getExternalStorageDirectory(), "Notes");
+                boolean test = false;
+                if (!root.exists()) {
+                    test = root.mkdirs();
+                    boolean test2 = false;
+                }
+                File gpxfile = new File(root, "TimelineLog.txt");
+                FileWriter writer = new FileWriter(gpxfile);
+
+                writer.append("This is a Test");
+                writer.append("\nBecause It is a Test");
+                writer.append("\nBecause It is a Test");
+                writer.flush();
+                writer.close();
+                Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
     }
 
 

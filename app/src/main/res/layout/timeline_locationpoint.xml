@@ -16,15 +16,35 @@
         android:background="@drawable/shape"
         android:orientation="vertical"/>
 
+        <LinearLayout
+            android:id="@+id/ll_line"
+            android:layout_below="@id/ll_locationpoint"
+            android:layout_width="3dp"
+            android:layout_height="20dp"
+            android:orientation="vertical"
+            android:layout_marginLeft="13dp"
+            android:background="#000000"    >
+        </LinearLayout>
+
 
     <TextView
         android:textColor="#FFFFFF"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/ll_locationpoint"
-        android:id="@+id/tv_placeAndaddress"
+        android:id="@+id/tv_placeOraddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="City Gallerie"/>
+
+        <TextView
+            android:textColor="#FFFFFF"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/ll_locationpoint"
+            android:layout_below="@id/tv_placeOraddress"
+            android:id="@+id/tv_startAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="City Gallerie"/>
 
     <TextView
         android:textColor="#FFFFFF"
