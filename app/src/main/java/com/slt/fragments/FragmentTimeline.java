@@ -129,7 +129,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private Bitmap bitmap;
     ImageView tmpImageView;
-    private TextView tv_usercomments;
     private LinearLayout choosedPicView;
 
     private int loggerCounter = 0;
@@ -334,7 +333,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         final ImageView iv_pictures = (ImageView) view_segment.findViewById(R.id.iv_addPicture);
                         final ImageView iv_comments = (ImageView) view_segment.findViewById(R.id.iv_addComments);
                         iv_details = (ImageView) view_segment.findViewById(R.id.iv_addDetails);
-                        tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
+                        final TextView tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
                         tv_usercomments.setTag(tSegment);
 
                         iv_pictures.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_pictures, 100, 100)));
@@ -346,7 +345,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         ll_pictures.setTag(tSegment);
                         iv_pictures.setTag(tSegment);
                         choosedPicView = ll_pictures;
-                        AddUserComments(tSegment.getStrUserComments(), ll_line);
+                        AddUserComments(tSegment.getStrUserComments(), ll_line, tv_usercomments);
 
                         iv_pictures.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -356,9 +355,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                             }
                         });
 
+                        iv_comments.setTag(tSegment);
+
+                        tv_usercomments.setTag(tSegment.getID());
                         iv_comments.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                TimelineSegment test_tSegment = (TimelineSegment) iv_comments.getTag();
                                 final Dialog commentDialog = new Dialog(getActivity());
                                 commentDialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
                                 commentDialog.setContentView(R.layout.popup_usercomment);
@@ -625,8 +628,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         return resizedBitmap;
     }
 
-    private void AddUserComments(LinkedList<String> strUserComments, LinearLayout ll_line) {
-        String comments = "Keine Kommentare vorhanden";
+    private void AddUserComments(LinkedList<String> strUserComments, LinearLayout ll_line, TextView tv_usercomments) {
+        String comments = (strUserComments.size() > 0)? "": "Keine Kommentare vorhanden";
 
 
         int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics());
@@ -637,9 +640,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             boolean debug = true;
         }
 
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)  ll_line.getLayoutParams();
-        params.height += heightToAdd;
-        ll_line.setLayoutParams(params);
+       RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)  ll_line.getLayoutParams();
+       params.height += heightToAdd;
+       ll_line.setLayoutParams(params);
 
 
         tv_usercomments.setText(comments);
