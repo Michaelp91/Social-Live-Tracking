@@ -102,7 +102,7 @@ public class TestDataGenerator_toBeRemoved {
 
         ArrayList<Entry> e2 = new ArrayList<Entry>();
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < xAxisMaxSize; i++) {
             e2.add(new Entry(i, e1.get(i).getY() - 30));
         }
 
