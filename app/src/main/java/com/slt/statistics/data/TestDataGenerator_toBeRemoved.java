@@ -15,10 +15,16 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.slt.R;
 import com.slt.control.AchievementCalculator;
+import com.slt.control.DataProvider;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 /**
@@ -27,6 +33,9 @@ import java.util.LinkedList;
 
 public class TestDataGenerator_toBeRemoved {
 
+    public static LineData dayLineData = null;
+    public static LineData weekLineData = null;
+    public static LineData monthLineData = null;
 
 
     /**
@@ -61,11 +70,21 @@ public class TestDataGenerator_toBeRemoved {
 
         ArrayList<Entry> e1 = new ArrayList<Entry>();
         int xAxisMaxSize = -1;
-        //Timeline timeline =
-        //LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
 
+        if(timePeriod == 0 && dayLineData != null)
+            return dayLineData;
+        else if(timePeriod == 1 && weekLineData != null)
+            return weekLineData;
+        else if(timePeriod == 2 && monthLineData != null)
+            return monthLineData;
 
+        /*Date current = new Date();
+                Timeline timeline = DataProvider.getInstance().getUserTimeline();
+                LinkedList<TimelineDay> daysOfMonth = timeline.getDaysOfWeekOrMonth(current, 1);
 
+         */
+
+        // set the size of the xAxis depending on the time period
         switch(timePeriod) {
             case 0:
                 xAxisMaxSize = 24;
@@ -74,7 +93,14 @@ public class TestDataGenerator_toBeRemoved {
                 xAxisMaxSize = 7;
                 break;
             case 2:
-                xAxisMaxSize = 30;
+
+                // init calender
+                java.util.Date date= new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+
+                // get the number of days in the current month
+                xAxisMaxSize = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
                 break;
             default:
@@ -82,7 +108,7 @@ public class TestDataGenerator_toBeRemoved {
         }
 
         for (int i = 0; i < xAxisMaxSize; i++) {
-            e1.add(new Entry(i, (int) (Math.random() * 65) + 40));
+            e1.add(new Entry(i + 1, (int) (Math.random() * 65) + 40));
         }
 
         LineDataSet d1 = new LineDataSet(e1, "New DataSet " + timePeriod + ", (1)");
@@ -90,35 +116,31 @@ public class TestDataGenerator_toBeRemoved {
 
         d1.setColor(Color.rgb(0, 153, 204));
         d1.setDrawCircles(false);
-        //d1.setCircleRadius(4.5f);
-        // d1.setHighLightColor(Color);
         d1.setDrawValues(false);
         d1.setDrawFilled(true);
-
 
         // gradient color under the linechart
         Drawable drawable = ContextCompat.getDrawable(context, R.drawable.fade_red);
         d1.setFillDrawable(drawable);
 
-        ArrayList<Entry> e2 = new ArrayList<Entry>();
-
-        for (int i = 0; i < xAxisMaxSize; i++) {
-            e2.add(new Entry(i, e1.get(i).getY() - 30));
-        }
-
-        LineDataSet d2 = new LineDataSet(e2, "New DataSet " + timePeriod + ", (2)");
-        d2.setLineWidth(2.5f);
-        d2.setCircleRadius(4.5f);
-        d2.setHighLightColor(Color.rgb(244, 117, 117));
-        d2.setColor(ColorTemplate.VORDIPLOM_COLORS[0]);
-        d2.setCircleColor(ColorTemplate.VORDIPLOM_COLORS[0]);
-        d2.setDrawValues(false);
-
         ArrayList<ILineDataSet> sets = new ArrayList<ILineDataSet>();
         sets.add(d1);
-        // sets.add(d2);
 
         LineData cd = new LineData(sets);
+
+        switch (timePeriod) {
+            case 0:
+                dayLineData = cd;
+                break;
+            case 1:
+                weekLineData = cd;
+                break;
+            case 2:
+                monthLineData = cd;
+                break;
+            default:
+                System.err.print("No such time period.");
+        }
         return cd;
     }
 }

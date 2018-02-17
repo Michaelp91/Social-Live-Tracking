@@ -587,7 +587,7 @@ public class Timeline {
      * @param mode          The mode of the method, 0 returns all days of the week, 1 for the month
      * @return A linked list containing all TimelineDays
      */
-    private LinkedList<TimelineDay> getDaysOfWeekOrMonth(Date referenceDate, int mode) {
+    public LinkedList<TimelineDay> getDaysOfWeekOrMonth(Date referenceDate, int mode) {
 
         //Set the calendar
         Calendar calendar = Calendar.getInstance();

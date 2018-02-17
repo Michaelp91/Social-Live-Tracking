@@ -42,7 +42,7 @@ public class ViewStatistics extends AppCompatActivity {
         for (int i = 0; i < 3; i++) {
             // line chart
             // TODO--------------------- replace with real date from data provider
-            LineData lineData = DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), 2, "walking");
+            LineData lineData = DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), i, "walking");
             // TODO the end---------------------
 
             FragmentSportTab fragmentSportTab = new FragmentSportTab();

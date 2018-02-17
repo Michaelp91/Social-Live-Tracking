@@ -41,7 +41,8 @@ public class GeneralViewOfStatistics extends AppCompatActivity {
 
         // 3 items
         for (int i = 0; i < 3; i++) {
-            lineData = DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), i, "walking");
+            lineData = DataObjectsCollection.dataSupplier.getLineData(
+                    getApplicationContext(), i, "walking");
 
             list.add(new LineChartItem(lineData, getApplicationContext()));
         }
