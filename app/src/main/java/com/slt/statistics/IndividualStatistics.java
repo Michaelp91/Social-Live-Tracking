@@ -11,11 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
-import com.slt.control.AchievementCalculator;
 import com.slt.control.DataProvider;
 import com.slt.data.Achievement;
-import com.slt.data.Timeline;
-import com.slt.fragments.FragmentSportTab;
+import com.slt.fragments.TimeperiodIndividualSportTabFragment;
 import com.slt.statistics.data.DataObjectsCollection;
 
 import java.util.ArrayList;
@@ -23,7 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ViewStatistics extends AppCompatActivity {
+public class IndividualStatistics extends AppCompatActivity {
 
     private static Sport selectedSportStatistics = Sport.NONE;
 
@@ -34,24 +32,24 @@ public class ViewStatistics extends AppCompatActivity {
         setContentView(R.layout.activity_view_statistics);
         String[] periodNames = new String[]{"Today", "Week", "Month"};
         ViewPagerAdapter adapter;
+        Sport sport;
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
 
-        // TODO statt 3 sollte hier getNumberOfAchievements sein
-        for (int i = 0; i < 3; i++) {
+        // draw tabs today, week, month
+        for (int i = 0; i < periodNames.length; i++) {
+
             // line chart
-            // TODO--------------------- replace with real date from data provider
-            LineData lineData = DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), i, "walking");
-            // TODO the end---------------------
+            LineData lineData = DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), i, IndividualStatistics.getSelectedSportStatistics());
 
-            FragmentSportTab fragmentSportTab = new FragmentSportTab();
+            TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment = new TimeperiodIndividualSportTabFragment();
 
-            fragmentSportTab.setPeriod(periodNames[i]);
+            timeperiodIndividualSportTabFragment.setPeriod(periodNames[i]);
 
-            fragmentSportTab.setSport(ViewStatistics.getSelectedSportStatistics());
+            timeperiodIndividualSportTabFragment.setSport(IndividualStatistics.getSelectedSportStatistics());
 
-            fragmentSportTab.setLineData(lineData);
+            timeperiodIndividualSportTabFragment.setLineData(lineData);
 
             // infos
             // TODO--------------------- replace with real date from data provider
@@ -62,15 +60,15 @@ public class ViewStatistics extends AppCompatActivity {
             }
             // TODO the end---------------------
 
-            fragmentSportTab.setInfos(infos);
+            timeperiodIndividualSportTabFragment.setInfos(infos);
 
             // achievements
             LinkedList<Achievement> achievements = DataProvider.getInstance().getOwnUserAchievements(i);
 
-            fragmentSportTab.setAchievements(achievements);
+            timeperiodIndividualSportTabFragment.setAchievements(achievements);
 
 
-            adapter.addFragment(fragmentSportTab, periodNames[i]);
+            adapter.addFragment(timeperiodIndividualSportTabFragment, periodNames[i]);
         }
 
         viewPager.setAdapter(adapter);
@@ -87,7 +85,7 @@ public class ViewStatistics extends AppCompatActivity {
     }
 
     public static void setSelectedSportStatistics(Sport selectedSportStatistics) {
-        ViewStatistics.selectedSportStatistics = selectedSportStatistics;
+        IndividualStatistics.selectedSportStatistics = selectedSportStatistics;
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

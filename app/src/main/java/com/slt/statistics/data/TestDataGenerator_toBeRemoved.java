@@ -18,6 +18,8 @@ import com.slt.control.AchievementCalculator;
 import com.slt.control.DataProvider;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
+import com.slt.definitions.Constants;
+import com.slt.statistics.Sport;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -33,6 +35,7 @@ import java.util.LinkedList;
 
 public class TestDataGenerator_toBeRemoved {
 
+    public static Sport sportTypeOfLineData = Sport.NONE;
     public static LineData dayLineData = null;
     public static LineData weekLineData = null;
     public static LineData monthLineData = null;
@@ -66,18 +69,22 @@ public class TestDataGenerator_toBeRemoved {
      *
      * @return
      */
-    public static LineData generateDataLine(Context context, int timePeriod, String sportType) {
+    public static LineData generateDataLine(Context context, int timePeriod, Sport sportType) {
 
         ArrayList<Entry> e1 = new ArrayList<Entry>();
         int xAxisMaxSize = -1;
 
-        if(timePeriod == 0 && dayLineData != null)
-            return dayLineData;
-        else if(timePeriod == 1 && weekLineData != null)
-            return weekLineData;
-        else if(timePeriod == 2 && monthLineData != null)
-            return monthLineData;
+        // if sporttype has not changed, check if the data has already been calculated
+        if(sportTypeOfLineData == sportType) {
 
+            if (timePeriod == 0 && dayLineData != null)
+                return dayLineData;
+            else if (timePeriod == 1 && weekLineData != null)
+                return weekLineData;
+            else if (timePeriod == 2 && monthLineData != null)
+                return monthLineData;
+
+        }
         /*Date current = new Date();
                 Timeline timeline = DataProvider.getInstance().getUserTimeline();
                 LinkedList<TimelineDay> daysOfMonth = timeline.getDaysOfWeekOrMonth(current, 1);

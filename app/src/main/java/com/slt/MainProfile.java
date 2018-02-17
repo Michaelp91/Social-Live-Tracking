@@ -1,6 +1,5 @@
 package com.slt;
 
-import android.*;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -14,20 +13,15 @@ import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,11 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.content.Intent;
 import android.widget.Toast;
@@ -52,41 +42,22 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
-import com.slt.fragments.ChangePasswordDialog;
 import com.slt.fragments.FragmentAchievements;
 import com.slt.fragments.FragmentEditSettings;
 import com.slt.fragments.FragmentFriends;
 import com.slt.fragments.FragmentLiveMap;
-import com.slt.fragments.FragmentSummaries;
 import com.slt.fragments.FragmentTimeline;
-import com.slt.fragments.LoginFragment;
-import com.slt.fragments.RegisterFragment;
-import com.slt.fragments.ResetPasswordDialog;
-import com.slt.fragments.ResetPasswordFragment;
-import com.slt.model.Response;
-import com.slt.model.User;
-import com.slt.network.NetworkUtil;
 import com.slt.services.ActivityService;
 import com.slt.services.LocationService;
-import com.slt.statistics.GeneralViewOfStatistics;
-import com.slt.statistics.ViewStatistics;
-import com.slt.utils.Constants;
+import com.slt.statistics.StatisticsOverview;
 import com.slt.utils.FunctionalityLogger;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Time;
-
-import retrofit2.adapter.rxjava.HttpException;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Main Profile Class, contains the main activity for our application
@@ -564,7 +535,7 @@ public class MainProfile extends AppCompatActivity
                 break;
             case R.id.nav_summaries:
                 //fragment = new FragmentSummaries();
-                Intent Summaries = new Intent(MainProfile.this, GeneralViewOfStatistics.class);
+                Intent Summaries = new Intent(MainProfile.this, StatisticsOverview.class);
                 startActivity(Summaries);
                 break;
             case R.id.nav_friends:

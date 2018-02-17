@@ -1,17 +1,13 @@
 package com.slt.statistics.data;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
-import com.jjoe64.graphview.series.DataPoint;
 import com.slt.R;
-import com.slt.statistics.TimePeriod;
+import com.slt.statistics.Sport;
 import com.slt.statistics.achievements.ImageItem;
 
 import java.util.ArrayList;
@@ -27,7 +23,7 @@ public class MainDataSupplier implements DataSupplier {
 
 
     @Override
-    public PieData getPieData(int timePeriod, String walking) {
+    public PieData getPieData() {
         if (pieData == null)
             pieData = TestDataGenerator_toBeRemoved.generateDataPie(1);
 
@@ -35,9 +31,9 @@ public class MainDataSupplier implements DataSupplier {
     }
 
     @Override
-    public LineData getLineData(Context context, int timePeriod, String walking) {
+    public LineData getLineData(Context context, int timePeriod, Sport sport) {
        // if (lineData == null)
-            lineData = TestDataGenerator_toBeRemoved.generateDataLine(context, timePeriod, walking);
+            lineData = TestDataGenerator_toBeRemoved.generateDataLine(context, timePeriod, sport);
 
         return lineData;
     }

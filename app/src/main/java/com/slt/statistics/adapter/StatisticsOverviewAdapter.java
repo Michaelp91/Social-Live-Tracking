@@ -25,11 +25,10 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.slt.R;
-import com.slt.control.AchievementCalculator;
 import com.slt.control.DataProvider;
 import com.slt.data.Timeline;
 import com.slt.statistics.Sport;
-import com.slt.statistics.ViewStatistics;
+import com.slt.statistics.IndividualStatistics;
 import com.slt.statistics.graphs.ChartItem;
 
 import java.util.ArrayList;
@@ -38,12 +37,12 @@ import java.util.List;
 /**
  * Created by matze on 08.11.17.
  */
-public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
+public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
 
     public static View rowView = null;
 
 
-    public ChartDataAdapter(Context context, List<ChartItem> objects) {
+    public StatisticsOverviewAdapter(Context context, List<ChartItem> objects) {
         super(context, 0, objects);
     }
 
@@ -55,15 +54,10 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
 
 
         String[] values = new String[]{"Walking", "Running", "Biking"};
-        //View rowView;
 
-        if (ViewStatistics.getSelectedSportStatistics() != Sport.NONE) {
-            // switch activity
-        }
 
-        // apply styling
-        // holder.chart.setValueTypeface(mTf);
-        if (position > 0) {
+        // draw general view of sports a pie chart, sports overview
+        if (position > 0) { // draw rows
             rowView = inflater.inflate(R.layout.rowlayout_linechart, parent, false);
 
 
@@ -137,7 +131,7 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
 
             rowView.setTag(position);
 
-        } else {
+        } else { // draw pie chart
             ChartItem chartItem = getItem(position);
 
             rowView = chartItem.getView(position, convertView, getContext());
@@ -164,18 +158,18 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
                         break;
                 }
 
-                ViewStatistics.setSelectedSportStatistics(sport);
+                IndividualStatistics.setSelectedSportStatistics(sport);
                 Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
                 //Inform the user which listitem has been clicked
                 Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " +
-                                ViewStatistics.getSelectedSportStatistics() +
+                                IndividualStatistics.getSelectedSportStatistics() +
                                 ", timelineID = " +
                                 timeline.getAchievementsListForMonth().size()
                         , Toast.LENGTH_SHORT).show();
 
                 // start new activity with tabs and details
-                viewStatisticsDetails();
+                viewIndividualStatistics();
             }
         });
 
@@ -198,8 +192,8 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
         return null;
     }
 
-    private void viewStatisticsDetails() {
-        Intent intent = new Intent(getContext(), ViewStatistics.class);
+    private void viewIndividualStatistics() {
+        Intent intent = new Intent(getContext(), IndividualStatistics.class);
 
         getContext().startActivity(intent);
     }
