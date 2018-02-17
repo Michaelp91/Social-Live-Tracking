@@ -864,10 +864,11 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
         if (downloadedImages != null) {
             int max = (downloadedImages.size() >= 3) ? 3 : downloadedImages.size();
-            for (int i = 0; i < max; i++) {
-                int randomNum = ThreadLocalRandom.current().nextInt(0, downloadedImages.size());
 
-                Bitmap bmp = downloadedImages.get(randomNum);
+
+            for (int i = 0; i < max; i++) {
+
+                Bitmap bmp = downloadedImages.get(i);
 
 
                 switch (i) {
@@ -878,12 +879,12 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         break;
                     case 1:
                         tv_noPicAvailable.setVisibility(View.GONE);
-                        iv_pic1.setVisibility(View.VISIBLE);
+                        iv_pic2.setVisibility(View.VISIBLE);
                         iv_pic2.setImageBitmap(bmp);
                         break;
                     case 2:
                         tv_noPicAvailable.setVisibility(View.GONE);
-                        iv_pic1.setVisibility(View.VISIBLE);
+                        iv_pic3.setVisibility(View.VISIBLE);
                         iv_pic3.setImageBitmap(bmp);
                         break;
                 }
@@ -916,22 +917,21 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                             public void run() {
                                 for(TimelineSegment t: tSegments) {
                                     DownloadPictures(t);
-
-                                    SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
-                                    String strDate1 = sdf1.format(choosedTimelineDay.getMyDate());
-
-                                    FunctionalityLogger.getInstance().AddLog("Tag: " + strDate1 + "\n");
-                                    FunctionalityLogger.getInstance().AddLog("Timeline Daten: ");
-
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            updateTimelineView();
-                                        }
-                                    });
-
-
                                 }
+
+                                SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
+                                String strDate1 = sdf1.format(choosedTimelineDay.getMyDate());
+
+                                FunctionalityLogger.getInstance().AddLog("Tag: " + strDate1 + "\n");
+                                FunctionalityLogger.getInstance().AddLog("Timeline Daten: ");
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateTimelineView();
+                                    }
+                                });
+
                             }
                         }).start();
 
