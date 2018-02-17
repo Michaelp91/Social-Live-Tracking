@@ -41,8 +41,6 @@ public class OtherRestCalls {
     public static boolean updateTimelineSegmentForActivity(TimelineSegment t_s) {
         REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
         r_t_s.myActivity = t_s.getMyActivity().getType();
-        LinkedList<String> userComments =  t_s.getStrUserComments();
-        r_t_s.usercomments = userComments;
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.updateTimelineSegment(r_t_s);
         JsonObject jsonObject = null;
