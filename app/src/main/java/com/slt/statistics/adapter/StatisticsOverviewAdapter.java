@@ -1,13 +1,16 @@
 package com.slt.statistics.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +19,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.slt.R;
-import com.slt.control.AchievementCalculator;
 import com.slt.control.DataProvider;
 import com.slt.data.Timeline;
 import com.slt.statistics.Sport;
-import com.slt.statistics.ViewStatistics;
+import com.slt.statistics.IndividualStatistics;
 import com.slt.statistics.graphs.ChartItem;
+import com.slt.statistics.graphs.DayAxisValueFormatter;
+import com.slt.statistics.graphs.MyAxisValueFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +51,15 @@ import java.util.List;
 /**
  * Created by matze on 08.11.17.
  */
-public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
+public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
+        implements OnChartValueSelectedListener{
 
     public static View rowView = null;
+    BarChart mChart;
 
 
-    public ChartDataAdapter(Context context, List<ChartItem> objects) {
+
+    public StatisticsOverviewAdapter(Context context, List<ChartItem> objects) {
         super(context, 0, objects);
     }
 
@@ -55,20 +71,81 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
 
 
         String[] values = new String[]{"Walking", "Running", "Biking"};
-        //View rowView;
 
-        if (ViewStatistics.getSelectedSportStatistics() != Sport.NONE) {
-            // switch activity
-        }
 
-        // apply styling
-        // holder.chart.setValueTypeface(mTf);
-        if (position > 0) {
+        // draw general view of sports a pie chart, sports overview
+        if (position > 0) { // draw rows
             rowView = inflater.inflate(R.layout.rowlayout_linechart, parent, false);
 
 
             ChartItem chartItem = getItem(position);
 
+            mChart = (BarChart) rowView.findViewById(R.id.chart1);
+            mChart.setOnChartValueSelectedListener(this);
+
+            mChart.setDrawBarShadow(false);
+            mChart.setDrawValueAboveBar(true);
+
+            mChart.getDescription().setEnabled(false);
+
+            // if more than 60 entries are displayed in the chart, no values will be
+            // drawn
+            mChart.setMaxVisibleValueCount(60);
+
+            // scaling can now only be done on x- and y-axis separately
+            mChart.setPinchZoom(false);
+
+            mChart.setDrawGridBackground(false);
+            // mChart.setDrawYLabels(false);
+
+            IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
+
+            XAxis xAxis = mChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+           // xAxis.setTypeface(mTfLight);
+            xAxis.setDrawGridLines(false);
+            xAxis.setGranularity(1f); // only intervals of 1 day
+            xAxis.setLabelCount(7);
+            xAxis.setValueFormatter(xAxisFormatter);
+
+            IAxisValueFormatter custom = new MyAxisValueFormatter();
+
+            YAxis leftAxis = mChart.getAxisLeft();
+            //leftAxis.setTypeface(mTfLight);
+            leftAxis.setLabelCount(8, false);
+            leftAxis.setValueFormatter(custom);
+            leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            leftAxis.setSpaceTop(15f);
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            YAxis rightAxis = mChart.getAxisRight();
+            rightAxis.setDrawGridLines(false);
+           // rightAxis.setTypeface(mTfLight);
+            rightAxis.setLabelCount(8, false);
+            rightAxis.setValueFormatter(custom);
+            rightAxis.setSpaceTop(15f);
+            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            Legend l = mChart.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
+            l.setForm(Legend.LegendForm.SQUARE);
+            l.setFormSize(9f);
+            l.setTextSize(11f);
+            l.setXEntrySpace(4f);
+            // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+            // "def", "ghj", "ikl", "mno" });
+            // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+            // "def", "ghj", "ikl", "mno" });
+
+           // XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
+            //mv.setChartView(mChart); // For bounds control
+            //  mChart.setMarker(mv); // Set the marker to the chart
+
+            mChart.setData((BarData) chartItem.getmChartData());
+/*
             LineChart chart = (LineChart) rowView.findViewById(R.id.chart1);
             chart.getDescription().setEnabled(false);
             chart.setDrawGridBackground(false);
@@ -96,7 +173,7 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
 
             // do not forget to refresh the chart
             // holder.chart.invalidate();
-            chart.animateX(500);
+            chart.animateX(500);*/
 
             // image:
             ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
@@ -137,7 +214,7 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
 
             rowView.setTag(position);
 
-        } else {
+        } else { // draw pie chart
             ChartItem chartItem = getItem(position);
 
             rowView = chartItem.getView(position, convertView, getContext());
@@ -164,92 +241,32 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
                         break;
                 }
 
-                ViewStatistics.setSelectedSportStatistics(sport);
+                IndividualStatistics.setSelectedSportStatistics(sport);
                 Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
                 //Inform the user which listitem has been clicked
                 Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " +
-                                ViewStatistics.getSelectedSportStatistics() +
+                                IndividualStatistics.getSelectedSportStatistics() +
                                 ", timelineID = " +
                                 timeline.getAchievementsListForMonth().size()
                         , Toast.LENGTH_SHORT).show();
 
                 // start new activity with tabs and details
-                viewStatisticsDetails();
+                viewIndividualStatistics();
             }
         });
 
         return rowView;
     }
 
-    private View getViewOfGaming(LayoutInflater inflater, View convertView, ViewGroup parent) {
-        return null;
-    }
 
-    private View getViewOfAchivements(LayoutInflater inflater, View convertView, ViewGroup parent) {
-        return null;
-    }
 
-    private View getViewOfDetailsText(LayoutInflater inflater, View convertView, ViewGroup parent) {
-        return null;
-    }
-
-    private View getViewOfLineChart(LayoutInflater inflater, View convertView, ViewGroup parent) {
-        return null;
-    }
-
-    private void viewStatisticsDetails() {
-        Intent intent = new Intent(getContext(), ViewStatistics.class);
+    private void viewIndividualStatistics() {
+        Intent intent = new Intent(getContext(), IndividualStatistics.class);
 
         getContext().startActivity(intent);
     }
 
-    private SpannableString generateCenterText() {
-        SpannableString s = new SpannableString("Revenues\nQuarters 2015");
-        s.setSpan(new RelativeSizeSpan(2f), 0, 8, 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 8, s.length(), 0);
-        return s;
-    }
-
-    /**
-     * generates less data (1 DataSet, 4 values)
-     *
-     * @return
-     */
-    protected PieData generatePieData() {
-        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "OpenSans-Regular.ttf");
-
-        int count = 4;
-
-        ArrayList<PieEntry> entries1 = new ArrayList<PieEntry>();
-
-        for (int i = 0; i < count; i++) {
-            entries1.add(new PieEntry((float) ((Math.random() * 60) + 40), "Quarter " + (i + 1)));
-        }
-
-        PieDataSet ds1 = new PieDataSet(entries1, "Quarterly Revenues 2015");
-        ds1.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        ds1.setSliceSpace(2f);
-        ds1.setValueTextColor(Color.WHITE);
-        ds1.setValueTextSize(12f);
-
-        PieData d = new PieData(ds1);
-        d.setValueTypeface(tf);
-
-        return d;
-    }
-
-    private SpannableString generateCenterSpannableText() {
-
-        SpannableString s = new SpannableString("MPAndroidChart\ndeveloped by Philipp Jahoda");
-        s.setSpan(new RelativeSizeSpan(1.7f), 0, 14, 0);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), 14, s.length() - 15, 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, s.length() - 15, 0);
-        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
-        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
-        return s;
-    }
 
     @Override
     public int getItemViewType(int position) {
@@ -262,5 +279,30 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
         return 3; // we have 3 different item-types
     }
 
+    protected RectF mOnValueSelectedRectF = new RectF();
 
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+
+        if (e == null)
+            return;
+
+        RectF bounds = mOnValueSelectedRectF;
+        mChart.getBarBounds((BarEntry) e, bounds);
+        MPPointF position = mChart.getPosition(e, YAxis.AxisDependency.LEFT);
+
+        Log.i("bounds", bounds.toString());
+        Log.i("position", position.toString());
+
+        Log.i("x-index",
+                "low: " + mChart.getLowestVisibleX() + ", high: "
+                        + mChart.getHighestVisibleX());
+
+        MPPointF.recycleInstance(position);
+    }
+
+    @Override
+    public void onNothingSelected() { }
 }

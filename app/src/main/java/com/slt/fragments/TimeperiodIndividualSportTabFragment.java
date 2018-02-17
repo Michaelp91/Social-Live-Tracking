@@ -11,7 +11,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
 import com.slt.data.Achievement;
 import com.slt.statistics.Sport;
-import com.slt.statistics.adapter.DetailsDataAdapter;
+import com.slt.statistics.adapter.TimeperiodIndividualSportTabFragmentAdapter;
 import com.slt.statistics.graphs.LineChartItem;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.LinkedList;
 /**
  * Created by Matze
  */
-public class FragmentSportTab extends Fragment {
+public class TimeperiodIndividualSportTabFragment extends Fragment {
 
     public Sport sport = null;
     public String period = "";
@@ -31,7 +31,7 @@ public class FragmentSportTab extends Fragment {
     public LinkedList<Achievement> achievements = null;
 
 
-    public FragmentSportTab() {
+    public TimeperiodIndividualSportTabFragment() {
         // Required empty public constructor
     }
 
@@ -63,7 +63,7 @@ public class FragmentSportTab extends Fragment {
         listWithData.add(this.achievements);
 
         // todo create adapter for the details within time period
-        DetailsDataAdapter adapter = new DetailsDataAdapter(getContext(), listWithData);
+        TimeperiodIndividualSportTabFragmentAdapter adapter = new TimeperiodIndividualSportTabFragmentAdapter(getContext(), listWithData);
 
         l.setAdapter(adapter);
 

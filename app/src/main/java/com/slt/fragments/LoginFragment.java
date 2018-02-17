@@ -39,12 +39,10 @@ import com.slt.restapi.DataUpdater;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.UsefulMethods;
-import com.slt.statistics.GeneralViewOfStatistics;
+import com.slt.statistics.StatisticsOverview;
 import com.slt.utils.Constants;
 import com.slt.data.User;
 import com.slt.network.RetrofitInterface;
-import com.slt.restapi.TemporaryDB;
-import com.slt.restapi.data.REST_User_Functionalities;
 
 import android.view.View.OnClickListener;
 
@@ -211,7 +209,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void viewStatistics() {
-        Intent intent = new Intent( getActivity()  , GeneralViewOfStatistics.class);
+        Intent intent = new Intent( getActivity()  , StatisticsOverview.class);
 
         startActivity(intent);
 

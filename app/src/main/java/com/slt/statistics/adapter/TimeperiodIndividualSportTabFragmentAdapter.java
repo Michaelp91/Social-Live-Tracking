@@ -1,48 +1,32 @@
 package com.slt.statistics.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
-import com.slt.MainActivity;
 import com.slt.R;
-import com.slt.control.AchievementCalculator;
 import com.slt.data.Achievement;
-import com.slt.data.Timeline;
-import com.slt.data.TimelineDay;
-import com.slt.restapi.RetrieveOperations;
 import com.slt.statistics.Sport;
-import com.slt.statistics.ViewStatistics;
 import com.slt.statistics.adapter.details_infos_list.*;
 // macht momentan Fehler bei mir:
 //import com.slt.statistics.achievements.DetailsActivity;
-import com.slt.statistics.achievements.GridViewAdapter;
-import com.slt.statistics.achievements.ImageItem;
-import com.slt.statistics.data.DataObjectsCollection;
 import com.slt.statistics.graphs.ChartItem;
 import com.slt.statistics.graphs.LineChartItem;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +35,7 @@ import java.util.List;
  * Created by matze on 02.01.18.
  */
 
-public class DetailsDataAdapter extends ArrayAdapter {
+public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter {
     private GridView gridView;
     public Sport sport = null;
     public String period = "";
@@ -60,15 +44,12 @@ public class DetailsDataAdapter extends ArrayAdapter {
     public LinkedList<Achievement> achievements = null;
 
 
-    public DetailsDataAdapter(@NonNull Context context, List list) {
+    public TimeperiodIndividualSportTabFragmentAdapter(@NonNull Context context, List list) {
         super(context, 0, list);
 
         lineData = (LineChartItem) list.get(0);
         infos = (HashMap<String, String>) list.get(1);
         achievements = (LinkedList<Achievement>) list.get(2);
-
-
-
     }
 
     @Override
