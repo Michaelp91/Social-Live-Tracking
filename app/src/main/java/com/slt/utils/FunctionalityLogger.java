@@ -13,6 +13,7 @@ import java.io.IOException;
 
 public class FunctionalityLogger {
     private FileWriter writer;
+    private FileWriter errorLogger;
     private static final FunctionalityLogger ourInstance = new FunctionalityLogger();
 
     public static FunctionalityLogger getInstance() {
@@ -28,7 +29,10 @@ public class FunctionalityLogger {
                 boolean test2 = false;
             }
             File gpxfile = new File(root, "TimelineLog.txt");
+            File file2 = new File(root, "ErrorLog.txt");
             writer = new FileWriter(gpxfile);
+            errorLogger = new FileWriter(file2);
+            errorLogger.append("Errors: ");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,9 +46,17 @@ public class FunctionalityLogger {
         }
     }
 
+    public void AddErrorLog(String string) {
+        try {
+            errorLogger.append("\n" + string);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void FinishFileWriting() {
         try {
-            writer.flush();
+            errorLogger.close();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
