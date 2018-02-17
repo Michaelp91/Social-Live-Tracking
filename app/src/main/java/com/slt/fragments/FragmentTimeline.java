@@ -42,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.location.DetectedActivity;
@@ -241,22 +242,33 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
 
                         counter_timelinedays++;
-                    } else if (t_d.getID().equals(choosedTimelineDay.getID()) && t_d.getMySegments().size() != choosedTimelineDay.getMySegments().size()
-                            && t_d.getMySegments().getLast().getMyLocationPoints().size() != 0) {
-                        picViews = new HashMap<>();
-                        h_viewedTimelineSegments = new HashMap<>();
-                        choosedTimelineDay = t_d;
+                    }
 
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                choosedChildren.removeAllViews();
-                            }
-                        });
+                    //TODO: Problem with updating TimelineView, look at this problem later
+                    /*
+                    else if (choosedTimelineDay != null) {
+
+                        if(t_d.getID().equals(choosedTimelineDay.getID()) && t_d.getMySegments().size() != choosedTimelineDay.getMySegments().size()
+                                && t_d.getMySegments().getLast().getMyLocationPoints().size() != 0) {
+
+                            picViews = new HashMap<>();
+                            h_viewedTimelineSegments = new HashMap<>();
+                            choosedTimelineDay = t_d;
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    choosedChildren.removeAllViews();
+                                }
+                            });
+                        }
+                        */
 
                     }
 
-                    if (choosedChildren != null) {
+                //TODO: Problem with updating TimelineView, look at this problem later
+                    /*
+                    if (choosedChildren != null && choosedTimelineDay != null) {
 
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -266,8 +278,10 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                             }
                         });
                     }
+                    */
+
                 }
-            }
+
 
         }catch(Exception e) {
             FunctionalityLogger.getInstance().AddErrorLog("UpdateTimelineDay(): " + e.getMessage().toString());
@@ -293,6 +307,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
             LinkedList<TimelineSegment> timeLineSegments = choosedTimelineDay.getMySegments();
             boolean isAdded = false;
+            boolean unknownSegmentAdded = false;
 
             for (final TimelineSegment tSegment : timeLineSegments) {
 
@@ -315,8 +330,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                     LinearLayout ll_shortLine = null;
 
+
+
                     if (!locationEntries.isEmpty() && detectedActivity.getType() !=
-                            com.slt.definitions.Constants.TIMELINEACTIVITY.TILTING) {
+                            com.slt.definitions.Constants.TIMELINEACTIVITY.TILTING
+                            && detectedActivity.getType() != com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
+                            && (!unknownSegmentAdded || detectedActivity.getType() != com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN)  ) {
+                        unknownSegmentAdded = false;
                         FunctionalityLogger.getInstance().AddLog("\nTimeline Segment: ");
                         FunctionalityLogger.getInstance().AddLog("Number: " + loggerCounter);
                         FunctionalityLogger.getInstance().AddLog("ObjectId: " + tSegment.getID());
@@ -338,14 +358,14 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
                         TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
 
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                         String strDate = sdf.format(fstPoint.getMyEntryDate());
 
                         FunctionalityLogger.getInstance().AddLog("Start: " + strDate);
                         FunctionalityLogger.getInstance().AddLog("Location Point(Longitude, Lattitude): " + fstPoint.getLongitude() + ", " + fstPoint.getLatitude());
 
 
-                        myEntryDate.setText(strDate);
+                        myEntryDate.setText(strDate + " Uhr");
                         placeAndaddress.setText(tSegment.getStartPlace());
 
                         if (timeLineSegments.indexOf(tSegment) < timeLineSegments.size() - 1) { //Draw Segment and the Endpoint
@@ -359,10 +379,17 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                             final LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
                             final ImageView iv_pictures = (ImageView) view_segment.findViewById(R.id.iv_addPicture);
                             final ImageView iv_comments = (ImageView) view_segment.findViewById(R.id.iv_addComments);
+                            final ImageView iv_activity = (ImageView) view_segment.findViewById(R.id.iv_addActivity);
                             iv_details = (ImageView) view_segment.findViewById(R.id.iv_addDetails);
                             final TextView tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
                             tv_usercomments.setTag(tSegment);
 
+
+
+                            activeTime.setText(Double.toString(tSegment.getDuration()));
+                            activeDistance.setText(Double.toString(tSegment.getActiveDistance()));
+
+                            iv_activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_running, 100, 100)));
                             iv_pictures.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_pictures, 100, 100)));
                             iv_comments.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_comments, 100, 100)));
                             iv_details.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_details, 100, 100)));
@@ -382,6 +409,96 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     TimelineSegment tSegment = (TimelineSegment) v.getTag();
                                     choosedPicView = picViews.get(tSegment.getID());
                                     selectImage();
+                                }
+                            });
+
+                            iv_activity.setTag(tSegment);
+                            final LinearLayout finalLl_shortLine1 = ll_shortLine;
+                            iv_activity.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    final Dialog commentDialog = new Dialog(getActivity());
+                                    final TimelineSegment tSegment = (TimelineSegment) iv_activity.getTag();
+                                    commentDialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
+                                    commentDialog.setContentView(R.layout.popup_activity);
+
+                                    final Spinner spinner = (Spinner) commentDialog.findViewById(R.id.sp_activity);
+                                    Button btnOk = (Button) commentDialog.findViewById(R.id.btn_ok);
+
+                                    btnOk.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            final String IN_VEHICLE = "In Vehicle";
+                                            final String On_Bicycle = "On Bicycle";
+                                            final String On_Foot = "On Foot";
+                                            final String Walking = "Walking";
+                                            final String Running = "Running";
+
+                                            String strActivity = spinner.getSelectedItem().toString();
+                                            int intActivity = tSegment.getMyActivity().getType();
+
+
+
+                                            switch (strActivity) {
+                                                case IN_VEHICLE:
+                                                    intActivity = 0;
+                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.in_vehicle, 50, 50)));
+                                                    ll_line.setBackgroundResource(R.color.md_red_500);
+                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_red_500);
+                                                    break;
+                                                case On_Bicycle:
+                                                    intActivity = 1;
+                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.biking, 50, 50)));
+                                                    ll_line.setBackgroundResource(R.color.md_light_green_600);
+                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_light_green_600);
+                                                    break;
+
+                                                case On_Foot:
+                                                    intActivity = 2;
+                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
+                                                    ll_line.setBackgroundResource(R.color.md_blue_400);
+                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_blue_400);
+                                                    break;
+
+                                                case Walking:
+                                                    intActivity = 7;
+                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
+                                                    ll_line.setBackgroundColor(Color.GREEN);
+                                                    finalLl_shortLine1.setBackgroundColor(Color.GREEN);
+                                                    break;
+
+                                                case Running:
+                                                    intActivity = 8;
+                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.running, 50, 50)));
+                                                    ll_line.setBackgroundResource(R.color.md_amber_800);
+                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_amber_800);
+                                                    break;
+
+                                            }
+
+                                            User user = DataProvider.getInstance().getOwnUser();
+                                            DetectedActivity detectedActivity = new DetectedActivity(intActivity, 100);
+                                            tSegment.setMyActivity(detectedActivity);
+
+
+                                            new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    OtherRestCalls.updateTimelineSegmentForActivity(tSegment);
+
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            commentDialog.hide();
+                                                        }
+                                                    });
+                                                }
+                                            }).start();
+
+                                        }
+                                    });
+
+                                    commentDialog.show();
                                 }
                             });
 
@@ -442,32 +559,37 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                             switch (detectedActivity.getType()) {
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
-                                    activity.setImageResource(R.drawable.walking);
+                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
                                     ll_line.setBackgroundColor(Color.GREEN);
                                     finalLl_shortLine.setBackgroundColor(Color.GREEN);
                                     break;
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING:
-                                    activity.setImageResource(R.drawable.running);
+                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.running, 50, 50)));
                                     ll_line.setBackgroundResource(R.color.md_amber_800);
                                     finalLl_shortLine.setBackgroundResource(R.color.md_amber_800);
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.IN_VEHICLE:
-                                    activity.setImageResource(R.drawable.in_vehicle);
+                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.in_vehicle, 50, 50)));
                                     ll_line.setBackgroundResource(R.color.md_red_500);
                                     finalLl_shortLine.setBackgroundResource(R.color.md_red_500);
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
-                                    activity.setImageResource(R.drawable.walking);
+                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
                                     ll_line.setBackgroundResource(R.color.md_blue_400);
                                     finalLl_shortLine.setBackgroundResource(R.color.md_blue_400);
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE:
-                                    activity.setImageResource(R.drawable.biking);
+                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.biking, 50, 50)));
                                     ll_line.setBackgroundResource(R.color.md_light_green_600);
                                     finalLl_shortLine.setBackgroundResource(R.color.md_light_green_600);
+                                    break;
+
+                                case com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN:
+                                    unknownSegmentAdded = true;
+                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.unknown, 50, 50)));
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.STILL:
@@ -478,10 +600,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     activity.setVisibility(View.GONE);
                                     break;
                             }
-
-
-                            activeTime.setText(Double.toString(tSegment.getDuration()));
-                            activeDistance.setText(Double.toString(tSegment.getActiveDistance()));
 
 
 
@@ -508,6 +626,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         LocationEntry fstPoint = locationEntries.get(0);
 
                         view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
+                        ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
                         TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
 
                         TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);

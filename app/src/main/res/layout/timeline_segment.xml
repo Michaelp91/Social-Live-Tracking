@@ -153,14 +153,13 @@
                 android:layout_height="20dp"
                 />
 
-            <!--
+
             <ImageView
                 android:id="@+id/iv_addActivity"
                 android:layout_marginLeft="25dp"
                 android:layout_width="50dp"
                 android:layout_height="20dp"
-                android:background="@drawable/timeline_running"
-                /> -->
+                />
 
         </LinearLayout>
 

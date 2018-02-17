@@ -138,6 +138,12 @@ public class TimelineSegment {
 
 
     /**
+     * Duration
+     */
+    private double duration;
+
+
+    /**
      * Constructor to initialize all data
      * @param activity The activity to set
      * @param startTime The start Time of the segment
@@ -314,6 +320,10 @@ public class TimelineSegment {
         intent.putExtra(Constants.INTENT_EXTRAS.USERID, userID);
         intent.putExtra(Constants.INTENT_EXTRAS.TIMELINE_SEGMENT_DATE, this.startTime);
         LocalBroadcastManager.getInstance(ApplicationController.getContext()).sendBroadcast(intent);
+    }
+
+    public void setDuration(double duration) {
+        this.duration = duration;
     }
 
     /**
@@ -523,7 +533,7 @@ public class TimelineSegment {
      * since we might have to merge
      * @param myActivity The activity we want to set
      */
-    void setMyActivity(DetectedActivity myActivity) {
+    public void setMyActivity(DetectedActivity myActivity) {
         Log.i(TAG, "setMyActivity: Set activity to: " + myActivity.getType());
         //if new activity is not a sport set the active counters to 0
         if(myActivity.getType() == DetectedActivity.STILL ||
@@ -685,6 +695,15 @@ public class TimelineSegment {
      */
     public LinkedList<UserComment> getUserComments() {
         return new LinkedList<>(userComments);
+    }
+
+
+    /**
+     *
+     * @param activeDistance set the active Distance
+     */
+    public void setActiveDistance(double activeDistance) {
+        this.activeDistance = activeDistance;
     }
 
     /**

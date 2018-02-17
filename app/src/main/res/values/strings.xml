@@ -1,4 +1,14 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/tools">
+
+    <array name="activities">
+        <item android:state_activated="true" android:color="#000000">Change Activity...</item>
+        <item android:state_activated="true" android:color="#000000">In Vehicle</item>
+        <item android:state_activated="true" android:color="#000000">On Bicycle</item>
+        <item android:state_activated="true" android:color="#000000">On Foot</item>
+        <item android:state_activated="true" android:color="#000000">Walking</item>
+        <item android:state_activated="true" android:color="#000000">Running</item>
+    </array>
+
     <string name="app_name">Social Live Tracking</string>
 
 
