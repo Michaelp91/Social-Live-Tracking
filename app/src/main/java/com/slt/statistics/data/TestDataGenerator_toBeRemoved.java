@@ -5,29 +5,24 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.slt.R;
-import com.slt.control.AchievementCalculator;
-import com.slt.control.DataProvider;
-import com.slt.data.Timeline;
-import com.slt.data.TimelineDay;
-import com.slt.definitions.Constants;
 import com.slt.statistics.Sport;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.LinkedList;
 
 /**
  * Created by matze on 02.01.18.
@@ -149,5 +144,43 @@ public class TestDataGenerator_toBeRemoved {
                 System.err.print("No such time period.");
         }
         return cd;
+    }
+
+
+    public static BarData getBarData(int timePeriod, Sport sportType) {
+
+        float start = 1f;
+
+        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+
+        for (int i = (int) start; i < start + 10 + 1; i++) {
+            float mult = (20 + 1);
+            float val = (float) (Math.random() * mult);
+
+            if (Math.random() * 100 < 25) {
+                yVals1.add(new BarEntry(i, val));
+            } else {
+                yVals1.add(new BarEntry(i, val));
+            }
+        }
+
+        BarDataSet set1;
+
+
+        set1 = new BarDataSet(yVals1, "The year 2017");
+
+        set1.setDrawIcons(false);
+
+        set1.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        dataSets.add(set1);
+
+        BarData data = new BarData(dataSets);
+        data.setValueTextSize(10f);
+            /*data.setValueTypeface(mTfLight);
+            data.setBarWidth(0.9f);*/
+
+        return data;
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
 import com.slt.R;
@@ -20,6 +21,7 @@ public class MainDataSupplier implements DataSupplier {
 
     PieData pieData = null;
     LineData lineData = null;
+    BarData barData = null;
 
 
     @Override
@@ -36,6 +38,14 @@ public class MainDataSupplier implements DataSupplier {
             lineData = TestDataGenerator_toBeRemoved.generateDataLine(context, timePeriod, sport);
 
         return lineData;
+    }
+
+    @Override
+    public BarData getBarData( int timePeriod, Sport sport) {
+        // if (lineData == null)
+        barData = TestDataGenerator_toBeRemoved.getBarData(timePeriod, sport);
+
+        return barData;
     }
 
     @Override

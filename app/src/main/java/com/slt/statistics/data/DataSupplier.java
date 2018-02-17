@@ -2,6 +2,7 @@ package com.slt.statistics.data;
 
 import android.content.Context;
 
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
 import com.slt.statistics.Sport;
@@ -18,6 +19,8 @@ public interface DataSupplier {
     public PieData getPieData();
 
     public LineData getLineData(Context context, int timePeriod, Sport sport);
+
+    public BarData getBarData(int timePeriod, Sport sport);
 
     public ArrayList<ImageItem> getImageItems(Context context, String achivement);
 }
