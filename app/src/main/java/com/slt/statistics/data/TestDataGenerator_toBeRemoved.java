@@ -34,6 +34,9 @@ public class TestDataGenerator_toBeRemoved {
     public static LineData dayLineData = null;
     public static LineData weekLineData = null;
     public static LineData monthLineData = null;
+    private static BarData dayBarData;
+    private static BarData monthBarData;
+    private static BarData weekBarData;
 
 
     /**
@@ -153,15 +156,49 @@ public class TestDataGenerator_toBeRemoved {
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
 
-        for (int i = (int) start; i < start + 10 + 1; i++) {
+
+        int xAxisMaxSize = -1;
+
+        // if sporttype has not changed, check if the data has already been calculated
+        if(sportTypeOfLineData == sportType) {
+
+            if (timePeriod == 0 && dayBarData != null)
+                return dayBarData;
+            else if (timePeriod == 1 && weekBarData != null)
+                return weekBarData;
+            else if (timePeriod == 2 && monthBarData != null)
+                return monthBarData;
+
+        }
+
+        switch(timePeriod) {
+            case 0:
+                xAxisMaxSize = 24;
+                break;
+            case 1:
+                xAxisMaxSize = 7;
+                break;
+            case 2:
+
+                // init calender
+                java.util.Date date= new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+
+                // get the number of days in the current month
+                xAxisMaxSize = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+                break;
+            default:
+                System.err.print("No such time period.");
+        }
+
+        for (int i = 0; i < xAxisMaxSize; i++) {
             float mult = (20 + 1);
             float val = (float) (Math.random() * mult);
 
-            if (Math.random() * 100 < 25) {
-                yVals1.add(new BarEntry(i, val));
-            } else {
-                yVals1.add(new BarEntry(i, val));
-            }
+            yVals1.add(new BarEntry(i+1, val));
+
         }
 
         BarDataSet set1;
