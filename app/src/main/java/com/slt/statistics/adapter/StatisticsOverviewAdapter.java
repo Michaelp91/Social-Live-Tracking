@@ -52,10 +52,11 @@ import java.util.List;
  * Created by matze on 08.11.17.
  */
 public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
-        implements OnChartValueSelectedListener{
+        {
 
     public static View rowView = null;
     BarChart mChart;
+
 
 
 
@@ -81,7 +82,7 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
             ChartItem chartItem = getItem(position);
 
             mChart = (BarChart) rowView.findViewById(R.id.chart1);
-            mChart.setOnChartValueSelectedListener(this);
+            //mChart.setOnChartValueSelectedListener(this);
 
             mChart.setDrawBarShadow(false);
             mChart.setDrawValueAboveBar(true);
@@ -279,30 +280,6 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
         return 3; // we have 3 different item-types
     }
 
-    protected RectF mOnValueSelectedRectF = new RectF();
 
 
-    @SuppressLint("NewApi")
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-
-        if (e == null)
-            return;
-
-        RectF bounds = mOnValueSelectedRectF;
-        mChart.getBarBounds((BarEntry) e, bounds);
-        MPPointF position = mChart.getPosition(e, YAxis.AxisDependency.LEFT);
-
-        Log.i("bounds", bounds.toString());
-        Log.i("position", position.toString());
-
-        Log.i("x-index",
-                "low: " + mChart.getLowestVisibleX() + ", high: "
-                        + mChart.getHighestVisibleX());
-
-        MPPointF.recycleInstance(position);
-    }
-
-    @Override
-    public void onNothingSelected() { }
 }

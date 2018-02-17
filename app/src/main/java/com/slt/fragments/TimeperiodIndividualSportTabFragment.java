@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
 import com.slt.data.Achievement;
 import com.slt.statistics.Sport;
 import com.slt.statistics.adapter.TimeperiodIndividualSportTabFragmentAdapter;
+import com.slt.statistics.graphs.BarChartItem;
 import com.slt.statistics.graphs.LineChartItem;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
     public LineData lineData = null;
     public HashMap<String, String> infos = null;
     public LinkedList<Achievement> achievements = null;
+    public BarData barData;
 
 
     public TimeperiodIndividualSportTabFragment() {
@@ -54,7 +57,7 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
         ArrayList<Object> listWithData = new ArrayList<>();
 
         // chart
-        listWithData.add(new LineChartItem(this.lineData, getContext().getApplicationContext()));
+        listWithData.add(new BarChartItem(this.barData, getContext().getApplicationContext()));
 
         // infos
         listWithData.add(this.infos);
@@ -72,6 +75,10 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
 
     public void setLineData(LineData lineData) {
         this.lineData = lineData;
+    }
+
+    public void setBarData(BarData barData) {
+        this.barData = barData;
     }
 
     public void setInfos(HashMap<String, String> infos) {

@@ -1,8 +1,11 @@
 package com.slt.statistics.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.RectF;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +16,30 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.slt.R;
 import com.slt.data.Achievement;
 import com.slt.statistics.Sport;
 import com.slt.statistics.adapter.details_infos_list.*;
 // macht momentan Fehler bei mir:
 //import com.slt.statistics.achievements.DetailsActivity;
+import com.slt.statistics.graphs.BarChartItem;
 import com.slt.statistics.graphs.ChartItem;
+import com.slt.statistics.graphs.DayAxisValueFormatter;
 import com.slt.statistics.graphs.LineChartItem;
+import com.slt.statistics.graphs.MyAxisValueFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,19 +50,25 @@ import java.util.List;
  * Created by matze on 02.01.18.
  */
 
-public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter {
+public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
+    implements OnChartValueSelectedListener {
     private GridView gridView;
     public Sport sport = null;
     public String period = "";
-    public LineChartItem lineData = null;
+    //public LineChartItem lineData = null;
+    public BarChartItem barData = null;
     public HashMap<String, String> infos = null;
     public LinkedList<Achievement> achievements = null;
+    protected RectF mOnValueSelectedRectF = new RectF();
+    BarChart mChart;
+
 
 
     public TimeperiodIndividualSportTabFragmentAdapter(@NonNull Context context, List list) {
         super(context, 0, list);
 
-        lineData = (LineChartItem) list.get(0);
+       // lineData = (LineChartItem) list.get(0);
+        barData = (BarChartItem) list.get(0);
         infos = (HashMap<String, String>) list.get(1);
         achievements = (LinkedList<Achievement>) list.get(2);
     }
@@ -189,36 +210,99 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter {
 
         ChartItem chartItem = (ChartItem) getItem(position);
 
-        LineChart chart = (LineChart) rowView.findViewById(R.id.chart1);
-        chart.getDescription().setEnabled(false);
-        chart.setDrawGridBackground(false);
+        mChart = (BarChart) rowView.findViewById(R.id.chart1);
+        mChart.setOnChartValueSelectedListener(this);
 
-        XAxis xAxis = chart.getXAxis();
+        mChart.setDrawBarShadow(false);
+        mChart.setDrawValueAboveBar(true);
+
+        mChart.getDescription().setEnabled(false);
+
+        // if more than 60 entries are displayed in the chart, no values will be
+        // drawn
+        mChart.setMaxVisibleValueCount(60);
+
+        // scaling can now only be done on x- and y-axis separately
+        mChart.setPinchZoom(false);
+
+        mChart.setDrawGridBackground(false);
+        // mChart.setDrawYLabels(false);
+
+        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
+
+        XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTypeface(chartItem.getmTf());
+        // xAxis.setTypeface(mTfLight);
         xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(true);
+        xAxis.setGranularity(1f); // only intervals of 1 day
+        xAxis.setLabelCount(7);
+        xAxis.setValueFormatter(xAxisFormatter);
 
-        YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setTypeface(chartItem.getmTf());
-        leftAxis.setLabelCount(5, false);
+        IAxisValueFormatter custom = new MyAxisValueFormatter();
+
+        YAxis leftAxis = mChart.getAxisLeft();
+        //leftAxis.setTypeface(mTfLight);
+        leftAxis.setLabelCount(8, false);
+        leftAxis.setValueFormatter(custom);
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setSpaceTop(15f);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-        YAxis rightAxis = chart.getAxisRight();
-        rightAxis.setTypeface(chartItem.getmTf());
-        rightAxis.setLabelCount(5, false);
+        YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setDrawGridLines(false);
+        // rightAxis.setTypeface(mTfLight);
+        rightAxis.setLabelCount(8, false);
+        rightAxis.setValueFormatter(custom);
+        rightAxis.setSpaceTop(15f);
         rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-        // set data
-        chart.setData((LineData) chartItem.getmChartData());
-        chart.setData((LineData) chartItem.getmChartData());
+        Legend l = mChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setFormSize(9f);
+        l.setTextSize(11f);
+        l.setXEntrySpace(4f);
+        // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+        // "def", "ghj", "ikl", "mno" });
+        // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+        // "def", "ghj", "ikl", "mno" });
 
-        // do not forget to refresh the chart
-        // holder.chart.invalidate();
-        chart.animateX(500);
+        // XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
+        //mv.setChartView(mChart); // For bounds control
+        //  mChart.setMarker(mv); // Set the marker to the chart
+
+        mChart.setData((BarData) chartItem.getmChartData());
 
         return rowView;
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+
+        if (e == null)
+            return;
+
+        RectF bounds = mOnValueSelectedRectF;
+        mChart.getBarBounds((BarEntry) e, bounds);
+        MPPointF position = mChart.getPosition(e, YAxis.AxisDependency.LEFT);
+
+        Log.i("bounds", bounds.toString());
+        Log.i("position", position.toString());
+
+        Log.i("x-index",
+                "low: " + mChart.getLowestVisibleX() + ", high: "
+                        + mChart.getHighestVisibleX());
+
+        MPPointF.recycleInstance(position);
+    }
+
+    @Override
+    public void onNothingSelected() {
+
     }
 
  /*   // Prepare some dummy data for gridview

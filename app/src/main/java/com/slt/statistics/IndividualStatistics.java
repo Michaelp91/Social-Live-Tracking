@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
 import com.slt.control.DataProvider;
@@ -41,15 +42,16 @@ public class IndividualStatistics extends AppCompatActivity {
         for (int i = 0; i < periodNames.length; i++) {
 
             // line chart
-            LineData lineData = DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), i, IndividualStatistics.getSelectedSportStatistics());
-
+           // LineData lineData = //DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), i, IndividualStatistics.getSelectedSportStatistics());
+             BarData barData = DataObjectsCollection.dataSupplier.getBarData(i, IndividualStatistics.getSelectedSportStatistics());
             TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment = new TimeperiodIndividualSportTabFragment();
 
             timeperiodIndividualSportTabFragment.setPeriod(periodNames[i]);
 
             timeperiodIndividualSportTabFragment.setSport(IndividualStatistics.getSelectedSportStatistics());
 
-            timeperiodIndividualSportTabFragment.setLineData(lineData);
+            //timeperiodIndividualSportTabFragment.setLineData(lineData);
+            timeperiodIndividualSportTabFragment.setBarData(barData);
 
             // infos
             // TODO--------------------- replace with real date from data provider
