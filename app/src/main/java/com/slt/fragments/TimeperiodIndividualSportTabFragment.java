@@ -14,7 +14,6 @@ import com.slt.data.Achievement;
 import com.slt.statistics.Sport;
 import com.slt.statistics.adapter.TimeperiodIndividualSportTabFragmentAdapter;
 import com.slt.statistics.graphs.BarChartItem;
-import com.slt.statistics.graphs.LineChartItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,7 @@ import java.util.LinkedList;
 public class TimeperiodIndividualSportTabFragment extends Fragment {
 
     public Sport sport = null;
-    public String period = "";
+    public int period = 0;
     public LineData lineData = null;
     public HashMap<String, String> infos = null;
     public LinkedList<Achievement> achievements = null;
@@ -68,6 +67,10 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
         // todo create adapter for the details within time period
         TimeperiodIndividualSportTabFragmentAdapter adapter = new TimeperiodIndividualSportTabFragmentAdapter(getContext(), listWithData);
 
+        adapter.setPeriod(this.period);
+
+        adapter.setSport(this.sport);
+
         l.setAdapter(adapter);
 
         return viewGroup;
@@ -93,7 +96,7 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
         this.sport = sport;
     }
 
-    public void setPeriod(String period) {
+    public void setPeriod(int period) {
         this.period = period;
     }
 }

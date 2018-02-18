@@ -152,11 +152,7 @@ public class TestDataGenerator_toBeRemoved {
 
     public static BarData getBarData(int timePeriod, Sport sportType) {
 
-        float start = 1f;
-
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-
-
         int xAxisMaxSize = -1;
 
         // if sporttype has not changed, check if the data has already been calculated

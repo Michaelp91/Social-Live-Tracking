@@ -46,7 +46,7 @@ public class IndividualStatistics extends AppCompatActivity {
              BarData barData = DataObjectsCollection.dataSupplier.getBarData(i, IndividualStatistics.getSelectedSportStatistics());
             TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment = new TimeperiodIndividualSportTabFragment();
 
-            timeperiodIndividualSportTabFragment.setPeriod(periodNames[i]);
+            timeperiodIndividualSportTabFragment.setPeriod(i);
 
             timeperiodIndividualSportTabFragment.setSport(IndividualStatistics.getSelectedSportStatistics());
 

@@ -17,14 +17,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
@@ -38,13 +37,15 @@ import com.slt.statistics.adapter.details_infos_list.*;
 import com.slt.statistics.graphs.BarChartItem;
 import com.slt.statistics.graphs.ChartItem;
 import com.slt.statistics.graphs.DayAxisValueFormatter;
-import com.slt.statistics.graphs.LineChartItem;
 import com.slt.statistics.graphs.MyAxisValueFormatter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by matze on 02.01.18.
@@ -54,7 +55,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
     implements OnChartValueSelectedListener {
     private GridView gridView;
     public Sport sport = null;
-    public String period = "";
+    public int period = 0;
     //public LineChartItem lineData = null;
     public BarChartItem barData = null;
     public HashMap<String, String> infos = null;
@@ -81,7 +82,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         switch (position) {
             case 0:
-                return getViewOfLineChart(inflater, position, convertView, parent);
+                return getViewOfBarChart(inflater, position, convertView, parent);
             case 1:
                 return getViewOfDetailsText(inflater, position, convertView, parent);
             case 2:
@@ -200,12 +201,12 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         this.sport = sport;
     }
 
-    public void setPeriod(String period) {
+    public void setPeriod(int period) {
         this.period = period;
     }
 
-    private View getViewOfLineChart(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
-
+    private View getViewOfBarChart(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
+        IAxisValueFormatter xAxisFormatter;
         View rowView = inflater.inflate(R.layout.details_rowlayout_linechart, parent, false);
 
         ChartItem chartItem = (ChartItem) getItem(position);
@@ -228,11 +229,23 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         mChart.setDrawGridBackground(false);
         // mChart.setDrawYLabels(false);
 
-        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
+        if(this.period == 0) {
+            xAxisFormatter = new IAxisValueFormatter() {
+
+                private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+
+                    long millis = TimeUnit.HOURS.toMillis((long) value);
+                    return mFormat.format(new Date(millis));
+                }
+            };
+        } else
+            xAxisFormatter = new DayAxisValueFormatter(mChart);
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        // xAxis.setTypeface(mTfLight);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f); // only intervals of 1 day
         xAxis.setLabelCount(7);
@@ -241,7 +254,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         IAxisValueFormatter custom = new MyAxisValueFormatter();
 
         YAxis leftAxis = mChart.getAxisLeft();
-        //leftAxis.setTypeface(mTfLight);
         leftAxis.setLabelCount(8, false);
         leftAxis.setValueFormatter(custom);
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
@@ -250,7 +262,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setDrawGridLines(false);
-        // rightAxis.setTypeface(mTfLight);
         rightAxis.setLabelCount(8, false);
         rightAxis.setValueFormatter(custom);
         rightAxis.setSpaceTop(15f);
@@ -265,14 +276,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         l.setFormSize(9f);
         l.setTextSize(11f);
         l.setXEntrySpace(4f);
-        // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-        // "def", "ghj", "ikl", "mno" });
-        // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-        // "def", "ghj", "ikl", "mno" });
-
-        // XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
-        //mv.setChartView(mChart); // For bounds control
-        //  mChart.setMarker(mv); // Set the marker to the chart
 
         mChart.setData((BarData) chartItem.getmChartData());
 
