@@ -1,7 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27 //Gueven: 27 statt 24 damit ich die GUI in Android Studio live angezeigt bekommen kann
+    compileSdkVersion 27
+    //Gueven: 27 statt 24 damit ich die GUI in Android Studio live angezeigt bekommen kann
     buildToolsVersion '27.0.0'
     defaultConfig {
         applicationId "com.Social_Live_Tracking"
@@ -42,7 +43,8 @@ dependencies {
 
     compile('com.mikepenz:materialdrawer:5.9.5@aar') {
         transitive = true
-        exclude group: 'com.android.support'}
+        exclude group: 'com.android.support'
+    }
 
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.google.android.gms:play-services:10.2.6'

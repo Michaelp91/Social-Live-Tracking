@@ -24,6 +24,7 @@ import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.fragments.adapters.FriendListAdapter;
 import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.TemporaryDB;
 import com.slt.restapi.UsefulMethods;
 import com.slt.utils.Constants;
 
@@ -105,6 +106,7 @@ public class FragmentFriends extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 User dataModel= dataModels.get(position);
+                TemporaryDB.getInstance().setChoosedFriend(dataModel);
                 SharedResources.getInstance().setUser(dataModel);
 
                 Fragment newFragment = new FragmentFriendDetails();

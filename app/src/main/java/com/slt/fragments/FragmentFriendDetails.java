@@ -1,7 +1,9 @@
 package com.slt.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.slt.R;
+import com.slt.TimelineFriend;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
@@ -37,11 +40,11 @@ public class FragmentFriendDetails  extends Fragment  {
     private ImageView mProfilePhoto;
     private Bitmap bitmap;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friends_details, container, false);
+
 
         mProfilePhoto =  (ImageView) view.findViewById(R.id.friend_detail_profile_image);
 
@@ -77,6 +80,14 @@ public class FragmentFriendDetails  extends Fragment  {
         });
 
         Button timeline = (Button) view.findViewById(R.id.friend_detail_btn_show_timeline);
+
+        timeline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimeline();
+            }
+        });
+
         statistics.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 showStatistics();
@@ -109,6 +120,8 @@ public class FragmentFriendDetails  extends Fragment  {
 
     private void showTimeline() {
         //TODO add transition to timeline
+        Intent i = new Intent(this.getActivity(), TimelineFriend.class);
+        startActivity(i);
     }
 
     @Override
