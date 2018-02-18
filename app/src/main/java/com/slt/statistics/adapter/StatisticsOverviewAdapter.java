@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -45,17 +46,21 @@ import com.slt.statistics.graphs.ChartItem;
 import com.slt.statistics.graphs.DayAxisValueFormatter;
 import com.slt.statistics.graphs.MyAxisValueFormatter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by matze on 08.11.17.
  */
 public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
-        implements OnChartValueSelectedListener{
+        {
 
     public static View rowView = null;
     BarChart mChart;
+
 
 
 
@@ -64,7 +69,7 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         View.OnClickListener listener;
         LayoutInflater inflater = (LayoutInflater) getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -81,7 +86,7 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
             ChartItem chartItem = getItem(position);
 
             mChart = (BarChart) rowView.findViewById(R.id.chart1);
-            mChart.setOnChartValueSelectedListener(this);
+            //mChart.setOnChartValueSelectedListener(this);
 
             mChart.setDrawBarShadow(false);
             mChart.setDrawValueAboveBar(true);
@@ -98,7 +103,22 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
             mChart.setDrawGridBackground(false);
             // mChart.setDrawYLabels(false);
 
-            IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
+            IAxisValueFormatter xAxisFormatter;
+
+            if(position == 1) {
+                xAxisFormatter = new IAxisValueFormatter() {
+
+                    private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+
+                    @Override
+                    public String getFormattedValue(float value, AxisBase axis) {
+
+                        long millis = TimeUnit.HOURS.toMillis((long) value);
+                        return mFormat.format(new Date(millis));
+                    }
+                };
+            } else
+                xAxisFormatter = new DayAxisValueFormatter(mChart);
 
             XAxis xAxis = mChart.getXAxis();
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -279,30 +299,6 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
         return 3; // we have 3 different item-types
     }
 
-    protected RectF mOnValueSelectedRectF = new RectF();
 
 
-    @SuppressLint("NewApi")
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-
-        if (e == null)
-            return;
-
-        RectF bounds = mOnValueSelectedRectF;
-        mChart.getBarBounds((BarEntry) e, bounds);
-        MPPointF position = mChart.getPosition(e, YAxis.AxisDependency.LEFT);
-
-        Log.i("bounds", bounds.toString());
-        Log.i("position", position.toString());
-
-        Log.i("x-index",
-                "low: " + mChart.getLowestVisibleX() + ", high: "
-                        + mChart.getHighestVisibleX());
-
-        MPPointF.recycleInstance(position);
-    }
-
-    @Override
-    public void onNothingSelected() { }
 }
