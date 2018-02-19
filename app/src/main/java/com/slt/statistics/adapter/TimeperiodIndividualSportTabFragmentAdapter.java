@@ -36,7 +36,6 @@ import com.slt.statistics.adapter.details_infos_list.*;
 //import com.slt.statistics.achievements.DetailsActivity;
 import com.slt.statistics.graphs.BarChartItem;
 import com.slt.statistics.graphs.ChartItem;
-import com.slt.statistics.graphs.DayAxisValueFormatter;
 import com.slt.statistics.graphs.MyAxisValueFormatter;
 
 import java.text.SimpleDateFormat;
@@ -242,18 +241,56 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
                 }
             };
         } else
-            xAxisFormatter = new DayAxisValueFormatter(mChart);
+            xAxisFormatter = new IAxisValueFormatter() {
+
+                private SimpleDateFormat mFormat = new SimpleDateFormat(".");
+
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+
+                    String appendix = ".";
+                    int dayOfMonth = (int) value;
+
+                    /*switch (dayOfMonth) {
+                        case 1:
+                            appendix = "st";
+                            break;
+                        case 2:
+                            appendix = "nd";
+                            break;
+                        case 3:
+                            appendix = "rd";
+                            break;
+                        case 21:
+                            appendix = "st";
+                            break;
+                        case 22:
+                            appendix = "nd";
+                            break;
+                        case 23:
+                            appendix = "rd";
+                            break;
+                        case 31:
+                            appendix = "st";
+                            break;
+                    }*/
+
+                    return dayOfMonth == 0 ? "" : dayOfMonth + appendix + "";
+                }
+            };
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelRotationAngle(45.f);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(7);
+       // xAxis.setLabelCount(7);
         xAxis.setValueFormatter(xAxisFormatter);
 
         IAxisValueFormatter custom = new MyAxisValueFormatter();
 
         YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setDrawLabels(false);
         leftAxis.setLabelCount(8, false);
         leftAxis.setValueFormatter(custom);
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
@@ -261,6 +298,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
         YAxis rightAxis = mChart.getAxisRight();
+        rightAxis.setDrawLabels(false);
         rightAxis.setDrawGridLines(false);
         rightAxis.setLabelCount(8, false);
         rightAxis.setValueFormatter(custom);

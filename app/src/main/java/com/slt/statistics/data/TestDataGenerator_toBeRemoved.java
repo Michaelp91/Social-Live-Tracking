@@ -179,11 +179,12 @@ public class TestDataGenerator_toBeRemoved {
 
         BarDataSet xyValuesSet;
 
-        xyValuesSet = new BarDataSet(yVals1, "The year 2017");
+        xyValuesSet = new BarDataSet(yVals1, "STEPS " +str );
 
-        xyValuesSet.setDrawIcons(false);
+        //xyValuesSet.setDrawIcons(false);
 
-        xyValuesSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        //xyValuesSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        xyValuesSet.setBarBorderColor(Color.BLUE);
         ////////////////////
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         dataSets.add(xyValuesSet);
@@ -278,7 +279,7 @@ public class TestDataGenerator_toBeRemoved {
             segmentStartingHour = calendar.get(Calendar.HOUR_OF_DAY);
 
             // todo dif of user activities
-            xyReturnPairs.put(i, segment.getUserSteps());
+            xyReturnPairs.put(segmentStartingHour, segment.getUserSteps());
 
             addadHours.add(segmentStartingHour);
         }
@@ -291,7 +292,7 @@ public class TestDataGenerator_toBeRemoved {
 
         return xyReturnPairs;
     }
-
+    public static int str = 0;
     private static HashMap<Integer, Integer> getXYPairsForMonth(
             int xAxisMaxSize, LinkedList<TimelineDay> days
     ) {
@@ -308,6 +309,11 @@ public class TestDataGenerator_toBeRemoved {
             key = cal.get(Calendar.DAY_OF_MONTH);
             // todo diff of user activities
             val = timelineDay.getSteps();
+
+            if(val > 0)
+                str = val;
+
+
             xyPairsForAndMonth.put(key, val);
             addedDays.add(key);
         }
@@ -317,7 +323,6 @@ public class TestDataGenerator_toBeRemoved {
                 xyPairsForAndMonth.put(i+1, 0);
             }
         }
-
 
         return xyPairsForAndMonth;
     }
