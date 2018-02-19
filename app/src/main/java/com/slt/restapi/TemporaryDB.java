@@ -53,6 +53,7 @@ public class TemporaryDB {
     public HashMap<String, REST_TimelineSegment> h_rest_timelinesegmentResolver = new HashMap<>();
     public HashMap<String, REST_LocationEntry> h_rest_locationentryResolver = new HashMap<>();
 
+    private User friend;
 
 
 
@@ -147,9 +148,18 @@ public class TemporaryDB {
         return timeLineSegments;
     }
 
+    public User getChoosedFriend() {
+        return friend;
+    }
+
+    public void setChoosedFriend(User u) {
+        this.friend = u;
+    }
+
     public REST_User_Functionalities getAppUser() {
         return appUser;
     }
+
 
     public void setAppUser(REST_User_Functionalities appUser) {
         this.appUser = appUser;

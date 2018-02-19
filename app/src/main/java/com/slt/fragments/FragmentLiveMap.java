@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.slt.control.DataProvider;
 import com.slt.data.User;
 import com.slt.fragments.adapters.LiveMapListAdapter;
 import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.UsefulMethods;
 
 import java.util.ArrayList;
@@ -46,6 +48,10 @@ public class FragmentLiveMap extends Fragment {
 
     private Button SearchButton;
     private ProgressBar mProgressBar;
+
+    public Handler handler = new Handler();
+
+    private ArrayList<User> restUsers;
 
 
 
@@ -68,12 +74,37 @@ public class FragmentLiveMap extends Fragment {
 
     }
 
+    public Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+      /* do what you need to do */
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    restUsers = OtherRestCalls.retrieveFriends();
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            googleMap.clear();
+                        }
+                    });
+
+                    ShowFriends();
+                    handler.postDelayed(runnable, 2000);
+
+                }
+            }).start();
+
+      /* and here comes the "trick" */
+        }
+    };
+
     private void ShowFriends() {
         final ArrayList<Marker> markers = new ArrayList<>();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<User> restUsers = OtherRestCalls.retrieveFriends();
+
+                restUsers = OtherRestCalls.retrieveFriends();
+                list_friends.clear();
                 list_friends.addAll(restUsers);
 
 
@@ -88,15 +119,16 @@ public class FragmentLiveMap extends Fragment {
                 for(final User u: list_friends) {
                     Location location = u.getLastLocation();
                     final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    final Bitmap bmp = UsefulMethods.LoadImage(u);
+                    //final Bitmap bmp = UsefulMethods.LoadImage(u);
+                    final Bitmap bmp = null;
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Marker marker = null;
 
-                            if(bmp != null)
-                              marker = googleMap.addMarker(new MarkerOptions().position(latLng)
-                                      .title(u.getEmail()).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+                            if (bmp != null)
+                                marker = googleMap.addMarker(new MarkerOptions().position(latLng)
+                                        .title(u.getEmail()).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
                             else
                                 marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(u.getEmail()));
 
@@ -106,10 +138,6 @@ public class FragmentLiveMap extends Fragment {
                     });
 
                 }
-            }
-        }).start();
-
-
     }
 
 
@@ -176,7 +204,7 @@ public class FragmentLiveMap extends Fragment {
 
                 }
 
-                ShowFriends();
+                handler.postDelayed(runnable, 2000);
             }
         });
     }
