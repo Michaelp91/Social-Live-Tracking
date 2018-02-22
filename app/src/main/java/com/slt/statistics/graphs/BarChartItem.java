@@ -30,7 +30,7 @@ public class BarChartItem extends ChartItem {
 
     @Override
     public int getItemType() {
-        return TYPE_LINECHART;
+        return TYPE_BARCHART;
     }
 
     @Override

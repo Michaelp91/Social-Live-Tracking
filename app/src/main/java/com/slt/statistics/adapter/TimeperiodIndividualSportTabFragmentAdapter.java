@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,18 +23,24 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.slt.R;
 import com.slt.data.Achievement;
+import com.slt.statistics.IndividualStatistics;
 import com.slt.statistics.Sport;
 import com.slt.statistics.adapter.details_infos_list.*;
 // macht momentan Fehler bei mir:
 //import com.slt.statistics.achievements.DetailsActivity;
+import com.slt.statistics.data.DataObjectsCollection;
+import com.slt.statistics.data.TestDataGenerator_toBeRemoved;
 import com.slt.statistics.graphs.BarChartItem;
 import com.slt.statistics.graphs.ChartItem;
 import com.slt.statistics.graphs.MyAxisValueFormatter;
@@ -162,6 +169,12 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         return rowView;
     }
 
+    public static String DISTANCE = "Distance:";
+    public static String SPEED =    "Speed:";
+    public static String DURANCE =  "Duration:";
+    public static String TIME =     "Time:";
+    public static String DATE =     "Date:";
+    ArrayAdapterItem adapter;
 
     private View getViewOfDetailsText(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
         View rowView = inflater.inflate(R.layout.details_infos_list, parent, false);
@@ -176,17 +189,18 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         info = infos.get("Blah 0:");
         textView_infos_2.setText(info);*/
 
-        List<ObjectItem> ObjectItemData = new ArrayList<>();
+        List<ObjectItem> objectItemData = new ArrayList<>();
 
-        ObjectItemData.add(new ObjectItem("91", "Mercury"));
-        ObjectItemData.add(new ObjectItem("92", "Watson"));
-        ObjectItemData.add(new ObjectItem("93", "Nissan"));
-        ObjectItemData.add(new ObjectItem("94", "Puregold"));
-        ObjectItemData.add(new ObjectItem("95", "SM"));
+        objectItemData.add(new ObjectItem(SPEED, "-"));
+        objectItemData.add(new ObjectItem(DISTANCE, "-"));
+        objectItemData.add(new ObjectItem(DURANCE, "-"));
+        objectItemData.add(new ObjectItem(TIME, "-"));
+        objectItemData.add(new ObjectItem(DATE, "-"));
 
 
         // our adapter instance
-        ArrayAdapterItem adapter = new ArrayAdapterItem(getContext(), ObjectItemData);
+        adapter = new ArrayAdapterItem(getContext(), objectItemData);
+
 
         // create a new ListView, set the adapter and item click listener
         ListView listViewItems = (ListView) rowView.findViewById(R.id.listview_infos); //new ListView(getContext());
@@ -195,6 +209,8 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         return rowView;
     }
+    public Typeface mTfLight =  android.graphics.Typeface.createFromAsset(getContext().getAssets(), "OpenSans-Light.ttf");
+
 
     public void setSport(Sport sport) {
         this.sport = sport;
@@ -204,14 +220,19 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         this.period = period;
     }
 
+    ChartItem chartItem;
+
     private View getViewOfBarChart(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
         IAxisValueFormatter xAxisFormatter;
         View rowView = inflater.inflate(R.layout.details_rowlayout_linechart, parent, false);
 
-        ChartItem chartItem = (ChartItem) getItem(position);
+        chartItem = (ChartItem) getItem(position);
 
         mChart = (BarChart) rowView.findViewById(R.id.chart1);
+
+
         mChart.setOnChartValueSelectedListener(this);
+       // mChart.listene
 
         mChart.setDrawBarShadow(false);
         mChart.setDrawValueAboveBar(true);
@@ -251,29 +272,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
                     String appendix = ".";
                     int dayOfMonth = (int) value;
 
-                    /*switch (dayOfMonth) {
-                        case 1:
-                            appendix = "st";
-                            break;
-                        case 2:
-                            appendix = "nd";
-                            break;
-                        case 3:
-                            appendix = "rd";
-                            break;
-                        case 21:
-                            appendix = "st";
-                            break;
-                        case 22:
-                            appendix = "nd";
-                            break;
-                        case 23:
-                            appendix = "rd";
-                            break;
-                        case 31:
-                            appendix = "st";
-                            break;
-                    }*/
 
                     return dayOfMonth == 0 ? "" : dayOfMonth + appendix + "";
                 }
@@ -281,6 +279,8 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTypeface(mTfLight);
+
         xAxis.setLabelRotationAngle(45.f);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f); // only intervals of 1 day
@@ -291,6 +291,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setDrawLabels(false);
+        leftAxis.setTypeface(mTfLight);
         leftAxis.setLabelCount(8, false);
         leftAxis.setValueFormatter(custom);
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
@@ -299,6 +300,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setDrawLabels(false);
+        rightAxis.setTypeface(mTfLight);
         rightAxis.setDrawGridLines(false);
         rightAxis.setLabelCount(8, false);
         rightAxis.setValueFormatter(custom);
@@ -310,14 +312,67 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
+        l.setDrawInside(false);
         l.setForm(Legend.LegendForm.SQUARE);
         l.setFormSize(9f);
         l.setTextSize(11f);
         l.setXEntrySpace(4f);
 
-        mChart.setData((BarData) chartItem.getmChartData());
+        XYMarkerView mv = new XYMarkerView(getContext(), xAxisFormatter);
+        mv.setChartView(mChart); // For bounds control
+        mChart.setMarker(mv); // Set the marker to the chart
+
+        setData(30, 50);
+        BarData barData = DataObjectsCollection.dataSupplier.getBarData(
+                getContext().getApplicationContext(),0, sport);
+
+
+       // mChart.setData(barData);//(BarData) chartItem.getmChartData());
 
         return rowView;
+    }
+
+    private void setData(int count, float range) {
+
+        float start = 1f;
+
+        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+
+        for (int i = (int) start; i < start + count + 1; i++) {
+            float mult = (range + 1);
+            float val = (float) (Math.random() * mult);
+
+                yVals1.add(new BarEntry(i, val+10));
+
+        }
+
+        BarDataSet set1;
+
+        if (mChart.getData() != null &&
+                mChart.getData().getDataSetCount() > 0) {
+            set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
+            set1.setValues(yVals1);
+            set1.setLabel("dddddddddddddd");
+            mChart.getData().notifyDataChanged();
+            mChart.notifyDataSetChanged();
+
+        } else {
+            set1 = new BarDataSet(yVals1, "The year 2017");
+
+            set1.setDrawIcons(false);
+
+            set1.setColors(ColorTemplate.MATERIAL_COLORS);
+
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(set1);
+
+            BarData data = new BarData(dataSets);
+            data.setValueTextSize(10f);
+            data.setValueTypeface(mTfLight);
+            data.setBarWidth(0.9f);
+
+            mChart.setData(data);
+        }
     }
 
     @SuppressLint("NewApi")
@@ -339,6 +394,36 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
                         + mChart.getHighestVisibleX());
 
         MPPointF.recycleInstance(position);
+
+        BarData barData = DataObjectsCollection.dataSupplier.getBarData(
+                getContext().getApplicationContext(),1, sport);
+
+
+      //  ArrayList<BarEntry> vals1 = barData.getDataSets().get(0).getEntryForIndex();
+          //      chartItem.getmChartData();//TestDataGenerator_toBeRemoved.prepareXYPairs(1);
+
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < barData.getDataSets().get(0).getEntryCount(); i++) {
+            sb.append(barData.getDataSets().get(0).getEntryForIndex(i).getX()).append("/").
+                    append(barData.getDataSets().get(0).getEntryForIndex(i).getY()).append("\n");
+        }
+
+        Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " + sb.toString()
+
+                , Toast.LENGTH_SHORT).show();
+        // update info boxes
+
+     /*   adapter.getItem(0).setLabelAndVal(SPEED, "10");
+        adapter.getItem(1).setLabelAndVal(DISTANCE, "10");
+        adapter.getItem(2).setLabelAndVal(DURANCE, "10");
+        adapter.getItem(3).setLabelAndVal(TIME, "10");
+        adapter.getItem(4).setLabelAndVal(DATE, "10");
+
+        adapter.notifyDataSetChanged();*/
+
+
+
+
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.slt.statistics.data;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
@@ -157,10 +158,12 @@ public class TestDataGenerator_toBeRemoved {
     }
 
 
-    public static BarData getBarData(int timePeriod, Sport sportType) {
+    public static BarData getBarData(Context context, int timePeriod, Sport sportType) {
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
         int xAxisMaxSize = -1;
+        Typeface mTfLight =  android.graphics.Typeface.createFromAsset(context.getAssets(), "OpenSans-Light.ttf");
+
 
         // if sporttype has not changed, check if the data has already been calculated
         if (sportTypeOfLineData == sportType) {
@@ -173,6 +176,19 @@ public class TestDataGenerator_toBeRemoved {
                 return monthBarData;
         }
 
+       /* int start = 1;
+        int count = 10;
+        int range =50;
+
+        for (int i = (int) start; i < start + count + 1; i++) {
+            float mult = (range + 1);
+            float val = (float) (Math.random() * mult);
+
+
+            yVals1.add(new BarEntry(i, val+10));
+
+        }*/
+
         // prepare y-axis values
         yVals1 = prepareXYPairs(timePeriod);
 
@@ -181,23 +197,26 @@ public class TestDataGenerator_toBeRemoved {
 
         xyValuesSet = new BarDataSet(yVals1, "STEPS " +str );
 
-        //xyValuesSet.setDrawIcons(false);
+        xyValuesSet.setDrawIcons(false);
 
-        //xyValuesSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        xyValuesSet.setBarBorderColor(Color.BLUE);
+        xyValuesSet.setColors(ColorTemplate.MATERIAL_COLORS);
+       // xyValuesSet.setBarBorderColor(Color.BLUE);
         ////////////////////
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         dataSets.add(xyValuesSet);
 
         BarData data = new BarData(dataSets);
         data.setValueTextSize(10f);
-            /*data.setValueTypeface(mTfLight);
-            data.setBarWidth(0.9f);*/
+        //data.setDrawValues(true);
+            data.setValueTypeface(mTfLight);
+            data.setBarWidth(0.9f);
 
         return data;
     }
 
-    private static ArrayList<BarEntry> prepareXYPairs(int timePeriod) {
+
+
+    public static ArrayList<BarEntry> prepareXYPairs(int timePeriod) {
 
         ArrayList<BarEntry> xyReturnValues = new ArrayList<BarEntry>();
         int xAxisMaxSize = 0;
@@ -254,7 +273,11 @@ public class TestDataGenerator_toBeRemoved {
             key = (int) pair.getKey();
             val = (int) pair.getValue();
 
-            xyReturnValues.add(new BarEntry(key, val));
+            if(val > 0)
+                str =  val;
+
+            xyReturnValues.add(new BarEntry(key, 20// todo val
+            ));
         }
 
         return xyReturnValues;
@@ -310,8 +333,8 @@ public class TestDataGenerator_toBeRemoved {
             // todo diff of user activities
             val = timelineDay.getSteps();
 
-            if(val > 0)
-                str = val;
+            //if(val > 0)
+              //  str = val;
 
 
             xyPairsForAndMonth.put(key, val);
@@ -320,7 +343,7 @@ public class TestDataGenerator_toBeRemoved {
 
         for (int i = 0; i < xAxisMaxSize; i++) {
             if( ! addedDays.contains(i+1) ) {
-                xyPairsForAndMonth.put(i+1, 0);
+                xyPairsForAndMonth.put(i+1, 20); // todo replace 20 by 0, 20 is just for testing
             }
         }
 
@@ -367,6 +390,7 @@ public class TestDataGenerator_toBeRemoved {
                 xyPairsForAndWeek.put(key, val);
             }
         }
+
         return xyPairsForAndWeek;
     }
 
