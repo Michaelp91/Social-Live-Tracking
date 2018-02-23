@@ -30,7 +30,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Created by matze on 02.01.18.
@@ -192,15 +197,14 @@ public class TestDataGenerator_toBeRemoved {
         // prepare y-axis values
         yVals1 = prepareXYPairs(timePeriod);
 
-
         BarDataSet xyValuesSet;
 
-        xyValuesSet = new BarDataSet(yVals1, "STEPS " +str );
+        xyValuesSet = new BarDataSet(yVals1, "STEPS" );
 
         xyValuesSet.setDrawIcons(false);
 
         xyValuesSet.setColors(ColorTemplate.MATERIAL_COLORS);
-       // xyValuesSet.setBarBorderColor(Color.BLUE);
+        // xyValuesSet.setBarBorderColor(Color.BLUE);
         ////////////////////
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         dataSets.add(xyValuesSet);
@@ -208,12 +212,36 @@ public class TestDataGenerator_toBeRemoved {
         BarData data = new BarData(dataSets);
         data.setValueTextSize(10f);
         //data.setDrawValues(true);
-            data.setValueTypeface(mTfLight);
-            data.setBarWidth(0.9f);
+        data.setValueTypeface(mTfLight);
+        data.setBarWidth(0.9f);
 
         return data;
     }
 
+    public static int getSpeed(int timePeriod, Sport sport, int x, int y) {
+        // todo
+        return 10;
+    }
+
+    public static int getDistance(int timePeriod, Sport sport, int x, int y) {
+        // todo
+        return 10;
+    }
+
+    public static int getDurance(int timePeriod, Sport sport, int x, int y) {
+        // todo
+        return 10;
+    }
+
+    public static int getTime(int timePeriod, Sport sport, int x, int y) {
+        // todo
+        return 10;
+    }
+
+    public static int getDate(int timePeriod, Sport sport, int x, int y) {
+        // todo
+        return 10;
+    }
 
 
     public static ArrayList<BarEntry> prepareXYPairs(int timePeriod) {
@@ -273,8 +301,6 @@ public class TestDataGenerator_toBeRemoved {
             key = (int) pair.getKey();
             val = (int) pair.getValue();
 
-            if(val > 0)
-                str =  val;
 
             xyReturnValues.add(new BarEntry(key, 20// todo val
             ));
@@ -283,14 +309,14 @@ public class TestDataGenerator_toBeRemoved {
         return xyReturnValues;
     }
 
-    private static HashMap<Integer, Integer> getXYPairsForDay(int xAxisMaxSize, TimelineDay timelineDay) {
+    private static LinkedHashMap<Integer, Integer> getXYPairsForDay(int xAxisMaxSize, TimelineDay timelineDay) {
 
         TimelineSegment segment;
         LinkedList<TimelineSegment> segmentList = timelineDay.getMySegments();
         Date startTime;
         Calendar calendar = Calendar.getInstance();
         int segmentStartingHour;
-        HashMap<Integer, Integer> xyReturnPairs = new HashMap<>();
+        HashMap<Integer, Integer> xyReturnPairs_unsorted = new HashMap<>();
         ArrayList<Integer> addadHours = new ArrayList<>();
 
         for (int i = 0; i < segmentList.size(); i++) {
@@ -302,21 +328,45 @@ public class TestDataGenerator_toBeRemoved {
             segmentStartingHour = calendar.get(Calendar.HOUR_OF_DAY);
 
             // todo dif of user activities
-            xyReturnPairs.put(segmentStartingHour, segment.getUserSteps());
+            xyReturnPairs_unsorted.put(segmentStartingHour, segment.getUserSteps());
 
             addadHours.add(segmentStartingHour);
         }
 
         for (int hour = 0; hour < xAxisMaxSize; hour++) {
             if( ! addadHours.contains(hour) ) {
-                xyReturnPairs.put(hour, 0);
+                xyReturnPairs_unsorted.put(hour, 0);
             }
         }
 
-        return xyReturnPairs;
+        // sort by keys befor return
+        return sortHashMapByKeys(xyReturnPairs_unsorted);
     }
-    public static int str = 0;
-    private static HashMap<Integer, Integer> getXYPairsForMonth(
+
+    /**
+     * sorts the given hashmap by keys
+     * @param unsortedHashMap
+     * @return hashMap sorted by keys
+     */
+    private static LinkedHashMap<Integer, Integer> sortHashMapByKeys(HashMap<Integer, Integer> unsortedHashMap) {
+        TreeMap<Integer, Integer> sorted = new TreeMap<>(unsortedHashMap);
+        Set<Map.Entry<Integer, Integer>> mappings = sorted.entrySet();
+
+        LinkedHashMap<Integer, Integer> sortedReturn = new LinkedHashMap<>();
+
+        for(Map.Entry<Integer, Integer> sortedEntry : mappings)
+            sortedReturn.put(sortedEntry.getKey(), sortedEntry.getValue());
+
+        return sortedReturn;
+    }
+
+
+
+    //public static int str = 0;
+
+
+
+    private static LinkedHashMap<Integer, Integer> getXYPairsForMonth(
             int xAxisMaxSize, LinkedList<TimelineDay> days
     ) {
         HashMap<Integer, Integer> xyPairsForAndMonth = new HashMap<>();
@@ -333,10 +383,6 @@ public class TestDataGenerator_toBeRemoved {
             // todo diff of user activities
             val = timelineDay.getSteps();
 
-            //if(val > 0)
-              //  str = val;
-
-
             xyPairsForAndMonth.put(key, val);
             addedDays.add(key);
         }
@@ -347,10 +393,11 @@ public class TestDataGenerator_toBeRemoved {
             }
         }
 
-        return xyPairsForAndMonth;
+        // sort by keys befor return
+        return sortHashMapByKeys(xyPairsForAndMonth);
     }
 
-    private static HashMap<Integer, Integer> getXYPairsForWeek(
+    private static LinkedHashMap<Integer, Integer> getXYPairsForWeek(
              LinkedList<Date> dates, LinkedList<TimelineDay> days) {
 
         TimelineDay timelineDay;
@@ -391,7 +438,8 @@ public class TestDataGenerator_toBeRemoved {
             }
         }
 
-        return xyPairsForAndWeek;
+        // sort by keys befor return
+        return sortHashMapByKeys(xyPairsForAndWeek);
     }
 
 

@@ -232,7 +232,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
 
         mChart.setOnChartValueSelectedListener(this);
-       // mChart.listene
 
         mChart.setDrawBarShadow(false);
         mChart.setDrawValueAboveBar(true);
@@ -318,62 +317,16 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         l.setTextSize(11f);
         l.setXEntrySpace(4f);
 
-        XYMarkerView mv = new XYMarkerView(getContext(), xAxisFormatter);
+        XYMarkerView mv = new XYMarkerView(getContext(), xAxisFormatter, this.period);
         mv.setChartView(mChart); // For bounds control
         mChart.setMarker(mv); // Set the marker to the chart
 
-        setData(30, 50);
-        BarData barData = DataObjectsCollection.dataSupplier.getBarData(
-                getContext().getApplicationContext(),0, sport);
-
-
-       // mChart.setData(barData);//(BarData) chartItem.getmChartData());
+        mChart.setData((BarData) barData.getmChartData());
 
         return rowView;
     }
 
-    private void setData(int count, float range) {
 
-        float start = 1f;
-
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-
-        for (int i = (int) start; i < start + count + 1; i++) {
-            float mult = (range + 1);
-            float val = (float) (Math.random() * mult);
-
-                yVals1.add(new BarEntry(i, val+10));
-
-        }
-
-        BarDataSet set1;
-
-        if (mChart.getData() != null &&
-                mChart.getData().getDataSetCount() > 0) {
-            set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
-            set1.setValues(yVals1);
-            set1.setLabel("dddddddddddddd");
-            mChart.getData().notifyDataChanged();
-            mChart.notifyDataSetChanged();
-
-        } else {
-            set1 = new BarDataSet(yVals1, "The year 2017");
-
-            set1.setDrawIcons(false);
-
-            set1.setColors(ColorTemplate.MATERIAL_COLORS);
-
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(set1);
-
-            BarData data = new BarData(dataSets);
-            data.setValueTextSize(10f);
-            data.setValueTypeface(mTfLight);
-            data.setBarWidth(0.9f);
-
-            mChart.setData(data);
-        }
-    }
 
     @SuppressLint("NewApi")
     @Override
@@ -396,33 +349,30 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         MPPointF.recycleInstance(position);
 
         BarData barData = DataObjectsCollection.dataSupplier.getBarData(
-                getContext().getApplicationContext(),1, sport);
+                getContext().getApplicationContext(),0, sport);
 
+        BarDataSet set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
+        List<BarEntry> list = set1.getValues();
+        BarEntry entry;
 
-      //  ArrayList<BarEntry> vals1 = barData.getDataSets().get(0).getEntryForIndex();
-          //      chartItem.getmChartData();//TestDataGenerator_toBeRemoved.prepareXYPairs(1);
+        int xEntry = (int) e.getX();
+        int yEntry = (int) e.getY();
 
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < barData.getDataSets().get(0).getEntryCount(); i++) {
-            sb.append(barData.getDataSets().get(0).getEntryForIndex(i).getX()).append("/").
-                    append(barData.getDataSets().get(0).getEntryForIndex(i).getY()).append("\n");
-        }
+        // convert x and y to data
+        int speed = TestDataGenerator_toBeRemoved.getSpeed(this.period, this.sport, xEntry, yEntry);
+        int distance = TestDataGenerator_toBeRemoved.getDistance(this.period, this.sport, xEntry, yEntry);;
+        int durance = TestDataGenerator_toBeRemoved.getDurance(this.period, this.sport, xEntry, yEntry);;
+        int time = TestDataGenerator_toBeRemoved.getTime(this.period, this.sport, xEntry, yEntry);;
+        int date = TestDataGenerator_toBeRemoved.getDate(this.period, this.sport, xEntry, yEntry);;
 
-        Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " + sb.toString()
-
-                , Toast.LENGTH_SHORT).show();
         // update info boxes
+        adapter.getItem(0).setLabelAndVal(SPEED,    String.valueOf( speed ));
+        adapter.getItem(1).setLabelAndVal(DISTANCE, String.valueOf( distance ));
+        adapter.getItem(2).setLabelAndVal(DURANCE,  String.valueOf( durance ));
+        adapter.getItem(3).setLabelAndVal(TIME,     String.valueOf( time ));
+        adapter.getItem(4).setLabelAndVal(DATE,     String.valueOf( date ));
 
-     /*   adapter.getItem(0).setLabelAndVal(SPEED, "10");
-        adapter.getItem(1).setLabelAndVal(DISTANCE, "10");
-        adapter.getItem(2).setLabelAndVal(DURANCE, "10");
-        adapter.getItem(3).setLabelAndVal(TIME, "10");
-        adapter.getItem(4).setLabelAndVal(DATE, "10");
-
-        adapter.notifyDataSetChanged();*/
-
-
-
+        adapter.notifyDataSetChanged();
 
     }
 
