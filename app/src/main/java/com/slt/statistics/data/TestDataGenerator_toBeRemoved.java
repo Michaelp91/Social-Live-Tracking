@@ -199,7 +199,12 @@ public class TestDataGenerator_toBeRemoved {
 
         BarDataSet xyValuesSet;
 
-        xyValuesSet = new BarDataSet(yVals1, "STEPS" );
+        xyValuesSet = new BarDataSet(yVals1, "STEPS " +
+                TestDataGenerator_toBeRemoved.dayXyPairsListSize + ", " +
+                 ",\n steps = " +
+                tls.getUserSteps() + ", duration = "
+                + tls.getDuration()
+        );
 
         xyValuesSet.setDrawIcons(false);
 
@@ -309,6 +314,10 @@ public class TestDataGenerator_toBeRemoved {
         return xyReturnValues;
     }
 
+    public static boolean done = false;
+    public static int dayXyPairsListSize = -1;
+    public static TimelineSegment tls = null;
+
     private static LinkedHashMap<Integer, Integer> getXYPairsForDay(int xAxisMaxSize, TimelineDay timelineDay) {
 
         TimelineSegment segment;
@@ -318,6 +327,12 @@ public class TestDataGenerator_toBeRemoved {
         int segmentStartingHour;
         HashMap<Integer, Integer> xyReturnPairs_unsorted = new HashMap<>();
         ArrayList<Integer> addadHours = new ArrayList<>();
+
+        // --- todo remove
+        dayXyPairsListSize = segmentList.size();
+        if(dayXyPairsListSize >= 0)
+            tls = segmentList.get(0);
+        // --- end todo remove
 
         for (int i = 0; i < segmentList.size(); i++) {
             segment = segmentList.get(i);
