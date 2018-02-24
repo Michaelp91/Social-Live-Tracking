@@ -212,6 +212,7 @@ public class RetrieveOperations {
             t_s.setImages(r_t_s.images);
             t_s.setActiveDistance(r_t_s.activeDistance);
             t_s.setDuration(r_t_s.duration);
+            t_s.setUserSteps(r_t_s.userSteps);
 
             for(REST_Achievement r_a: r_t_s.myAchievements) {
                 Achievement a = new Achievement(r_a.achievement, null);

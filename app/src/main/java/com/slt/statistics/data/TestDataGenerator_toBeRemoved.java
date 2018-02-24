@@ -199,6 +199,10 @@ public class TestDataGenerator_toBeRemoved {
 
         BarDataSet xyValuesSet;
 
+        if(tls.getUserSteps() != 0) {
+            boolean debug = true; //Fire Break point
+        }
+
         xyValuesSet = new BarDataSet(yVals1, "STEPS " +
                 TestDataGenerator_toBeRemoved.dayXyPairsListSize + ", " +
                  ",\n steps = " +

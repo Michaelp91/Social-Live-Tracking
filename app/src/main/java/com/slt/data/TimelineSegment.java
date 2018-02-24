@@ -477,6 +477,13 @@ public class TimelineSegment {
     }
 
     /**
+     * set the Steps of the user
+     */
+    public void setUserSteps(int userSteps) {
+        this.userSteps = userSteps;
+    }
+
+    /**
      * Get the Steps of the user
      * @return The User Steps
      */
