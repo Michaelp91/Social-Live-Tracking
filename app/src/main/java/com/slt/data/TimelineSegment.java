@@ -74,6 +74,9 @@ public class TimelineSegment {
      */
     private LinkedList<UserComment> userComments;
 
+    /**
+     * User comments
+     */
     private LinkedList<String>strUserComments;
 
     /**
@@ -477,6 +480,13 @@ public class TimelineSegment {
     }
 
     /**
+     * set the Steps of the user
+     */
+    public void setUserSteps(int userSteps) {
+        this.userSteps = userSteps;
+    }
+
+    /**
      * Get the Steps of the user
      * @return The User Steps
      */
@@ -674,6 +684,10 @@ public class TimelineSegment {
         return startPlace;
     }
 
+    /**
+     * Set the start Place of the segment
+     * @param startPlace The start Place to set
+     */
     public void setStartPlace(String startPlace) {
          this.startPlace = startPlace;
     }
@@ -686,6 +700,10 @@ public class TimelineSegment {
         return startAddress;
     }
 
+    /**
+     * Set the start Address of the segment
+     * @param startAddress The start address of the segment to set
+     */
     public void setStartAddress(String startAddress) {
         this.startAddress = startAddress;
     }

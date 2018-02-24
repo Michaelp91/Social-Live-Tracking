@@ -9,7 +9,6 @@ public class Constants {
     /**
      * Action notifications for the application
      */
-
     public interface TIMELINEACTIVITY {
         public static int IN_VEHICLE = 0;
         public static int ON_BICYCLE = 1;
@@ -23,6 +22,9 @@ public class Constants {
 
     }
 
+    /**
+     * Definitions for intents as needed
+     */
     public interface ACTION {
         public static String MAIN_ACTION = "com.slt.definitions.action.main";
         public static String START_DATA_PROVIDER_ACTION = "com.slt.definitions.action.startforeground";
@@ -111,6 +113,7 @@ public class Constants {
         public static int  SPORT_WEEK_STREAK = 6;
         public static int  SPORT_MONTH_STREAK =7;
     };
+
 
     /**
      * todo include new drawable for diversity

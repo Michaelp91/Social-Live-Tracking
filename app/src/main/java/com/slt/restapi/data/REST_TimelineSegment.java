@@ -21,7 +21,7 @@ public class REST_TimelineSegment implements Model{
     public double inactiveDistance;
     public double activeTime;
     public double inactiveTime;
-    public double userSteps;
+    public int userSteps;
     public String startPlace;
     public Date startTime;
     public double duration;

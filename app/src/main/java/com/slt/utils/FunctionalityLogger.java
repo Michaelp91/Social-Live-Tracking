@@ -21,6 +21,7 @@ public class FunctionalityLogger {
     }
 
     private FunctionalityLogger() {
+        /*
         try {
             File root = new File(Environment.getExternalStorageDirectory(), "Notes");
             boolean test = false;
@@ -36,30 +37,38 @@ public class FunctionalityLogger {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 
     public void AddLog(String string) {
+
+        /*
         try {
             writer.append("\n" + string);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 
     public void AddErrorLog(String string) {
+        /*
         try {
             errorLogger.append("\n" + string);
         }catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 
     public void FinishFileWriting() {
+        /*
         try {
             errorLogger.close();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 }
