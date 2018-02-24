@@ -326,13 +326,15 @@ public class TestDataGenerator_toBeRemoved {
         Calendar calendar = Calendar.getInstance();
         int segmentStartingHour;
         HashMap<Integer, Integer> xyReturnPairs_unsorted = new HashMap<>();
-        ArrayList<Integer> addadHours = new ArrayList<>();
+        ArrayList<Integer> addedHours = new ArrayList<>();
 
         // --- todo remove
         dayXyPairsListSize = segmentList.size();
         if(dayXyPairsListSize >= 0)
             tls = segmentList.get(0);
         // --- end todo remove
+
+        int sum = 0;
 
         for (int i = 0; i < segmentList.size(); i++) {
             segment = segmentList.get(i);
@@ -343,13 +345,19 @@ public class TestDataGenerator_toBeRemoved {
             segmentStartingHour = calendar.get(Calendar.HOUR_OF_DAY);
 
             // todo dif of user activities
-            xyReturnPairs_unsorted.put(segmentStartingHour, segment.getUserSteps());
+            if(xyReturnPairs_unsorted.containsKey(segmentStartingHour)) {
+                sum = xyReturnPairs_unsorted.get(segmentStartingHour) + segment.getUserSteps();
+                // add steps from new segment to the old sum
+                xyReturnPairs_unsorted.put(segmentStartingHour, sum);
+            } else
+                xyReturnPairs_unsorted.put(segmentStartingHour, segment.getUserSteps());
 
-            addadHours.add(segmentStartingHour);
+            if( ! addedHours.contains(segmentStartingHour))
+                addedHours.add(segmentStartingHour);
         }
 
         for (int hour = 0; hour < xAxisMaxSize; hour++) {
-            if( ! addadHours.contains(hour) ) {
+            if( ! addedHours.contains(hour) ) {
                 xyReturnPairs_unsorted.put(hour, 0);
             }
         }
