@@ -139,12 +139,10 @@ public class TimelineSegment {
      */
     private String ID;
 
-
     /**
      * Duration
      */
     private double duration;
-
 
     /**
      * Constructor to initialize all data
@@ -714,7 +712,6 @@ public class TimelineSegment {
     public LinkedList<UserComment> getUserComments() {
         return new LinkedList<>(userComments);
     }
-
 
     /**
      *
