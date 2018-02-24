@@ -404,7 +404,7 @@ public class TestDataGenerator_toBeRemoved {
 
         for (int i = 0; i < xAxisMaxSize; i++) {
             if( ! addedDays.contains(i+1) ) {
-                xyPairsForAndMonth.put(i+1, 20); // todo replace 20 by 0, 20 is just for testing
+                xyPairsForAndMonth.put(i+1, 0);
             }
         }
 
