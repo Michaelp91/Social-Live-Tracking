@@ -267,7 +267,15 @@ public class OtherRestCalls {
             for(REST_TimelineSegment r_t_s: rest_timelinesegments) {
                 DetectedActivity detectedActivity = new DetectedActivity(r_t_s.myActivity, 100);
                 TimelineSegment t_s = new TimelineSegment(detectedActivity, r_t_s.startTime, false);
+                t_s.setStartAddress(r_t_s.startAddress);
+                t_s.setStartPlace(r_t_s.startPlace);
                 t_s.setID(r_t_s._id);
+                t_s.setStrUserComments(r_t_s.usercomments);
+                t_s.setImages(r_t_s.images);
+                t_s.setActiveDistance(r_t_s.activeDistance);
+                t_s.setDuration(r_t_s.duration);
+                t_s.setUserSteps(r_t_s.userSteps);
+
                 for(REST_Achievement r_a: r_t_s.myAchievements) {
                     Achievement a = new Achievement(r_a.achievement, null);
                     t_s.addAchievement(a, null); //TODO: Fill Userid in buildcompleteUserObjects
