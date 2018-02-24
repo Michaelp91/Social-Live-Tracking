@@ -36,31 +36,70 @@ import rx.subscriptions.CompositeSubscription;
 import android.view.View.OnClickListener;
 public class ProfileActivity extends AppCompatActivity implements ChangePasswordDialog.Listener {
 
+    /**
+     * Tag for the logger
+     */
     public static final String TAG = ProfileActivity.class.getSimpleName();
 
+    /**
+     * Element for the name
+     */
     private TextView mTvName;
+
+    /**
+     * Element for the email
+     */
     private TextView mTvEmail;
+
+    /**
+     * Element for the date
+     */
     private TextView mTvDate;
+
+    /**
+     * The change password button
+     */
     private Button mBtChangePassword;
+
+    /**
+     * The logout Button
+     */
     private Button mBtLogout;
 
-
-
+    /**
+     * Progress Bar
+     */
     private ProgressBar mProgressbar;
 
+    /**
+     * The shared preferences
+     */
     private SharedPreferences mSharedPreferences;
+
+    /**
+     * The token of the user
+     */
     private String mToken;
+
+    /**
+     * The email address of the user
+     */
     private String mEmail;
 
+    /**
+     * The subscriptions
+     */
     private CompositeSubscription mSubscriptions;
 
+    /**
+     * Overwritten onCreate Method intits the views
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         mSubscriptions = new CompositeSubscription();
-
-
 
         initViews();
         initSharedPreferences();
@@ -68,6 +107,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     }
 
+    /**
+     * Init the text fields with the data and adds a button listener
+     */
     private void initViews() {
 
         mTvName = (TextView) findViewById(R.id.tv_name);
@@ -89,6 +131,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
                 fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
             }
         });
+
         mBtLogout.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -100,7 +143,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         });
     }
 
-
+    /**
+     * Initialize the shared preferences
+     */
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -108,6 +153,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mEmail = mSharedPreferences.getString(Constants.EMAIL,"");
     }
 
+    /**
+     * Logout for the user
+     */
     private void logout() {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -117,6 +165,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         finish();
     }
 
+    /**
+     * Shows the change password dialog to the user
+     */
     private void showDialog(){
 
         ChangePasswordDialog fragment = new ChangePasswordDialog();
@@ -129,8 +180,9 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         fragment.show(getFragmentManager(), ChangePasswordDialog.TAG);
     }
 
-
-
+    /**
+     * Load the profile from the server
+     */
     private void loadProfile() {
 
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getProfile(mEmail)
@@ -171,6 +223,10 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
                 } ));
     }
 
+    /**
+     * Handles the response, show the results
+     * @param user
+     */
     private void handleResponse(User user) {
         mProgressbar.setVisibility(View.GONE);
         mTvName.setText(user.getName());
@@ -179,16 +235,20 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
 
     }
 
+    /**
+     *  Method to handle errors
+     * @param error The error to handle
+     */
     private void handleError(Throwable error) {
 
         mProgressbar.setVisibility(View.GONE);
 
+        //if error is http exception, show message to the user
         if (error instanceof HttpException) {
 
             Gson gson = new GsonBuilder().create();
 
             try {
-
                 String errorBody = ((HttpException) error).response().errorBody().string();
                 Response response = gson.fromJson(errorBody,Response.class);
                 showSnackBarMessage(response.getMessage());
@@ -197,32 +257,35 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
                 e.printStackTrace();
             }
         } else {
-
             showSnackBarMessage("Network Error !");
         }
     }
 
+    /**
+     * Shows message to user
+     * @param message The message to show
+     */
     private void showSnackBarMessage(String message) {
-
         Snackbar.make(findViewById(R.id.activity_profile),message,Snackbar.LENGTH_SHORT).show();
 
     }
 
+    /**
+     * Overwritten Method onDestroy, unsubscibe
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mSubscriptions.unsubscribe();
     }
 
+    /**
+     * Overwritten Method onPasswordChanged show message to user
+     */
     @Override
     public void onPasswordChanged() {
 
         showSnackBarMessage("Password Changed Successfully !");
     }
-
-
-
-
-
 }
 

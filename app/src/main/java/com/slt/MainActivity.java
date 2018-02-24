@@ -22,11 +22,25 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordFrag
      */
     public static final String TAG = MainActivity.class.getSimpleName();
 
-
+    /**
+     * Activity
+     */
     private Activity myActivity;
+
+    /**
+     * The login fragment to load
+     */
     private LoginFragment mLoginFragment;
+
+    /**
+     * The reset Password Dialog that can be shown
+     */
     private ResetPasswordDialog mResetPasswordDialog;
 
+    /**
+     * Overwritten onCreate Method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,16 +52,21 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordFrag
         }
     }
 
-
+    /**
+     * Loads the login fragment
+     */
     private void loadFragment(){
 
         if (mLoginFragment == null) {
-
             mLoginFragment = new LoginFragment();
         }
         getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,mLoginFragment,LoginFragment.TAG).commit();
     }
 
+    /**
+     * Overwritten onNewIntent Method to shown show the reset password dialog
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -61,16 +80,21 @@ public class MainActivity extends AppCompatActivity implements ResetPasswordFrag
             mResetPasswordDialog.setToken(data);
     }
 
+    /**
+     * Overwritten onPasswordReset Method, just shows a message
+     * @param message
+     */
     @Override
     public void onPasswordReset(String message) {
-
         showSnackBarMessage(message);
     }
 
+    /**
+     * Shows a message to the user
+     * @param message Message to show
+     */
     private void showSnackBarMessage(String message) {
-
         Snackbar.make(findViewById(R.id.activity_main),message,Snackbar.LENGTH_SHORT).show();
-
     }
 
     /**
