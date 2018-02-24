@@ -149,6 +149,10 @@ public class User {
         this.ID = ID;
     }
 
+    /**
+     * Set the timeline of the user
+     * @param t The timeline of the user
+     */
     public void setTimeline(Timeline t) {
         this.myTimeline = t;
     }
