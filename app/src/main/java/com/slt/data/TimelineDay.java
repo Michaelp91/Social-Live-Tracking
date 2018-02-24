@@ -3,18 +3,15 @@ package com.slt.data;
 import android.content.Intent;
 import android.location.Location;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
-import com.google.android.gms.nearby.messages.Distance;
 import com.slt.control.AchievementCalculator;
 import com.slt.control.AddressResolver;
 import com.slt.control.ApplicationController;
 import com.slt.control.PlacesResolver;
 import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
-import com.slt.restapi.UpdateOperations;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -530,10 +527,12 @@ public class TimelineDay {
         if(!this.mySegments.getLast().compareActivities(activity)){
             Log.i(TAG, "addUserStatus: New activity detected.");
 
+            //if last segment does not have the min duration necessary
             if(this.mySegments.getLast().getDuration()
                     < MIN_SEGMENT_DURATION_IN_SECONDS ) {
                 Log.i(TAG, "addUserStatus: Last segment too short.");
 
+                //if we only have a single segment, change the activity of the last segment
                 if(this.mySegments.size() == 1) {
                     //if we only have a single activity the detection might have been wrong at the
                     // beginning, so simply reset it to the new one
@@ -541,10 +540,11 @@ public class TimelineDay {
                     this.mySegments.getLast().setMyActivity(activity);
                 }
 
+                //if we have more than one segment
                 if(this.mySegments.size() > 2){
                     int lastSegmentIndex = this.mySegments.size() -2;
                     if(this.mySegments.get(lastSegmentIndex).compareActivities(activity)){
-                        //if the previous one is the same as the current one merge all thre
+                        //if the previous one is the same as the current one merge all three
                         Log.i(TAG, "addUserStatus: Previous activity same as current merge segments.");
                         TimelineSegment segment = this.mySegments.getLast();
                         this.mySegments.removeLast();

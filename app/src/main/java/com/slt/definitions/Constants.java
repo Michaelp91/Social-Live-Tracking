@@ -114,8 +114,8 @@ public class Constants {
         public static int  SPORT_MONTH_STREAK =7;
     };
 
-
     /**
+     * Definitions of the Achievement drawables
      * todo include new drawable for diversity
      */
     public interface ACHIVEMENTS_DRAWABLE {

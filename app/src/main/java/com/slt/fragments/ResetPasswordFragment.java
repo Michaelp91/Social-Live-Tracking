@@ -32,33 +32,99 @@ import rx.subscriptions.CompositeSubscription;
 import static com.slt.utils.Validation.validateEmail;
 import static com.slt.utils.Validation.validateFields;
 
+/**
+ *
+ */
 public class ResetPasswordFragment extends Fragment {
 
+    /**
+     *
+     */
     public interface Listener {
-
+        /**
+         *
+         * @param message
+         */
         void onPasswordReset(String message);
     }
 
+    /**
+     *
+     */
     public static final String TAG = ResetPasswordFragment.class.getSimpleName();
 
+    /**
+     *
+     */
     private EditText mEtEmail;
+
+    /**
+     *
+     */
     private EditText mEtToken;
+
+    /**
+     *
+     */
     private EditText mEtPassword;
+
+    /**
+     *
+     */
     private Button mBtResetPassword;
+
+    /**
+     *
+     */
     private TextView mTvMessage;
+
+    /**
+     *
+     */
     private TextInputLayout mTiEmail;
+
+    /**
+     *
+     */
     private TextInputLayout mTiToken;
+
+    /**
+     *
+     */
     private TextInputLayout mTiPassword;
+
+    /**
+     *
+     */
     private ProgressBar mProgressBar;
 
+    /**
+     *
+     */
     private CompositeSubscription mSubscriptions;
 
+    /**
+     *
+     */
     private String mEmail;
 
+    /**
+     *
+     */
     private boolean isInit = true;
 
+    /**
+     *
+     */
     private Listener mListner;
 
+    /**
+     * Overwritten onCreateViewMethod, intializes the elements
+     * @param inflater Inflater for the layout
+     * @param container The View Group
+     * @param savedInstanceState The saved instance state
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +134,10 @@ public class ResetPasswordFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Initializes the elements
+     * @param v The view
+     */
     private void initViews(View v) {
 
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
@@ -88,33 +158,44 @@ public class ResetPasswordFragment extends Fragment {
         });
     }
 
+    /**
+     * Overwritten onAttack Method
+     * @param context The context of the view
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mListner = (MainActivity)context;
     }
 
+    /**
+     * Resets all the fields
+     */
     private void setEmptyFields() {
-
         mTiEmail.setError(null);
         mTiToken.setError(null);
         mTiPassword.setError(null);
         mTvMessage.setText(null);
     }
 
+    /**
+     * Setes the token
+     * @param token The token
+     */
     public void setToken(String token) {
-
         mEtToken.setText(token);
     }
 
+    /**
+     * Reset the password
+     */
     private void resetPasswordInit() {
 
         setEmptyFields();
-
         mEmail = mEtEmail.getText().toString();
-
         int err = 0;
 
+        //check if email is valid
         if (!validateEmail(mEmail)) {
 
             err++;
@@ -128,31 +209,34 @@ public class ResetPasswordFragment extends Fragment {
         }
     }
 
+    /**
+     * Finish resetting the passwords
+     */
     private void resetPasswordFinish() {
 
         setEmptyFields();
-
         String token = mEtToken.getText().toString();
         String password = mEtPassword.getText().toString();
 
         int err = 0;
 
+        //check if token is empty
         if (!validateFields(token)) {
 
             err++;
             mTiToken.setError("Token Should not be empty !");
         }
 
+        //check if email is empty
         if (!validateFields(password)) {
 
             err++;
             mTiEmail.setError("Password Should not be empty !");
         }
 
+        //start the reset process
         if (err == 0) {
-
             mProgressBar.setVisibility(View.VISIBLE);
-
             User user = new User();
             user.setPassword(password);
             user.setToken(token);
@@ -160,9 +244,14 @@ public class ResetPasswordFragment extends Fragment {
         }
     }
 
+    /**
+     * Call the network for the password reset
+     * @param email The email of the user
+     */
     private void resetPasswordInitProgress(String email) {
 
         mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordInit(email)
+                //on successful reset
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Action1<Response>() {
@@ -189,6 +278,7 @@ public class ResetPasswordFragment extends Fragment {
                     @Override
                     public void call(Throwable error) {
 
+                        //on error
                         mProgressBar.setVisibility(View.GONE);
 
                         if (error instanceof HttpException) {
@@ -212,9 +302,14 @@ public class ResetPasswordFragment extends Fragment {
                 } ));
     }
 
+    /**
+     * Finish the rest password process
+     * @param user The user to reset the password for
+     */
     private void resetPasswordFinishProgress(User user) {
 
         mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordFinish(mEmail,user)
+                //on successful change
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Action1<Response>() {
@@ -234,13 +329,13 @@ public class ResetPasswordFragment extends Fragment {
                         } else {
 
                             mListner.onPasswordReset(response.getMessage());
-                            //dismiss();
+
                         }
                     }
                 }, new Action1<Throwable>(){
                     @Override
                     public void call(Throwable error) {
-
+                        // on error
                         mProgressBar.setVisibility(View.GONE);
 
                         if (error instanceof HttpException) {
@@ -264,12 +359,14 @@ public class ResetPasswordFragment extends Fragment {
                 } ));
     }
 
+    /**
+     * Handle the network response
+     * @param response The response
+     */
     private void handleResponse(Response response) {
 
         mProgressBar.setVisibility(View.GONE);
-
         if (isInit) {
-
             isInit = false;
             showMessage(response.getMessage());
             mTiEmail.setVisibility(View.GONE);
@@ -277,12 +374,14 @@ public class ResetPasswordFragment extends Fragment {
             mTiPassword.setVisibility(View.VISIBLE);
 
         } else {
-
             mListner.onPasswordReset(response.getMessage());
-            //dismiss();
         }
     }
 
+    /**
+     * Handle network errors
+     * @param error The network error
+     */
     private void handleError(Throwable error) {
 
         mProgressBar.setVisibility(View.GONE);
@@ -306,6 +405,10 @@ public class ResetPasswordFragment extends Fragment {
         }
     }
 
+    /**
+     * Shows a message to the user
+     * @param message The message to show
+     */
     private void showMessage(String message) {
 
         mTvMessage.setVisibility(View.VISIBLE);
@@ -313,6 +416,9 @@ public class ResetPasswordFragment extends Fragment {
 
     }
 
+    /**
+     * Overwritten onDestroy Method, simply unsubscribes
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

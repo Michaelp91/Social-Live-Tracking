@@ -31,27 +31,58 @@ import com.slt.utils.Constants;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-
+/**
+ * Fragment to show the friends of a user
+ */
 public class FragmentFriends extends Fragment {
 
+    /**
+     * Tag for the logger
+     */
     public static final String TAG = FragmentFriends.class.getSimpleName();
 
+    /**
+     * Data model with the users we want to show
+     */
     ArrayList<User> dataModels;
+
+    /**
+     * List view
+     */
     ListView listView;
+
+    /**
+     * The adapter for our list
+     */
     private static FriendListAdapter adapter;
 
+    /**
+     * Button to search for friends
+     */
     private Button SearchButton;
 
+    /**
+     * handler for waiting for network reponse
+     */
     private Handler handler;
+
+    /**
+     * Progress Bar
+     */
     private ProgressBar mProgressBar;
 
 
-
+    /**
+     * Overwritten onCreateViewMethod, intializes the elements
+     * @param inflater Inflater for the layout
+     * @param container The View Group
+     * @param savedInstanceState The saved instance state
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
-        //change R.layout.yourlayoutfilename for each of your fragments
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
         SharedResources.getInstance().setUser(null);
         mProgressBar =  (ProgressBar) view.findViewById(R.id.friends_progress) ;
@@ -69,16 +100,19 @@ public class FragmentFriends extends Fragment {
             }});
 
         return view;
-
     }
 
-
+    /**
+     * Overwritten onViewCreated Method,
+     * @param view The view
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Friends and Co.");
 
-
+        //set handler to wait for network response
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
@@ -91,15 +125,13 @@ public class FragmentFriends extends Fragment {
         mProgressBar.setVisibility(View.VISIBLE);
         handler.post(runnable);
 
-
+        //get the friends to show and add them to the adapter
         LinkedList<User> users = DataProvider.getInstance().getOwnUser().getUserList();
-
         listView=(ListView) view.findViewById(R.id.friends_listview);
-
         dataModels= new ArrayList<>(users);
-
         adapter= new FriendListAdapter(dataModels, ApplicationController.getContext());
 
+        //add listener to transition to friends detail page
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -126,19 +158,18 @@ public class FragmentFriends extends Fragment {
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
-      /* do what you need to do */
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-
+                        //retrieve and store friends via rest
                         LinkedList<User> users = new LinkedList<>();
                         users.addAll(OtherRestCalls.retrieveFriends());
 
                         DataProvider.getInstance().changeFriendList(users);
 
+                        //load images
                         for (User user : DataProvider.getInstance().getUserList()){
                             Bitmap bitmap = UsefulMethods.LoadImage(user);
-
                             user.setMyImage(bitmap);
                         }
 
@@ -147,10 +178,12 @@ public class FragmentFriends extends Fragment {
                 }
             }).start();
 
-      /* and here comes the "trick" */
         }
     };
 
+    /**
+     * After retrieval remove progress bar
+     */
     public void afterRetrieval() {
         dataModels.clear();
         dataModels.addAll(DataProvider.getInstance().getUserList());

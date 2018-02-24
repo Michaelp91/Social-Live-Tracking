@@ -19,40 +19,73 @@ import com.slt.data.User;
 import java.util.ArrayList;
 
 /**
- * Created by Thorsten on 06.01.2018.
+ * The adapter show a short list of friends for the timeline view of the friends
  */
 public class LiveMapListAdapter extends ArrayAdapter<User> implements View.OnClickListener{
 
-
+    /**
+     * The data we want to show
+     */
     private ArrayList<User> dataSet;
+
+    /**
+     *  The context of the view
+     */
     private Context mContext;
+
+    /**
+     * The last position of the data
+     */
+    private int lastPosition = -1;
 
     // View lookup cache
     private static class ViewHolder {
+        /**
+         * The user name.
+         */
         TextView txtUserName;
+        /**
+         * The email
+         */
         TextView txtEmail;
+        /**
+         * The Picture
+         */
         ImageView picture;
     }
 
-
+    /**
+     * Instantiates a new Live map list adapter.
+     *
+     * @param data    The data we want to show
+     * @param context The context of the view
+     */
     public LiveMapListAdapter(ArrayList<User> data, Context context) {
         super(context, R.layout.live_map_listitem, data);
         this.dataSet = data;
         this.mContext=context;
-
     }
 
+    /**
+     * Overwritten onClick Method, does nothing
+     * @param v The view
+     */
     @Override
     public void onClick(View v) {
 
         int position=(Integer) v.getTag();
         Object object= getItem(position);
         User dataModel=(User)object;
-
     }
 
-    private int lastPosition = -1;
 
+    /**
+     * Overwritten getView Method, adds the data to the list item
+     * @param position The position of the item
+     * @param convertView The view
+     * @param parent The ViewGroup
+     * @return The created View
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
@@ -63,6 +96,7 @@ public class LiveMapListAdapter extends ArrayAdapter<User> implements View.OnCli
 
         final View result;
 
+        //if we do not have a view yet, create it and get the elements
         if (convertView == null) {
 
             viewHolder = new ViewHolder();
@@ -74,21 +108,23 @@ public class LiveMapListAdapter extends ArrayAdapter<User> implements View.OnCli
             viewHolder.picture = (ImageView) convertView.findViewById(R.id.live_map_list_item_image);
 
             result=convertView;
-
             convertView.setTag(viewHolder);
         } else {
+            //if we already have the view
             viewHolder = (ViewHolder) convertView.getTag();
             result=convertView;
         }
 
+        //add an animation
         Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
         result.startAnimation(animation);
         lastPosition = position;
 
+        //get and add the data to the view
         viewHolder.txtUserName.setText(dataModel.getUserName());
         viewHolder.txtEmail.setText(dataModel.getEmail());
 
-
+        //if we have an Image show it
         if(dataModel.getMyImage() == null) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 8;

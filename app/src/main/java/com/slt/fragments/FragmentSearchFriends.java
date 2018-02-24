@@ -33,22 +33,68 @@ import java.util.LinkedList;
  * Created by Thorsten on 07.01.2018.
  */
 
+/**
+ *
+ */
 public class FragmentSearchFriends extends Fragment {
 
+    /**
+     * Tag for the logger
+     */
     public static final String TAG = FragmentSearchFriends.class.getSimpleName();
 
+    /**
+     * The data we want to show
+     */
     ArrayList<User> dataModels;
+
+    /**
+     * List view for the users
+     */
     ListView listView;
+
+    /**
+     * Adapter for the userlist
+     */
     private static FriendSearchListAdapter adapter;
+
+    /**
+     * Element for the search text
+     */
     private TextView enteredText;
+
+    /**
+     * Button to search users
+     */
     private Button searchButton;
+
+    /**
+     * RadioGroup for the options
+     */
     private RadioGroup radioGroup;
 
+    /**
+     * Handler for network transactions
+     */
     private Handler handler;
+
+    /**
+     * Progress Bar
+     */
     private ProgressBar mProgressBar;
 
+    /**
+     * List of the retrieved users
+     */
     private LinkedList<User> retrievedUsers;
 
+    /**
+     * Overwritten onCreateViewMethod, intializes the elements
+     * @param inflater Inflater for the layout
+     * @param container The View Group
+     * @param savedInstanceState The saved instance state
+     * @return The created view
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,22 +104,28 @@ public class FragmentSearchFriends extends Fragment {
     }
 
 
+    /**
+     * Overwritten onViewCreated Method
+     * @param view The view
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //you can set the title for your toolbar here for different fragments different titles
+
         getActivity().setTitle("Find Friends");
 
+        //create a linked list for the users
         LinkedList<User> users = new LinkedList<>();
 
+        //init the elements
         listView=(ListView) view.findViewById(R.id.friends_search_listview);
-
         searchButton=(Button) view.findViewById(R.id.friend_search_btn_search);
         radioGroup =(RadioGroup) view.findViewById(R.id.friends_search_options);
         enteredText = (TextView) view.findViewById(R.id.friends_search_t_text_input);
-
         mProgressBar =  (ProgressBar) view.findViewById(R.id.search_progress) ;
 
+        //handler to wait for a network response
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
@@ -92,16 +144,14 @@ public class FragmentSearchFriends extends Fragment {
             }
         });
 
+        //add lists for the data
         dataModels= new ArrayList<>(users);
-
         adapter= new FriendSearchListAdapter(dataModels, ApplicationController.getContext());
         listView.setAdapter(adapter);
-
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mProgressBar.setVisibility(View.VISIBLE);
                 handler.post(runnable);
             }
@@ -161,17 +211,23 @@ public class FragmentSearchFriends extends Fragment {
         }
     };
 
+    /**
+     * After data was retrieved, search for fitting users
+     */
     public void afterRetrieval() {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         String text = null;
         retrievedUsers.clear();
 
+        //check for mode to search for fitting users
         switch (selectedId){
             case R.id.friends_search_option_email:
+                //by email
                 text = enteredText.getText().toString();
                 retrievedUsers = DataProvider.getInstance().getUserByEMail(text);
                 break;
             case R.id.friends_search_option_nearby:
+                //by distance
                 text = enteredText.getText().toString();
                 dataModels.clear();
 
@@ -185,6 +241,7 @@ public class FragmentSearchFriends extends Fragment {
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.friends_search_option_name:
+                //by name
                 text = enteredText.getText().toString();
                 retrievedUsers = DataProvider.getInstance().getUserByName(text);
 
@@ -193,6 +250,7 @@ public class FragmentSearchFriends extends Fragment {
                 break;
 
             case R.id.friends_search_option_username:
+                //by username
                 text = enteredText.getText().toString();
                 retrievedUsers = DataProvider.getInstance().getUserByUsername(text);
 
@@ -204,7 +262,10 @@ public class FragmentSearchFriends extends Fragment {
 
     }
 
-
+    /**
+     *  Shows meassage to the user
+     * @param message The message to show
+     */
     private void showSnackBarMessage(String message) {
 
         if (getView() != null) {

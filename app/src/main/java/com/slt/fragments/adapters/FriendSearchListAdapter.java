@@ -23,25 +23,55 @@ import com.slt.restapi.OtherRestCalls;
 import java.util.ArrayList;
 
 /**
- * Created by Thorsten on 07.01.2018.
+ * Adapter Class to show the friends for the search page
  */
-
 public class FriendSearchListAdapter extends ArrayAdapter<User> implements View.OnClickListener{
 
-
+    /**
+     * The data we want to show
+     */
     private ArrayList<User> dataSet;
+
+    /**
+     * The context of the view
+     */
     Context mContext;
+
+    /**
+     * The position of the last element
+     */
+    private int lastPosition = -1;
 
     // View lookup cache
     private static class ViewHolder {
+        /**
+         * The user name.
+         */
         TextView txtUserName;
+        /**
+         * The name.
+         */
         TextView txtName;
+        /**
+         * The email.
+         */
         TextView txtEmail;
+        /**
+         * The Picture.
+         */
         ImageView picture;
+        /**
+         * The Add button.
+         */
         Button addButton;
     }
 
-
+    /**
+     * Instantiates a new Friend search list adapter.
+     *
+     * @param data    Rhe data we want to show
+     * @param context The context of the view
+     */
     public FriendSearchListAdapter(ArrayList<User> data, Context context) {
         super(context, R.layout.friend_search_listitem, data);
         this.dataSet = data;
@@ -49,6 +79,10 @@ public class FriendSearchListAdapter extends ArrayAdapter<User> implements View.
 
     }
 
+    /**
+     * Overwritten onClick Method, adds a friend if the button is clicked
+     * @param v The view
+     */
     @Override
     public void onClick(View v) {
 
@@ -57,6 +91,7 @@ public class FriendSearchListAdapter extends ArrayAdapter<User> implements View.
         User dataModel=(User)object;
         ViewHolder viewHolder = new FriendSearchListAdapter.ViewHolder();
 
+        //see of the event is from the button
         switch (v.getId())
         {
             case R.id.friend_search_btn_add:
@@ -80,11 +115,13 @@ public class FriendSearchListAdapter extends ArrayAdapter<User> implements View.
         }
     }
 
-    private int lastPosition = -1;
-
-
-
-
+    /**
+     * Overwritten getView Method, adds the data to the list item
+     * @param position The position of the item
+     * @param convertView The view
+     * @param parent The ViewGroup
+     * @return The created View
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
@@ -95,6 +132,7 @@ public class FriendSearchListAdapter extends ArrayAdapter<User> implements View.
 
         final View result;
 
+        //check if we already have a view, if not create it and get the elements
         if (convertView == null) {
 
             viewHolder = new FriendSearchListAdapter.ViewHolder();
@@ -109,37 +147,40 @@ public class FriendSearchListAdapter extends ArrayAdapter<User> implements View.
 
             Boolean isFriend = false;
 
+            //retrieve if the user is a friend
             for(User user : DataProvider.getInstance().getOwnUser().getUserList()){
                 if(dataModel.getEmail().equals(user.getEmail())){
                     isFriend = true;
                 }
             }
 
+            //if he is a friend modify the button
             if(isFriend){
                 viewHolder.addButton.setText("Remove");
             }
 
-
             result=convertView;
-
             convertView.setTag(viewHolder);
         } else {
+            //if we already have the view
             viewHolder = (FriendSearchListAdapter.ViewHolder) convertView.getTag();
             result=convertView;
         }
 
+        //add an animation
         Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
         result.startAnimation(animation);
         lastPosition = position;
 
+        //add the data to the view
         viewHolder.txtUserName.setText(dataModel.getUserName());
         String name = dataModel.getForeName() + " " + dataModel.getLastName();
         viewHolder.txtName.setText(name);
         viewHolder.txtEmail.setText(dataModel.getEmail());
-
         viewHolder.addButton.setOnClickListener(this);
         viewHolder.addButton.setTag(position);
 
+        //if we have an image show it
         if(dataModel.getMyImage() == null) {
             Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
             viewHolder.picture.setImageBitmap(image);

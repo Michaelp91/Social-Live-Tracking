@@ -33,33 +33,100 @@ import rx.subscriptions.CompositeSubscription;
 import static com.slt.utils.Validation.validateEmail;
 import static com.slt.utils.Validation.validateFields;
 
+/**
+ *
+ */
 public class ResetPasswordDialog extends DialogFragment {
 
+    /**
+     *
+     */
     public interface Listener {
-
+        /**
+         *
+         * @param message
+         */
         void onPasswordReset(String message);
     }
 
+    /**
+     *
+     */
     public static final String TAG = ResetPasswordDialog.class.getSimpleName();
 
+    /**
+     *
+     */
     private EditText mEtEmail;
+
+    /**
+     *
+     */
     private EditText mEtToken;
+
+    /**
+     *
+     */
     private EditText mEtPassword;
+
+    /**
+     *
+     */
     private Button mBtResetPassword;
+
+    /**
+     *
+     */
     private TextView mTvMessage;
+
+    /**
+     *
+     */
     private TextInputLayout mTiEmail;
+
+    /**
+     *
+     */
     private TextInputLayout mTiToken;
+
+    /**
+     *
+     */
     private TextInputLayout mTiPassword;
+
+    /**
+     *
+     */
     private ProgressBar mProgressBar;
 
+    /**
+     *
+     */
     private CompositeSubscription mSubscriptions;
 
+    /**
+     *
+     */
     private String mEmail;
 
+    /**
+     *
+     */
     private boolean isInit = true;
 
+    /**
+     *
+     */
     private Listener mListner;
 
+
+    /**
+     * Overwritten onCreateViewMethod, intializes the elements
+     * @param inflater Inflater for the layout
+     * @param container The View Group
+     * @param savedInstanceState The saved instance state
+     * @return The created view
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +136,10 @@ public class ResetPasswordDialog extends DialogFragment {
         return view;
     }
 
+    /**
+     *
+     * @param v
+     */
     private void initViews(View v) {
 
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
@@ -89,12 +160,19 @@ public class ResetPasswordDialog extends DialogFragment {
         });
     }
 
+    /**
+     *
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         //mListner = (MainActivity)context;
     }
 
+    /**
+     *
+     */
     private void setEmptyFields() {
 
         mTiEmail.setError(null);
@@ -103,11 +181,18 @@ public class ResetPasswordDialog extends DialogFragment {
         mTvMessage.setText(null);
     }
 
+    /**
+     *
+     * @param token
+     */
     public void setToken(String token) {
 
         mEtToken.setText(token);
     }
 
+    /**
+     *
+     */
     private void resetPasswordInit() {
 
         setEmptyFields();
@@ -129,6 +214,9 @@ public class ResetPasswordDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     */
     private void resetPasswordFinish() {
 
         setEmptyFields();
@@ -161,6 +249,10 @@ public class ResetPasswordDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @param email
+     */
     private void resetPasswordInitProgress(String email) {
 
         mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordInit(email)
@@ -213,6 +305,10 @@ public class ResetPasswordDialog extends DialogFragment {
                 } ));
     }
 
+    /**
+     *
+     * @param user
+     */
     private void resetPasswordFinishProgress(User user) {
 
         mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordFinish(mEmail,user)
@@ -265,6 +361,10 @@ public class ResetPasswordDialog extends DialogFragment {
         } ));
     }
 
+    /**
+     *
+     * @param response
+     */
     private void handleResponse(Response response) {
 
         mProgressBar.setVisibility(View.GONE);
@@ -284,6 +384,10 @@ public class ResetPasswordDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @param error
+     */
     private void handleError(Throwable error) {
 
         mProgressBar.setVisibility(View.GONE);
@@ -307,6 +411,10 @@ public class ResetPasswordDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @param message
+     */
     private void showMessage(String message) {
 
         mTvMessage.setVisibility(View.VISIBLE);
@@ -314,6 +422,9 @@ public class ResetPasswordDialog extends DialogFragment {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
