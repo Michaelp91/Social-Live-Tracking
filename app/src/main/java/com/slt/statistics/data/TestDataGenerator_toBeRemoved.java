@@ -203,11 +203,7 @@ public class TestDataGenerator_toBeRemoved {
             boolean debug = true; //Fire Break point
         }
 
-        xyValuesSet = new BarDataSet(yVals1, "STEPS " +
-                tls.getStartTime() + ", " +
-                 ",\n steps = " +
-                tls.getUserSteps() + ", duration = "
-                + tls.getDuration()
+        xyValuesSet = new BarDataSet(yVals1, "STEPS"
         );
 
         xyValuesSet.setDrawIcons(false);
@@ -311,7 +307,7 @@ public class TestDataGenerator_toBeRemoved {
             val = (int) pair.getValue();
 
 
-            xyReturnValues.add(new BarEntry(key, 20// todo val
+            xyReturnValues.add(new BarEntry(key, val
             ));
         }
 
