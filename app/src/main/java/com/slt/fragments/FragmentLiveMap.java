@@ -130,7 +130,7 @@ public class FragmentLiveMap extends Fragment {
                                 marker = googleMap.addMarker(new MarkerOptions().position(latLng)
                                         .title(u.getEmail()).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
                             else
-                                marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(u.getEmail()));
+                                marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(u.getEmail()).icon(BitmapDescriptorFactory.fromResource( R.drawable.pegman )));
 
                             markers.add(marker);
                             boolean debug = true;
@@ -197,7 +197,7 @@ public class FragmentLiveMap extends Fragment {
                     LatLng ownLatLng = new LatLng(ownLocation.getLatitude(), ownLocation.getLongitude());
 
                     googleMap.addMarker(new MarkerOptions().position(ownLatLng).title("You").snippet("and snippet")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                            .icon(BitmapDescriptorFactory.fromResource( R.drawable.pegman )));
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ownLatLng,
                             10));
 
