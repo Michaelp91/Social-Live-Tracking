@@ -59,7 +59,7 @@ import static com.slt.utils.Validation.validateEmail;
 import static com.slt.utils.Validation.validateFields;
 
 /**
- *
+ * Fragment to login in the application
  */
 public class LoginFragment extends Fragment {
 
@@ -74,72 +74,72 @@ public class LoginFragment extends Fragment {
     private static final String SPF_NAME = "timelinelogin";
 
     /**
-     *
+     * Element for the email
      */
     private EditText mEtEmail;
 
     /**
-     *
+     * Element for the password
      */
     private EditText mEtPassword;
 
     /**
-     *
+     * Button to start the login
      */
     private Button mBtLogin;
 
     /**
-     *
+     * Element for the register message
      */
     private TextView mTvRegister;
 
     /**
-     *
+     * Element for the forgot password message
      */
     private TextView mTvForgotPassword;
 
     /**
-     *
+     * Element for the email
      */
     private TextInputLayout mTiEmail;
 
     /**
-     *
+     * Element for the password
      */
     private TextInputLayout mTiPassword;
 
     /**
-     *
+     * Progress Bar
      */
     private ProgressBar mProgressBar;
 
     /**
-     *
+     * Checkbox to preserve the login data
      */
     private CheckBox checkBox;
 
     /**
-     *
+     * Subscription
      */
     private CompositeSubscription mSubscriptions;
 
     /**
-     *
+     * Shared preferences
      */
     private SharedPreferences mSharedPreferences;
 
     /**
-     *
+     * Context of the view
      */
     private LoginFragment context;
 
     /**
-     *
+     * Handler to wait for network response
      */
     public Handler handler;
 
     /**
-     *
+     * String for the email address
      */
     String threadEmail;
 
@@ -170,8 +170,8 @@ public class LoginFragment extends Fragment {
     }
 
     /**
-     *
-     * @param v
+     * Init the elements
+     * @param v The view
      */
     private void initViews(View v) {
         //mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
@@ -185,12 +185,13 @@ public class LoginFragment extends Fragment {
         mTvForgotPassword = (TextView) v.findViewById(R.id.tv_forgot_password);
         checkBox = (CheckBox) v.findViewById(R.id.saveLoginCheckBox);
 
-
+        //get the stored login data
         try {
             SharedPreferences sharedPref = getActivity().getSharedPreferences(SPF_NAME, Context.MODE_PRIVATE);
             if (sharedPref.contains(Constants.STORE_BOX)) {
                 boolean checked = sharedPref.getBoolean(Constants.STORE_BOX, false);
 
+                //set the checkbox if it was checked before
                 if (checked) {
                     checkBox.setChecked(true);
                     String login = sharedPref.getString(Constants.LOGIN, "");
@@ -206,7 +207,7 @@ public class LoginFragment extends Fragment {
         }
 
 
-
+        //on login selected
         mBtLogin.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 threadEmail = null;
@@ -217,32 +218,34 @@ public class LoginFragment extends Fragment {
 
                 int err = 0;
 
+                //if email not entered
                 if (!validateEmail(email)) {
 
                     err++;
                     mTiEmail.setError("Email should be valid !");
                 }
 
+                //if password not entered
                 if (!validateFields(password)) {
 
                     err++;
                     mTiPassword.setError("Password should not be empty !");
                 }
 
+                //start login
                 if (err == 0) {
                     threadEmail = email;
                     loginProcess(email, password);
                     mProgressBar.setVisibility(View.VISIBLE);
 
                 } else {
-
                     showSnackBarMessage("Enter Valid Details !");
                 }
 
             }
         });
 
-
+        //select register button listener
         mTvRegister.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 Fragment newFragment = new RegisterFragment();
@@ -255,7 +258,7 @@ public class LoginFragment extends Fragment {
             }
         });
 
-
+        //select forgot password button listener
         mTvForgotPassword.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 Fragment newFragment = new ResetPasswordFragment();
@@ -270,25 +273,14 @@ public class LoginFragment extends Fragment {
     }
 
     /**
-     *
+     * Set the shared preferences
      */
     private void initSharedPreferences() {
-
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
 
     /**
-     *
-     */
-    private void viewStatistics() {
-        Intent intent = new Intent( getActivity()  , StatisticsOverview.class);
-
-        startActivity(intent);
-
-    }
-
-    /**
-     *
+     * Reset login data
      */
     private void setError() {
 
@@ -297,9 +289,9 @@ public class LoginFragment extends Fragment {
     }
 
     /**
-     *
-     * @param email
-     * @param password
+     * Start the login
+     * @param email The email
+     * @param password The password
      */
     private void loginProcess(String email, String password) {
         context = this;
@@ -311,6 +303,7 @@ public class LoginFragment extends Fragment {
                 .subscribe(new Action1<Response>() {
                     @Override
                     public void call(Response response) {
+                        //on success
                         mProgressBar.setVisibility(View.GONE);
 
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -349,7 +342,7 @@ public class LoginFragment extends Fragment {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable error) {
-
+                        //on error
                         mProgressBar.setVisibility(View.GONE);
 
                         if (error instanceof HttpException) {
@@ -409,13 +402,16 @@ public class LoginFragment extends Fragment {
                             //if we already have the timeline check if we already have entries
                             if(timeline != null){
 
+                                //if we have days in the history
                                 if(timeline.getHistorySize() > 0){
                                     TimelineDay day = timeline.getTimelineDays().getLast();
 
+                                    //if we still have the same day and segments are in history
                                     if(!day.getMySegments().isEmpty() && day.isSameDay(new Date())){
                                         TimelineSegment seg = day.getMySegments().getLast();
                                         LocationEntry entry = null;
 
+                                        //if gps locations are available
                                         if(!seg.getLocationPoints().isEmpty()) {
                                             entry = seg.getMyLocationPoints().getLast();
                                         }
@@ -427,10 +423,8 @@ public class LoginFragment extends Fragment {
                                             timeline.manualEndSegment(new Date(), entry.getMyLocation());
                                         }
                                     }
-
                                 }
                             }
-
                         } else {
                             showSnackBarMessage("Error retrieving User!");
                         }
@@ -452,19 +446,17 @@ public class LoginFragment extends Fragment {
     }
 
     /**
-     *
-     * @param message
+     * Show a message to the user
+     * @param message The message to show
      */
     private void showSnackBarMessage(String message) {
-
         if (getView() != null) {
-
             Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
         }
     }
 
     /**
-     *
+     * Overwritten onDestroy Method, just unsubscribes
      */
     @Override
     public void onDestroy() {

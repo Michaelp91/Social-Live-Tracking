@@ -43,67 +43,67 @@ import static com.slt.utils.Validation.validateEmail;
 import static com.slt.utils.Validation.validateFields;
 
 /**
- *
+ * Fragment to register the User
  */
 public class RegisterFragment extends Fragment {
 
     /**
-     *
+     * Tag for the logger
      */
     public static final String TAG = RegisterFragment.class.getSimpleName();
 
     /**
-     *
+     * Element for the name
      */
     private EditText mEtName;
 
     /**
-     *
+     * Element for the email
      */
     private EditText mEtEmail;
 
     /**
-     *
+     * Element for the password
      */
     private EditText mEtPassword;
 
     /**
-     *
+     * Button to register
      */
     private Button   mBtRegister;
 
     /**
-     *
+     * Element to show a message
      */
     private TextView mTvLogin;
 
     /**
-     *
+     * Layout for the name
      */
     private TextInputLayout mTiName;
 
     /**
-     *
+     * Layout for the email
      */
     private TextInputLayout mTiEmail;
 
     /**
-     *
+     * Layout for the password
      */
     private TextInputLayout mTiPassword;
 
     /**
-     *
+     * Progress Bar
      */
     private ProgressBar mProgressbar;
 
     /**
-     *
+     * Subscription
      */
     private CompositeSubscription mSubscriptions;
 
     /**
-     *
+     * Context of the view
      */
     private RegisterFragment context;
 
@@ -117,7 +117,6 @@ public class RegisterFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_register,container,false);
         mSubscriptions = new CompositeSubscription();
         initViews(view);
@@ -125,8 +124,8 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     *
-     * @param v
+     * Initialize the elements
+     * @param v The view
      */
     private void initViews(View v) {
 
@@ -140,6 +139,7 @@ public class RegisterFragment extends Fragment {
         mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
         mProgressbar = (ProgressBar) v.findViewById(R.id.progress);
 
+        //set on register listener
         mBtRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -151,18 +151,19 @@ public class RegisterFragment extends Fragment {
 
                 int err = 0;
 
+                //check if name is not empty
                 if (!validateFields(name)) {
-
                     err++;
                     mTiName.setError("Name should not be empty !");
                 }
 
+                //check if email is not empty
                 if (!validateEmail(email)) {
-
                     err++;
                     mTiEmail.setError("Email should be valid !");
                 }
 
+                //check if password is not empty
                 if (!validateFields(password)) {
 
                     err++;
@@ -170,7 +171,7 @@ public class RegisterFragment extends Fragment {
                 }
 
                 if (err == 0) {
-
+                    //create new user and start register process
                     User user = new User();
                     user.setName(name);
                     user.setEmail(email);
@@ -185,6 +186,7 @@ public class RegisterFragment extends Fragment {
                 }
             }
         });
+
         mTvLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -196,7 +198,7 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     *
+     * Method to reigster user
      */
     private void register() {
 
@@ -243,7 +245,7 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     *
+     * Reset input fields
      */
     private void setError() {
 
@@ -253,7 +255,7 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     *
+     * The register process via the network calls
      * @param user
      */
     private void registerProcess(User user) {
@@ -266,6 +268,7 @@ public class RegisterFragment extends Fragment {
          .subscribe(new Action1<Response>() {
             @Override
             public void call(final Response response) {
+                //on success
 
                 new Thread(new Runnable() {
                     @Override
@@ -304,8 +307,11 @@ public class RegisterFragment extends Fragment {
         }, new Action1<Throwable>(){
             @Override
             public void call(Throwable error) {
+
+                //if an error appeared
                 mProgressbar.setVisibility(View.GONE);
 
+                //if an http error appeared
                 if (error instanceof HttpException) {
 
                     Gson gson = new GsonBuilder().create();
@@ -329,7 +335,7 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     *
+     * Handle the network response
      * @param response
      */
     private void handleResponse(Response response) {
@@ -339,13 +345,14 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     *
+     * Handle network errors
      * @param error
      */
     private void handleError(Throwable error) {
 
         mProgressbar.setVisibility(View.GONE);
 
+        //if it is an http error
         if (error instanceof HttpException) {
 
             Gson gson = new GsonBuilder().create();
@@ -366,19 +373,18 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     *
-     * @param message
+     * Shows a message to the users
+     * @param message The message to show
      */
     public void showSnackBarMessage(String message) {
 
         if (getView() != null) {
-
             Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
         }
     }
 
     /**
-     *
+     * Goto Login method
      */
     private void goToLogin(){
 
@@ -393,7 +399,7 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     *
+     * Overwritten onDestroy Method, simply unsubscribes
      */
     @Override
     public void onDestroy() {
