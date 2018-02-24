@@ -35,7 +35,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * Created by matze on 02.01.18.
@@ -199,11 +198,30 @@ public class TestDataGenerator_toBeRemoved {
 
         BarDataSet xyValuesSet;
 
-        if(tls.getUserSteps() != 0) {
-            boolean debug = true; //Fire Break point
+        int steps = -1;
+
+        if(timePeriod != 0) {
+    Calendar cal = Calendar.getInstance();
+    Date date = new Date();
+    TimelineDay d;
+    int dayOfMonth;
+    Date date1;
+    for (int i = 0; i < daysGLOBAL.size(); i++) {
+        d = daysGLOBAL.get(i);
+
+        cal.setTime(d.getMyDate());
+
+        dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+
+        if (dayOfMonth == 23) {
+
+            steps = d.getSteps();
         }
 
-        xyValuesSet = new BarDataSet(yVals1, "STEPS"
+    }
+
+}
+        xyValuesSet = new BarDataSet(yVals1, "STEPS " + steps
         );
 
         xyValuesSet.setDrawIcons(false);
@@ -277,11 +295,13 @@ public class TestDataGenerator_toBeRemoved {
                 // get timelinedays from the db
                 days = timeline.getDaysOfWeekOrMonth(currDate, 0);
 
+                daysGLOBAL = days;
                 xyPairs = getXYPairsForWeek( dates, days);
                 break;
             case 2:
                 days = timeline.getDaysOfWeekOrMonth(currDate, 1);
 
+                daysGLOBAL = days;
                 // init calender
                 java.util.Date date = new Date();
                 Calendar cal = Calendar.getInstance();
@@ -314,9 +334,7 @@ public class TestDataGenerator_toBeRemoved {
         return xyReturnValues;
     }
 
-    public static boolean done = false;
-    public static int dayXyPairsListSize = -1;
-    public static TimelineSegment tls = null;
+    public static LinkedList<TimelineDay> daysGLOBAL = new LinkedList<>();
 
     private static LinkedHashMap<Integer, Integer> getXYPairsForDay(int xAxisMaxSize, TimelineDay timelineDay) {
 
@@ -327,13 +345,6 @@ public class TestDataGenerator_toBeRemoved {
         int segmentStartingHour;
         HashMap<Integer, Integer> xyReturnPairs_unsorted = new HashMap<>();
         ArrayList<Integer> addedHours = new ArrayList<>();
-
-        // --- todo remove
-        dayXyPairsListSize = segmentList.size();
-        if(dayXyPairsListSize >= 0)
-            tls = segmentList.get(0);
-        // --- end todo remove
-
         int sum = 0;
 
         for (int i = 0; i < segmentList.size(); i++) {
@@ -392,7 +403,7 @@ public class TestDataGenerator_toBeRemoved {
     private static LinkedHashMap<Integer, Integer> getXYPairsForMonth(
             int xAxisMaxSize, LinkedList<TimelineDay> days
     ) {
-        HashMap<Integer, Integer> xyPairsForAndMonth = new HashMap<>();
+        HashMap<Integer, Integer> xyPairsForMonth = new HashMap<>();
         Calendar cal = Calendar.getInstance();
         Date date = new Date();
         int key, val;
@@ -401,23 +412,26 @@ public class TestDataGenerator_toBeRemoved {
 
         for (int i = 0; i < days.size(); i++) {
             timelineDay = days.get(i);
+            date = timelineDay.getMyDate();
             cal.setTime(date);
             key = cal.get(Calendar.DAY_OF_MONTH);
             // todo diff of user activities
             val = timelineDay.getSteps();
 
-            xyPairsForAndMonth.put(key, val);
-            addedDays.add(key);
+            xyPairsForMonth.put(key, val);
+
+            if( ! addedDays.contains(key))
+                addedDays.add(key);
         }
 
         for (int i = 0; i < xAxisMaxSize; i++) {
             if( ! addedDays.contains(i+1) ) {
-                xyPairsForAndMonth.put(i+1, 0);
+                xyPairsForMonth.put(i+1, 0);
             }
         }
 
         // sort by keys befor return
-        return sortHashMapByKeys(xyPairsForAndMonth);
+        return sortHashMapByKeys(xyPairsForMonth);
     }
 
     private static LinkedHashMap<Integer, Integer> getXYPairsForWeek(
@@ -429,6 +443,9 @@ public class TestDataGenerator_toBeRemoved {
         int key, val;
         boolean found = false;
         Calendar cal = Calendar.getInstance();
+        ArrayList<Integer> addedDays = new ArrayList<>();
+
+
 
         for (int j = 0; j < dates.size(); j++) {
             date = dates.get(j);
