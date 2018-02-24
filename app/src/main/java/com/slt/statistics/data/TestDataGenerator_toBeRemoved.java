@@ -200,7 +200,7 @@ public class TestDataGenerator_toBeRemoved {
         BarDataSet xyValuesSet;
 
         xyValuesSet = new BarDataSet(yVals1, "STEPS " +
-                TestDataGenerator_toBeRemoved.dayXyPairsListSize + ", " +
+                tls.getStartTime() + ", " +
                  ",\n steps = " +
                 tls.getUserSteps() + ", duration = "
                 + tls.getDuration()
