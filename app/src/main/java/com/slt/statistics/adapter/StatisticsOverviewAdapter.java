@@ -1,16 +1,7 @@
 package com.slt.statistics.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,34 +11,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.MPPointF;
 import com.slt.R;
 import com.slt.control.DataProvider;
 import com.slt.data.Timeline;
 import com.slt.statistics.Sport;
 import com.slt.statistics.IndividualStatistics;
 import com.slt.statistics.graphs.ChartItem;
-import com.slt.statistics.graphs.DayAxisValueFormatter;
 import com.slt.statistics.graphs.MyAxisValueFormatter;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +67,7 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
             //mChart.setOnChartValueSelectedListener(this);
 
             mChart.setDrawBarShadow(false);
-            mChart.setDrawValueAboveBar(true);
+            mChart.setDrawValueAboveBar(false);
 
             mChart.getDescription().setEnabled(false);
 
@@ -118,20 +96,61 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
                     }
                 };
             } else
-                xAxisFormatter = new DayAxisValueFormatter(mChart);
+                xAxisFormatter = new IAxisValueFormatter() {
+
+                    private SimpleDateFormat mFormat = new SimpleDateFormat(".");
+
+                    @Override
+                    public String getFormattedValue(float value, AxisBase axis) {
+
+                        String appendix = ".";
+                        int dayOfMonth = (int) value;
+
+                       /* switch (dayOfMonth) {
+                            case 1:
+                                appendix = "st";
+                                break;
+                            case 2:
+                                appendix = "nd";
+                                break;
+                            case 3:
+                                appendix = "rd";
+                                break;
+                            case 21:
+                                appendix = "st";
+                                break;
+                            case 22:
+                                appendix = "nd";
+                                break;
+                            case 23:
+                                appendix = "rd";
+                                break;
+                            case 31:
+                                appendix = "st";
+                                break;
+                        }*/
+
+                        return dayOfMonth == 0 ? "" : dayOfMonth + appendix + "";
+                    }
+                };
 
             XAxis xAxis = mChart.getXAxis();
+           // xAxis.setLabelRotationAngle(45.f);
+            xAxis.setDrawLabels(false);
+
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
            // xAxis.setTypeface(mTfLight);
             xAxis.setDrawGridLines(false);
             xAxis.setGranularity(1f); // only intervals of 1 day
-            xAxis.setLabelCount(7);
+            //xAxis.setLabelCount(7);
             xAxis.setValueFormatter(xAxisFormatter);
 
             IAxisValueFormatter custom = new MyAxisValueFormatter();
 
             YAxis leftAxis = mChart.getAxisLeft();
             //leftAxis.setTypeface(mTfLight);
+            leftAxis.setDrawLabels(false);
+
             leftAxis.setLabelCount(8, false);
             leftAxis.setValueFormatter(custom);
             leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
@@ -139,14 +158,16 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
             leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
             YAxis rightAxis = mChart.getAxisRight();
+            rightAxis.setDrawLabels(false);
+
             rightAxis.setDrawGridLines(false);
            // rightAxis.setTypeface(mTfLight);
-            rightAxis.setLabelCount(8, false);
-            rightAxis.setValueFormatter(custom);
-            rightAxis.setSpaceTop(15f);
-            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+            //rightAxis.setLabelCount(8, false);
+            //rightAxis.setValueFormatter(custom);
+            //rightAxis.setSpaceTop(15f);
+            //rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-            Legend l = mChart.getLegend();
+           /* Legend l = mChart.getLegend();
             l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
             l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
             l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
@@ -154,7 +175,7 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
             l.setForm(Legend.LegendForm.SQUARE);
             l.setFormSize(9f);
             l.setTextSize(11f);
-            l.setXEntrySpace(4f);
+            l.setXEntrySpace(4f);*/
             // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
             // "def", "ghj", "ikl", "mno" });
             // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",

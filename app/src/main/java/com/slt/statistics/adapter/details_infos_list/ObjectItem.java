@@ -8,9 +8,13 @@ public class ObjectItem {
     public String label;
 
     // constructor
-    public ObjectItem(String itemId, String label) {
-        this.valueOfLabel = itemId;
+    public ObjectItem(String label, String val) {
         this.label = label;
+        this.valueOfLabel = val;
     }
 
+    public void setLabelAndVal(String label, String val) {
+        this.label = label;
+        this.valueOfLabel = val;
+    }
 }

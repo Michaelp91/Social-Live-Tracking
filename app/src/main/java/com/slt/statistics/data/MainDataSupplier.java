@@ -41,9 +41,9 @@ public class MainDataSupplier implements DataSupplier {
     }
 
     @Override
-    public BarData getBarData( int timePeriod, Sport sport) {
+    public BarData getBarData(Context c,  int timePeriod, Sport sport) {
         // if (lineData == null)
-        barData = TestDataGenerator_toBeRemoved.getBarData(timePeriod, sport);
+        barData = TestDataGenerator_toBeRemoved.getBarData(c, timePeriod, sport);
 
         return barData;
     }

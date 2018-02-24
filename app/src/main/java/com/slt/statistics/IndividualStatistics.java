@@ -43,7 +43,7 @@ public class IndividualStatistics extends AppCompatActivity {
 
             // line chart
            // LineData lineData = //DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), i, IndividualStatistics.getSelectedSportStatistics());
-             BarData barData = DataObjectsCollection.dataSupplier.getBarData(i, IndividualStatistics.getSelectedSportStatistics());
+            BarData barData = DataObjectsCollection.dataSupplier.getBarData(getApplicationContext(),i, IndividualStatistics.getSelectedSportStatistics());
             TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment = new TimeperiodIndividualSportTabFragment();
 
             timeperiodIndividualSportTabFragment.setPeriod(i);

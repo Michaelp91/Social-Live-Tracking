@@ -60,7 +60,7 @@ public class StatisticsOverview extends AppCompatActivity {
 
           //  lineData = DataObjectsCollection.dataSupplier.getLineData(
               //     getApplicationContext(), i, sport);
-            barData = DataObjectsCollection.dataSupplier.getBarData(i, sport);
+            barData = DataObjectsCollection.dataSupplier.getBarData(getApplicationContext(),i, sport);
 
             list.add(
                     // new LineChartItem(lineData,
