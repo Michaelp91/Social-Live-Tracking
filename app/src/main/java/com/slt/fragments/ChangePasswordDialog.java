@@ -33,35 +33,97 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.slt.utils.Validation.validateFields;
 
+/**
+ * Class for the Change password dialog
+ */
 public class ChangePasswordDialog extends DialogFragment {
 
+    /**
+     * Listener to get password changes
+     */
     public interface Listener {
 
+        /**
+         * On password changed.
+         */
         void onPasswordChanged();
     }
 
+    /**
+     *  TAG for the class
+     */
     public static final String TAG = ChangePasswordDialog.class.getSimpleName();
 
+    /**
+     * Element for the old password
+     */
     private EditText mEtOldPassword;
+
+    /**
+     * Element for the new password
+     */
     private EditText mEtNewPassword;
+
+    /**
+     * Element for the change password button
+     */
     private Button mBtChangePassword;
+
+    /**
+     * Element for the cancel button
+     */
     private Button mBtCancel;
+
+    /**
+     * Element to show a message
+     */
     private TextView mTvMessage;
+
+    /**
+     * Element for the text input of the old password
+     */
     private TextInputLayout mTiOldPassword;
+
+    /**
+     * Element for the text input of the new password
+     */
     private TextInputLayout mTiNewPassword;
+
+    /**
+     * Progressbar
+     */
     private ProgressBar mProgressBar;
 
+    /**
+     * Subscriptions
+     */
     private CompositeSubscription mSubscriptions;
 
+    /*
+     * String to store the token
+     */
     private String mToken;
+
+    /**
+     * String to store the email
+     */
     private String mEmail;
 
+    /**
+     * Listener for button clicks
+     */
     private Listener mListener;
 
+    /**
+     * Overwritten onCreateView Method, initializes the data
+     * @param inflater Inflater for the elements
+     * @param container The ViewGroup
+     * @param savedInstanceState The saved instance state
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.dialog_change_password,container,false);
         mSubscriptions = new CompositeSubscription();
         getData();
@@ -69,23 +131,37 @@ public class ChangePasswordDialog extends DialogFragment {
         return view;
     }
 
+    /**
+     * Set the listener
+     *
+     * @param listener the listener
+     */
     public void setListener(ChangePasswordDialog.Listener listener){
         this.mListener = listener;
     }
 
+    /**
+     * Get the data from the bundle
+     */
     private void getData() {
-
         Bundle bundle = getArguments();
-
         mToken = bundle.getString(Constants.TOKEN);
         mEmail = bundle.getString(Constants.EMAIL);
     }
 
+    /**
+     * Overwritten onAttack Method
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
 
+    /**
+     * Initializes the view
+     * @param v The view to initialize
+     */
     private void initViews(View v) {
 
         mEtOldPassword = (EditText) v.findViewById(R.id.et_old_password);
@@ -97,12 +173,12 @@ public class ChangePasswordDialog extends DialogFragment {
         mBtCancel = (Button) v.findViewById(R.id.btn_cancel);
         mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
 
+        //set the listeners
         mBtChangePassword.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
              changePassword();
             }
         });
-
         mBtCancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dismiss();
@@ -110,15 +186,20 @@ public class ChangePasswordDialog extends DialogFragment {
         });
     }
 
+    /**
+     * The change password method
+     */
     private void changePassword() {
 
         setError();
 
+        //get the entered passwords
         String oldPassword = mEtOldPassword.getText().toString();
         String newPassword = mEtNewPassword.getText().toString();
 
         int err = 0;
 
+        //check if passwords were entered
         if (!validateFields(oldPassword)) {
 
             err++;
@@ -131,8 +212,8 @@ public class ChangePasswordDialog extends DialogFragment {
             mTiNewPassword.setError("Password should not be empty !");
         }
 
+        //if no errors, show in progress and start network request
         if (err == 0) {
-
             User user = new User();
             user.setPassword(oldPassword);
             user.setNewPassword(newPassword);
@@ -142,12 +223,19 @@ public class ChangePasswordDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Set on error
+     */
     private void setError() {
 
         mTiOldPassword.setError(null);
         mTiNewPassword.setError(null);
     }
 
+    /**
+     * Set the network interactions
+     * @param user The user to change the password for
+     */
     private void changePasswordProgress(User user) {
 
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changePassword(mEmail,user)
@@ -166,11 +254,12 @@ public class ChangePasswordDialog extends DialogFragment {
                 handleError(error);
             }
         } ));
-
-
-
     }
 
+    /**
+     * Handles the response from the server
+     * @param response The response
+     */
     private void handleResponse(Response response) {
 
         mProgressBar.setVisibility(View.GONE);
@@ -178,10 +267,15 @@ public class ChangePasswordDialog extends DialogFragment {
         dismiss();
     }
 
+    /**
+     * Handles the network errors
+     * @param error
+     */
     private void handleError(Throwable error) {
 
         mProgressBar.setVisibility(View.GONE);
 
+        //if it is a http exceptions
         if (error instanceof HttpException) {
 
             Gson gson = new GsonBuilder().create();
@@ -201,13 +295,19 @@ public class ChangePasswordDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Shows a message to the user
+     * @param message The message to show
+     */
     private void showMessage(String message) {
-
         mTvMessage.setVisibility(View.VISIBLE);
         mTvMessage.setText(message);
 
     }
 
+    /**
+     * Overwritten onDestory Method, simply unsubscribes
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
