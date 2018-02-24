@@ -45,7 +45,7 @@
         <Button
             android:id="@+id/btn_search_friends"
             style="@style/Base.TextAppearance.AppCompat.Body1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_login"
             android:clickable="true"

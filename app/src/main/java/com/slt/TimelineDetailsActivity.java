@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -60,6 +61,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
+//                googleMap.getUiSettings().setZoomControlsEnabled(true);
                 LocationEntry last = null;
                 if (locationEntries.size() >= 2) {
 
@@ -74,17 +76,19 @@ public class TimelineDetailsActivity extends AppCompatActivity {
                             addLines(start, end);
                         } else {
                             LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
-                            googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                            googleMap.addMarker(new MarkerOptions().position(start).icon( BitmapDescriptorFactory.fromResource( R.mipmap.ic_start ) )
+                                    .title( "START" ) );
                         }
                         last = entry;
                     }
 
                     LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(end).title(""));
+                    googleMap.addMarker(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource( R.mipmap.ic_finish ))
+                            .title("FINISH"));
 
                 } else {
                     LatLng start = new LatLng(locationEntries.get(0).getLatitude(), locationEntries.get(0).getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                    googleMap.addMarker(new MarkerOptions().position(start).icon( BitmapDescriptorFactory.fromResource( R.mipmap.ic_start ) ).title(""));
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(start));
                     Toast.makeText(getApplicationContext(), "Only one or no Locationpoints available!", Toast.LENGTH_LONG).show();
                 }
@@ -174,7 +178,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
 
     private void addLines(LatLng start, LatLng end) {
         googleMap.addPolyline((new PolylineOptions())
-                .add(start, end).width(5).color(Color.BLUE)
+                .add(start, end).width(5).color(Color.GRAY)
                 .geodesic(true));
         // move camera to zoom on map
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start,
