@@ -12,5 +12,14 @@
     <color name="groupboxBodyBackground">#FFFFFF</color>
     <color name="border_listitem">#C4C6C9</color>
     <color name="appBackground">#F6F7FB</color>
+    <!--background-->
+    <color name="colorBackground">#1c2a4a</color>
+    <color name="colorButtonLogin">#43b05c</color>
+    <color name="colorButtonReset">#7383bf</color>
+    <color name="colorButtonSignUp">#ebba16</color>
+    <color name="colorBarDark">#121723</color>
+    <color name="colorBar">#17223b</color>
+    <color name="colorEditButton">#ff6e4e</color>
+    <color name="colorStroke">#152037</color>
 
 </resources>

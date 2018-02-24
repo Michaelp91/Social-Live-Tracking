@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@drawable/gradientbackground">
+    android:background="@color/colorBackground">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -27,16 +27,16 @@
 
             <!-- Title -->
             <TextView
-                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
                 android:fontFamily="cursive"
-                android:textSize="45dp"
                 android:text="@string/app_name"
-                android:textStyle="bold">
-            </TextView>
+                android:textAlignment="center"
+                android:textSize="45dp"
+                android:textStyle="bold"></TextView>
 
             <!-- Name field -->
             <android.support.design.widget.TextInputLayout
@@ -147,10 +147,10 @@
                 android:background="@drawable/background_signup"
                 android:text="Sign up"
                 style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:textColor="#fff"
+                android:textColor="#000000"
                 android:textAllCaps="false"
                 android:textSize="24sp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:clickable="true"
                 android:padding="16dp"/>
 

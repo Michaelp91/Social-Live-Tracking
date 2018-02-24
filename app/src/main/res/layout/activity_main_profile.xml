@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
     tools:context=".MainProfile"
-    android:background="@drawable/gradientbackground">
+    android:background="@color/colorBackground">
 
 
     <include
