@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -41,18 +42,32 @@
             android:divider="@null"
             android:layout_marginTop="24dp"/>
 
+
         <!-- Button Search Friends-->
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="32dp"
+        >
+
         <Button
             android:id="@+id/btn_search_friends"
             style="@style/Base.TextAppearance.AppCompat.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:layout_marginTop="24dp"
             android:background="@drawable/background_login"
             android:clickable="true"
-            android:layout_gravity="center"
+            android:gravity="bottom"
             android:padding="16dp"
-            android:layout_marginTop="24dp"
             android:text="Search For Friends!"
+            android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#000000" />
 

@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.LinkedList;
 
 /**
- *
+ * Class User represents a single User of our application
  */
 public class User {
     /*

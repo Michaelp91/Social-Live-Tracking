@@ -58,6 +58,9 @@ import rx.subscriptions.CompositeSubscription;
 import static com.slt.utils.Validation.validateEmail;
 import static com.slt.utils.Validation.validateFields;
 
+/**
+ *
+ */
 public class LoginFragment extends Fragment {
 
     /**
@@ -70,25 +73,84 @@ public class LoginFragment extends Fragment {
      */
     private static final String SPF_NAME = "timelinelogin";
 
+    /**
+     *
+     */
     private EditText mEtEmail;
+
+    /**
+     *
+     */
     private EditText mEtPassword;
-    private Button mBtViewStatistics;
+
+    /**
+     *
+     */
     private Button mBtLogin;
+
+    /**
+     *
+     */
     private TextView mTvRegister;
+
+    /**
+     *
+     */
     private TextView mTvForgotPassword;
+
+    /**
+     *
+     */
     private TextInputLayout mTiEmail;
+
+    /**
+     *
+     */
     private TextInputLayout mTiPassword;
+
+    /**
+     *
+     */
     private ProgressBar mProgressBar;
+
+    /**
+     *
+     */
     private CheckBox checkBox;
 
+    /**
+     *
+     */
     private CompositeSubscription mSubscriptions;
+
+    /**
+     *
+     */
     private SharedPreferences mSharedPreferences;
+
+    /**
+     *
+     */
     private LoginFragment context;
 
+    /**
+     *
+     */
     public Handler handler;
+
+    /**
+     *
+     */
     String threadEmail;
 
 
+    /**
+     * Overwritten onCreateViewMethod, intializes the elements
+     * @param inflater Inflater for the layout
+     * @param container The View Group
+     * @param savedInstanceState The saved instance state
+     * @return The created view
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -107,6 +169,10 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    /**
+     *
+     * @param v
+     */
     private void initViews(View v) {
         //mBtViewStatistics = (Button) v.findViewById(R.id.btn_statistics);
         mEtEmail = (EditText) v.findViewById(R.id.et_email);
@@ -203,11 +269,17 @@ public class LoginFragment extends Fragment {
         });
     }
 
+    /**
+     *
+     */
     private void initSharedPreferences() {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
 
+    /**
+     *
+     */
     private void viewStatistics() {
         Intent intent = new Intent( getActivity()  , StatisticsOverview.class);
 
@@ -215,12 +287,20 @@ public class LoginFragment extends Fragment {
 
     }
 
+    /**
+     *
+     */
     private void setError() {
 
         mTiEmail.setError(null);
         mTiPassword.setError(null);
     }
 
+    /**
+     *
+     * @param email
+     * @param password
+     */
     private void loginProcess(String email, String password) {
         context = this;
 
@@ -371,6 +451,10 @@ public class LoginFragment extends Fragment {
         startActivity(intent);
     }
 
+    /**
+     *
+     * @param message
+     */
     private void showSnackBarMessage(String message) {
 
         if (getView() != null) {
@@ -379,6 +463,9 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

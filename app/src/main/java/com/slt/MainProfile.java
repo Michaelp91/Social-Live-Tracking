@@ -70,6 +70,10 @@ public class MainProfile extends AppCompatActivity
      * Definitions for the permissions that have to be requested by the user
      */
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+
+    /**
+     * Permissions for gps location
+     */
     private static final int PERMISSION_REQUEST_FINE_LOCATION = 2;
 
     /**
@@ -82,7 +86,9 @@ public class MainProfile extends AppCompatActivity
      */
     public static final String TAG = MainProfile.class.getSimpleName();
 
-    //creating fragment object
+    /*
+     *reating fragment object
+     */
     Fragment fragment;
 
     /**
@@ -90,12 +96,25 @@ public class MainProfile extends AppCompatActivity
      */
     Context context;
 
+    /**
+     * Element for the image in the nav menu
+     */
     private ImageView mProfilePhoto;
+
+    /**
+     * Element for the username in the nav menu
+     */
     private TextView mUsername;
 
+    /**
+     * The shared instances
+     */
     private SharedPreferences mSharedPreferences;
 
-
+    /**
+     * Overwritten onCreate Method, initialize data
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +137,7 @@ public class MainProfile extends AppCompatActivity
         View view = navigationView.getHeaderView(0);
         mProfilePhoto = (ImageView) view.findViewById(R.id.profile_image);
 
+        //check if we have a profile picture, show if yes
         if (DataProvider.getInstance().getOwnUser().getMyImage() == null) {
             Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
             this.mProfilePhoto.setImageBitmap(image);
@@ -125,12 +145,11 @@ public class MainProfile extends AppCompatActivity
             this.mProfilePhoto.setImageBitmap(DataProvider.getInstance().getOwnUser().getMyImage());
         }
 
-
         SharedResources.getInstance().setNavProfilePhoto(mProfilePhoto);
 
+        //set the user information
         mUsername = (TextView) view.findViewById(R.id.tv_username);
         SharedResources.getInstance().setNavUsername(mUsername);
-
         mUsername.setText(DataProvider.getInstance().getOwnUser().getUserName());
         this.setProfileImage(DataProvider.getInstance().getOwnUser().getMyImage());
 
@@ -200,6 +219,7 @@ public class MainProfile extends AppCompatActivity
         try {
             gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
+            //check if gps is enabled
             if (!gps_enabled) {
 
                 android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
@@ -230,6 +250,7 @@ public class MainProfile extends AppCompatActivity
             network_enabled = conMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.DISCONNECTED
                     || conMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.DISCONNECTED;
 
+            //check if network is enabled
             if (!network_enabled) {
 
                 android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
@@ -250,7 +271,6 @@ public class MainProfile extends AppCompatActivity
                     }
                 });
                 dialog.show();
-
             }
         } catch (Exception ex) {
             Log.i(TAG, "Exception when trying to check Network Settings");
@@ -274,7 +294,6 @@ public class MainProfile extends AppCompatActivity
         }
     }
 
-
     /**
      * Procedure to logout the user
      */
@@ -282,11 +301,12 @@ public class MainProfile extends AppCompatActivity
         MainProfile.this.finish();
     }
 
-
+    /**
+     *
+     * @param message
+     */
     private void showSnackBarMessage(String message) {
-
         Snackbar.make(findViewById(R.id.nav_header_main), message, Snackbar.LENGTH_SHORT).show();
-
     }
 
     /**
@@ -309,7 +329,6 @@ public class MainProfile extends AppCompatActivity
             }
 
             LocationService.shouldContinue = false;
-
             SharedResources.getInstance().removeNotification();
         }
     }
@@ -321,7 +340,6 @@ public class MainProfile extends AppCompatActivity
      * @return True if the device has support for Step Sensing
      */
     private boolean isVersionWithStepSensor() {
-        // BEGIN_INCLUDE(iskitkatsensor)
         // Require at least Android KitKat
         int currentApiVersion = android.os.Build.VERSION.SDK_INT;
         // Check that the device supports the step counter and detector sensors
@@ -472,8 +490,6 @@ public class MainProfile extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-
-
     }
 
     /**
@@ -501,6 +517,9 @@ public class MainProfile extends AppCompatActivity
         }
     }
 
+    /**
+     * Overwritten inBackPressed, close drawer
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -511,6 +530,11 @@ public class MainProfile extends AppCompatActivity
         }
     }
 
+    /**
+     * Overwritten onCreateOptionsMenu
+     * @param menu The menu
+     * @return If successful true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -518,8 +542,10 @@ public class MainProfile extends AppCompatActivity
         return true;
     }
 
-
-
+    /**
+     * Shows the selected page
+     * @param itemId The selected page
+     */
     private void displaySelectedScreen(int itemId) {
 
         //creating fragment object
@@ -565,6 +591,9 @@ public class MainProfile extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
     }
 
+    /**
+     * Creates a log File if needed
+     */
     private void CreateLogFile() {
 
             try {
@@ -586,15 +615,19 @@ public class MainProfile extends AppCompatActivity
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
     }
 
-
+    /**
+     * Overwritten Method on NavigationItemSelected
+     * @param item The selected item
+     * @return Boolean if successful
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        //if logout was selected
         if (id == R.id.nav_btn_logout) {
             DataProvider.getInstance().clearData();
 
@@ -619,7 +652,6 @@ public class MainProfile extends AppCompatActivity
         //calling the method displayselectedscreen and passing the id of selected menu
         displaySelectedScreen(item.getItemId());
         return true;
-
     }
 
 }

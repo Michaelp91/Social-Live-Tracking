@@ -178,7 +178,9 @@ public class SharedResources {
     @TargetApi(Build.VERSION_CODES.O)
     public Notification getForegroundNotification() {
 
+        //if we do not have a notification yet
         if (foregroundNotification == null) {
+            //if old android version used, switch to older notification system
             if (Build.VERSION.SDK_INT < 26) {
                 mNotificationManager =
                         (NotificationManager) ApplicationController.getContext()
@@ -187,7 +189,7 @@ public class SharedResources {
                 RemoteViews notificationView = new RemoteViews(ApplicationController.getContext().getPackageName(), R.layout.foreground);
                 Bitmap icon = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), ic_launcher);
 
-
+                //create Buider and set properties
                 cBuilder = new NotificationCompat.Builder(ApplicationController.getContext(), Constants.NOTIFICATION_ID.id);
 
                 foregroundNotification = cBuilder.setContentTitle("Timeline")
@@ -202,6 +204,7 @@ public class SharedResources {
                         .setOngoing(true)
                         .build();
 
+                //set notification to foreground
                 mNotificationManager.notify(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, foregroundNotification);
 
             } else {
@@ -226,6 +229,7 @@ public class SharedResources {
                 mChannel.enableLights(true);
                 mNotificationManager.createNotificationChannel(mChannel);
 
+                //create notification and set properties
                 builder = new Notification.Builder(ApplicationController.getContext().getApplicationContext(), id);
 
                 foregroundNotification = builder
@@ -238,8 +242,8 @@ public class SharedResources {
                         .setOngoing(true)
                         .build();
 
+                //set notification to foreground
                 mNotificationManager.notify(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, foregroundNotification);
-
             }
         }
 
@@ -248,45 +252,46 @@ public class SharedResources {
 
     /**
      * Changes the Detected Activity to a custom string
+     *
      * @param activity The activity to decode
      * @return The activity as a string
      */
-    private String activityToString(DetectedActivity activity){
+    private String activityToString(DetectedActivity activity) {
         String ret = "Undefined";
 
-        switch (activity.getType()){
+        switch (activity.getType()) {
             case DetectedActivity.IN_VEHICLE:
-                ret= "In Vehicle";
+                ret = "In Vehicle";
                 break;
             case DetectedActivity.ON_BICYCLE:
-                ret= "On Bicycle";
+                ret = "On Bicycle";
                 break;
             case DetectedActivity.ON_FOOT:
-                ret= "On Foot";
+                ret = "On Foot";
                 break;
             case DetectedActivity.RUNNING:
-                ret= "Running";
+                ret = "Running";
                 break;
             case DetectedActivity.STILL:
-                ret= "Still";
+                ret = "Still";
                 break;
             case DetectedActivity.TILTING:
-                ret= "Tilting";
+                ret = "Tilting";
                 break;
             case DetectedActivity.UNKNOWN:
-                ret= "Unknown";
+                ret = "Unknown";
                 break;
             case DetectedActivity.WALKING:
-                ret= "Walking";
+                ret = "Walking";
                 break;
         }
-
         return ret;
     }
 
 
     /**
      * Updates the notification to show changes in the data
+     * TODO: might want to remove after debugging
      *
      * @param location The GPS location
      * @param data     The data of the last segment
@@ -294,6 +299,8 @@ public class SharedResources {
      * @param activity The activity that was detected
      */
     void updateNotification(Location location, TimelineDay data, java.util.Date date, DetectedActivity activity) {
+
+        //retrive data and build information strings
         String locationString = "Location: Unknown";
         String segmentDataHeader = "Current Segment: None";
         String segmentData = "";
@@ -305,19 +312,22 @@ public class SharedResources {
         String segment2DataTwo = "None";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
-
+        // check if a activity is set
         if (activity != null) {
             activityData = ", Act: " + this.activityToString(activity);
         }
 
+        //check if a location is set
         if (location != null) {
             locationString = "Loc: " + location.getLatitude() + "- Lat, " + location.getLongitude() + "-Long";
         }
 
+        //check if we have segment data available
         if (data != null) {
 
             String sDate = "None";
 
+            //check if last segment available
             if (data.getMySegments().getLast() != null) {
                 if (data.getMySegments().getLast().getLocationPoints().getFirst() != null) {
                     sDate = simpleDateFormat.format(data.getMySegments().getLast().getLocationPoints().getFirst().getMyEntryDate());
@@ -328,20 +338,21 @@ public class SharedResources {
                     eDate = simpleDateFormat.format(data.getMySegments().getLast().getLocationPoints().getLast().getMyEntryDate());
                 }
 
-                String  distance =  String.format( "%.2f",
+                String distance = String.format("%.2f",
                         (data.getMySegments().getLast().getActiveDistance()
                                 + data.getMySegments().getLast().getInactiveDistance()));
 
                 segmentDataHeader = "CSt: " + this.activityToString(data.getMySegments().getLast().getMyActivity()) +
-                        " - " + data.getMySegments().size() + ". Seg, " +  data.getMySegments().getLast().getPlace() + ", " + data.getMySegments().getLast().getAddress();
-                segmentData = "Start: " + sDate + " - End: " + eDate  + " - Points: " + data.getMySegments().getLast().getLocationPoints().size();
-                segmentDataTwo =  "Dur: " + Double.toString(data.getMySegments().getLast().getDuration()/1000) + "s, Steps: "
+                        " - " + data.getMySegments().size() + ". Seg, " + data.getMySegments().getLast().getPlace() + ", " + data.getMySegments().getLast().getAddress();
+                segmentData = "Start: " + sDate + " - End: " + eDate + " - Points: " + data.getMySegments().getLast().getLocationPoints().size();
+                segmentDataTwo = "Dur: " + Double.toString(data.getMySegments().getLast().getDuration() / 1000) + "s, Steps: "
                         + Integer.toString(data.getMySegments().getLast().getUserSteps()) +
-                " Dist: " + distance + "m";
+                        " Dist: " + distance + "m";
             }
 
-            if(data.getMySegments().size() > 1) {
-                int index = data.getMySegments().size() -2;
+            //check if we have a previous segment
+            if (data.getMySegments().size() > 1) {
+                int index = data.getMySegments().size() - 2;
 
                 TimelineSegment seg = data.getMySegments().get(index);
                 if (seg.getLocationPoints().getFirst() != null) {
@@ -353,15 +364,15 @@ public class SharedResources {
                     eDate = simpleDateFormat.format(seg.getLocationPoints().getLast().getMyEntryDate());
                 }
 
-                String distance2 =  String.format( "%.2f", (seg.getActiveDistance()  ));
+                String distance2 = String.format("%.2f", (seg.getActiveDistance()));
 
 
-                String  distance =  String.format( "%.2f", (seg.getActiveDistance()  + seg.getInactiveDistance()));
+                String distance = String.format("%.2f", (seg.getActiveDistance() + seg.getInactiveDistance()));
 
                 segment2DataHeader = "CSt: " + this.activityToString(seg.getMyActivity()) +
-                        " - " + (data.getMySegments().size()-1) + ". Seg, " +  seg.getPlace() + ", " + seg.getAddress();
-                segment2Data = "Start: " + sDate + " - End: " + eDate  + " - Points: " + seg.getLocationPoints().size();
-                segment2DataTwo =  "Dur: " + Double.toString(seg.getDuration()/1000) + "s, Steps: "
+                        " - " + (data.getMySegments().size() - 1) + ". Seg, " + seg.getPlace() + ", " + seg.getAddress();
+                segment2Data = "Start: " + sDate + " - End: " + eDate + " - Points: " + seg.getLocationPoints().size();
+                segment2DataTwo = "Dur: " + Double.toString(seg.getDuration() / 1000) + "s, Steps: "
                         + Integer.toString(seg.getUserSteps()) +
                         " Dist: " + distance + "m";
 
@@ -370,6 +381,8 @@ public class SharedResources {
 
         String dateString = simpleDateFormat.format(date) + " - detected Details:";
 
+
+        //select which notification type we have depending on the android version
         if (cBuilder != null) {
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();

@@ -104,8 +104,6 @@ public class StepSensor implements SensorEventListener {
         if (this.myStartSteps < 1) {
             // initialize value
             myCurrentSteps = myStartSteps = (int) event.values[0];
-
-
         }
 
         // Calculate steps taken based on first counter value received.

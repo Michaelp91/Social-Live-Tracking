@@ -42,23 +42,78 @@ import rx.subscriptions.CompositeSubscription;
 import static com.slt.utils.Validation.validateEmail;
 import static com.slt.utils.Validation.validateFields;
 
+/**
+ *
+ */
 public class RegisterFragment extends Fragment {
 
+    /**
+     *
+     */
     public static final String TAG = RegisterFragment.class.getSimpleName();
 
+    /**
+     *
+     */
     private EditText mEtName;
+
+    /**
+     *
+     */
     private EditText mEtEmail;
+
+    /**
+     *
+     */
     private EditText mEtPassword;
+
+    /**
+     *
+     */
     private Button   mBtRegister;
+
+    /**
+     *
+     */
     private TextView mTvLogin;
+
+    /**
+     *
+     */
     private TextInputLayout mTiName;
+
+    /**
+     *
+     */
     private TextInputLayout mTiEmail;
+
+    /**
+     *
+     */
     private TextInputLayout mTiPassword;
+
+    /**
+     *
+     */
     private ProgressBar mProgressbar;
 
+    /**
+     *
+     */
     private CompositeSubscription mSubscriptions;
+
+    /**
+     *
+     */
     private RegisterFragment context;
 
+    /**
+     * Overwritten onCreateViewMethod, intializes the elements
+     * @param inflater Inflater for the layout
+     * @param container The View Group
+     * @param savedInstanceState The saved instance state
+     * @return The created view
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +124,10 @@ public class RegisterFragment extends Fragment {
         return view;
     }
 
+    /**
+     *
+     * @param v
+     */
     private void initViews(View v) {
 
         mEtName = (EditText) v.findViewById(R.id.et_name);
@@ -136,6 +195,9 @@ public class RegisterFragment extends Fragment {
         });
     }
 
+    /**
+     *
+     */
     private void register() {
 
         setError();
@@ -180,6 +242,9 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    /**
+     *
+     */
     private void setError() {
 
         mTiName.setError(null);
@@ -187,6 +252,10 @@ public class RegisterFragment extends Fragment {
         mTiPassword.setError(null);
     }
 
+    /**
+     *
+     * @param user
+     */
     private void registerProcess(User user) {
 
         context = this;
@@ -259,12 +328,20 @@ public class RegisterFragment extends Fragment {
         } ));
     }
 
+    /**
+     *
+     * @param response
+     */
     private void handleResponse(Response response) {
 
         mProgressbar.setVisibility(View.GONE);
         showSnackBarMessage(response.getMessage());
     }
 
+    /**
+     *
+     * @param error
+     */
     private void handleError(Throwable error) {
 
         mProgressbar.setVisibility(View.GONE);
@@ -288,6 +365,10 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    /**
+     *
+     * @param message
+     */
     public void showSnackBarMessage(String message) {
 
         if (getView() != null) {
@@ -296,6 +377,9 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    /**
+     *
+     */
     private void goToLogin(){
 
         Fragment newFragment = new LoginFragment();
@@ -308,6 +392,9 @@ public class RegisterFragment extends Fragment {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
