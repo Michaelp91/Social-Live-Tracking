@@ -5,6 +5,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme1" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorBackground</item>
+        <item name="colorPrimaryDark">@color/colorBar</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="AppTheme.LoginRegister" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -30,12 +36,21 @@
 
     <style name="Social_Live_Theme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">?attr/colorPrimary</item>
+        <item name="colorPrimary">@color/colorBar</item>
+        <item name="android:colorPrimaryDark">@color/colorBarDark</item>
         <item name="android:colorForeground">@android:color/black</item>
     </style>
 
     <style name="Social_Live_Theme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Social_Live_Theme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!--Illia Herman Test-->
+
+    <style name="Login_Theme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorButtonNormal">@color/colorButtonLogin</item>
+        <item name="android:colorForeground">@android:color/black</item>
+    </style>
 
 
 </resources>

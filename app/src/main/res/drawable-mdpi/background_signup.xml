@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:startColor="#fc4a1a"
-        android:endColor="#f7b733"
-        android:angle="90">
+    <solid android:color="@color/colorButtonSignUp" />
+    <stroke android:width="10px" android:color="@color/colorStroke" />
 
     <padding
         android:left="2dp"
@@ -12,9 +10,7 @@
         android:top="2dp"
         android:bottom="2dp"/>
 
-    <solid android:color="#df546e"/>
 
-    </gradient>
     <corners
         android:radius="25dp" />
 
