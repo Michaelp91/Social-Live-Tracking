@@ -301,6 +301,10 @@ public class OtherRestCalls {
         return friends;
     }
 
+    /**
+     *
+     * @param includeFriendsUpdate
+     */
 
     public static void updateUser(boolean includeFriendsUpdate) {
 
