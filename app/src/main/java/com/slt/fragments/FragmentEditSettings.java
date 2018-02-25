@@ -1,6 +1,7 @@
 package com.slt.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -34,11 +36,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.slt.MainActivity;
+import com.slt.MainProfile;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
+import com.slt.data.Timeline;
+import com.slt.data.TimelineDay;
+import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.UsefulMethods;
 import com.slt.utils.Constants;
 import com.slt.utils.UniversalImageLoader;
@@ -55,7 +63,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Locale;
 
 
@@ -63,6 +73,8 @@ import java.util.Locale;
  * The Class for the edit settings fragment
  */
 public class FragmentEditSettings extends Fragment implements ChangePasswordDialog.Listener {
+
+    private Activity context;
 
     /**
      * TAG for the debugger
@@ -144,6 +156,8 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
      */
     private ImageView mProfilePhoto;
 
+    private Button mDeleteUser;
+
     /**
      * Overwritten onCreateView
      * @param inflater The layout inflater
@@ -155,6 +169,8 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.edit_settings_fragment, container, false);
+
+        context = this.getActivity();
 
         return view;
     }
@@ -453,6 +469,7 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
         this.foreNameEditText = (EditText) view.findViewById(R.id.et_forename);
         this.cityEditText = (EditText) view.findViewById(R.id.et_city);
         this.emailEditText = (EditText) view.findViewById(R.id.et_email);
+        this.mDeleteUser = (Button) view.findViewById(R.id.btn_deleteUser);
 
         //init for the password change dialog
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationController.getContext());
@@ -516,6 +533,52 @@ public class FragmentEditSettings extends Fragment implements ChangePasswordDial
             }
         });
 
+
+        mDeleteUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteUser();
+            }
+        });
+
+    }
+
+    private void deleteUser() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Timeline t = DataProvider.getInstance().getUserTimeline();
+
+                LinkedList<TimelineDay> timelineDays = t.getTimelineDays();
+
+                for(TimelineDay t_d: timelineDays) {
+                    LinkedList<TimelineSegment> timelineSegments = t_d.getMySegments();
+                    for(TimelineSegment t_s: timelineSegments) {
+                        OtherRestCalls.deleteLocationEntriesByTimelineSegment(t_s);
+                    }
+
+                    OtherRestCalls.deleteTimelineSegmentByTimelineDay(t_d);
+                }
+                    OtherRestCalls.deleteTimelineDayByTimeline(t);
+                    OtherRestCalls.deleteTimeline(DataProvider.getInstance().getOwnUser());
+                    OtherRestCalls.deleteUser_Functionalities(DataProvider.getInstance().getOwnUser());
+                    OtherRestCalls.deleteUsers(DataProvider.getInstance().getOwnUser());
+                    ArrayList<User> allUsers = RetrieveOperations.getInstance().retrieveAllUserLists();
+
+                    for(User u: allUsers) {
+                        u.deleteFriend(DataProvider.getInstance().getOwnUser());
+                        OtherRestCalls.updateUser(true);
+                    }
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "The User is deleted successfully", Toast.LENGTH_SHORT).show();
+                            context.finish();
+                        }
+                    });
+            }
+        }).start();
     }
 
     /**
