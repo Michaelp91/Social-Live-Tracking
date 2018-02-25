@@ -266,6 +266,7 @@ public class TimelineDay {
         return distance;
     }
 
+
     /**
      * Get the inactive distance for a activity of the day
      * @param activity The activity we want to have the inactive distance for
@@ -283,6 +284,32 @@ public class TimelineDay {
         }
 
         return distance;
+    }
+
+    /**
+     * filters the list with segments of the day that have the given type of the activity
+     * @param sportType
+     * @return the list with segments that are of the given sport type
+     */
+    public LinkedList<TimelineSegment> filterDaySegmentsForActivity(int sportType) {
+
+        TimelineSegment segment;
+        LinkedList<TimelineSegment> segmentList = this.getMySegments();
+
+        LinkedList<TimelineSegment> filteredSegments = new LinkedList<>();
+
+        for (int i = 0; i < segmentList.size(); i++) {
+            segment = segmentList.get(i);
+
+            // check if the segment-activity is the one that should be displayed ins statistics
+            if (segment.getMyActivity().getType() != sportType)
+                continue;
+            else
+                filteredSegments.add(segment);
+
+        }
+
+        return filteredSegments;
     }
 
     /**
@@ -524,7 +551,7 @@ public class TimelineDay {
         this.mySegments.getLast().deleteSensor();
 
         //if it is a new activity
-        if(!this.mySegments.getLast().compareActivities(activity)){
+        if( ! this.mySegments.getLast().compareActivities(activity)){
             Log.i(TAG, "addUserStatus: New activity detected.");
 
             //if last segment does not have the min duration necessary

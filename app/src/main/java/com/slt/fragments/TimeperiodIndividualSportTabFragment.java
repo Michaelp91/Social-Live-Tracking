@@ -1,7 +1,7 @@
 package com.slt.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +11,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
 import com.slt.data.Achievement;
+import com.slt.definitions.Constants;
 import com.slt.statistics.Sport;
 import com.slt.statistics.adapter.TimeperiodIndividualSportTabFragmentAdapter;
 import com.slt.statistics.graphs.BarChartItem;
@@ -25,7 +26,7 @@ import java.util.LinkedList;
  */
 public class TimeperiodIndividualSportTabFragment extends Fragment {
 
-    public Sport sport = null;
+    public int sport = Constants.TIMELINEACTIVITY.UNKNOWN;
     public int period = 0;
     public LineData lineData = null;
     public HashMap<String, String> infos = null;
@@ -64,7 +65,7 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
         // achivements
         listWithData.add(this.achievements);
 
-        // todo create adapter for the details within time period
+        // adapter for the details within time period
         TimeperiodIndividualSportTabFragmentAdapter adapter = new TimeperiodIndividualSportTabFragmentAdapter(getActivity().getApplicationContext(), listWithData);
 
         adapter.setPeriod(this.period);
@@ -92,7 +93,7 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
         this.achievements = achievements;
     }
 
-    public void setSport(Sport sport) {
+    public void setSport(int sport) {
         this.sport = sport;
     }
 

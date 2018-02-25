@@ -18,11 +18,13 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.location.DetectedActivity;
 import com.slt.R;
 import com.slt.control.DataProvider;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
+import com.slt.definitions.Constants;
 import com.slt.statistics.Sport;
 
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ import java.util.TreeMap;
 
 public class TestDataGenerator_toBeRemoved {
 
-    public static Sport sportTypeOfLineData = Sport.NONE;
+    public static int sportTypeOfLineData = Constants.TIMELINEACTIVITY.UNKNOWN;
     public static LineData dayLineData = null;
     public static LineData weekLineData = null;
     public static LineData monthLineData = null;
@@ -79,7 +81,7 @@ public class TestDataGenerator_toBeRemoved {
      *
      * @return
      */
-    public static LineData generateDataLine(Context context, int timePeriod, Sport sportType) {
+    public static LineData generateDataLine(Context context, int timePeriod, int sportType) {
 
         ArrayList<Entry> e1 = new ArrayList<Entry>();
         int xAxisMaxSize = -1;
@@ -162,7 +164,7 @@ public class TestDataGenerator_toBeRemoved {
     }
 
 
-    public static BarData getBarData(Context context, int timePeriod, Sport sportType) {
+    public static BarData getBarData(Context context, int timePeriod, int sportType) {
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
         int xAxisMaxSize = -1;
@@ -194,11 +196,11 @@ public class TestDataGenerator_toBeRemoved {
         }*/
 
         // prepare y-axis values
-        yVals1 = prepareXYPairs(timePeriod);
+        yVals1 = prepareXYPairs(timePeriod, sportType);
 
         BarDataSet xyValuesSet;
 
-        int steps = -1;
+        /*int steps = -1;
 
         if(timePeriod != 0) {
     Calendar cal = Calendar.getInstance();
@@ -220,8 +222,8 @@ public class TestDataGenerator_toBeRemoved {
 
     }
 
-}
-        xyValuesSet = new BarDataSet(yVals1, "STEPS " + steps
+}*/
+        xyValuesSet = new BarDataSet(yVals1, "DISTANCE "
         );
 
         xyValuesSet.setDrawIcons(false);
@@ -241,33 +243,33 @@ public class TestDataGenerator_toBeRemoved {
         return data;
     }
 
-    public static int getSpeed(int timePeriod, Sport sport, int x, int y) {
+    public static int getSpeed(int timePeriod, int sport, int x, int y) {
         // todo
         return 10;
     }
 
-    public static int getDistance(int timePeriod, Sport sport, int x, int y) {
+    public static int getDistance(int timePeriod, int sport, int x, int y) {
         // todo
         return 10;
     }
 
-    public static int getDurance(int timePeriod, Sport sport, int x, int y) {
+    public static int getDurance(int timePeriod, int sport, int x, int y) {
         // todo
         return 10;
     }
 
-    public static int getTime(int timePeriod, Sport sport, int x, int y) {
+    public static int getTime(int timePeriod, int sport, int x, int y) {
         // todo
         return 10;
     }
 
-    public static int getDate(int timePeriod, Sport sport, int x, int y) {
+    public static int getDate(int timePeriod, int sport, int x, int y) {
         // todo
         return 10;
     }
 
 
-    public static ArrayList<BarEntry> prepareXYPairs(int timePeriod) {
+    public static ArrayList<BarEntry> prepareXYPairs(int timePeriod, int sportType) {
 
         ArrayList<BarEntry> xyReturnValues = new ArrayList<BarEntry>();
         int xAxisMaxSize = 0;
@@ -287,7 +289,7 @@ public class TestDataGenerator_toBeRemoved {
                 // size of x-axis for 24hours
                 xAxisMaxSize = 24;
 
-                xyPairs = getXYPairsForDay(xAxisMaxSize, timeline.getTimelineDay(timeline.getHistorySize() - 1));
+                xyPairs = getXYPairsForDay(xAxisMaxSize, timeline.getTimelineDay(timeline.getHistorySize() - 1), sportType);
                 break;
             case 1:
                 // calculate dates of the timelineDay of the current week
@@ -296,7 +298,7 @@ public class TestDataGenerator_toBeRemoved {
                 days = timeline.getDaysOfWeekOrMonth(currDate, 0);
 
                 daysGLOBAL = days;
-                xyPairs = getXYPairsForWeek( dates, days);
+                xyPairs = getXYPairsForWeek( dates, days, sportType);
                 break;
             case 2:
                 days = timeline.getDaysOfWeekOrMonth(currDate, 1);
@@ -310,7 +312,7 @@ public class TestDataGenerator_toBeRemoved {
                 // get the number of days in the current month
                 xAxisMaxSize = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-                xyPairs = getXYPairsForMonth(xAxisMaxSize, days);
+                xyPairs = getXYPairsForMonth(xAxisMaxSize, days, sportType);
                 break;
             default:
                 System.err.println("No such time period.");
@@ -336,32 +338,37 @@ public class TestDataGenerator_toBeRemoved {
 
     public static LinkedList<TimelineDay> daysGLOBAL = new LinkedList<>();
 
-    private static LinkedHashMap<Integer, Integer> getXYPairsForDay(int xAxisMaxSize, TimelineDay timelineDay) {
+    private static LinkedHashMap<Integer, Integer> getXYPairsForDay(int xAxisMaxSize, TimelineDay timelineDay, int sportType) {
 
         TimelineSegment segment;
-        LinkedList<TimelineSegment> segmentList = timelineDay.getMySegments();
+        LinkedList<TimelineSegment> segmentList = timelineDay.filterDaySegmentsForActivity(sportType);
         Date startTime;
         Calendar calendar = Calendar.getInstance();
         int segmentStartingHour;
         HashMap<Integer, Integer> xyReturnPairs_unsorted = new HashMap<>();
         ArrayList<Integer> addedHours = new ArrayList<>();
         int sum = 0;
+        int distance = 0;
+        DetectedActivity detectedActivity = new DetectedActivity(sportType, 100);
 
         for (int i = 0; i < segmentList.size(); i++) {
             segment = segmentList.get(i);
+
 
             startTime = segment.getStartTime();
             calendar.setTime(startTime);
 
             segmentStartingHour = calendar.get(Calendar.HOUR_OF_DAY);
 
-            // todo dif of user activities
+            distance =  (int) timelineDay.getActiveDistance(detectedActivity);
+
             if(xyReturnPairs_unsorted.containsKey(segmentStartingHour)) {
-                sum = xyReturnPairs_unsorted.get(segmentStartingHour) + segment.getUserSteps();
+
+                sum = xyReturnPairs_unsorted.get(segmentStartingHour) + distance;
                 // add steps from new segment to the old sum
                 xyReturnPairs_unsorted.put(segmentStartingHour, sum);
             } else
-                xyReturnPairs_unsorted.put(segmentStartingHour, segment.getUserSteps());
+                xyReturnPairs_unsorted.put(segmentStartingHour, distance);
 
             if( ! addedHours.contains(segmentStartingHour))
                 addedHours.add(segmentStartingHour);
@@ -376,6 +383,9 @@ public class TestDataGenerator_toBeRemoved {
         // sort by keys befor return
         return sortHashMapByKeys(xyReturnPairs_unsorted);
     }
+
+
+
 
     /**
      * sorts the given hashmap by keys
@@ -401,22 +411,23 @@ public class TestDataGenerator_toBeRemoved {
 
 
     private static LinkedHashMap<Integer, Integer> getXYPairsForMonth(
-            int xAxisMaxSize, LinkedList<TimelineDay> days
-    ) {
+            int xAxisMaxSize, LinkedList<TimelineDay> days,
+            int sportType) {
         HashMap<Integer, Integer> xyPairsForMonth = new HashMap<>();
         Calendar cal = Calendar.getInstance();
         Date date = new Date();
         int key, val;
         TimelineDay timelineDay;
         ArrayList<Integer> addedDays = new ArrayList<>();
+        DetectedActivity detectedActivity = new DetectedActivity(sportType, 100);
 
         for (int i = 0; i < days.size(); i++) {
             timelineDay = days.get(i);
             date = timelineDay.getMyDate();
             cal.setTime(date);
             key = cal.get(Calendar.DAY_OF_MONTH);
-            // todo diff of user activities
-            val = timelineDay.getSteps();
+
+            val = (int) timelineDay.getActiveDistance(detectedActivity);
 
             xyPairsForMonth.put(key, val);
 
@@ -435,7 +446,7 @@ public class TestDataGenerator_toBeRemoved {
     }
 
     private static LinkedHashMap<Integer, Integer> getXYPairsForWeek(
-             LinkedList<Date> dates, LinkedList<TimelineDay> days) {
+            LinkedList<Date> dates, LinkedList<TimelineDay> days, int sportType) {
 
         TimelineDay timelineDay;
         Date date = null;
@@ -444,7 +455,7 @@ public class TestDataGenerator_toBeRemoved {
         boolean found = false;
         Calendar cal = Calendar.getInstance();
         ArrayList<Integer> addedDays = new ArrayList<>();
-
+        DetectedActivity detectedActivity = new DetectedActivity(sportType, 100);
 
 
         for (int j = 0; j < dates.size(); j++) {
@@ -457,11 +468,12 @@ public class TestDataGenerator_toBeRemoved {
 
                 if (timelineDay.isSameDay(date)) {
                     found = true;
-                    // todo switch-case with other then steps
+
                     cal.setTime(date);
                     key = cal.get(Calendar.DAY_OF_MONTH);
-                    // todo diff of user activities
-                    val = timelineDay.getSteps();
+
+                    val = (int) timelineDay.getActiveDistance(detectedActivity);
+
                     xyPairsForAndWeek.put(key, val);
 
                     break;

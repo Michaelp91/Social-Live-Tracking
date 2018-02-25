@@ -33,7 +33,7 @@ public class MainDataSupplier implements DataSupplier {
     }
 
     @Override
-    public LineData getLineData(Context context, int timePeriod, Sport sport) {
+    public LineData getLineData(Context context, int timePeriod, int sport) {
        // if (lineData == null)
             lineData = TestDataGenerator_toBeRemoved.generateDataLine(context, timePeriod, sport);
 
@@ -41,7 +41,7 @@ public class MainDataSupplier implements DataSupplier {
     }
 
     @Override
-    public BarData getBarData(Context c,  int timePeriod, Sport sport) {
+    public BarData getBarData(Context c,  int timePeriod, int sport) {
         // if (lineData == null)
         barData = TestDataGenerator_toBeRemoved.getBarData(c, timePeriod, sport);
 
