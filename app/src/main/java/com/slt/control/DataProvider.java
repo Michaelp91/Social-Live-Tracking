@@ -4,6 +4,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.slt.data.Achievement;
+import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 
 import com.google.android.gms.location.DetectedActivity;
@@ -85,6 +86,11 @@ public class DataProvider implements ServiceInterface {
     private Boolean manualMode;
 
     /**
+     * By Clicking on the Timeline Day this list will be filled and showed in the SegmentView Activity
+     */
+    private LinkedList<TimelineSegment> choosedTimelineSegments;
+
+    /**
      * Constructor to initialize the data
      */
     private DataProvider() {
@@ -96,6 +102,7 @@ public class DataProvider implements ServiceInterface {
 
         this.userList = new LinkedList<>();
         this.allUsers = new LinkedList<>();
+        this.choosedTimelineSegments = new LinkedList<>();
 
         this.ownUser = null;
 
@@ -103,6 +110,23 @@ public class DataProvider implements ServiceInterface {
 
     public Timeline getUserTimeline() {
         return userTimeline;
+    }
+
+
+    /**
+     *
+     * @param choosedTimelineSegments fill this list after clicking on the TimelineDay
+     */
+    public void setChoosedTimelineSegments(LinkedList<TimelineSegment> choosedTimelineSegments) {
+        this.choosedTimelineSegments = choosedTimelineSegments;
+    }
+
+    /**
+     *
+     * @return choosedTimelineSegments
+     */
+    public LinkedList<TimelineSegment> getChoosedTimelineSegments() {
+        return choosedTimelineSegments;
     }
 
     /**

@@ -86,6 +86,7 @@
     <string name="str_img3">Image3</string>
     <string name="str_img4">Image4</string>
     <string name="str_img5">Image5</string>
+    <string name="title_activity_timeline__segment_view">Timeline_SegmentViewActivity</string>
 
 
 </resources>

@@ -52,6 +52,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slt.MainProfile;
 import com.slt.R;
+import com.slt.SegmentViewActivity;
 import com.slt.TimelineDetailsActivity;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
@@ -1051,6 +1052,11 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                     LinearLayout tday = list_TimelineDays.get(v.getId());
                     choosedChildren = (LinearLayout) tday.findViewById(R.id.ll_all_locations);
                     choosedTimelineDay = timeLineDays.get(v.getId());
+                    DataProvider.getInstance().setChoosedTimelineSegments(choosedTimelineDay.getMySegments());
+                    Intent i = new Intent(this.getActivity(), SegmentViewActivity.class);
+                    startActivity(i);
+
+                    /*
                     choosedChildren.removeAllViews();
                     h_viewedTimelineSegments = new HashMap<>();
 
@@ -1092,7 +1098,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         choosedChildren = null;
                     }
 
-
+*/
                     break;
 
             }

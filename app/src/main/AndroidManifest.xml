@@ -36,9 +36,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
         -->
-        <activity
-            android:name=".SplashActivity"
-           >
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -86,8 +84,8 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
-            android:theme="@style/Social_Live_Theme"
-            ></activity>
+            android:theme="@style/Social_Live_Theme" />
+        <activity android:name=".SegmentViewActivity"></activity>
     </application>
 
 </manifest>
