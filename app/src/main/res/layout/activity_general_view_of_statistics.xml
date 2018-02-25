@@ -8,8 +8,12 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
-    tools:context=".statistics.StatisticsOverview"
     android:background="@drawable/gradientbackground">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/hallo"/>
 
 <!--<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -21,27 +25,26 @@
     android:background="@drawable/gradientbackground">-->
 
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:tabMode="fixed"
-        android:minHeight="?attr/actionBarSize"
-        app:tabGravity="fill"
-        app:tabTextColor="#0DF"
-        app:tabSelectedTextColor="#0DF"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            android:minHeight="?attr/actionBarSize"
+            app:tabGravity="fill"
+            app:tabTextColor="#0DF"
+            app:tabSelectedTextColor="#0DF"/>
 
 
-    <ListView android:id="@+id/list_in_Frag"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        android:layout_weight="1"
-        android:drawSelectorOnTop="false"
-        android:dividerHeight="12dp"
-        android:divider="@null"
-        android:layout_marginTop="24dp"/>
-
+        <ListView android:id="@+id/list_in_Frag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:layout_weight="1"
+            android:drawSelectorOnTop="false"
+            android:dividerHeight="12dp"
+            android:divider="@null"
+            android:layout_marginTop="24dp"/>
 <!--</LinearLayout>-->
 </android.support.v4.widget.DrawerLayout>
 

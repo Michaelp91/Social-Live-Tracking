@@ -49,6 +49,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.google.android.gms:play-services:10.2.6'
     compile 'com.google.android.gms:play-services-location:10.2.6'
+    compile 'com.android.support:support-v13:+'
 
     implementation 'com.android.support:appcompat-v7:27.0.0'
     implementation 'com.android.support:design:27.0.0'

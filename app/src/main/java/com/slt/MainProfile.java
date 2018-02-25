@@ -561,8 +561,9 @@ public class MainProfile extends AppCompatActivity
                 break;
             case R.id.nav_summaries:
                 //fragment = new FragmentSummaries();
-                Intent Summaries = new Intent(MainProfile.this, StatisticsOverview.class);
-                startActivity(Summaries);
+               // Intent Summaries = new Intent(MainProfile.this, StatisticsOverview.class);
+                //startActivity(Summaries);
+                fragment = new StatisticsOverview();
                 break;
             case R.id.nav_friends:
                 fragment = new FragmentFriends();

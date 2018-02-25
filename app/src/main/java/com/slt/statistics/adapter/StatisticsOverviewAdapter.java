@@ -1,5 +1,7 @@
 package com.slt.statistics.adapter;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -38,12 +40,13 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
 
     public static View rowView = null;
     BarChart mChart;
+    public static FragmentManager fragmentManager = null;
 
 
 
-
-    public StatisticsOverviewAdapter(Context context, List<ChartItem> objects) {
+    public StatisticsOverviewAdapter(Context context, List<ChartItem> objects , FragmentManager fragmentManager) {
         super(context, 0, objects);
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -282,18 +285,29 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
                         break;
                 }
 
-                IndividualStatistics.setSelectedSportStatistics(sport);
+               //todo comment in: IndividualStatistics.setSelectedSportStatistics(sport);
                 Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
                 //Inform the user which listitem has been clicked
                 Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " +
-                                IndividualStatistics.getSelectedSportStatistics() +
+
                                 ", timelineID = " +
                                 timeline.getAchievementsListForMonth().size()
                         , Toast.LENGTH_SHORT).show();
 
                 // start new activity with tabs and details
-                viewIndividualStatistics();
+
+                FragmentManager fm = StatisticsOverviewAdapter.fragmentManager;
+                if(fm != null) {
+                    FragmentTransaction ft = fm.beginTransaction();
+
+                    IndividualStatistics individualStatistics = new IndividualStatistics();
+
+                    ft.replace(R.id.content_main_frame, individualStatistics);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+               // viewIndividualStatistics();
             }
         });
 
@@ -302,11 +316,11 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
 
 
 
-    private void viewIndividualStatistics() {
+   /* private void viewIndividualStatistics() {
         Intent intent = new Intent(getContext(), IndividualStatistics.class);
 
         getContext().startActivity(intent);
-    }
+    }*/
 
 
     @Override

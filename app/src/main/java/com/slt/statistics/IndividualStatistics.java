@@ -1,12 +1,18 @@
 package com.slt.statistics;
 
+import android.annotation.SuppressLint;
+import android.app.Fragment;
+import android.app.FragmentManager;
+
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 
 import com.github.mikephil.charting.data.BarData;
@@ -15,35 +21,41 @@ import com.slt.R;
 import com.slt.control.DataProvider;
 import com.slt.data.Achievement;
 import com.slt.fragments.TimeperiodIndividualSportTabFragment;
+import com.slt.statistics.adapter.StatisticsOverviewAdapter;
 import com.slt.statistics.data.DataObjectsCollection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import android.support.v13.app.FragmentPagerAdapter;
 
-public class IndividualStatistics extends AppCompatActivity {
+
+public class IndividualStatistics extends Fragment {
 
     private static Sport selectedSportStatistics = Sport.NONE;
+    public static android.app.FragmentManager fragmentManager = null;
 
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_statistics);
+        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_view_statistics, container, false);
+
+        //setContentView(R.layout.activity_view_statistics);
         String[] periodNames = new String[]{"Today", "Week", "Month"};
         ViewPagerAdapter adapter;
         Sport sport;
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
+        ViewPager viewPager = (ViewPager) viewGroup.findViewById(R.id.pager);
+        adapter = new ViewPagerAdapter(StatisticsOverviewAdapter.fragmentManager);
 
         // draw tabs today, week, month
         for (int i = 0; i < periodNames.length; i++) {
 
             // line chart
            // LineData lineData = //DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), i, IndividualStatistics.getSelectedSportStatistics());
-            BarData barData = DataObjectsCollection.dataSupplier.getBarData(getApplicationContext(),i, IndividualStatistics.getSelectedSportStatistics());
+            BarData barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(),i, IndividualStatistics.getSelectedSportStatistics());
             TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment = new TimeperiodIndividualSportTabFragment();
 
             timeperiodIndividualSportTabFragment.setPeriod(i);
@@ -74,12 +86,14 @@ public class IndividualStatistics extends AppCompatActivity {
         }
 
         viewPager.setAdapter(adapter);
+        //viewPager.notifyAll();
         adapter.notifyDataSetChanged();
 
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs_in_view_statistics);
+        TabLayout tabLayout = (TabLayout) viewGroup.findViewById(R.id.tabs_in_view_statistics);
         tabLayout.setupWithViewPager(viewPager);
 
+        return viewGroup;
     }
 
     public static Sport getSelectedSportStatistics() {
