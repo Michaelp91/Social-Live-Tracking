@@ -366,5 +366,110 @@ public class OtherRestCalls {
         }
     }
 
+    //Delete User
+    /**
+     *
+     * @param t_s
+     * @return
+     */
+    public static boolean deleteLocationEntriesByTimelineSegment(TimelineSegment t_s) {
+        REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.deleteLocationEntriesByTimelineSegment(r_t_s);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().h_locationEntries = new HashMap<>();
+
+        return true;
+    }
+
+    public static boolean deleteTimelineSegmentByTimelineDay(TimelineDay t_d) {
+        REST_TimelineDay r_t_d = TemporaryDB.getInstance().h_timelineDays.get(t_d);
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.deleteTimelineSegmentByTimelineDay(r_t_d);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().h_timelineSegments = new HashMap<>();
+
+        return true;
+    }
+
+    public static boolean deleteTimelineDayByTimeline(Timeline t) {
+        REST_Timeline r_t = TemporaryDB.getInstance().getTimeline();
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.deleteTimelineDayByTimeline(r_t);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().h_timelineDays = new HashMap<>();
+
+        return true;
+    }
+
+    public static boolean deleteTimeline(User u) {
+        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.deleteTimeline(r_u_f);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        TemporaryDB.getInstance().setTimeline(null);
+
+        return true;
+    }
+
+    public static boolean deleteUser_Functionalities(User u) {
+        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.deleteUser_Functionalities(r_u_f);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean deleteUsers(User u) {
+        REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
+        Endpoints api = RetroClient.getApiService();
+        Call<JsonObject> call = api.deleteUser(r_u_f);
+        JsonObject jsonObject = null;
+
+        try{
+            jsonObject = call.execute().body();
+        } catch(Exception e) {
+            return false;
+        }
+
+
+
+        return true;
+    }
 
 }

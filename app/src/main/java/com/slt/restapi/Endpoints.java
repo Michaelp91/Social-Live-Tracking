@@ -1,6 +1,8 @@
 package com.slt.restapi;
 
 import com.google.gson.JsonObject;
+import com.slt.data.TimelineDay;
+import com.slt.data.TimelineSegment;
 import com.slt.restapi.data.*;
 import com.slt.restapi.data.Test;
 
@@ -23,8 +25,6 @@ public interface Endpoints {
     @POST("user_functionalities/update")
     Call<JsonObject> updateUser_Functionalities(@Body REST_User_Functionalities user_functionalities);
 
-    @POST("user_functionalities/delete")
-    Call<JsonObject> deleteUser_Functionalities(@Body REST_User_Functionalities user_functionalities);
 
     @POST("user_functionalities/")
     Call<JsonObject> getUser_Functionalities(@Body REST_User_Functionalities user_functionalities);
@@ -98,4 +98,23 @@ public interface Endpoints {
     //Maybe for merging Timeline Segments in Tracking
     @PUT("timelinesegment/{timelinesegmentId}")
     Call<String> updateTimelineSegment(@Body String timelinesegmentId);
+
+
+    @POST("deleteLocationEntriesByTimelineSegment")
+    Call<JsonObject> deleteLocationEntriesByTimelineSegment(@Body REST_TimelineSegment timelineSegment);
+
+    @POST("deleteTimelineSegmentByTimelineDay")
+    Call<JsonObject> deleteTimelineSegmentByTimelineDay(@Body REST_TimelineDay timelineDay);
+
+    @POST("deleteTimelineDayByTimeline")
+    Call<JsonObject> deleteTimelineDayByTimeline(@Body REST_Timeline timeline);
+
+    @POST("timeline/delete")
+    Call<JsonObject> deleteTimeline(@Body REST_User_Functionalities user_functionalities);
+
+    @POST("user_functionalities/delete")
+    Call<JsonObject> deleteUser_Functionalities(@Body REST_User_Functionalities user_functionalities);
+
+    @POST("user/delete")
+    Call<JsonObject> deleteUser(@Body REST_User_Functionalities user);
 }

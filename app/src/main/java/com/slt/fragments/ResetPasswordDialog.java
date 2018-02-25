@@ -34,88 +34,88 @@ import static com.slt.utils.Validation.validateEmail;
 import static com.slt.utils.Validation.validateFields;
 
 /**
- *
+ * Reset Password Dialog
  */
 public class ResetPasswordDialog extends DialogFragment {
 
     /**
-     *
+     * Listener to reset the password
      */
     public interface Listener {
         /**
-         *
+         * Reset the password
          * @param message
          */
         void onPasswordReset(String message);
     }
 
     /**
-     *
+     * Tag for the Logger
      */
     public static final String TAG = ResetPasswordDialog.class.getSimpleName();
 
     /**
-     *
+     * Element for the email
      */
     private EditText mEtEmail;
 
     /**
-     *
+     * Element for the token
      */
     private EditText mEtToken;
 
     /**
-     *
+     * Element for the password
      */
     private EditText mEtPassword;
 
     /**
-     *
+     * Button to reset the password
      */
     private Button mBtResetPassword;
 
     /**
-     *
+     * Element for a message
      */
     private TextView mTvMessage;
 
     /**
-     *
+     * Layout for the email
      */
     private TextInputLayout mTiEmail;
 
     /**
-     *
+     * Layout for the token
      */
     private TextInputLayout mTiToken;
 
     /**
-     *
+     * Layout for the password
      */
     private TextInputLayout mTiPassword;
 
     /**
-     *
+     * Progress Bar
      */
     private ProgressBar mProgressBar;
 
     /**
-     *
+     * Subscription
      */
     private CompositeSubscription mSubscriptions;
 
     /**
-     *
+     * String for the email
      */
     private String mEmail;
 
     /**
-     *
+     * Set if it is init or not
      */
     private boolean isInit = true;
 
     /**
-     *
+     * Listener
      */
     private Listener mListner;
 
@@ -137,8 +137,8 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
-     * @param v
+     * Initialize the elements
+     * @param v  The view
      */
     private void initViews(View v) {
 
@@ -161,7 +161,7 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
+     * Overwritten on Attach Method, does nothing
      * @param context
      */
     @Override
@@ -171,7 +171,7 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
+     * Set elements to null
      */
     private void setEmptyFields() {
 
@@ -182,16 +182,15 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
-     * @param token
+     * Set the token
+     * @param token The token to set
      */
     public void setToken(String token) {
-
         mEtToken.setText(token);
     }
 
     /**
-     *
+     * Start the reset password dialog
      */
     private void resetPasswordInit() {
 
@@ -201,21 +200,21 @@ public class ResetPasswordDialog extends DialogFragment {
 
         int err = 0;
 
+        //check if email was entered
         if (!validateEmail(mEmail)) {
-
             err++;
             mTiEmail.setError("Email Should be Valid !");
         }
 
         if (err == 0) {
-
+            //start reset password procedure
             mProgressBar.setVisibility(View.VISIBLE);
             resetPasswordInitProgress(mEmail);
         }
     }
 
     /**
-     *
+     * After reset of the password is finished inform user
      */
     private void resetPasswordFinish() {
 
@@ -226,12 +225,14 @@ public class ResetPasswordDialog extends DialogFragment {
 
         int err = 0;
 
+        //if token is empty
         if (!validateFields(token)) {
 
             err++;
             mTiToken.setError("Token Should not be empty !");
         }
 
+        //if password is empty
         if (!validateFields(password)) {
 
             err++;
@@ -239,7 +240,7 @@ public class ResetPasswordDialog extends DialogFragment {
         }
 
         if (err == 0) {
-
+            //start reset password progress
             mProgressBar.setVisibility(View.VISIBLE);
 
             User user = new User();
@@ -250,8 +251,8 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
-     * @param email
+     * Start the reset password network call
+     * @param email The email of the user
      */
     private void resetPasswordInitProgress(String email) {
 
@@ -261,7 +262,7 @@ public class ResetPasswordDialog extends DialogFragment {
                 .subscribe(new Action1<Response>() {
                     @Override
                     public void call(Response response) {
-
+                        //on success
                         mProgressBar.setVisibility(View.GONE);
 
                         if (isInit) {
@@ -281,7 +282,7 @@ public class ResetPasswordDialog extends DialogFragment {
                 }, new Action1<Throwable>(){
                     @Override
                     public void call(Throwable error) {
-
+                        //on a network error
                         mProgressBar.setVisibility(View.GONE);
 
                         if (error instanceof HttpException) {
@@ -306,8 +307,8 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
-     * @param user
+     *  Start the reset password process
+     * @param user The user we want to reset the password for
      */
     private void resetPasswordFinishProgress(User user) {
 
@@ -317,7 +318,7 @@ public class ResetPasswordDialog extends DialogFragment {
                 .subscribe(new Action1<Response>() {
                     @Override
                     public void call(Response response) {
-
+                        //on success
                         mProgressBar.setVisibility(View.GONE);
 
                         if (isInit) {
@@ -337,7 +338,7 @@ public class ResetPasswordDialog extends DialogFragment {
                 }, new Action1<Throwable>(){
             @Override
             public void call(Throwable error) {
-
+                    //on network error
                 mProgressBar.setVisibility(View.GONE);
 
                 if (error instanceof HttpException) {
@@ -362,8 +363,8 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
-     * @param response
+     * Handle the network response and inform the user
+     * @param response The response
      */
     private void handleResponse(Response response) {
 
@@ -385,7 +386,7 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
+     * Handle network errors and inform the user
      * @param error
      */
     private void handleError(Throwable error) {
@@ -412,8 +413,8 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
-     * @param message
+     * Show a message to the user
+     * @param message The message to show
      */
     private void showMessage(String message) {
 
@@ -423,7 +424,7 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     /**
-     *
+     * Overwritten onDestroy Method, simply unsubscribes
      */
     @Override
     public void onDestroy() {

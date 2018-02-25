@@ -124,6 +124,10 @@ public class DataProvider implements ServiceInterface {
     }
 
 
+    public LinkedList<User> getAllUsers() {
+        return allUsers;
+    }
+
     /**
      * The method used to react on a change of the activity
      *
