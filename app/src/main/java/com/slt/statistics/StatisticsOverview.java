@@ -1,11 +1,13 @@
 package com.slt.statistics;
 
-import android.content.Context;
-import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Fragment;
+import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
@@ -15,26 +17,28 @@ import com.slt.statistics.adapter.StatisticsOverviewAdapter;
 import com.slt.statistics.data.DataObjectsCollection;
 import com.slt.statistics.graphs.BarChartItem;
 import com.slt.statistics.graphs.ChartItem;
-import com.slt.statistics.graphs.LineChartItem;
 import com.slt.statistics.graphs.PieChartItem;
-
 import java.util.ArrayList;
 
 
-public class StatisticsOverview extends AppCompatActivity {
+public class StatisticsOverview extends Fragment {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_general_view_of_statistics);
-        super.setTitle("Summaries");
-        ListView l = (ListView) findViewById(R.id.list_in_Frag);
+        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_general_view_of_statistics, container, false);
+
+        TextView text = viewGroup.findViewById(R.id.hallo);
+        text.setText("aisodjfiasdf");
+
+               // super.setTitle("Summaries");
+        ListView l = (ListView) viewGroup.findViewById(R.id.list_in_Frag);
 
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
 
         PieData pieData = DataObjectsCollection.dataSupplier.getPieData();
 
-        list.add(new PieChartItem(pieData, getApplicationContext()));
+        list.add(new PieChartItem(pieData, getActivity().getApplicationContext()));
 
         LineData lineData;
         BarData barData;
@@ -60,17 +64,26 @@ public class StatisticsOverview extends AppCompatActivity {
 
           //  lineData = DataObjectsCollection.dataSupplier.getLineData(
               //     getApplicationContext(), i, sport);
-            barData = DataObjectsCollection.dataSupplier.getBarData(getApplicationContext(),i, sport);
+            barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(),i, sport);
 
             list.add(
                     // new LineChartItem(lineData,
                     new BarChartItem(barData,
-                    getApplicationContext()));
+                            getActivity().getApplicationContext()));
         }
 
-        StatisticsOverviewAdapter cda = new StatisticsOverviewAdapter(getApplicationContext(), list);
+        StatisticsOverviewAdapter cda = new StatisticsOverviewAdapter(getActivity().getApplicationContext(), list, getFragmentManager());
         l.setAdapter(cda);
+
+        return viewGroup;
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
 
 
 
