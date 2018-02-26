@@ -37,16 +37,14 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by matze on 08.11.17.
  */
-public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
-        {
+public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
 
     public static View rowView = null;
     BarChart mChart;
     public static FragmentManager fragmentManager = null;
 
 
-
-    public StatisticsOverviewAdapter(Context context, List<ChartItem> objects , FragmentManager fragmentManager) {
+    public StatisticsOverviewAdapter(Context context, List<ChartItem> objects, FragmentManager fragmentManager) {
         super(context, 0, objects);
         this.fragmentManager = fragmentManager;
     }
@@ -88,28 +86,16 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
 
             IAxisValueFormatter xAxisFormatter;
 
-            if(position == 1) {
-                xAxisFormatter = new IAxisValueFormatter() {
 
-                    private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+            xAxisFormatter = new IAxisValueFormatter() {
 
-                    @Override
-                    public String getFormattedValue(float value, AxisBase axis) {
+                private SimpleDateFormat mFormat = new SimpleDateFormat(".");
 
-                        long millis = TimeUnit.HOURS.toMillis((long) value);
-                        return mFormat.format(new Date(millis));
-                    }
-                };
-            } else
-                xAxisFormatter = new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
 
-                    private SimpleDateFormat mFormat = new SimpleDateFormat(".");
-
-                    @Override
-                    public String getFormattedValue(float value, AxisBase axis) {
-
-                        String appendix = ".";
-                        int dayOfMonth = (int) value;
+                    String appendix = ".";
+                    int dayOfMonth = (int) value;
 
                        /* switch (dayOfMonth) {
                             case 1:
@@ -135,16 +121,17 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
                                 break;
                         }*/
 
-                        return dayOfMonth == 0 ? "" : dayOfMonth + appendix + "";
-                    }
-                };
+                    return dayOfMonth == 0 ? "" : dayOfMonth + appendix + "";
+                }
+            };
 
             XAxis xAxis = mChart.getXAxis();
-           // xAxis.setLabelRotationAngle(45.f);
-            xAxis.setDrawLabels(false);
+            //xAxis.setDrawLabels(false);
+             xAxis.setLabelRotationAngle(45.f);
+            //xAxis.setDrawLabels(false);
 
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-           // xAxis.setTypeface(mTfLight);
+            // xAxis.setTypeface(mTfLight);
             xAxis.setDrawGridLines(false);
             xAxis.setGranularity(1f); // only intervals of 1 day
             //xAxis.setLabelCount(7);
@@ -154,9 +141,9 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
 
             YAxis leftAxis = mChart.getAxisLeft();
             //leftAxis.setTypeface(mTfLight);
-            leftAxis.setDrawLabels(false);
+            //leftAxis.setDrawLabels(false);
 
-            leftAxis.setLabelCount(8, false);
+            leftAxis.setLabelCount(4, false);
             leftAxis.setValueFormatter(custom);
             leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
             leftAxis.setSpaceTop(15f);
@@ -166,7 +153,7 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
             rightAxis.setDrawLabels(false);
 
             rightAxis.setDrawGridLines(false);
-           // rightAxis.setTypeface(mTfLight);
+            // rightAxis.setTypeface(mTfLight);
             //rightAxis.setLabelCount(8, false);
             //rightAxis.setValueFormatter(custom);
             //rightAxis.setSpaceTop(15f);
@@ -186,10 +173,11 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
             // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
             // "def", "ghj", "ikl", "mno" });
 
-           // XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
+            // XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
             //mv.setChartView(mChart); // For bounds control
-            //  mChart.setMarker(mv); // Set the marker to the chart
-
+            //  mChart.setMarker(mv); /
+            // / Set the marker to the chart
+            chartItem.getmChartData().setDrawValues(false);
             mChart.setData((BarData) chartItem.getmChartData());
 /*
             LineChart chart = (LineChart) rowView.findViewById(R.id.chart1);
@@ -288,12 +276,12 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
                         break;
                 }
 
-               //todo comment in: IndividualStatistics.setSelectedSportStatistics(sport);
+                //todo comment in: IndividualStatistics.setSelectedSportStatistics(sport);
                 Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
                 //Inform the user which listitem has been clicked
                 Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " +
-                        sport+
+                                sport +
                                 ", timelineID = " +
                                 timeline.getAchievementsListForMonth().size()
                         , Toast.LENGTH_SHORT).show();
@@ -301,7 +289,7 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
                 // start new activity with tabs and details
 
                 FragmentManager fm = StatisticsOverviewAdapter.fragmentManager;
-                if(fm != null) {
+                if (fm != null) {
                     FragmentTransaction ft = fm.beginTransaction();
 
                     IndividualStatistics individualStatistics = new IndividualStatistics();
@@ -312,7 +300,7 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
                     ft.addToBackStack(null);
                     ft.commit();
                 }
-               // viewIndividualStatistics();
+                // viewIndividualStatistics();
             }
         });
 
@@ -338,7 +326,6 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
     public int getViewTypeCount() {
         return 3; // we have 3 different item-types
     }
-
 
 
 }

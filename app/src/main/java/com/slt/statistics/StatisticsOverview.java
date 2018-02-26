@@ -29,6 +29,9 @@ public class StatisticsOverview extends Fragment {
         super.onCreate(savedInstanceState);
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_general_view_of_statistics, container, false);
 
+       // getActivity().setTitle("Statistics");
+
+
         TextView text = viewGroup.findViewById(R.id.general_overview_text);
         text.setText("General Overview");
 
