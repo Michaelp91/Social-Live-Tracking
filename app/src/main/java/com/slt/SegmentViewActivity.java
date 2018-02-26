@@ -79,6 +79,7 @@ public class SegmentViewActivity extends AppCompatActivity {
     private LinkedList<Integer> randomPositions = new LinkedList<>();
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private Bitmap bitmap;
+
     ImageView tmpImageView;
     private LinearLayout choosedPicView;
     private HashMap<String, LinearLayout> picViews = new HashMap<>();
@@ -86,6 +87,7 @@ public class SegmentViewActivity extends AppCompatActivity {
 
     private int loggerCounter = 0;
     private Activity context;
+    private LocationEntry firstLocationEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +96,7 @@ public class SegmentViewActivity extends AppCompatActivity {
         choosedChildren = (LinearLayout) findViewById(R.id.timeline_segments);
         this.choosedTimelineSegments = DataProvider.getInstance().getChoosedTimelineSegments();
         context = this;
-        initTimelineView();
+        //initTimelineView();
     }
 
 
@@ -117,6 +119,7 @@ public class SegmentViewActivity extends AppCompatActivity {
             LinkedList<TimelineSegment> timeLineSegments = choosedTimelineSegments;
             boolean isAdded = false;
             boolean unknownSegmentAdded = false;
+            int lastType = -1;
             LocationEntry lastLocationEntry = null;
 
             for (final TimelineSegment tSegment : timeLineSegments) {
@@ -142,8 +145,9 @@ public class SegmentViewActivity extends AppCompatActivity {
                     if (!locationEntries.isEmpty() && detectedActivity.getType() !=
                             com.slt.definitions.Constants.TIMELINEACTIVITY.TILTING
                             && detectedActivity.getType() != com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
-                            && (!unknownSegmentAdded || detectedActivity.getType() != com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN)  ) {
-                        unknownSegmentAdded = false;
+                            && (lastType != detectedActivity.getType())  ) {
+                        lastType = detectedActivity.getType();
+
                         FunctionalityLogger.getInstance().AddLog("\nTimeline Segment: ");
                         FunctionalityLogger.getInstance().AddLog("Number: " + loggerCounter);
                         FunctionalityLogger.getInstance().AddLog("ObjectId: " + tSegment.getID());
@@ -167,8 +171,9 @@ public class SegmentViewActivity extends AppCompatActivity {
                         ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
                         TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
 
-                        if(fstPoint == null)
+                        if(fstPoint == null) {
                             view_FirstPoint.setVisibility(View.GONE);
+                        }
 
                         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
@@ -488,11 +493,12 @@ public class SegmentViewActivity extends AppCompatActivity {
 
 
                     if (finalView_segment != null) {
-                        finalIv_details.setTag(tSegment);
-                        finalIv_details.setOnClickListener(new View.OnClickListener() {
+                        view_segment.setTag(tSegment);
+                        view_segment.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 TimelineSegment tSegment = (TimelineSegment) view.getTag();
+                                SharedResources.getInstance().setEntryStart(firstLocationEntry);
                                 SharedResources.getInstance().setOnClickedTimelineSegmentForDetails(tSegment);
                                 Intent intent = new Intent(context, TimelineDetailsActivity.class);
                                 startActivity(intent);
@@ -524,6 +530,7 @@ public class SegmentViewActivity extends AppCompatActivity {
         int TOLERANZ = 3;
 
         if(choosedTimelineSegments.indexOf(currentSegment) == 0) { //First Segment?
+            firstLocationEntry = locationEntry;
             return locationEntry;
         } else if (choosedTimelineSegments.indexOf(currentSegment) == choosedTimelineSegments.size() - 1) { //Last Segment?
             return locationEntry;
@@ -635,6 +642,8 @@ public class SegmentViewActivity extends AppCompatActivity {
     }
 
     private void AddUserComments(LinkedList<String> strUserComments, LinearLayout ll_line, TextView tv_usercomments) {
+
+        /*
         String comments = (strUserComments.size() > 0)? "": "Keine Kommentare vorhanden";
 
 
@@ -652,6 +661,7 @@ public class SegmentViewActivity extends AppCompatActivity {
 
 
         tv_usercomments.setText(comments);
+        */
     }
 
     private void selectImage() {
@@ -857,6 +867,7 @@ public class SegmentViewActivity extends AppCompatActivity {
     }
 
     private LinearLayout AddPictures(LinearLayout ll_pictures, TimelineSegment tSegment) {
+        /*
         LinkedList<Bitmap> downloadedImages =  downloadedImagesByTSegmentId.get(tSegment.getID());
 
         ImageView iv_pic1 = ll_pictures.findViewById(R.id.iv_pic1);
@@ -898,7 +909,15 @@ public class SegmentViewActivity extends AppCompatActivity {
             }
         }
 
+*/
 
         return ll_pictures;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        choosedChildren.removeAllViews();
+        initTimelineView();
     }
 }

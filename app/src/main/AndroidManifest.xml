@@ -35,6 +35,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.slt.utils.GlideConfiguration"
+            android:value="GlideModule" />
         -->
         <activity android:name=".SplashActivity">
             <intent-filter>
@@ -85,7 +88,8 @@
             android:name=".MainActivity"
             android:launchMode="singleTask"
             android:theme="@style/Social_Live_Theme" />
-        <activity android:name=".SegmentViewActivity"></activity>
+        <activity android:name=".SegmentViewActivity" />
+        <activity android:name=".ImageGallery"></activity>
     </application>
 
 </manifest>
