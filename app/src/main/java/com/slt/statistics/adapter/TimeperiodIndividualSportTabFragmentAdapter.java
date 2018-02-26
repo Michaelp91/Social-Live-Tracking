@@ -3,6 +3,7 @@ package com.slt.statistics.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -42,8 +43,10 @@ import com.slt.statistics.graphs.BarChartItem;
 import com.slt.statistics.graphs.ChartItem;
 import com.slt.statistics.graphs.MyAxisValueFormatter;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -206,6 +209,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         return rowView;
     }
+
     public Typeface mTfLight =  android.graphics.Typeface.createFromAsset(getContext().getAssets(), "OpenSans-Light.ttf");
 
 
@@ -221,7 +225,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
     private View getViewOfBarChart(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
         IAxisValueFormatter xAxisFormatter;
-        View rowView = inflater.inflate(R.layout.details_rowlayout_linechart, parent, false);
+        View rowView = inflater.inflate(R.layout.details_rowlayout_barchart, parent, false);
 
         chartItem = (ChartItem) getItem(position);
 
@@ -248,19 +252,20 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         if(this.period == 0) {
             xAxisFormatter = new IAxisValueFormatter() {
 
-                private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+                DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
 
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
 
                     long millis = TimeUnit.HOURS.toMillis((long) value);
-                    return mFormat.format(new Date(millis));
+                    Date d = new Date(millis);
+
+                    return dateFormat.format(d);
                 }
             };
         } else
             xAxisFormatter = new IAxisValueFormatter() {
 
-                private SimpleDateFormat mFormat = new SimpleDateFormat(".");
 
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
@@ -276,6 +281,8 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTypeface(mTfLight);
+        xAxis.setTextColor(Color.WHITE);
+
 
         xAxis.setLabelRotationAngle(45.f);
         xAxis.setDrawGridLines(false);
@@ -286,8 +293,9 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         IAxisValueFormatter custom = new MyAxisValueFormatter();
 
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setDrawLabels(false);
+        leftAxis.setDrawLabels(true);
         leftAxis.setTypeface(mTfLight);
+        leftAxis.setTextColor(Color.WHITE);
         leftAxis.setLabelCount(8, false);
         leftAxis.setValueFormatter(custom);
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);

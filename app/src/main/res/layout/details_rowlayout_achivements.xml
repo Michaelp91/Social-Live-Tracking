@@ -10,7 +10,7 @@
         android:layout_marginBottom="10dp"
         android:text="Achivements:"
         android:textAllCaps="true"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="15dp"
         android:textStyle="bold" />
 

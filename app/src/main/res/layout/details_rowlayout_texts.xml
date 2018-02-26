@@ -13,7 +13,7 @@
         android:id="@+id/infos_1"
 
         android:textAllCaps="true"
-        android:textColor="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
 
         android:layout_width="0dp"
@@ -33,7 +33,7 @@
         android:layout_alignParentRight="true"
 
         android:textAllCaps="true"
-        android:textColor="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
 
         android:textSize="15dp"

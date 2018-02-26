@@ -7,7 +7,7 @@
     <TextView
 
         android:textAllCaps="true"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
         android:text="Activity Details:"
         android:layout_width="match_parent"

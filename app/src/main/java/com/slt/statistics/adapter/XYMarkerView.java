@@ -49,13 +49,13 @@ public class XYMarkerView extends MarkerView {
 
         switch(this.period) {
             case 0:
-                str = " Uhr: ";
+                str = ": ";
                 break;
             case 1:
-                str = ". " + getMonthForInt(month) + ": ";
+                str = " " + getMonthForInt(month) + ": ";
                 break;
             case 2:
-                str = ". " + getMonthForInt(month) + ": ";
+                str = " " + getMonthForInt(month) + ": ";
                 break;
             default:
                 str = ": ";
