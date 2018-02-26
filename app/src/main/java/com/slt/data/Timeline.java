@@ -400,6 +400,50 @@ public class Timeline {
     }
 
     /**
+     * Get the active distance for the current month
+     *
+     * @return The active distance
+     */
+    public double getActiveDistanceForMonth(int activityId) {
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 1);
+
+        double distance = 0;
+        DetectedActivity activity = new DetectedActivity(activityId, 100);
+
+        //loop over all week days to count all steps
+        for (TimelineDay day : week) {
+            distance += day.getActiveDistance(activity);
+        }
+
+        return distance;
+    }
+
+    /**
+     * Get the active distance for the current month
+     *
+     * @return The active distance
+     */
+    public double getActiveDistanceForWeek(int activityId) {
+        Date current = new Date();
+
+        //get days of week
+        LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
+
+        double distance = 0;
+        DetectedActivity activity = new DetectedActivity(activityId, 100);
+
+        //loop over all week days to count all steps
+        for (TimelineDay day : week) {
+            distance += day.getActiveDistance(activity);
+        }
+
+        return distance;
+    }
+
+    /**
      * Get the active distance for the current week
      *
      * @return The active distance

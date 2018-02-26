@@ -19,6 +19,10 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.slt.R;
 
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.Date;
+
 public class PieChartItem extends ChartItem {
 
     private Typeface mTf;
@@ -94,8 +98,23 @@ public class PieChartItem extends ChartItem {
         return convertView;
     }
 
+    String getMonthForInt(int num) {
+        String month = "wrong";
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        String[] months = dfs.getMonths();
+        if (num >= 0 && num <= 11 ) {
+            month = months[num];
+        }
+        return month;
+    }
+
     private SpannableString generateCenterText() {
-        SpannableString s = new SpannableString("Overview");
+        Calendar cal = Calendar.getInstance();
+        Date d = new Date();
+        cal.setTime(d);
+        int month = cal.get(Calendar.MONTH);
+
+        SpannableString s = new SpannableString("Overview for " + getMonthForInt(month));
         /*s.setSpan(new RelativeSizeSpan(1.6f), 0, 14, 0);
         s.setSpan(new ForegroundColorSpan(ColorTemplate.VORDIPLOM_COLORS[0]), 0, 14, 0);
         s.setSpan(new RelativeSizeSpan(.9f), 14, 25, 0);

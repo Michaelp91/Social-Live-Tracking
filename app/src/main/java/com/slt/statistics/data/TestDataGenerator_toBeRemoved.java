@@ -62,17 +62,28 @@ public class TestDataGenerator_toBeRemoved {
 
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
-        for (int i = 0; i < 4; i++) {
-            entries.add(new PieEntry((float) ((Math.random() * 70) + 30), "Quarter " + (i + 1)));
-        }
+        ////////////////
+        Timeline timeline = DataProvider.getInstance().getUserTimeline();
+
+        int distanceWalking = (int) timeline.getActiveDistanceForMonth(Constants.TIMELINEACTIVITY.WALKING);
+        int distanceRunning = (int) timeline.getActiveDistanceForMonth(Constants.TIMELINEACTIVITY.RUNNING);
+        int distanceBiking = (int) timeline.getActiveDistanceForMonth(Constants.TIMELINEACTIVITY.ON_BICYCLE);
+
+        ////////////////
+
+        entries.add(new PieEntry(distanceWalking, "Walking"));
+        entries.add(new PieEntry(distanceRunning, "Running"));
+        entries.add(new PieEntry(distanceBiking, "Biking"));
 
         PieDataSet d = new PieDataSet(entries, "");
 
         // space between slices
         d.setSliceSpace(2f);
-        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        d.setColors(ColorTemplate.MATERIAL_COLORS);
 
         PieData cd = new PieData(d);
+
+
         return cd;
     }
 
