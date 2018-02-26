@@ -11,6 +11,7 @@ import com.slt.restapi.DataUpdater;
 
 import android.util.Log;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -419,6 +420,21 @@ public class Timeline {
         }
 
         return distance;
+    }
+
+    public static String getMonthForInt() {
+        Calendar cal = Calendar.getInstance();
+        Date d = new Date();
+        cal.setTime(d);
+        int monthInt = cal.get(Calendar.MONTH);
+
+        String month = "wrong";
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        String[] months = dfs.getMonths();
+        if (monthInt >= 0 && monthInt <= 11 ) {
+            month = months[monthInt];
+        }
+        return month;
     }
 
     /**

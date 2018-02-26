@@ -9,14 +9,13 @@
     <TextView
         android:id="@+id/activity_name"
         android:textAllCaps="true"
-        android:textColor="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
-        android:background="@color/colorDarkGrey"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
 
-        android:textSize="15dp">
+        android:textSize="20dp">
     </TextView>
 
     <ListView

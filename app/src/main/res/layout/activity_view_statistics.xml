@@ -16,8 +16,8 @@
         android:background="@drawable/gradientbackground"
         android:minHeight="?attr/actionBarSize"
         app:tabGravity="fill"
-        app:tabTextColor="#0DF"
-        app:tabSelectedTextColor="#0DF"
+        app:tabTextColor="@android:color/white"
+        app:tabSelectedTextColor="@android:color/white"
         />
 
     <android.support.v4.view.ViewPager

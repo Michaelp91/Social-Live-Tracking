@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
@@ -50,6 +51,24 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
 
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_for_sport_tab, container, false);
 
+        TextView textView = (TextView) viewGroup.findViewById(R.id.activity_name);
+
+        String activityString = "";
+        switch (this.sport) {
+            case Constants.TIMELINEACTIVITY.WALKING:
+                activityString = "Walking";
+                break;
+            case Constants.TIMELINEACTIVITY.RUNNING:
+                activityString = "Running";
+                break;
+            case Constants.TIMELINEACTIVITY.ON_BICYCLE:
+                activityString = "Biking";
+                break;
+            default:
+                System.err.println("No such activity.");
+        }
+
+        textView.setText(activityString);
 
         ListView l = (ListView) viewGroup.findViewById(R.id.list_in_Frag);
 
