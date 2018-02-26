@@ -1,13 +1,12 @@
 package com.slt.statistics;
 
-import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.app.FragmentManager;
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -20,6 +19,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
 import com.slt.control.DataProvider;
 import com.slt.data.Achievement;
+import com.slt.definitions.Constants;
 import com.slt.fragments.TimeperiodIndividualSportTabFragment;
 import com.slt.statistics.adapter.StatisticsOverviewAdapter;
 import com.slt.statistics.data.DataObjectsCollection;
@@ -28,12 +28,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import android.support.v13.app.FragmentPagerAdapter;
 
 
 public class IndividualStatistics extends Fragment {
 
-    private static Sport selectedSportStatistics = Sport.NONE;
+    private static int selectedSportStatistics = Constants.TIMELINEACTIVITY.UNKNOWN;
     public static android.app.FragmentManager fragmentManager = null;
 
 
@@ -59,6 +58,7 @@ public class IndividualStatistics extends Fragment {
             TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment = new TimeperiodIndividualSportTabFragment();
 
             timeperiodIndividualSportTabFragment.setPeriod(i);
+
 
             timeperiodIndividualSportTabFragment.setSport(IndividualStatistics.getSelectedSportStatistics());
 
@@ -96,15 +96,15 @@ public class IndividualStatistics extends Fragment {
         return viewGroup;
     }
 
-    public static Sport getSelectedSportStatistics() {
+    public static int getSelectedSportStatistics() {
         return selectedSportStatistics;
     }
 
-    public static void setSelectedSportStatistics(Sport selectedSportStatistics) {
+    public static void setSelectedSportStatistics(int selectedSportStatistics) {
         IndividualStatistics.selectedSportStatistics = selectedSportStatistics;
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    class ViewPagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 

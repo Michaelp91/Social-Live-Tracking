@@ -113,6 +113,7 @@ public class MainProfile extends AppCompatActivity
 
     /**
      * Overwritten onCreate Method, initialize data
+     *
      * @param savedInstanceState The saved instance state
      */
     @Override
@@ -193,7 +194,7 @@ public class MainProfile extends AppCompatActivity
         checkSettings();
 
         // show a message to inform the user if step detection is not supported
-        if(!isVersionWithStepSensor()){
+        if (!isVersionWithStepSensor()) {
             android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(context);
             dialog.setMessage("Step Detection not supported!");
             dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -302,7 +303,6 @@ public class MainProfile extends AppCompatActivity
     }
 
     /**
-     *
      * @param message
      */
     private void showSnackBarMessage(String message) {
@@ -319,7 +319,7 @@ public class MainProfile extends AppCompatActivity
             DataProvider.getInstance().clearData();
 
             //Disconnect Activity Listener if App has been stopped
-            if(SharedResources.getInstance().getMyGoogleApiClient() != null) {
+            if (SharedResources.getInstance().getMyGoogleApiClient() != null) {
                 if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
                     ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
                             SharedResources.getInstance().getMyGoogleApiClient(),
@@ -532,6 +532,7 @@ public class MainProfile extends AppCompatActivity
 
     /**
      * Overwritten onCreateOptionsMenu
+     *
      * @param menu The menu
      * @return If successful true
      */
@@ -544,12 +545,14 @@ public class MainProfile extends AppCompatActivity
 
     /**
      * Shows the selected page
+     *
      * @param itemId The selected page
      */
     private void displaySelectedScreen(int itemId) {
 
         //creating fragment object
         Fragment fragment = null;
+        android.support.v4.app.Fragment fragment123 = null;
 
         //CreateLogFile();
 
@@ -561,9 +564,9 @@ public class MainProfile extends AppCompatActivity
                 break;
             case R.id.nav_summaries:
                 //fragment = new FragmentSummaries();
-               // Intent Summaries = new Intent(MainProfile.this, StatisticsOverview.class);
+                // Intent Summaries = new Intent(MainProfile.this, StatisticsOverview.class);
                 //startActivity(Summaries);
-                fragment = new StatisticsOverview();
+                fragment123 = new StatisticsOverview();
                 break;
             case R.id.nav_friends:
                 fragment = new FragmentFriends();
@@ -579,13 +582,24 @@ public class MainProfile extends AppCompatActivity
                 break;
         }
 
-        //replacing the fragment
-        if (fragment != null) {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if (itemId == R.id.nav_summaries) {
+            android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-            ft.replace(R.id.content_main_frame, fragment);
-            ft.addToBackStack(null);
-            ft.commit();
+            fragmentTransaction.replace(R.id.content_main_frame, fragment123);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+
+        } else {
+            //replacing the fragment
+            if (fragment != null) {
+
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+                ft.replace(R.id.content_main_frame, fragment);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -597,29 +611,30 @@ public class MainProfile extends AppCompatActivity
      */
     private void CreateLogFile() {
 
-            try {
-                File root = new File(Environment.getExternalStorageDirectory(), "Notes");
-                boolean test = false;
-                if (!root.exists()) {
-                    test = root.mkdirs();
-                    boolean test2 = false;
-                }
-                File gpxfile = new File(root, "TimelineLog.txt");
-                FileWriter writer = new FileWriter(gpxfile);
-
-                writer.append("This is a Test");
-                writer.append("\nBecause It is a Test");
-                writer.append("\nBecause It is a Test");
-                writer.flush();
-                writer.close();
-                Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            File root = new File(Environment.getExternalStorageDirectory(), "Notes");
+            boolean test = false;
+            if (!root.exists()) {
+                test = root.mkdirs();
+                boolean test2 = false;
             }
+            File gpxfile = new File(root, "TimelineLog.txt");
+            FileWriter writer = new FileWriter(gpxfile);
+
+            writer.append("This is a Test");
+            writer.append("\nBecause It is a Test");
+            writer.append("\nBecause It is a Test");
+            writer.flush();
+            writer.close();
+            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Overwritten Method on NavigationItemSelected
+     *
      * @param item The selected item
      * @return Boolean if successful
      */

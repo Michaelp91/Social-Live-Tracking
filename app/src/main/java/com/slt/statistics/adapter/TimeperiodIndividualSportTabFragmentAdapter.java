@@ -28,14 +28,11 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.slt.R;
 import com.slt.data.Achievement;
-import com.slt.statistics.IndividualStatistics;
-import com.slt.statistics.Sport;
+import com.slt.definitions.Constants;
 import com.slt.statistics.adapter.details_infos_list.*;
 // macht momentan Fehler bei mir:
 //import com.slt.statistics.achievements.DetailsActivity;
@@ -60,7 +57,7 @@ import java.util.concurrent.TimeUnit;
 public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
     implements OnChartValueSelectedListener {
     private GridView gridView;
-    public Sport sport = null;
+    public int sport = Constants.TIMELINEACTIVITY.UNKNOWN;
     public int period = 0;
     //public LineChartItem lineData = null;
     public BarChartItem barData = null;
@@ -74,7 +71,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
     public TimeperiodIndividualSportTabFragmentAdapter(@NonNull Context context, List list) {
         super(context, 0, list);
 
-       // lineData = (LineChartItem) list.get(0);
+        //lineData = (LineChartItem) list.get(0);
         barData = (BarChartItem) list.get(0);
         infos = (HashMap<String, String>) list.get(1);
         achievements = (LinkedList<Achievement>) list.get(2);
@@ -212,7 +209,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
     public Typeface mTfLight =  android.graphics.Typeface.createFromAsset(getContext().getAssets(), "OpenSans-Light.ttf");
 
 
-    public void setSport(Sport sport) {
+    public void setSport(int sport) {
         this.sport = sport;
     }
 

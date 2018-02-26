@@ -1,9 +1,10 @@
 package com.slt.statistics.adapter;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.slt.R;
 import com.slt.control.DataProvider;
 import com.slt.data.Timeline;
+import com.slt.definitions.Constants;
 import com.slt.statistics.Sport;
 import com.slt.statistics.IndividualStatistics;
 import com.slt.statistics.graphs.ChartItem;
@@ -269,19 +271,20 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
             @Override
             public void onClick(View v) {
                 int position = (Integer) v.getTag();
-                Sport sport;
+                int sport;
                 switch (position) {
                     case 1:
-                        sport = Sport.WALKING;
+                        sport = Constants.TIMELINEACTIVITY.WALKING;
                         break;
                     case 2:
-                        sport = Sport.RUNNING;
+                        sport = Constants.TIMELINEACTIVITY.RUNNING;
                         break;
                     case 3:
-                        sport = Sport.BIKING;
+                        sport = Constants.TIMELINEACTIVITY.ON_BICYCLE;
                         break;
                     default:
-                        sport = Sport.NONE;
+                        sport = Constants.TIMELINEACTIVITY.UNKNOWN;
+                        System.err.println("No such activity.");
                         break;
                 }
 
@@ -290,7 +293,7 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
 
                 //Inform the user which listitem has been clicked
                 Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " +
-
+                        sport+
                                 ", timelineID = " +
                                 timeline.getAchievementsListForMonth().size()
                         , Toast.LENGTH_SHORT).show();
@@ -302,6 +305,8 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem>
                     FragmentTransaction ft = fm.beginTransaction();
 
                     IndividualStatistics individualStatistics = new IndividualStatistics();
+
+                    individualStatistics.setSelectedSportStatistics(sport);
 
                     ft.replace(R.id.content_main_frame, individualStatistics);
                     ft.addToBackStack(null);

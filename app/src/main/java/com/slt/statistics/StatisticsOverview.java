@@ -1,8 +1,8 @@
 package com.slt.statistics;
 
-import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +13,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
 import com.slt.R;
+import com.slt.definitions.Constants;
 import com.slt.statistics.adapter.StatisticsOverviewAdapter;
 import com.slt.statistics.data.DataObjectsCollection;
 import com.slt.statistics.graphs.BarChartItem;
@@ -28,8 +29,8 @@ public class StatisticsOverview extends Fragment {
         super.onCreate(savedInstanceState);
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_general_view_of_statistics, container, false);
 
-        TextView text = viewGroup.findViewById(R.id.hallo);
-        text.setText("aisodjfiasdf");
+        TextView text = viewGroup.findViewById(R.id.general_overview_text);
+        text.setText("General Overview");
 
                // super.setTitle("Summaries");
         ListView l = (ListView) viewGroup.findViewById(R.id.list_in_Frag);
@@ -42,29 +43,27 @@ public class StatisticsOverview extends Fragment {
 
         LineData lineData;
         BarData barData;
-        Sport sport = Sport.NONE;
+        int sport = Constants.TIMELINEACTIVITY.UNKNOWN;
 
-        // list with gener view of each sport
+        // list with general view of each sport
         for (int i = 0; i < 3; i++) {
 
             switch(i) {
                 case 0:
-                    sport = Sport.WALKING;
+                    sport = Constants.TIMELINEACTIVITY.WALKING;
                     break;
                 case 1:
-                    sport = Sport.RUNNING;
+                    sport = Constants.TIMELINEACTIVITY.RUNNING;
                     break;
                 case 2:
-                    sport = Sport.BIKING;
+                    sport = Constants.TIMELINEACTIVITY.ON_BICYCLE;
                     break;
                 default:
                     System.err.println("No such sport!");
 
             }
 
-          //  lineData = DataObjectsCollection.dataSupplier.getLineData(
-              //     getApplicationContext(), i, sport);
-            barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(),i, sport);
+            barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(),2, sport);
 
             list.add(
                     // new LineChartItem(lineData,
@@ -72,7 +71,7 @@ public class StatisticsOverview extends Fragment {
                             getActivity().getApplicationContext()));
         }
 
-        StatisticsOverviewAdapter cda = new StatisticsOverviewAdapter(getActivity().getApplicationContext(), list, getFragmentManager());
+        StatisticsOverviewAdapter cda = new StatisticsOverviewAdapter(getActivity().getApplicationContext(), list, getActivity().getSupportFragmentManager());
         l.setAdapter(cda);
 
         return viewGroup;
@@ -82,12 +81,5 @@ public class StatisticsOverview extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-
-
-
-
-
-
 
 }
