@@ -16,6 +16,8 @@ public class MyAxisValueFormatter implements IAxisValueFormatter
 
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
+        if(value > 0)
         return String.valueOf( (int) value );
+        else return "";
     }
 }
