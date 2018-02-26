@@ -695,7 +695,11 @@ public class TimelineSegment {
      * @return The start address
      */
     public String getStartAddress() {
-        return startAddress;
+
+        if(startAddress != null )
+          return startAddress;
+        else
+            return "Unknown";
     }
 
     /**

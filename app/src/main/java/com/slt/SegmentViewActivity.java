@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Handler;
@@ -75,7 +76,6 @@ public class SegmentViewActivity extends AppCompatActivity {
     private final String TAG_TIMELINESEGMENT = "timelinesegment";
     private View view;
     private Timeline t;
-    private HashMap<String, TimelineSegment> h_viewedTimelineSegments = new HashMap<>();
     private LinkedList<Integer> randomPositions = new LinkedList<>();
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private Bitmap bitmap;
@@ -117,6 +117,7 @@ public class SegmentViewActivity extends AppCompatActivity {
             LinkedList<TimelineSegment> timeLineSegments = choosedTimelineSegments;
             boolean isAdded = false;
             boolean unknownSegmentAdded = false;
+            LocationEntry lastLocationEntry = null;
 
             for (final TimelineSegment tSegment : timeLineSegments) {
 
@@ -154,21 +155,29 @@ public class SegmentViewActivity extends AppCompatActivity {
 
 
                         isAdded = true;
-                        h_viewedTimelineSegments.put(tSegment.getID(), tSegment);
 
 
-                        LocationEntry fstPoint = locationEntries.get(0);
+                        LocationEntry fstPoint = tobeClustered(locationEntries.get(0), lastLocationEntry, tSegment);
+                        lastLocationEntry = (fstPoint == null)? lastLocationEntry: fstPoint;
+
+
 
                         view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
                         TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
                         ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
                         TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
 
+                        if(fstPoint == null)
+                            view_FirstPoint.setVisibility(View.GONE);
+
                         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                        String strDate = sdf.format(fstPoint.getMyEntryDate());
+
+                        String strDate = (fstPoint != null)? sdf.format(fstPoint.getMyEntryDate()): "";
 
                         FunctionalityLogger.getInstance().AddLog("Start: " + strDate);
-                        FunctionalityLogger.getInstance().AddLog("Location Point(Longitude, Lattitude): " + fstPoint.getLongitude() + ", " + fstPoint.getLatitude());
+
+                        if(fstPoint != null)
+                          FunctionalityLogger.getInstance().AddLog("Location Point(Longitude, Lattitude): " + fstPoint.getLongitude() + ", " + fstPoint.getLatitude());
 
 
                         myEntryDate.setText(strDate + " Uhr");
@@ -423,7 +432,7 @@ public class SegmentViewActivity extends AppCompatActivity {
                         */
 
                         } else {
-                            ll_shortLine.setVisibility(View.INVISIBLE);
+                            //ll_shortLine.setVisibility(View.INVISIBLE);
                         }
 
                     } else if (timeLineSegments.indexOf(tSegment) == timeLineSegments.size() - 1 && !locationEntries.isEmpty()
@@ -444,6 +453,28 @@ public class SegmentViewActivity extends AppCompatActivity {
 
                         myEntryDate.setText(strDate);
                         placeAndaddress.setText(tSegment.getStartAddress());
+                    } else if (timeLineSegments.indexOf(tSegment) == timeLineSegments.size() - 1
+                            && (tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
+                            || tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN)) {
+
+                        Location l = new Location("");
+                        l.setLatitude(0);
+                        l.setLongitude(0);
+                        LocationEntry fstPoint = (locationEntries.size() > 0)? locationEntries.get(0): new LocationEntry(l, null, null, null);
+
+                        view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
+                        ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
+                        TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
+
+                        TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                        String strDate = (fstPoint.getMyEntryDate() != null)? sdf.format(fstPoint.getMyEntryDate()): "Unknown";
+                        ll_shortLine.setVisibility(View.INVISIBLE);
+
+
+                        myEntryDate.setText(strDate);
+                        placeAndaddress.setText(tSegment.getStartAddress());
                     }
 
 
@@ -451,8 +482,9 @@ public class SegmentViewActivity extends AppCompatActivity {
                     final RelativeLayout finalView_segment = view_segment;
                     final ImageView finalIv_details = iv_details;
 
-                    if (finalView_FirstPoint != null)
+                    if (finalView_FirstPoint != null) {
                         choosedChildren.addView(finalView_FirstPoint);
+                    }
 
 
                     if (finalView_segment != null) {
@@ -486,6 +518,29 @@ public class SegmentViewActivity extends AppCompatActivity {
             FunctionalityLogger.getInstance().AddErrorLog("UpdateTimelineView(): " + e.getMessage().toString());
         }
 
+    }
+
+    private LocationEntry tobeClustered(LocationEntry locationEntry, LocationEntry lastLocationEntry, TimelineSegment currentSegment) {
+        int TOLERANZ = 3;
+
+        if(choosedTimelineSegments.indexOf(currentSegment) == 0) { //First Segment?
+            return locationEntry;
+        } else if (choosedTimelineSegments.indexOf(currentSegment) == choosedTimelineSegments.size() - 1) { //Last Segment?
+            return locationEntry;
+        } else if(lastLocationEntry == null){ //last Location to Compare is null?
+            return locationEntry;
+        } else {
+            Location startLocation = locationEntry.getMyLocation();
+            Location lastLocation = lastLocationEntry.getMyLocation();
+
+            double distance = startLocation.distanceTo(lastLocation);
+
+            if(distance > 850 + TOLERANZ) {
+                return locationEntry;
+            }
+        }
+
+        return null;
     }
 
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
