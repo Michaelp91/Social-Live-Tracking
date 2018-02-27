@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -135,6 +136,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private HashMap<String, LinkedList<Bitmap>>  downloadedImagesByTSegmentId = new HashMap<>();
 
     private int loggerCounter = 0;
+    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -156,6 +158,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
 
         RetrieveOperations.getInstance().context = this;
+
+        progressDialog = ProgressDialog.show(getActivity(), "Bitte warten Sie...", "", true);
+
         handler.postDelayed(runnable, 2000);
 
         this.view = view;
@@ -266,6 +271,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         */
 
                     }
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.hide();
+                        }
+                    });
 
                 //TODO: Problem with updating TimelineView, look at this problem later
                     /*
