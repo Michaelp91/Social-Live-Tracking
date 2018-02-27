@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.R;
+import com.slt.data.LocationEntry;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
@@ -26,6 +27,7 @@ import com.slt.definitions.Constants;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import static com.slt.R.mipmap.ic_launcher;
@@ -48,6 +50,16 @@ public class SharedResources {
      * Used to communicate timeline segments between fragments
      */
     private TimelineSegment onclickedTimelineSegment;
+
+    /**
+     * Bitmaps to show all the images from the activity
+     */
+    private LinkedList<Bitmap> segmentBitmaps;
+
+    /**
+     * Used to show the start Location on the map View
+     */
+    private LocationEntry entryStart;
 
     /**
      * Stores the instance of the API Client
@@ -153,6 +165,22 @@ public class SharedResources {
     }
 
     /**
+     *
+     * @return entryStart
+     */
+    public LocationEntry getEntryStart() {
+        return entryStart;
+    }
+
+    /**
+     *
+     * @param entryStart set this attribute
+     */
+    public void setEntryStart(LocationEntry entryStart) {
+        this.entryStart = entryStart;
+    }
+
+    /**
      * Store a timeline segment that should be shared between segments
      *
      * @param onclickedTimelineSegment The Timeline segment to store
@@ -169,6 +197,16 @@ public class SharedResources {
     public TimelineSegment getOnClickedTimelineSegmentForDetails() {
         return onclickedTimelineSegment;
     }
+
+
+    public void setSegmentBitmaps(LinkedList<Bitmap> segmentBitmaps) {
+        this.segmentBitmaps = segmentBitmaps;
+    }
+
+    public LinkedList<Bitmap> getSegmentBitmaps() {
+        return segmentBitmaps;
+    }
+
 
     /**
      * Get the foreground notification
