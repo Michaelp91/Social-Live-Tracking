@@ -32,7 +32,9 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.slt.R;
+import com.slt.control.DataProvider;
 import com.slt.data.Achievement;
+import com.slt.data.Timeline;
 import com.slt.definitions.Constants;
 import com.slt.statistics.adapter.details_infos_list.*;
 // macht momentan Fehler bei mir:
@@ -44,11 +46,14 @@ import com.slt.statistics.graphs.ChartItem;
 import com.slt.statistics.graphs.MyAxisValueFormatter;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -224,7 +229,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
     ChartItem chartItem;
 
     private View getViewOfBarChart(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
-        IAxisValueFormatter xAxisFormatter;
+        IAxisValueFormatter xAxisFormatter = null;
         View rowView = inflater.inflate(R.layout.details_rowlayout_barchart, parent, false);
 
         chartItem = (ChartItem) getItem(position);
@@ -263,20 +268,104 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
                     return dateFormat.format(d);
                 }
             };
-        } else
+        } else if(this.period == 2)
             xAxisFormatter = new IAxisValueFormatter() {
 
+                private String getMonthForInt(int num) {
+                    String month = "wrong";
+                    DateFormatSymbols dfs = new DateFormatSymbols();
+                    String[] months = dfs.getMonths();
+                    if (num >= 0 && num <= 11 ) {
+                        month = months[num];
+                    }
+                    return month;
+                }
 
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
 
-                    String appendix = ".";
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(new Date());
+                    int month = cal.get(Calendar.MONTH);
+
+                    String monthStr = getMonthForInt(month);
+                    StringBuffer sb = new StringBuffer();
+                    String monthAbbreviation = "";
+
+                    for (int i = 0; i < 3; i++) {
+                        sb.append(monthStr.charAt(i));
+                    }
+
+                    monthAbbreviation = sb.toString();
+
+                    String appendix = ". " + monthAbbreviation;
                     int dayOfMonth = (int) value;
 
 
                     return dayOfMonth == 0 ? "" : dayOfMonth + appendix + "";
                 }
             };
+        else if(this.period == 1) {// TestDataGenerator_.getXYPairsForWeek_withDates
+
+            final int sportType = this.sport;
+
+            xAxisFormatter = new IAxisValueFormatter() {
+
+                LinkedList<Date> dates = null;
+
+                private String getMonthForInt(int num) {
+                    String month = "wrong";
+                    DateFormatSymbols dfs = new DateFormatSymbols();
+                    String[] months = dfs.getMonths();
+                    if (num >= 0 && num <= 11 ) {
+                        month = months[num];
+                    }
+                    return month;
+                }
+
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    long key;
+                    int val;
+                    Timeline timeline;
+
+                    if(dates == null) {
+
+                        timeline = DataProvider.getInstance().getUserTimeline();
+
+                        dates = timeline.getDatesOfThisWeek(new Date());
+
+                    }
+
+
+                    Date dateOfTheDay = dates.get((int) value);
+
+                    // prepare the day and month nr
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(dateOfTheDay);
+                    int day = cal.get(Calendar.DAY_OF_MONTH);
+                    int month = cal.get(Calendar.MONTH);
+
+                    // prepare abbreviation for the month string
+                    String monthStr = getMonthForInt(month);
+                    StringBuffer sb = new StringBuffer();
+                    String monthAbbreviation = "";
+
+                    for (int i = 0; i < 3; i++) {
+                        sb.append(monthStr.charAt(i));
+                    }
+
+                    monthAbbreviation = sb.toString();
+
+
+                    String appendix = ". " + monthAbbreviation;
+                    int dayOfMonth = (int) day;
+
+
+                    return dayOfMonth == 0 ? "" : dayOfMonth + appendix + "";
+                }
+            };
+        }
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);

@@ -52,10 +52,10 @@ public class XYMarkerView extends MarkerView {
                 str = ": ";
                 break;
             case 1:
-                str = " " + getMonthForInt(month) + ": ";
+                str = ": ";
                 break;
             case 2:
-                str = " " + getMonthForInt(month) + ": ";
+                str = ": ";
                 break;
             default:
                 str = ": ";

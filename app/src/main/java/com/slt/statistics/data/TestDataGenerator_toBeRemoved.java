@@ -294,6 +294,7 @@ public class TestDataGenerator_toBeRemoved {
         LinkedList<TimelineDay> days = new LinkedList<>();
         HashMap<Integer, Integer> xyPairs = new HashMap<>();
 
+
         switch (timePeriod) {
             case 0:
 
@@ -322,6 +323,7 @@ public class TestDataGenerator_toBeRemoved {
 
                 // get the number of days in the current month
                 xAxisMaxSize = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
 
                 xyPairs = getXYPairsForMonth(xAxisMaxSize, days, sportType);
                 break;
@@ -417,9 +419,6 @@ public class TestDataGenerator_toBeRemoved {
 
 
 
-    //public static int str = 0;
-
-
 
     private static LinkedHashMap<Integer, Integer> getXYPairsForMonth(
             int xAxisMaxSize, LinkedList<TimelineDay> days,
@@ -456,6 +455,8 @@ public class TestDataGenerator_toBeRemoved {
         return sortHashMapByKeys(xyPairsForMonth);
     }
 
+
+
     private static LinkedHashMap<Integer, Integer> getXYPairsForWeek(
             LinkedList<Date> dates, LinkedList<TimelineDay> days, int sportType) {
 
@@ -480,8 +481,8 @@ public class TestDataGenerator_toBeRemoved {
                 if (timelineDay.isSameDay(date)) {
                     found = true;
 
-                    cal.setTime(date);
-                    key = cal.get(Calendar.DAY_OF_MONTH);
+                    //cal.setTime(date);
+                    key = xyPairsForAndWeek.size();
 
                     val = (int) timelineDay.getActiveDistance(detectedActivity);
 
@@ -494,12 +495,14 @@ public class TestDataGenerator_toBeRemoved {
 
             if( ! found ) {
                 // add date with val = 0
-                cal.setTime(date);
-                key = cal.get(Calendar.DAY_OF_MONTH);
+                //cal.setTime(date);
+                key = xyPairsForAndWeek.size();
                 val = 0;
                 xyPairsForAndWeek.put(key, val);
             }
         }
+
+
 
         // sort by keys befor return
         return sortHashMapByKeys(xyPairsForAndWeek);
