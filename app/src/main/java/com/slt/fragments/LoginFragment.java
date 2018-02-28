@@ -2,6 +2,7 @@ package com.slt.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -112,6 +113,12 @@ public class LoginFragment extends Fragment {
      * Progress Bar
      */
     private ProgressBar mProgressBar;
+
+
+    /**
+     * Progress Dialog
+     */
+    private ProgressDialog progressDialog;
 
     /**
      * Checkbox to preserve the login data
@@ -236,7 +243,8 @@ public class LoginFragment extends Fragment {
                 if (err == 0) {
                     threadEmail = email;
                     loginProcess(email, password);
-                    mProgressBar.setVisibility(View.VISIBLE);
+                    //mProgressBar.setVisibility(View.VISIBLE);
+                    progressDialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
 
                 } else {
                     showSnackBarMessage("Enter Valid Details !");
@@ -440,6 +448,7 @@ public class LoginFragment extends Fragment {
      */
     private void afterRetrival() {
         mProgressBar.setVisibility(View.GONE);
+        progressDialog.hide();
 
         Intent intent = new Intent(getActivity(), MainProfile.class);
         startActivity(intent);

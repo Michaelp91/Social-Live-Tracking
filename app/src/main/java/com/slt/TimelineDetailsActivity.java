@@ -2,6 +2,7 @@ package com.slt;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -82,11 +83,15 @@ public class TimelineDetailsActivity extends AppCompatActivity {
     private Activity context;
     private TextView tv_usercomments;
 
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timelinedetails);
+
+
 
         choosedTimelineSegment = SharedResources.getInstance().getOnClickedTimelineSegmentForDetails();
         entryStart = SharedResources.getInstance().getEntryStart();
@@ -410,6 +415,13 @@ public class TimelineDetailsActivity extends AppCompatActivity {
 
     private void DownloadImages() {
 
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog = ProgressDialog.show(context, "Bitte warten Sie...", "", true);
+            }
+        });
+
         bmps = (bmps == null)? new LinkedList<Bitmap>():bmps;
         ArrayList<Integer> numbersInUse = new ArrayList<>();
         for(String image: choosedTimelineSegment.getMyImages()) {
@@ -442,6 +454,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
             }
         }
 
+        progressDialog.hide();
     }
 
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
