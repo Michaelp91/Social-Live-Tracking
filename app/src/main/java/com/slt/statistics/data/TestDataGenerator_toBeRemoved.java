@@ -25,7 +25,7 @@ import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.definitions.Constants;
-import com.slt.statistics.Sport;
+import com.slt.statistics.adapter.TimeperiodIndividualSportTabFragmentAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -254,31 +254,213 @@ public class TestDataGenerator_toBeRemoved {
         return data;
     }
 
-    public static int getSpeed(int timePeriod, int sport, int x, int y) {
-        // todo
-        return 10;
+    public static double getSpeed(Entry e, int timePeriod, int sport, int x, int y) {
+
+        // calculate speed
+        switch(timePeriod) {
+            case 0:
+                return getSpeedForHour(e, sport, x, y);
+            case 1:
+                return getSpeedForDayOfWeek(e, sport, x, y);
+            case 2:
+                return getSpeedForDayOfMonth(e, sport, x, y);
+            default:
+                System.err.println("No such time period");
+        }
+
+        return 0;
     }
+
+    private static double getSpeedForDayOfMonth(Entry e, int sport, int x, int y) {
+
+
+        TimelineDay day = getTimelineDayFromWholeTimelineWithDayNumber(x);
+
+        if(day != null)
+            return day.getAvarageSpeedForThisDay(sport);
+        else
+            return 0;
+    }
+
+    private static TimelineDay getTimelineDayFromWholeTimelineWithDayNumber(int x) {
+        Timeline timeline = DataProvider.getInstance().getUserTimeline();
+
+        Calendar c = Calendar.getInstance();   // this takes current date
+        c.setTime(new Date());
+        c.set(Calendar.DAY_OF_MONTH, x);
+
+        Date beginingOfTheMonthDate = c.getTime();
+
+        TimelineDay day = timeline.getTimelineDay(beginingOfTheMonthDate);
+
+        return day;
+    }
+
+    public static Date getDateOfMonthWithDayNr(int dayNr) {
+        int dayIndex = dayNr;
+        Calendar c = Calendar.getInstance();   // this takes current date
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        Calendar currCal = Calendar.getInstance();
+        currCal.setTime(new Date());
+
+
+        c.set(Calendar.DAY_OF_MONTH, dayIndex);
+        c.set(Calendar.MONTH, currCal.get(Calendar.MONTH));
+        c.set(Calendar.YEAR, currCal.get(Calendar.YEAR));
+
+        Date selectedDate = c.getTime();
+
+        return selectedDate;
+    }
+
+    private static double getSpeedForDayOfWeek(Entry e, int sport, int x, int y) {
+        Timeline timeline = DataProvider.getInstance().getUserTimeline();
+
+        LinkedList<Date> datesWeek = timeline.getDatesOfThisWeek(new Date());
+
+        Date beginingOfTheWeekDate = datesWeek.get(0);
+
+        LinkedList<TimelineDay> daysWeek = timeline.getDaysOfWeekOrMonth(beginingOfTheWeekDate, 0);
+
+        int dayIndex = x;
+
+        TimelineDay day = getTimelineDayFromWholeTimelineWithDayNumber(dayIndex);
+
+        if( day != null  && daysWeek.contains(day) )
+            return day.getAvarageSpeedForThisDay(sport);
+        else
+            return 0;
+    }
+
 
     public static int getDistance(int timePeriod, int sport, int x, int y) {
-        // todo
-        return 10;
+        return y;
     }
 
-    public static int getDurance(int timePeriod, int sport, int x, int y) {
-        // todo
-        return 10;
+    public static long getDuration(Entry e, int timePeriod, int sport, int x, int y) {
+        // sum up all active times of the segments for given entry
+        switch(timePeriod) {
+            case 0:
+                return getDurationForHour(e, sport, x, y);
+            case 1:
+                return getDuranceForDayOfWeek(e, sport, x, y);
+            case 2:
+                return getDuranceForDayOfMonth(e, sport, x, y);
+            default:
+                System.err.println("No such time period");
+        }
+
+        return 0;
     }
 
-    public static int getTime(int timePeriod, int sport, int x, int y) {
-        // todo
-        return 10;
+    private static long getDuranceForDayOfMonth(Entry e, int sport, int x, int y) {
+        TimelineDay day = getTimelineDayFromWholeTimelineWithDayNumber(x);
+
+       /* if(day != null) {
+            TimelineSegment se;
+            for (int i = 0; i < day.getMySegments().size(); i++) {
+                se = day.getMySegments().get(i);
+
+                if(se.getUserSteps() == 500)
+                    TimeperiodIndividualSportTabFragmentAdapter.DURANCE =
+                            String.valueOf(se.getID());
+
+            }
+
+
+        }*/
+
+        if(day != null)
+            return day.getDuration(sport);
+        else
+            return 0;
     }
 
-    public static int getDate(int timePeriod, int sport, int x, int y) {
-        // todo
-        return 10;
+    private static long getDuranceForDayOfWeek(Entry e, int sport, int x, int y) {
+        Timeline timeline = DataProvider.getInstance().getUserTimeline();
+
+        LinkedList<Date> datesWeek = timeline.getDatesOfThisWeek(new Date());
+
+        Date beginingOfTheWeekDate = datesWeek.get(0);
+
+        LinkedList<TimelineDay> daysWeek = timeline.getDaysOfWeekOrMonth(beginingOfTheWeekDate, 0);
+
+        int dayIndex = x;
+
+        TimelineDay day = getTimelineDayFromWholeTimelineWithDayNumber(dayIndex);
+
+        if( day != null  && daysWeek.contains(day) )
+            return day.getDuration(sport);
+        else
+            return 0;
     }
 
+    private static long getDurationForHour(Entry e, int sport, int x, int y) {
+
+        Timeline timeline = DataProvider.getInstance().getUserTimeline();
+
+        TimelineDay curr = timeline.getTimelineDays().getLast();
+
+        Date date = new Date();
+
+        if( ! curr.isSameDay(date))
+            return 0;
+
+        int hour = x;
+
+        long durance = curr.getDurationForHour(hour, sport);
+
+        return durance;
+    }
+
+
+
+
+
+    public static Date getDate(int timePeriod, int sport, int x, int y) {
+        // get date of the x entry
+
+        switch(timePeriod) {
+            case 0:
+                return new Date();
+            case 1:
+                return getDateOfWeekWithDayNr(x);
+            case 2:
+                return getDateOfMonthWithDayNr(x);
+            default:
+                System.err.println("No such time period");
+        }
+
+        return null;
+
+
+    }
+
+    public static Date getDateOfWeekWithDayNr(int x) {
+        Timeline timeline = DataProvider.getInstance().getUserTimeline();
+
+        LinkedList<Date> datesWeek = timeline.getDatesOfThisWeek(new Date());
+
+        return datesWeek.get(x);
+    }
+
+    public static double getSpeedForHour(Entry e, int sport, int x, int y) {
+
+        Timeline timeline = DataProvider.getInstance().getUserTimeline();
+
+        TimelineDay currDay = timeline.getTimelineDays().getLast();
+
+        Date date = new Date();
+
+        if( ! currDay.isSameDay(date))
+            return 0;
+
+        int hour = x;
+
+        double speedHour = currDay.getAvarageSpeedForThis_Hour(hour, sport);
+
+        return speedHour;
+    }
 
     public static ArrayList<BarEntry> prepareXYPairs(int timePeriod, int sportType) {
 

@@ -52,8 +52,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -177,7 +175,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
     public static String DISTANCE = "Distance:";
     public static String SPEED =    "Speed:";
     public static String DURANCE =  "Duration:";
-    public static String TIME =     "Time:";
+    public static String TIME =     "Time: ";
     public static String DATE =     "Date:";
     ArrayAdapterItem adapter;
 
@@ -196,11 +194,10 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         List<ObjectItem> objectItemData = new ArrayList<>();
 
-        objectItemData.add(new ObjectItem(SPEED, "-"));
-        objectItemData.add(new ObjectItem(DISTANCE, "-"));
-        objectItemData.add(new ObjectItem(DURANCE, "-"));
-        objectItemData.add(new ObjectItem(TIME, "-"));
-        objectItemData.add(new ObjectItem(DATE, "-"));
+        objectItemData.add(new ObjectItem(SPEED, "select bar in chart"));
+        objectItemData.add(new ObjectItem(DISTANCE, "select bar in chart"));
+        objectItemData.add(new ObjectItem(DURANCE, "select bar in chart"));
+        objectItemData.add(new ObjectItem(DATE, "select bar in chart"));
 
 
         // our adapter instance
@@ -443,7 +440,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         MPPointF.recycleInstance(position);
 
         BarData barData = DataObjectsCollection.dataSupplier.getBarData(
-                getContext().getApplicationContext(),0, sport);
+                getContext().getApplicationContext(),this.period, sport);
 
         BarDataSet set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
         List<BarEntry> list = set1.getValues();
@@ -453,18 +450,16 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         int yEntry = (int) e.getY();
 
         // convert x and y to data
-        int speed = TestDataGenerator_toBeRemoved.getSpeed(this.period, this.sport, xEntry, yEntry);
-        int distance = TestDataGenerator_toBeRemoved.getDistance(this.period, this.sport, xEntry, yEntry);;
-        int durance = TestDataGenerator_toBeRemoved.getDurance(this.period, this.sport, xEntry, yEntry);;
-        int time = TestDataGenerator_toBeRemoved.getTime(this.period, this.sport, xEntry, yEntry);;
-        int date = TestDataGenerator_toBeRemoved.getDate(this.period, this.sport, xEntry, yEntry);;
+        double speed =  TestDataGenerator_toBeRemoved.getSpeed(e, this.period, this.sport, xEntry, yEntry);
+        int distance =  TestDataGenerator_toBeRemoved.getDistance(this.period, this.sport, xEntry, yEntry);;
+        long durance =  TestDataGenerator_toBeRemoved.getDuration(e, this.period, this.sport, xEntry, yEntry);;
+        Date date =     TestDataGenerator_toBeRemoved.getDate(this.period, this.sport, xEntry, yEntry);;
 
         // update info boxes
         adapter.getItem(0).setLabelAndVal(SPEED,    String.valueOf( speed ));
         adapter.getItem(1).setLabelAndVal(DISTANCE, String.valueOf( distance ));
         adapter.getItem(2).setLabelAndVal(DURANCE,  String.valueOf( durance ));
-        adapter.getItem(3).setLabelAndVal(TIME,     String.valueOf( time ));
-        adapter.getItem(4).setLabelAndVal(DATE,     String.valueOf( date ));
+        adapter.getItem(3).setLabelAndVal(DATE,     date.toString());
 
         adapter.notifyDataSetChanged();
 
@@ -472,7 +467,12 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
     @Override
     public void onNothingSelected() {
+        adapter.getItem(0).setLabelAndVal(SPEED,    "select bar in chart");
+        adapter.getItem(1).setLabelAndVal(DISTANCE, "select bar in chart");
+        adapter.getItem(2).setLabelAndVal(DURANCE,  "select bar in chart");
+        adapter.getItem(3).setLabelAndVal(DATE,     "select bar in chart");
 
+        adapter.notifyDataSetChanged();
     }
 
  /*   // Prepare some dummy data for gridview

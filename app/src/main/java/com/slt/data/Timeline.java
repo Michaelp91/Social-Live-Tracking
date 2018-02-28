@@ -878,6 +878,22 @@ public class Timeline {
         return this.myHistory.get(index);
     }
 
+
+    /**
+     * Get a specific day of the history
+     */
+    public TimelineDay getTimelineDay(Date date) {
+        TimelineDay day;
+        //check if index is out of bounds
+        for (int i = 0; i < myHistory.size(); i++) {
+            day = this.myHistory.get(i);
+            if(day.isSameDay(date))
+                return day;
+        }
+
+        return null;
+    }
+
     public LinkedList<TimelineDay> getTimelineDays() {
         return this.myHistory;
     }

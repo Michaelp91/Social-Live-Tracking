@@ -236,6 +236,12 @@ public class TimelineSegment {
         }
     }
 
+    public double getSpeed() {
+
+        return this.activeDistance / this.activeTime;
+
+    }
+
     /**
      *  Method to add a new location point to the segment
      * @param location The new location that should be added to the segment

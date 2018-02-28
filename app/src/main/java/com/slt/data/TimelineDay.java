@@ -247,6 +247,63 @@ public class TimelineDay {
         return time;
     }
 
+    public double getAvarageSpeedForThisDay(int sport) {
+
+        double segSpeed;
+        double speedSum = 0;
+        int relevantSegmentsCounter = 0;
+        LinkedList<TimelineSegment> segments = this.getMySegments();
+        TimelineSegment seg;
+
+        for (int i = 0; i < segments.size(); i++) {
+            seg = segments.get(i);
+
+            if(seg.getMyActivity().getType() != sport)
+                continue;
+
+            segSpeed = seg.getSpeed();
+
+            speedSum += segSpeed;
+            relevantSegmentsCounter++;
+        }
+
+        return speedSum / relevantSegmentsCounter;
+    }
+
+    public double getAvarageSpeedForThis_Hour(int hour, int sport) {
+
+        LinkedList<TimelineSegment> segments = this.getMySegments();
+        TimelineSegment seg;
+        double segSpeed;
+        double speedSum = 0;
+        int relevantSegmentsCounter = 0;
+        int startingHourSegment = -1;
+        Calendar cal = Calendar.getInstance();
+
+        for (int i = 0; i < segments.size(); i++) {
+            seg = segments.get(i);
+
+            // only segments for the given sport
+            if(seg.getMyActivity().getType() != sport)
+                continue;
+
+            cal.setTime(seg.getStartTime());
+            startingHourSegment = cal.get(Calendar.HOUR_OF_DAY);
+
+            // only for segments starting in the given hour of the day
+            if(hour != startingHourSegment)
+                continue;
+
+
+            segSpeed = seg.getSpeed();
+
+            speedSum += segSpeed;
+            relevantSegmentsCounter++;
+        }
+
+        return speedSum / relevantSegmentsCounter;
+    }
+
     /**
      * Get the active distance for a activity of the day
      * @param activity The activity we want to have the active distance for
@@ -668,5 +725,57 @@ public class TimelineDay {
      */
     public void setID(String ID) {
         this.ID = ID;
+    }
+
+
+    public long getDurationForHour(int hour, int sport) {
+
+        LinkedList<TimelineSegment> segments = this.getMySegments();
+        TimelineSegment seg;
+        Calendar cal = Calendar.getInstance();
+        int startingHourSegment;
+        long duration = 0;
+
+        for (int i = 0; i < segments.size(); i++) {
+            seg = segments.get(i);
+
+            if (seg.getMyActivity().getType() != sport)
+                continue;
+
+            cal.setTime(seg.getStartTime());
+            startingHourSegment = cal.get(Calendar.HOUR_OF_DAY);
+
+            // only for segments starting in the given hour of the day
+            if(hour != startingHourSegment)
+                continue;
+
+            duration += seg.getActiveTime();
+
+
+        }
+
+
+        return duration;
+    }
+
+
+
+    public long getDuration(int sport) {
+
+        LinkedList<TimelineSegment> segments = this.getMySegments();
+        TimelineSegment seg;
+        long duration = 0;
+
+        for (int i = 0; i < segments.size(); i++) {
+            seg = segments.get(i);
+
+            if (seg.getMyActivity().getType() != sport)
+                continue;
+
+            duration += seg.getDuration();
+
+        }
+
+        return duration;
     }
 }
