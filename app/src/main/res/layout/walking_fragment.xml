@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/fragment_bg"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@drawable/customborder"
+        >
+
+        <TextView
+            android:id="@+id/all_ranking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="My Friends Ranking:"
+            android:textSize="24sp"
+
+            android:layout_gravity="center_horizontal"
+
+            android:textColor="#000000" />
+
+        <ProgressBar
+            android:id="@+id/all_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:visibility="gone"/>
+
+        <ListView
+            android:id="@+id/all_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="12dp"
+            android:divider="@null"
+            android:layout_marginTop="24dp"/>
+
+
+        <!-- Button Search Friends-->
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="32dp"
+        android:background="@drawable/customborder">
+        >
+
+        <TextView
+            android:id="@+id/my_ranking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My Ranking:"
+            android:textSize="24sp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#000000" />
+
+        <ListView
+            android:id="@+id/my_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="12dp"
+            android:divider="@null"
+            android:layout_marginTop="24dp"/>
+
+
+
+    </LinearLayout>
+</LinearLayout>
