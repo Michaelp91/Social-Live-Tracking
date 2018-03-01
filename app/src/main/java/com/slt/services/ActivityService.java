@@ -26,9 +26,27 @@ public class ActivityService extends IntentService {
      */
     private static final String TAG = "ActivityService";
 
+    /**
+     * Last Detected Activity
+     */
+    private DetectedActivity currentActivity;
+
+    /**
+     * Count of detected before Change
+     */
+    private int counter;
+
+    /**
+     * Define min. number of detections of activity before change
+     */
+    private final int MIN_DETECTION_COUNT = 1;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        currentActivity = null;
+        counter = 0;
 
         //start the foreground service so we have no limitations for update with later android
         // versions
@@ -84,8 +102,8 @@ public class ActivityService extends IntentService {
             // Get the confidence % (probability)
             int confidence = mostProbableActivity.getConfidence();
 
-            //ignore if the confidence is too small
-            if(confidence < 25){
+            //ignore if the confidence is too small or it is tilting
+            if(confidence < 25 || mostProbableActivity.getType() == DetectedActivity.TILTING){
                 return;
             }
 
@@ -97,7 +115,28 @@ public class ActivityService extends IntentService {
             Log.i(TAG, "Intent Received, Activity: " + mostProbableActivity.toString() +
                     " Confidence:" + confidence + " Type: " + activityType + " Date: " + DateFormat.getTimeInstance().format(timestamp));
 
-            myDataProvider.updateActivity(mostProbableActivity, timestamp);
+            //if no current activity set use it and set the activity
+            if(currentActivity == null ){
+                currentActivity = mostProbableActivity;
+                myDataProvider.updateActivity(mostProbableActivity, timestamp);
+                return;
+            }
+            else {
+                //if we have another activity
+                if(currentActivity != mostProbableActivity){
+                    currentActivity = mostProbableActivity;
+                    counter = 0;
+                    return;
+                }
+
+                //if we have the new activity, but we detected it not for enough times
+                if(currentActivity == mostProbableActivity && counter < MIN_DETECTION_COUNT){
+                    counter++;
+                    return;
+                }
+
+                myDataProvider.updateActivity(mostProbableActivity, timestamp);
+            }
         }
     }
 }

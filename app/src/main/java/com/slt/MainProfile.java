@@ -79,7 +79,7 @@ public class MainProfile extends AppCompatActivity
     /**
      * Update interval for the activity detection
      */
-    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 1;
+    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 10;
 
     /**
      * TAG for the Logger

@@ -192,7 +192,12 @@ public class PlacesResolver extends AsyncTask<Object, String, String> implements
 
 
                 //Store the result in the TimelineSegment
-                myTimelineSegment.setPlace(myPlace);
+                try {
+                     myTimelineSegment.setPlace(myPlace);
+                }catch (Exception e){
+                     //do nothing right now
+                }
+
 
                 likelyPlaces.release();
             }
