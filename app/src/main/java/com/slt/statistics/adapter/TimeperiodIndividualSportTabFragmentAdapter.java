@@ -462,7 +462,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         adapter.getItem(3).setLabelAndVal(DATE,     date.toString());
 
         adapter.notifyDataSetChanged();
-
     }
 
     @Override
