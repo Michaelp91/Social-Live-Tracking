@@ -45,6 +45,7 @@ import com.google.android.gms.location.ActivityRecognition;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
+import com.slt.data.User;
 import com.slt.fragments.FragmentAchievements;
 import com.slt.fragments.FragmentEditSettings;
 import com.slt.fragments.FragmentFriends;
@@ -79,7 +80,7 @@ public class MainProfile extends AppCompatActivity
     /**
      * Update interval for the activity detection
      */
-    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 1;
+    private static final int ACTIVITY_UPDATE_INTERVAL_MILLISECONDS = 10;
 
     /**
      * TAG for the Logger
@@ -566,10 +567,19 @@ public class MainProfile extends AppCompatActivity
                 //fragment = new FragmentSummaries();
                 // Intent Summaries = new Intent(MainProfile.this, StatisticsOverview.class);
                 //startActivity(Summaries);
+                User logedUser = DataProvider.getInstance().logedUser;
+
+                DataProvider.getInstance().setOwnUser(logedUser);
+                DataProvider.getInstance().syncTimelineToUser();
+
                 fragment123 = new StatisticsOverview();
                 break;
             case R.id.nav_friends:
-                fragment = new FragmentFriends();
+                // set fragment manager
+                FragmentFriends fragmentFriends = new FragmentFriends();
+                fragmentFriends.setFragmentManager_v4(getSupportFragmentManager());
+
+                fragment = fragmentFriends;
                 break;
             case R.id.nav_livemap:
                 fragment = new FragmentLiveMap();

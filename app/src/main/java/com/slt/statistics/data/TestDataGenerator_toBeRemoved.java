@@ -237,6 +237,9 @@ public class TestDataGenerator_toBeRemoved {
         xyValuesSet = new BarDataSet(yVals1, "DISTANCE "
         );
 
+        xyValuesSet.setValueTextColor(Color.WHITE);
+//        xyValuesSet.setColor(Color.WHITE);
+
         xyValuesSet.setDrawIcons(false);
 
         xyValuesSet.setColors(ColorTemplate.MATERIAL_COLORS);

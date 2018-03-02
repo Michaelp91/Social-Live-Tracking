@@ -40,6 +40,12 @@ public class DataProvider implements ServiceInterface {
         return ourInstance;
     }
 
+
+    /**
+     * user who is loged in
+     */
+    public static User logedUser = null;
+
     /**
      * Current activity of the user
      */
@@ -260,13 +266,19 @@ public class DataProvider implements ServiceInterface {
     }
 
     /**
-     * Set the own user
+     * Set the own user and the loged user (if this has not been set befor)
      *
      * @param ownUser The user to set
      */
     public void setOwnUser(User ownUser) {
-        this.ownUser = ownUser;
+        if(this.logedUser == null)
+            this.logedUser = ownUser;
+
+        if(ownUser != this.ownUser)
+            this.ownUser = ownUser;
     }
+
+
 
     /**
      * Little Hack to ensure the user timeline is also the current timeline for easier retrieval

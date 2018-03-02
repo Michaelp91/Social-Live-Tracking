@@ -18,43 +18,25 @@
     </ImageView>
 
     <TextView
-        android:id="@+id/label"
+        android:id="@+id/activity_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@+id/label"
+        android:textColor="@android:color/white"
         android:textSize="50px"
         android:layout_toRightOf="@+id/icon">
     </TextView>
 
-    <TextView
-        android:id="@+id/infos_1"
+    <Button
+        android:id="@+id/button_to_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@+id/infos"
+        android:text="@string/view_datails"
         android:textSize="30px"
-        android:layout_below="@+id/label"
-        android:layout_toRightOf="@+id/icon">
-    </TextView>
-
-    <TextView
-        android:id="@+id/infos_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@+id/infos"
-        android:textSize="30px"
-        android:layout_below="@+id/infos_1"
-        android:layout_toRightOf="@+id/icon">
-    </TextView>
-
-    <TextView
-        android:id="@+id/infos_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@+id/infos"
-        android:textSize="30px"
-        android:layout_below="@+id/infos_2"
-        android:layout_toRightOf="@+id/icon">
-    </TextView>
+        android:background="@android:color/holo_orange_light"
+        android:textColor="@android:color/white"
+        android:layout_below="@id/activity_name"
+        android:layout_toRightOf="@id/icon"
+    />
 
 
 

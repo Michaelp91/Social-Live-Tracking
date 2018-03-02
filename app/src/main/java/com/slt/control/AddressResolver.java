@@ -127,8 +127,11 @@ public class AddressResolver extends AsyncTask<Object, String, String> {
         Log.d(TAG, "onPostExecute Entered");
 
         //Store the result of the address resolution
-        myTimelineSegment.setAddress(myAddress);
-
+        try {
+            myTimelineSegment.setAddress(myAddress);
+        }catch (Exception e){
+            //do nothing right now
+        }
 
         //Send an intent for the resolved address
         Intent locationIntent = new Intent();
