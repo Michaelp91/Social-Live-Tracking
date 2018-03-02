@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 
@@ -65,6 +66,24 @@ public class TimelineDay {
     private LinkedList<TimelineSegment> mySegments;
 
     /**
+     * HashMap containing total Steps by specific Activity
+     */
+
+    private HashMap<Integer, Integer> activity_totalUsersteps;
+
+    /**
+     * HashMap containing total Distance by specific Activity
+     */
+
+    private HashMap<Integer, Double> activity_totalDistance;
+
+    /**
+     * HashMap containing total Duration by specific Activity
+     */
+
+    private HashMap<Integer, Double> activity_totalDuration;
+
+    /**
      * Definition how long a segment has to be minimal
      */
     private static final long MIN_SEGMENT_DURATION_IN_SECONDS  = 60 *1000;
@@ -103,6 +122,36 @@ public class TimelineDay {
         this.myDate = truncatedDate;
 
         this.myAchievements = new LinkedList<>();
+        this.activity_totalDistance = new HashMap<>();
+        this.activity_totalDuration = new HashMap<>();
+        this.activity_totalUsersteps = new HashMap<>();
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    public HashMap<Integer, Integer> getActivity_totalUsersteps() {
+        return activity_totalUsersteps;
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    public HashMap<Integer, Double> getActivity_totalDistance() {
+        return activity_totalDistance;
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    public HashMap<Integer, Double> getActivity_totalDuration() {
+        return activity_totalDuration;
     }
 
     /**

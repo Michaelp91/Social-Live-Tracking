@@ -206,6 +206,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         */
         try {
 
+
+
             if (getActivity() != null) {
                 LayoutInflater inflater = LayoutInflater.from(this.getActivity());
 
@@ -220,11 +222,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 for (TimelineDay t_d : timeLineDays) {
 
                     if (timelinedayIsNotViewed(t_d.getID())) {
+
                         h_viewedTimelineDays.put(t_d.getID(), t_d);
-                        final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.timeline_day, null);
-                        TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
+                        final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.timelineview_day, null);
+              //          TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
 //            ImageView imageView = (ImageView) row.findViewById(R.id.iv_activity);
 //            UsefulMethods.UploadImageView(imageView);
+
 
 
                         Date date = t_d.getMyDate();
@@ -232,7 +236,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
                         String strDate = sdf.format(date);
 
-                        myDate.setText(strDate);
+                       // myDate.setText(strDate);
 
                         row.setTag(TAG_TIMELINEDAY);
                         row.setId(counter_timelinedays);

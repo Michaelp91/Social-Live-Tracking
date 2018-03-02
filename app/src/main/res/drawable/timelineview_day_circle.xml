@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
 
-</selector>
+    <solid
+        android:color="#0187FF" />
+
+    <stroke
+        android:width="8dp"
+        android:color="@color/timeline_activitybackground"/>
+
+    <size
+        android:width="20dp"
+        android:height="20dp"/>
+</shape>

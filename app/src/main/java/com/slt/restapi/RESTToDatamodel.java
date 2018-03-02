@@ -118,6 +118,21 @@ public class RESTToDatamodel {
             t_s.setID(r_t_s._id);
 
             TimelineDay t_d = TemporaryDB.getInstance().h_timelinedayResolver.get(r_t_s.timeLineDay);
+
+            int steps = t_s.getUserSteps();
+            double duration = t_s.getDuration();
+            double distance = t_s.getActiveDistance();
+
+            if(t_d.getActivity_totalUsersteps().get(t_s.getMyActivity().getType()) != null) {
+                steps += t_d.getActivity_totalUsersteps().get(t_s.getMyActivity().getType());
+                duration += t_d.getActivity_totalDuration().get(t_s.getMyActivity().getType());
+                distance += t_d.getActivity_totalDistance().get(t_s.getMyActivity().getType());
+
+                t_d.getActivity_totalUsersteps().put(t_s.getMyActivity().getType(), steps);
+                t_d.getActivity_totalDuration().put(t_s.getMyActivity().getType(), duration);
+                t_d.getActivity_totalDistance().put(t_s.getMyActivity().getType(), distance);
+            }
+
             t_d.insertTimelineSegment(t_s, null);
         }
 
