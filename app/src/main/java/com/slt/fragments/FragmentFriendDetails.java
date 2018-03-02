@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.slt.MainProfile;
 import com.slt.R;
 import com.slt.TimelineFriend;
 import com.slt.control.ApplicationController;
@@ -22,6 +24,7 @@ import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.restapi.OtherRestCalls;
+import com.slt.statistics.StatisticsOverview;
 
 /**
  * The friend details fragment
@@ -79,6 +82,12 @@ public class FragmentFriendDetails  extends Fragment  {
      * Bitmap of the userimage
      */
     private Bitmap bitmap;
+
+    /**
+     * manager for switching fragments
+     */
+    private FragmentManager fragmentManager_v4 = null;
+
 
     /**
      * Overwritten onCreateViewMethod, intializes the elements
@@ -168,7 +177,20 @@ public class FragmentFriendDetails  extends Fragment  {
      * Show the statistics of the user
      */
     private void showStatistics(){
-        //TODO add transition to statistics
+         DataProvider.getInstance().setOwnUser(shownUser);
+         DataProvider.getInstance().syncTimelineToUser();
+
+        android.support.v4.app.Fragment fragment123 = null;
+        fragment123 = new StatisticsOverview();
+
+        android.support.v4.app.FragmentTransaction fragmentTransaction =
+                this.fragmentManager_v4.beginTransaction();
+
+        fragmentTransaction.replace(R.id.content_main_frame, fragment123);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+
     }
 
 
@@ -202,4 +224,11 @@ public class FragmentFriendDetails  extends Fragment  {
 
     }
 
+    public FragmentManager getFragmentManager_v4() {
+        return fragmentManager_v4;
+    }
+
+    public void setFragmentManager_v4(FragmentManager fragmentManager_v4) {
+        this.fragmentManager_v4 = fragmentManager_v4;
+    }
 }

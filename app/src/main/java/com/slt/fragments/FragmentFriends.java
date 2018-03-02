@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,11 @@ public class FragmentFriends extends Fragment {
      */
     private ProgressBar mProgressBar;
 
+
+    /**
+     * manager for switching fragments
+     */
+    private FragmentManager fragmentManager_v4 = null;
 
     /**
      * Overwritten onCreateViewMethod, intializes the elements
@@ -141,7 +147,10 @@ public class FragmentFriends extends Fragment {
                 TemporaryDB.getInstance().setChoosedFriend(dataModel);
                 SharedResources.getInstance().setUser(dataModel);
 
-                Fragment newFragment = new FragmentFriendDetails();
+                FragmentFriendDetails newFragment = new FragmentFriendDetails();
+
+                newFragment.setFragmentManager_v4(fragmentManager_v4);
+
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.content_main_frame, newFragment);
@@ -189,6 +198,14 @@ public class FragmentFriends extends Fragment {
         dataModels.addAll(DataProvider.getInstance().getUserList());
         mProgressBar.setVisibility(View.GONE);
         adapter.notifyDataSetChanged();
+    }
+
+    public FragmentManager getFragmentManager_v4() {
+        return fragmentManager_v4;
+    }
+
+    public void setFragmentManager_v4(FragmentManager fragmentManager_v4) {
+        this.fragmentManager_v4 = fragmentManager_v4;
     }
 }
 
