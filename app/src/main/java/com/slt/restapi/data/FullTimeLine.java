@@ -12,5 +12,4 @@ public class FullTimeLine {
     public ArrayList<REST_TimelineDay> timelinedays;
     public ArrayList<REST_TimelineSegment> timelinesegments;
     public ArrayList<REST_LocationEntry> locationEntries;
-
 }

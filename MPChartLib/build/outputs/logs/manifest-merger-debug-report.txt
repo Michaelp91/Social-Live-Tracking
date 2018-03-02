@@ -1,35 +1,35 @@
 -- Merging decision tree log ---
 manifest
-ADDED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
+ADDED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
 	package
-		ADDED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:11-49
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:11-49
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-		ADDED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
 	android:versionCode
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-		ADDED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml:2:1-13:12
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
 uses-sdk
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-		ADDED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-		ADDED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
-		INJECTED from E:\1.03\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Usman Ahmad\TU\WS1718\TKPraktikum\Coding\Social-Live-Tracking\MPChartLib\src\main\AndroidManifest.xml

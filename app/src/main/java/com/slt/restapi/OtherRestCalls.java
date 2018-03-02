@@ -1,6 +1,7 @@
 package com.slt.restapi;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.google.gson.Gson;
@@ -273,6 +274,7 @@ public class OtherRestCalls {
                 t_s.setStrUserComments(r_t_s.usercomments);
                 t_s.setImages(r_t_s.images);
                 t_s.setActiveDistance(r_t_s.activeDistance);
+
                 t_s.setDuration(r_t_s.duration);
                 t_s.setUserSteps(r_t_s.userSteps);
 
