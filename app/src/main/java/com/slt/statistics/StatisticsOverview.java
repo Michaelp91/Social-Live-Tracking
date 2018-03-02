@@ -13,6 +13,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
 import com.slt.R;
+import com.slt.control.DataProvider;
 import com.slt.definitions.Constants;
 import com.slt.statistics.adapter.StatisticsOverviewAdapter;
 import com.slt.statistics.data.DataObjectsCollection;
@@ -32,8 +33,11 @@ public class StatisticsOverview extends Fragment {
        // getActivity().setTitle("Statistics");
 
 
+        String forename = DataProvider.getInstance().getOwnUser().getForeName();
+        String lastName = DataProvider.getInstance().getOwnUser().getLastName();
+
         TextView text = viewGroup.findViewById(R.id.general_overview_text);
-        text.setText("General Overview");
+        text.setText("General Overview for " + forename + " " + lastName);
 
                // super.setTitle("Summaries");
         ListView l = (ListView) viewGroup.findViewById(R.id.list_in_Frag);
