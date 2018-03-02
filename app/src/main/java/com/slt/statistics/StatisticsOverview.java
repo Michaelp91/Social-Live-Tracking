@@ -30,8 +30,7 @@ public class StatisticsOverview extends Fragment {
         super.onCreate(savedInstanceState);
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_general_view_of_statistics, container, false);
 
-       // getActivity().setTitle("Statistics");
-
+        getActivity().setTitle("Statistics");
 
         String forename = DataProvider.getInstance().getOwnUser().getForeName();
         String lastName = DataProvider.getInstance().getOwnUser().getLastName();
