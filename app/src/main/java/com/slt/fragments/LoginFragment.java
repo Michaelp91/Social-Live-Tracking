@@ -47,7 +47,6 @@ import com.slt.network.RetrofitInterface;
 import android.view.View.OnClickListener;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 
 import retrofit2.adapter.rxjava.HttpException;
@@ -403,11 +402,6 @@ public class LoginFragment extends Fragment {
                             Timeline timeline = RetrieveOperations.getInstance().getCompleteTimeline();
                             DataProvider.getInstance().getOwnUser().setTimeline(timeline);
                             DataProvider.getInstance().syncTimelineToUser();
-
-                            //Get Timeline from Friends
-                            ArrayList<User> friends =  OtherRestCalls.retrieveFriendsIncludingTimelines();
-
-
 
                             //start the REST Updater
                             DataUpdater.getInstance().Start();
