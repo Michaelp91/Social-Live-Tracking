@@ -41,6 +41,12 @@ public class ActivityService extends IntentService {
      */
     private final int MIN_DETECTION_COUNT = 1;
 
+    /**
+     * The timestamp of the last change
+     */
+    private Date changeTimestamp;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -125,6 +131,7 @@ public class ActivityService extends IntentService {
                 //if we have another activity
                 if(currentActivity != mostProbableActivity){
                     currentActivity = mostProbableActivity;
+                    changeTimestamp = timestamp;
                     counter = 0;
                     return;
                 }
@@ -135,7 +142,7 @@ public class ActivityService extends IntentService {
                     return;
                 }
 
-                myDataProvider.updateActivity(mostProbableActivity, timestamp);
+                myDataProvider.updateActivity(mostProbableActivity, changeTimestamp);
             }
         }
     }
