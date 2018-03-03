@@ -55,12 +55,12 @@
                             android:id="@+id/ll_tday_segment1OnFoot"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:background="@drawable/timeline_activity_walkingcube">
+                            android:background="@drawable/timeline_activity_onfootcube">
 
                             <ImageView
+                                android:id="@+id/iv_onfoot"
                                 android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:background="@drawable/timeline_walking"/>
+                                android:layout_height="60dp" />
 
                         </LinearLayout>
 
@@ -88,9 +88,9 @@
                             android:background="@drawable/timeline_activity_walkingcube">
 
                             <ImageView
+                                android:id="@+id/iv_walking"
                                 android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:background="@drawable/timeline_walking"/>
+                                android:layout_height="60dp" />
 
                         </LinearLayout>
 
@@ -115,12 +115,12 @@
                             android:id="@+id/ll_tday_segment2OnBicycle"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:background="@drawable/timeline_activity_walkingcube">
+                            android:background="@drawable/timeline_activity_bikingcube">
 
                             <ImageView
+                                android:id="@+id/iv_bicycle"
                                 android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:background="@drawable/timeline_walking"/>
+                                android:layout_height="60dp" />
 
                         </LinearLayout>
 
@@ -144,12 +144,12 @@
                             android:id="@+id/ll_tday_segment2Running"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:background="@drawable/timeline_activity_walkingcube">
+                            android:background="@drawable/timeline_activity_runningcube">
 
                             <ImageView
+                                android:id="@+id/iv_running"
                                 android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:background="@drawable/timeline_walking"/>
+                                android:layout_height="60dp" />
 
                         </LinearLayout>
 
@@ -174,12 +174,12 @@
                             android:id="@+id/ll_tday_segment2Vehicle"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:background="@drawable/timeline_activity_walkingcube">
+                            android:background="@drawable/timeline_activity_vehiclecube">
 
                             <ImageView
+                                android:id="@+id/iv_vehicle"
                                 android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:background="@drawable/timeline_walking"/>
+                                android:layout_height="60dp" />
 
                         </LinearLayout>
 

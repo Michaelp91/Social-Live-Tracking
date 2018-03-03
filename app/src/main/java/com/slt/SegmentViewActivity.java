@@ -39,7 +39,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
@@ -90,15 +101,137 @@ public class SegmentViewActivity extends AppCompatActivity {
     private Activity context;
     private LocationEntry firstLocationEntry;
 
+    private GoogleMap googleMap;
+    MapView mMapView;
+    private float zoomLevel = 17.0f;
+    private LocationEntry start = null;
+    private LocationEntry end = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_segment_view);
         choosedChildren = (LinearLayout) findViewById(R.id.timeline_segments);
         this.choosedTimelineSegments = DataProvider.getInstance().getChoosedTimelineSegments();
+        mMapView = (MapView) findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+
+        boolean failed = false;
+
+
+        try {
+            start = choosedTimelineSegments.getFirst().getLocationPoints().getFirst();
+            failed = true;
+        }catch(Exception e) {
+            failed = false;
+        }
+
+        try{
+            end = choosedTimelineSegments.getLast().getLocationPoints().getLast();
+            failed = true;
+        }catch (Exception e) {
+            failed = false;
+        }
+
+        mMapView.onResume(); // needed to get the map to display immediately
+
+        try {
+            MapsInitializer.initialize(getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mMapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap mMap) {
+                googleMap = mMap;
+                // googleMap.getUiSettings().setZoomControlsEnabled(true);
+                LocationEntry first = null;
+                LocationEntry last = null;
+                if (start != null && end != null) {
+                    first = start;
+                    last = end;
+
+                    /*
+                    LatLng start = new LatLng(first.getLatitude(), first.getLongitude());
+                    googleMap.addMarker(new MarkerOptions().position(start).icon( BitmapDescriptorFactory.fromResource( R.mipmap.ic_start ) )
+                            .title( "START" ));
+
+                    LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
+                    googleMap.addMarker(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource( R.mipmap.ic_finish ))
+                            .title("FINISH"));
+                            */
+
+
+                    LatLng start = new LatLng(first.getLatitude(), first.getLongitude());
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(start));
+                    Marker m = googleMap.addMarker(new MarkerOptions().position(start).icon( BitmapDescriptorFactory.fromResource( R.mipmap.ic_start ) ).title("START"));
+                    m.showInfoWindow();
+
+                    LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
+                    googleMap.addMarker(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource( R.mipmap.ic_finish ))
+                            .title("FINISH"));
+                    ZoomCamera(start, end);
+
+                    addLines(start, end);
+
+                } else {
+                    LatLng startLatLng = new LatLng(start.getLatitude(), start.getLongitude());
+                    googleMap.addMarker(new MarkerOptions().position(startLatLng).icon( BitmapDescriptorFactory.fromResource( R.mipmap.ic_start ) ).title(""));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, zoomLevel));
+                }
+            }
+        });
         context = this;
         //initTimelineView();
     }
+
+    private void ZoomCamera(final LatLng start, final LatLng end) {
+
+        googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+
+            @Override
+            public void onMapLoaded() {
+                if(end != null) {
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    builder.include(start);
+                    builder.include(end);
+                    LatLngBounds bounds = builder.build();
+
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+                    googleMap.animateCamera(cu, new GoogleMap.CancelableCallback(){
+                        public void onCancel(){}
+                        public void onFinish(){
+                            CameraUpdate zout = CameraUpdateFactory.zoomBy((float) -3.0);
+                            googleMap.animateCamera(zout);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void addLines(LatLng start, LatLng end) {
+        googleMap.addPolyline((new PolylineOptions())
+                .add(start, end).width(5).color(Color.GRAY)
+                .geodesic(true));
+        // move camera to zoom on map
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start,
+                10));
+
+
+        //Src: https://stackoverflow.com/questions/34357660/calculating-the-distance-between-two-markers-in-android
+        Location markerLocation = new Location("");
+        markerLocation.setLatitude(start.latitude);
+        markerLocation.setLongitude(start.longitude);
+
+        Location distanceLocation = new Location("");
+        distanceLocation.setLatitude(end.latitude);
+        distanceLocation.setLongitude(end.longitude);
+
+
+    }
+
 
 
     public void initTimelineView() {

@@ -287,6 +287,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     activity_bikingIsDisplayed = true;
 
                                     TextView info = (TextView) row.findViewById(R.id.tv_tday_infoBicycle);
+                                    ImageView iv_bicycle = (ImageView) row.findViewById(R.id.iv_bicycle);
+                                    Bitmap bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_biking, 100, 100);
+                                    iv_bicycle.setImageBitmap(bmp);
                                     DetectedActivity detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE, 100);
                                     double activeDistance = t_d.getActiveDistance(detectedActivity);
                                     double duration = t_d.getActiveTime(detectedActivity);
@@ -301,6 +304,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
                                     activity_onFootIsDisplayed = true;
                                     info = (TextView) row.findViewById(R.id.tv_tday_infoOnfoot);
+                                    ImageView iv = (ImageView) row.findViewById(R.id.iv_onfoot);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_walking, 100, 100);
+                                    iv.setImageBitmap(bmp);
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
                                     duration = t_d.getActiveTime(detectedActivity);
@@ -319,6 +325,11 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     activity_runningIsDisplayed = true;
 
                                     info = (TextView) row.findViewById(R.id.tv_tday_infoRunning);
+                                    iv = (ImageView) row.findViewById(R.id.iv_running);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_running, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
+
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
                                     duration = t_d.getActiveTime(detectedActivity);
@@ -335,6 +346,10 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     activity_walkingIsDisplayed = true;
 
                                     info = (TextView) row.findViewById(R.id.tv_tday_infoWalking);
+                                    iv = (ImageView) row.findViewById(R.id.iv_walking);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_walking, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
                                     duration = t_d.getActiveTime(detectedActivity);
@@ -352,6 +367,10 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     activity_onVehicleIsDisplayed = true;
 
                                     info = (TextView) row.findViewById(R.id.tv_tday_infoVehicle);
+                                    iv = (ImageView) row.findViewById(R.id.iv_vehicle);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_vehicle, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
                                     duration = t_d.getActiveTime(detectedActivity);
@@ -514,6 +533,44 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             FunctionalityLogger.getInstance().AddErrorLog("UpdateTimelineDay(): " + e.getMessage().toString());
         }
 
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
+
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 
     @Override
