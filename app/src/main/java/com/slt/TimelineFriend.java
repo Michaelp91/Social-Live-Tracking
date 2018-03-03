@@ -316,7 +316,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                             view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
                             TextView activeTime = null;
                             final TextView activeDistance = null;
-                            final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
+                            final ImageView activity = null;
                             final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
                             final LinearLayout ll_pictures = null;
                             final ImageView iv_pictures = null;

@@ -331,6 +331,12 @@ public class SegmentViewActivity extends AppCompatActivity {
                             switch (detectedActivity.getType()) {
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
 
+                                    LinearLayout ll = (LinearLayout) view_segment.findViewById(R.id.ll_activity_walking);
+                                    ll.setVisibility(View.VISIBLE);
+                                    ImageView iv = (ImageView) view_segment.findViewById(R.id.iv_activity_walking);
+                                    Bitmap bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_walking, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
                                     informations = "Type: Walking";
                                     informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
                                     informations += "\nDuration: " + Float.toString((float) tSegment.getActiveTime()) + " min";
@@ -339,6 +345,12 @@ public class SegmentViewActivity extends AppCompatActivity {
                                     break;
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING:
 
+                                    ll = (LinearLayout) view_segment.findViewById(R.id.ll_activity_running);
+                                    ll.setVisibility(View.VISIBLE);
+                                    iv = (ImageView) view_segment.findViewById(R.id.iv_activity_running);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_running, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
                                     informations = "Type: Running";
                                     informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
                                     informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
@@ -346,12 +358,26 @@ public class SegmentViewActivity extends AppCompatActivity {
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.IN_VEHICLE:
+
+                                    ll = (LinearLayout) view_segment.findViewById(R.id.ll_activity_vehicle);
+                                    ll.setVisibility(View.VISIBLE);
+                                    iv = (ImageView) view_segment.findViewById(R.id.iv_activity_vehicle);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_vehicle, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
                                     informations = "Type: Vehicle";
                                     informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
                                     informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
+
+                                    ll = (LinearLayout) view_segment.findViewById(R.id.ll_activity_onfoot);
+                                    ll.setVisibility(View.VISIBLE);
+                                    iv = (ImageView) view_segment.findViewById(R.id.iv_activity_onfoot);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_walking, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
                                     informations = "Type: On Foot";
                                     informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
                                     informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
@@ -360,6 +386,14 @@ public class SegmentViewActivity extends AppCompatActivity {
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE:
+
+                                    ll = (LinearLayout) view_segment.findViewById(R.id.ll_activity_bicycle);
+                                    ll.setVisibility(View.VISIBLE);
+
+                                    ImageView iv_bicycle = (ImageView) view_segment.findViewById(R.id.iv_activity_bicycle);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_biking, 100, 100);
+                                    iv_bicycle.setImageBitmap(bmp);
+
                                     informations = "Type: Bicycle";
                                     informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
                                     informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";

@@ -25,14 +25,90 @@
             android:layout_below="@id/ll_line"
             android:id="@+id/ll_activity"
             android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/timeline_activity_walkingcube">
+            android:layout_height="60dp">
 
-            <ImageView
-                android:id="@+id/iv_activity"
+            <LinearLayout
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:background="@drawable/timeline_walking"/>
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_below="@id/ll_line"
+                    android:id="@+id/ll_activity_onfoot"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/timeline_activity_onfootcube"
+                    android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/iv_activity_onfoot"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_below="@id/ll_line"
+                    android:id="@+id/ll_activity_walking"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/timeline_activity_walkingcube"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/iv_activity_walking"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_below="@id/ll_line"
+                    android:id="@+id/ll_activity_running"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/timeline_activity_runningcube"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/iv_activity_running"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_below="@id/ll_line"
+                    android:id="@+id/ll_activity_bicycle"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/timeline_activity_bikingcube"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/iv_activity_bicycle"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_below="@id/ll_line"
+                    android:id="@+id/ll_activity_vehicle"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/timeline_activity_vehiclecube"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/iv_activity_vehicle"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
