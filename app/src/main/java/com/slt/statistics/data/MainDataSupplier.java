@@ -8,7 +8,6 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
 import com.slt.R;
-import com.slt.statistics.Sport;
 import com.slt.statistics.achievements.ImageItem;
 
 import java.util.ArrayList;
@@ -27,47 +26,22 @@ public class MainDataSupplier implements DataSupplier {
     @Override
     public PieData getPieData() {
         if (pieData == null)
-            pieData = TestDataGenerator_toBeRemoved.generateDataPie(1);
+            pieData = StatisticsDataModelProvider.generateDataPie(1);
 
         return pieData;
     }
 
-    @Override
-    public LineData getLineData(Context context, int timePeriod, int sport) {
-       // if (lineData == null)
-            lineData = TestDataGenerator_toBeRemoved.generateDataLine(context, timePeriod, sport);
 
-        return lineData;
-    }
 
     @Override
     public BarData getBarData(Context c,  int timePeriod, int sport) {
         // if (lineData == null)
-        barData = TestDataGenerator_toBeRemoved.getBarData(c, timePeriod, sport);
+        barData = StatisticsDataModelProvider.getBarData(c, timePeriod, sport);
 
         return barData;
     }
 
-    @Override
-    public ArrayList<ImageItem> getImageItems(Context context, String achivement) {
 
-
-      final ArrayList<ImageItem> imageItems = new ArrayList<>();
-        //TypedArray imgs = context.getResources().obtainTypedArray(R.array.image_ids);
-        ArrayList<Integer> ids = new ArrayList<>();
-        ids.add(R.drawable.running_cup);
-        ids.add(R.drawable.walking_cup);
-        ids.add(R.drawable.running_cup);
-        ids.add(R.drawable.walking_cup);
-        ids.add(R.drawable.running_cup);
-        ids.add(R.drawable.walking_cup);
-        for (int i = 0; i < ids.size(); i++) {
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), ids.get(i));
-            imageItems.add(new ImageItem(bitmap, "Image#" + i));
-        }
-        return imageItems;
-    //  return new ArrayList<>();
-    }
 
 
 }

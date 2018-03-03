@@ -5,7 +5,6 @@ import android.content.Context;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
-import com.slt.statistics.Sport;
 import com.slt.statistics.achievements.ImageItem;
 
 import java.util.ArrayList;
@@ -18,9 +17,6 @@ public interface DataSupplier {
 
     public PieData getPieData();
 
-    public LineData getLineData(Context context, int timePeriod, int sport);
-
     public BarData getBarData(Context c, int timePeriod, int sport);
 
-    public ArrayList<ImageItem> getImageItems(Context context, String achivement);
 }

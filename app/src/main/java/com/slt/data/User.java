@@ -1,10 +1,8 @@
 package com.slt.data;
 
 import android.content.Intent;
-import android.location.Location;
-import android.media.Image;
 import android.graphics.Bitmap;
-import android.support.annotation.Nullable;
+import android.location.Location;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.slt.control.ApplicationController;

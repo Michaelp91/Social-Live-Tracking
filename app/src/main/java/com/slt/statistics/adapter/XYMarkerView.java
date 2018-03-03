@@ -1,4 +1,5 @@
 package com.slt.statistics.adapter;
+
 import android.content.Context;
 import android.widget.TextView;
 
@@ -8,7 +9,6 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.slt.R;
-import com.slt.statistics.Sport;
 
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
@@ -18,7 +18,6 @@ import java.util.Date;
 /**
  * Custom implementation of the MarkerView.
  *
- * @author Philipp Jahoda
  */
 public class XYMarkerView extends MarkerView {
 

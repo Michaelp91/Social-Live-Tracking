@@ -9,11 +9,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
 import com.slt.data.Achievement;
 import com.slt.definitions.Constants;
-import com.slt.statistics.Sport;
 import com.slt.statistics.adapter.TimeperiodIndividualSportTabFragmentAdapter;
 import com.slt.statistics.graphs.BarChartItem;
 
@@ -23,15 +21,37 @@ import java.util.LinkedList;
 
 
 /**
- * Created by Matze
+ * fragment for individual tab with specific sport and time period
+ *
+ * for example: tab-fragment for the week with running statistics
+ *
+ * Created by Maciej
  */
 public class TimeperiodIndividualSportTabFragment extends Fragment {
 
+    /**
+     * kind of sport showed in the tab
+     */
     public int sport = Constants.TIMELINEACTIVITY.UNKNOWN;
+
+    /**
+     * the period of time showed in the fragment
+     */
     public int period = 0;
-    public LineData lineData = null;
+
+    /**
+     * infos for the bar from the bar chart chosen by the user
+     */
     public HashMap<String, String> infos = null;
+
+    /**
+     * list with achievements of the user
+     */
     public LinkedList<Achievement> achievements = null;
+
+    /**
+     * bar data to fill the bar chart
+     */
     public BarData barData;
 
 
@@ -96,9 +116,6 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
         return viewGroup;
     }
 
-    public void setLineData(LineData lineData) {
-        this.lineData = lineData;
-    }
 
     public void setBarData(BarData barData) {
         this.barData = barData;

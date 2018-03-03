@@ -2,7 +2,6 @@ package com.slt.statistics.adapter;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,36 +12,40 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.slt.R;
-import com.slt.control.DataProvider;
-import com.slt.data.Timeline;
 import com.slt.definitions.Constants;
-import com.slt.statistics.Sport;
 import com.slt.statistics.IndividualStatistics;
 import com.slt.statistics.graphs.ChartItem;
 import com.slt.statistics.graphs.MyAxisValueFormatter;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
+ * class should be used to fill StatisticsOverviewFragment objects with data
+ *
  * Created by matze on 08.11.17.
  */
 public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
 
+    /**
+     * view of a row from the list shoed in the fragment filled with data
+     */
     public static View rowView = null;
+    /**
+     * bar chart showed in the list
+     */
     BarChart mChart;
+    /**
+     * manager for fragment transactions (notice the version v4)
+     */
     public static FragmentManager fragmentManager = null;
 
 
@@ -70,7 +73,6 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
             ChartItem chartItem = getItem(position);
 
             mChart = (BarChart) rowView.findViewById(R.id.chart1);
-            //mChart.setOnChartValueSelectedListener(this);
 
             mChart.setDrawBarShadow(false);
             mChart.setDrawValueAboveBar(false);
@@ -85,7 +87,6 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
             mChart.setPinchZoom(false);
 
             mChart.setDrawGridBackground(false);
-            // mChart.setDrawYLabels(false);
 
             IAxisValueFormatter xAxisFormatter;
 
@@ -100,52 +101,24 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
                     String appendix = ".";
                     int dayOfMonth = (int) value;
 
-                       /* switch (dayOfMonth) {
-                            case 1:
-                                appendix = "st";
-                                break;
-                            case 2:
-                                appendix = "nd";
-                                break;
-                            case 3:
-                                appendix = "rd";
-                                break;
-                            case 21:
-                                appendix = "st";
-                                break;
-                            case 22:
-                                appendix = "nd";
-                                break;
-                            case 23:
-                                appendix = "rd";
-                                break;
-                            case 31:
-                                appendix = "st";
-                                break;
-                        }*/
+
 
                     return dayOfMonth == 0 ? "" : dayOfMonth + appendix + "";
                 }
             };
 
             XAxis xAxis = mChart.getXAxis();
-            //xAxis.setDrawLabels(false);
              xAxis.setLabelRotationAngle(45.f);
-            //xAxis.setDrawLabels(false);
             xAxis.setTextColor(Color.WHITE);
 
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            // xAxis.setTypeface(mTfLight);
             xAxis.setDrawGridLines(false);
             xAxis.setGranularity(1f); // only intervals of 1 day
-            //xAxis.setLabelCount(7);
             xAxis.setValueFormatter(xAxisFormatter);
 
             IAxisValueFormatter custom = new MyAxisValueFormatter();
 
             YAxis leftAxis = mChart.getAxisLeft();
-            //leftAxis.setTypeface(mTfLight);
-            //leftAxis.setDrawLabels(false);
             leftAxis.setTextColor(Color.WHITE);
             leftAxis.setLabelCount(4, false);
             leftAxis.setValueFormatter(custom);
@@ -157,64 +130,14 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
             rightAxis.setDrawLabels(false);
             rightAxis.setTextColor(Color.WHITE);
             rightAxis.setDrawGridLines(false);
-            //rightAxis.setTypeface(mTfLight);
-            //rightAxis.setLabelCount(8, false);
-            //rightAxis.setValueFormatter(custom);
-            //rightAxis.setSpaceTop(15f);
-            //rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-           /* Legend l = mChart.getLegend();
-            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-            l.setDrawInside(false);
-            l.setForm(Legend.LegendForm.SQUARE);
-            l.setFormSize(9f);
-            l.setTextSize(11f);
-            l.setXEntrySpace(4f);*/
-            // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-            // "def", "ghj", "ikl", "mno" });
-            // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-            // "def", "ghj", "ikl", "mno" });
-
-            // XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
-            //mv.setChartView(mChart); // For bounds control
-            //  mChart.setMarker(mv); /
             // / Set the marker to the chart
             chartItem.getmChartData().setDrawValues(false);
             mChart.setData((BarData) chartItem.getmChartData());
-/*
-            LineChart chart = (LineChart) rowView.findViewById(R.id.chart1);
-            chart.getDescription().setEnabled(false);
-            chart.setDrawGridBackground(false);
-
-            XAxis xAxis = chart.getXAxis();
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setTypeface(chartItem.getmTf());
-            xAxis.setDrawGridLines(false);
-            xAxis.setDrawAxisLine(true);
-
-            YAxis leftAxis = chart.getAxisLeft();
-            leftAxis.setTypeface(chartItem.getmTf());
-            leftAxis.setLabelCount(5, false);
-            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-            YAxis rightAxis = chart.getAxisRight();
-            rightAxis.setTypeface(chartItem.getmTf());
-            rightAxis.setLabelCount(5, false);
-            rightAxis.setDrawGridLines(false);
-            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-            // set data
-            chart.setData((LineData) chartItem.getmChartData());
-            chart.setData((LineData) chartItem.getmChartData());
-
-            // do not forget to refresh the chart
-            // holder.chart.invalidate();
-            chart.animateX(500);*/
 
             // image:
             ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
+
             // info label with the name of activity
             TextView textView = (TextView) rowView.findViewById(R.id.activity_name);
 
@@ -236,9 +159,6 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
                 default:
                     System.err.println("Position not recognised.");
             }
-
-
-
 
             // button to details
             Button buttonToDetails = (Button) rowView.findViewById(R.id.button_to_details);
@@ -267,18 +187,8 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
                             break;
                     }
 
-                    //todo comment in: IndividualStatistics.setSelectedSportStatistics(sport);
-                    Timeline timeline = DataProvider.getInstance().getUserTimeline();
-
-                    //Inform the user which listitem has been clicked
-                    Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " +
-                                    sport +
-                                    ", timelineID = " +
-                                    timeline.getAchievementsListForMonth().size()
-                            , Toast.LENGTH_SHORT).show();
 
                     // start new activity with tabs and details
-
                     FragmentManager fm = StatisticsOverviewAdapter.fragmentManager;
 
                     if (fm != null) {
@@ -302,68 +212,8 @@ public class StatisticsOverviewAdapter extends ArrayAdapter<ChartItem> {
             rowView = chartItem.getView(position, convertView, getContext());
         }
 
-
-
-        rowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               /* int position = (Integer) v.getTag();
-                int sport;
-                switch (position) {
-                    case 1:
-                        sport = Constants.TIMELINEACTIVITY.WALKING;
-                        break;
-                    case 2:
-                        sport = Constants.TIMELINEACTIVITY.RUNNING;
-                        break;
-                    case 3:
-                        sport = Constants.TIMELINEACTIVITY.ON_BICYCLE;
-                        break;
-                    default:
-                        sport = Constants.TIMELINEACTIVITY.UNKNOWN;
-                        System.err.println("No such activity.");
-                        break;
-                }
-
-                //todo comment in: IndividualStatistics.setSelectedSportStatistics(sport);
-                Timeline timeline = DataProvider.getInstance().getUserTimeline();
-
-                //Inform the user which listitem has been clicked
-                Toast.makeText(getContext().getApplicationContext(), "Button1 clicked: " +
-                                sport +
-                                ", timelineID = " +
-                                timeline.getAchievementsListForMonth().size()
-                        , Toast.LENGTH_SHORT).show();
-
-                // start new activity with tabs and details
-
-                FragmentManager fm = StatisticsOverviewAdapter.fragmentManager;
-
-                if (fm != null) {
-                    FragmentTransaction ft = fm.beginTransaction();
-
-                    IndividualStatistics individualStatistics = new IndividualStatistics();
-
-                    individualStatistics.setSelectedSportStatistics(sport);
-
-                    ft.replace(R.id.content_main_frame, individualStatistics);
-                    ft.addToBackStack(null);
-                    ft.commit();
-                }*/
-                // viewIndividualStatistics();
-            }
-        });
-
         return rowView;
     }
-
-
-
-   /* private void viewIndividualStatistics() {
-        Intent intent = new Intent(getContext(), IndividualStatistics.class);
-
-        getContext().startActivity(intent);
-    }*/
 
 
     @Override

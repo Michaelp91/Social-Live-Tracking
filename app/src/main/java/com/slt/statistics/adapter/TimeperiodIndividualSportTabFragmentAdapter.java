@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -24,7 +23,6 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
@@ -36,11 +34,9 @@ import com.slt.control.DataProvider;
 import com.slt.data.Achievement;
 import com.slt.data.Timeline;
 import com.slt.definitions.Constants;
-import com.slt.statistics.adapter.details_infos_list.*;
-// macht momentan Fehler bei mir:
-//import com.slt.statistics.achievements.DetailsActivity;
-import com.slt.statistics.data.DataObjectsCollection;
-import com.slt.statistics.data.TestDataGenerator_toBeRemoved;
+import com.slt.statistics.adapter.details_infos_list.ArrayAdapterItem;
+import com.slt.statistics.adapter.details_infos_list.ObjectItem;
+import com.slt.statistics.data.StatisticsDataModelProvider;
 import com.slt.statistics.graphs.BarChartItem;
 import com.slt.statistics.graphs.ChartItem;
 import com.slt.statistics.graphs.MyAxisValueFormatter;
@@ -57,32 +53,101 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by matze on 02.01.18.
+ * adapter, which fills TimeperiodIndividualSportTabFragment with data
+ *
+ * Created by maciej on 02.01.18.
  */
 
 public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
     implements OnChartValueSelectedListener {
-    private GridView gridView;
+
+    /**
+     * distance description for the info box
+     */
+    public static String DISTANCE = "Distance:";
+
+    /**
+     * speed description for the info box
+     */
+    public static String SPEED =    "Speed:";
+
+    /**
+     * duration description for the info box
+     */
+    public static String DURANCE =  "Duration:";
+
+    /**
+     * date description for the info box
+     */
+    public static String DATE =     "Date:";
+
+    /**
+     * adapter for the info box
+     */
+    private ArrayAdapterItem adapter;
+
+    /**
+     * stile of the font
+     */
+    public Typeface mTfLight =  android.graphics.Typeface.createFromAsset(getContext().getAssets(), "OpenSans-Light.ttf");
+
+    /**
+     * bar chart item for the bar chart
+     */
+    private ChartItem chartItem;
+
+    /**
+     * sport selected by the user in StatisticsOverviewFragment
+     */
     public int sport = Constants.TIMELINEACTIVITY.UNKNOWN;
+
+    /**
+     * time period that will be considered
+     */
     public int period = 0;
-    //public LineChartItem lineData = null;
+
+    /**
+     * bar data for the bar chart
+     */
     public BarChartItem barData = null;
+
+    /**
+     * strings for the info box below the bar chart
+     */
     public HashMap<String, String> infos = null;
+
+    /**
+     * list with achievements of the user
+     */
     public LinkedList<Achievement> achievements = null;
+
+    /**
+     * rectangle for clickable area
+     */
     protected RectF mOnValueSelectedRectF = new RectF();
-    BarChart mChart;
+
+    /**
+     * bar chart
+     */
+    private BarChart mChart;
 
 
 
     public TimeperiodIndividualSportTabFragmentAdapter(@NonNull Context context, List list) {
         super(context, 0, list);
 
-        //lineData = (LineChartItem) list.get(0);
         barData = (BarChartItem) list.get(0);
         infos = (HashMap<String, String>) list.get(1);
         achievements = (LinkedList<Achievement>) list.get(2);
     }
 
+    /**
+     * prepares the view of the TimeperiodIndividualSportTabFragment by filling its layouts with data
+     * @param position of the tam
+     * @param convertView
+     * @param parent view
+     * @return view of fragment filled with data
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) getContext()
@@ -96,22 +161,25 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
                 return getViewOfDetailsText(inflater, position, convertView, parent);
             case 2:
                 return getViewOfAchivements(inflater, position, convertView, parent);
-            case 3:
-                return getViewOfGaming(inflater, position, convertView, parent);
             default:
                 System.out.println("Error! Too many items.");
         }
 
-
         return null;
     }
 
-
-    private View getViewOfGaming(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
-        return null;
-    }
-
+    /**
+     * method fills the layout for the achievement's list with data
+     *
+     * @param inflater for the view object
+     * @param position position of the view in the list
+     * @param convertView
+     * @param parent view
+     * @return view with achievements
+     */
     private View getViewOfAchivements(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
+        Achievement a;
+        int drawableID;
         View rowView = inflater.inflate(R.layout.details_rowlayout_achivements, parent, false);
 
         LinearLayout layout = (LinearLayout) rowView.findViewById(R.id.linear);
@@ -121,11 +189,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         layoutParams.setMargins(10, 10, 10, 10);
 
-
-       // LinkedList<Tupeln_AchievementImage_and_Info> achievements = listAchievements;//AchievementCalculator.getOwnUserAchievements(0);
-
-        Achievement a;
-        int drawableID;
 
         for (int i = 0; i < this.achievements.size(); i++) {
             a = this.achievements.get(i);
@@ -151,46 +214,24 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
                     }
                 }
         );
-        /*gridView = (GridView) rowView.findViewById(R.id.gridView);
-        GridViewAdapter gridAdapter = new GridViewAdapter(getContext(), R.layout.grid_item_layout, DataObjectsCollection.dataSupplier.getImageItems(getContext(), "walking" )); //getData());
-        gridView.setAdapter(gridAdapter);*/
-
-        /*gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                ImageItem item = (ImageItem) parent.getItemAtPosition(position);
-                // Create intent
-                Intent intent = new Intent(, DetailsActivity.class);
-                intent.putExtra("title", item.getTitle());
-                intent.putExtra("image", item.getImage());
-
-                //Start details activity
-                getContext().startActivity(intent);
-            }
-        });*/
 
 
         return rowView;
     }
 
-    public static String DISTANCE = "Distance:";
-    public static String SPEED =    "Speed:";
-    public static String DURANCE =  "Duration:";
-    public static String TIME =     "Time: ";
-    public static String DATE =     "Date:";
-    ArrayAdapterItem adapter;
 
+
+    /**
+     * method fills the layout for the infos with data
+     *
+     * @param inflater for the view object
+     * @param position position of the view in the list
+     * @param convertView
+     * @param parent view
+     * @return view with achievements
+     */
     private View getViewOfDetailsText(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
         View rowView = inflater.inflate(R.layout.details_infos_list, parent, false);
-
-        /*HashMap<String, String> infos = (HashMap<String, String>) getItem(position);
-
-        TextView textView_infos_1 = (TextView) rowView.findViewById(R.id.infos_1);
-        String info = "Blah 0:";
-        textView_infos_1.setText(info);
-
-        TextView textView_infos_2 = (TextView) rowView.findViewById(R.id.infos_2);
-        info = infos.get("Blah 0:");
-        textView_infos_2.setText(info);*/
 
         List<ObjectItem> objectItemData = new ArrayList<>();
 
@@ -199,10 +240,8 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         objectItemData.add(new ObjectItem(DURANCE, "select bar in chart"));
         objectItemData.add(new ObjectItem(DATE, "select bar in chart"));
 
-
         // our adapter instance
         adapter = new ArrayAdapterItem(getContext(), objectItemData);
-
 
         // create a new ListView, set the adapter and item click listener
         ListView listViewItems = (ListView) rowView.findViewById(R.id.listview_infos); //new ListView(getContext());
@@ -212,7 +251,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         return rowView;
     }
 
-    public Typeface mTfLight =  android.graphics.Typeface.createFromAsset(getContext().getAssets(), "OpenSans-Light.ttf");
 
 
     public void setSport(int sport) {
@@ -223,8 +261,15 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         this.period = period;
     }
 
-    ChartItem chartItem;
 
+    /**
+     * method fills the layout for the bar chart with data
+     * @param inflater for the view object
+     * @param position position of the view in the list
+     * @param convertView
+     * @param parent view
+     * @return view with achievements
+     */
     private View getViewOfBarChart(LayoutInflater inflater, int position, View convertView, ViewGroup parent) {
         IAxisValueFormatter xAxisFormatter = null;
         View rowView = inflater.inflate(R.layout.details_rowlayout_barchart, parent, false);
@@ -249,7 +294,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         mChart.setPinchZoom(false);
 
         mChart.setDrawGridBackground(false);
-        // mChart.setDrawYLabels(false);
 
         if(this.period == 0) {
             xAxisFormatter = new IAxisValueFormatter() {
@@ -334,7 +378,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
                     }
 
-
                     Date dateOfTheDay = dates.get((int) value);
 
                     // prepare the day and month nr
@@ -373,7 +416,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         xAxis.setLabelRotationAngle(45.f);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f); // only intervals of 1 day
-       // xAxis.setLabelCount(7);
         xAxis.setValueFormatter(xAxisFormatter);
 
         IAxisValueFormatter custom = new MyAxisValueFormatter();
@@ -417,8 +459,13 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         return rowView;
     }
 
-
-
+    /**
+     * method function: clicked bar will be highlighted and the info about
+     * data will appear above the bar, also info boxes will be updated
+     *
+     * @param e - (x,y)-pair of data
+     * @param h - highlight from chart
+     */
     @SuppressLint("NewApi")
     @Override
     public void onValueSelected(Entry e, Highlight h) {
@@ -439,21 +486,15 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         MPPointF.recycleInstance(position);
 
-        BarData barData = DataObjectsCollection.dataSupplier.getBarData(
-                getContext().getApplicationContext(),this.period, sport);
-
-        BarDataSet set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
-        List<BarEntry> list = set1.getValues();
-        BarEntry entry;
-
+        // ----- updating info box
         int xEntry = (int) e.getX();
         int yEntry = (int) e.getY();
 
         // convert x and y to data
-        double speed =  TestDataGenerator_toBeRemoved.getSpeed(e, this.period, this.sport, xEntry, yEntry);
-        int distance =  TestDataGenerator_toBeRemoved.getDistance(this.period, this.sport, xEntry, yEntry);;
-        long durance =  TestDataGenerator_toBeRemoved.getDuration(e, this.period, this.sport, xEntry, yEntry);;
-        Date date =     TestDataGenerator_toBeRemoved.getDate(this.period, this.sport, xEntry, yEntry);;
+        double speed =  StatisticsDataModelProvider.getSpeed(e, this.period, this.sport);
+        int distance =  StatisticsDataModelProvider.getDistance(e);
+        long durance =  StatisticsDataModelProvider.getDuration(e, this.period, this.sport);;
+        Date date =     StatisticsDataModelProvider.getDate(e, this.period);;
 
         // update info boxes
         adapter.getItem(0).setLabelAndVal(SPEED,    String.valueOf( speed ));
@@ -464,6 +505,11 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * method defines, what should be done when no bar is selected. In this case all the info boxes
+     * should be updated to the string "select bar in the chart", to motivate user to click on
+     * one of the bars
+     */
     @Override
     public void onNothingSelected() {
         adapter.getItem(0).setLabelAndVal(SPEED,    "select bar in chart");
@@ -473,15 +519,4 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         adapter.notifyDataSetChanged();
     }
-
- /*   // Prepare some dummy data for gridview
-    private ArrayList<ImageItem> getData() {
-        final ArrayList<ImageItem> imageItems = new ArrayList<>();
-        TypedArray imgs = getResources().obtainTypedArray(R.array.image_ids);
-        for (int i = 0; i < imgs.length(); i++) {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imgs.getResourceId(i, -1));
-            imageItems.add(new ImageItem(bitmap, "Image#" + i));
-        }
-        return imageItems;
-    }*/
 }

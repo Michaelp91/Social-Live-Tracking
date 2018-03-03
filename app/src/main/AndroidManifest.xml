@@ -60,8 +60,6 @@
         <activity
             android:name=".ProfileActivity"
             android:theme="@style/Social_Live_Theme" />
-        <activity android:name=".statistics.StatisticsOverview" />
-        <activity android:name=".statistics.IndividualStatistics" />
         <activity
             android:name=".MainProfile"
             android:label="@string/title_activity_main_profile"
