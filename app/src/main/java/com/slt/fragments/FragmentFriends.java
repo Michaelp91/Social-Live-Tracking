@@ -172,6 +172,7 @@ public class FragmentFriends extends Fragment {
                 public void run() {
                         //retrieve and store friends via rest
                         LinkedList<User> users = new LinkedList<>();
+                        OtherRestCalls.retrieveFriends();
                         users.addAll(OtherRestCalls.retrieveFriendsIncludingTimelines());
 
                         DataProvider.getInstance().changeFriendList(users);
