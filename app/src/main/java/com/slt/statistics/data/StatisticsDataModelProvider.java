@@ -47,7 +47,7 @@ public class StatisticsDataModelProvider {
      *
      * @return
      */
-    public static PieData generateDataPie(int cnt) {
+    public static PieData generateDataPie() {
 
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 

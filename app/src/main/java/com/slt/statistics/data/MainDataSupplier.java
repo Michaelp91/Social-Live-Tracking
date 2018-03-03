@@ -25,8 +25,7 @@ public class MainDataSupplier implements DataSupplier {
 
     @Override
     public PieData getPieData() {
-        if (pieData == null)
-            pieData = StatisticsDataModelProvider.generateDataPie(1);
+            pieData = StatisticsDataModelProvider.generateDataPie();
 
         return pieData;
     }
@@ -35,7 +34,6 @@ public class MainDataSupplier implements DataSupplier {
 
     @Override
     public BarData getBarData(Context c,  int timePeriod, int sport) {
-        // if (lineData == null)
         barData = StatisticsDataModelProvider.getBarData(c, timePeriod, sport);
 
         return barData;

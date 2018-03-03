@@ -71,9 +71,13 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
 
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_for_sport_tab, container, false);
 
+        TextView showMonth_textView = (TextView) viewGroup.findViewById(R.id.timeperiod_name);
+        showMonth_textView.setText("12.12.1991");
+
         TextView textView = (TextView) viewGroup.findViewById(R.id.activity_name);
 
         String activityString = "";
+
         switch (this.sport) {
             case Constants.TIMELINEACTIVITY.WALKING:
                 activityString = "Walking";

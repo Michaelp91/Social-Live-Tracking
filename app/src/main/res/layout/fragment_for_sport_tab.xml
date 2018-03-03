@@ -14,9 +14,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-
         android:textSize="20dp">
     </TextView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/last_timeperiod_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_black_24dp"/>
+
+        <TextView
+            android:id="@+id/timeperiod_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/last_timeperiod_button"/>
+
+        <Button
+            android:id="@+id/next_timeperiod_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_forward_black_24dp"
+            android:layout_toRightOf="@id/timeperiod_name"/>
+
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/list_in_Frag"
