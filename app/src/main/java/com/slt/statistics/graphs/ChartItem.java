@@ -8,13 +8,24 @@ import com.github.mikephil.charting.data.ChartData;
 
 /**
  * baseclass of the chart-listview items
- * @author philipp
+ * @author matze
  *
  */
 public abstract class ChartItem {
-    
+
+    /**
+     * id of bar chart
+     */
     protected static final int TYPE_BARCHART = 0;
+
+    /**
+     * id of line chart
+     */
     protected static final int TYPE_LINECHART = 1;
+
+    /**
+     * id of pie chart
+     */
     protected static final int TYPE_PIECHART = 2;
     
     protected ChartData<?> mChartData;

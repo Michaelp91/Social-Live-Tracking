@@ -127,7 +127,7 @@ public class FragmentFriends extends Fragment {
             }
         });
 
-        //Call Handler to retrieve REST User
+        // Call Handler to retrieve REST User
         mProgressBar.setVisibility(View.VISIBLE);
         handler.post(runnable);
 
@@ -200,9 +200,6 @@ public class FragmentFriends extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public FragmentManager getFragmentManager_v4() {
-        return fragmentManager_v4;
-    }
 
     public void setFragmentManager_v4(FragmentManager fragmentManager_v4) {
         this.fragmentManager_v4 = fragmentManager_v4;

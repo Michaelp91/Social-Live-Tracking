@@ -22,8 +22,10 @@ import com.slt.statistics.graphs.ChartItem;
 import com.slt.statistics.graphs.PieChartItem;
 import java.util.ArrayList;
 
-
-public class StatisticsOverview extends Fragment {
+/**
+ *
+ */
+public class StatisticsOverviewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,13 +34,13 @@ public class StatisticsOverview extends Fragment {
 
         getActivity().setTitle("Statistics");
 
+        // overview string with the name of the user
         String forename = DataProvider.getInstance().getOwnUser().getForeName();
         String lastName = DataProvider.getInstance().getOwnUser().getLastName();
 
         TextView text = viewGroup.findViewById(R.id.general_overview_text);
         text.setText("General Overview for " + forename + " " + lastName);
 
-               // super.setTitle("Summaries");
         ListView l = (ListView) viewGroup.findViewById(R.id.list_in_Frag);
 
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
@@ -47,7 +49,7 @@ public class StatisticsOverview extends Fragment {
 
         list.add(new PieChartItem(pieData, getActivity().getApplicationContext()));
 
-        LineData lineData;
+
         BarData barData;
         int sport = Constants.TIMELINEACTIVITY.UNKNOWN;
 
@@ -72,7 +74,6 @@ public class StatisticsOverview extends Fragment {
             barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(),2, sport);
 
             list.add(
-                    // new LineChartItem(lineData,
                     new BarChartItem(barData,
                             getActivity().getApplicationContext()));
         }

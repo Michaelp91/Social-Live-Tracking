@@ -53,7 +53,7 @@ import com.slt.fragments.FragmentLiveMap;
 import com.slt.fragments.FragmentTimeline;
 import com.slt.services.ActivityService;
 import com.slt.services.LocationService;
-import com.slt.statistics.StatisticsOverview;
+import com.slt.statistics.StatisticsOverviewFragment;
 import com.slt.utils.FunctionalityLogger;
 
 import java.io.File;
@@ -565,14 +565,14 @@ public class MainProfile extends AppCompatActivity
                 break;
             case R.id.nav_summaries:
                 //fragment = new FragmentSummaries();
-                // Intent Summaries = new Intent(MainProfile.this, StatisticsOverview.class);
+                // Intent Summaries = new Intent(MainProfile.this, StatisticsOverviewFragment.class);
                 //startActivity(Summaries);
                 User logedUser = DataProvider.getInstance().logedUser;
 
                 DataProvider.getInstance().setOwnUser(logedUser);
                 DataProvider.getInstance().syncTimelineToUser();
 
-                fragment123 = new StatisticsOverview();
+                fragment123 = new StatisticsOverviewFragment();
                 break;
             case R.id.nav_friends:
                 // set fragment manager

@@ -3,7 +3,6 @@ package com.slt.data;
 
 import android.content.Intent;
 import android.location.Location;
-import android.media.Image;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -13,10 +12,7 @@ import com.slt.control.ApplicationController;
 import com.slt.control.StepSensor;
 import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
-import com.slt.restapi.UpdateOperations;
 import com.slt.restapi.UpdateOperations_Synchron;
-
-import org.w3c.dom.Comment;
 
 import java.util.Collections;
 import java.util.Comparator;

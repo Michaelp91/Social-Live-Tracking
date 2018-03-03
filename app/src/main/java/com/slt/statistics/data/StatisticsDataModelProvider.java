@@ -3,29 +3,22 @@ package com.slt.statistics.data;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.location.DetectedActivity;
-import com.slt.R;
 import com.slt.control.DataProvider;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.definitions.Constants;
-import com.slt.statistics.adapter.TimeperiodIndividualSportTabFragmentAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,18 +32,14 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
+ * class responsible for preparing data for the statistic's gui
+ * by getting them from DataProvider-class and puting them into data object
+ * ready to be shown
+ *
  * Created by matze on 02.01.18.
  */
 
-public class TestDataGenerator_toBeRemoved {
-
-    public static int sportTypeOfLineData = Constants.TIMELINEACTIVITY.UNKNOWN;
-    public static LineData dayLineData = null;
-    public static LineData weekLineData = null;
-    public static LineData monthLineData = null;
-    private static BarData dayBarData;
-    private static BarData monthBarData;
-    private static BarData weekBarData;
+public class StatisticsDataModelProvider {
 
 
     /**
@@ -87,186 +76,65 @@ public class TestDataGenerator_toBeRemoved {
         return cd;
     }
 
+
     /**
-     * generates a random ChartData object with just one DataSet
+     * method prepares data for the bar chart for given time period and sport type
      *
-     * @return
+     * @param context
+     * @param timePeriod - time period considered in the bar chart
+     * @param sportType - sport type considered in the bar chart
+     * @return data for the bar chart of the given time period and
+     * sport type
      */
-    public static LineData generateDataLine(Context context, int timePeriod, int sportType) {
-
-        ArrayList<Entry> e1 = new ArrayList<Entry>();
-        int xAxisMaxSize = -1;
-
-        // if sporttype has not changed, check if the data has already been calculated
-        if (sportTypeOfLineData == sportType) {
-
-            if (timePeriod == 0 && dayLineData != null)
-                return dayLineData;
-            else if (timePeriod == 1 && weekLineData != null)
-                return weekLineData;
-            else if (timePeriod == 2 && monthLineData != null)
-                return monthLineData;
-
-        }
-        /*Date current = new Date();
-                Timeline timeline = DataProvider.getInstance().getUserTimeline();
-                LinkedList<TimelineDay> daysOfMonth = timeline.getDaysOfWeekOrMonth(current, 1);
-
-         */
-
-        // set the size of the xAxis depending on the time period
-        switch (timePeriod) {
-            case 0:
-                xAxisMaxSize = 24;
-                break;
-            case 1:
-                xAxisMaxSize = 7;
-                break;
-            case 2:
-
-                // init calender
-                java.util.Date date = new Date();
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(date);
-
-                // get the number of days in the current month
-                xAxisMaxSize = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-                break;
-            default:
-                System.err.print("No such time period.");
-        }
-
-        for (int i = 0; i < xAxisMaxSize; i++) {
-            e1.add(new Entry(i + 1, (int) (Math.random() * 65) + 40));
-        }
-
-        LineDataSet d1 = new LineDataSet(e1, "New DataSet " + timePeriod + ", (1)");
-        d1.setLineWidth(2.5f);
-
-        d1.setColor(Color.rgb(0, 153, 204));
-        d1.setDrawCircles(false);
-        d1.setDrawValues(false);
-        d1.setDrawFilled(true);
-
-        // gradient color under the linechart
-        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.fade_red);
-        d1.setFillDrawable(drawable);
-
-        ArrayList<ILineDataSet> sets = new ArrayList<ILineDataSet>();
-        sets.add(d1);
-
-        LineData cd = new LineData(sets);
-
-        switch (timePeriod) {
-            case 0:
-                dayLineData = cd;
-                break;
-            case 1:
-                weekLineData = cd;
-                break;
-            case 2:
-                monthLineData = cd;
-                break;
-            default:
-                System.err.print("No such time period.");
-        }
-        return cd;
-    }
-
-
     public static BarData getBarData(Context context, int timePeriod, int sportType) {
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-        int xAxisMaxSize = -1;
         Typeface mTfLight =  android.graphics.Typeface.createFromAsset(context.getAssets(), "OpenSans-Light.ttf");
-
-
-        // if sporttype has not changed, check if the data has already been calculated
-        if (sportTypeOfLineData == sportType) {
-
-            if (timePeriod == 0 && dayBarData != null)
-                return dayBarData;
-            else if (timePeriod == 1 && weekBarData != null)
-                return weekBarData;
-            else if (timePeriod == 2 && monthBarData != null)
-                return monthBarData;
-        }
-
-       /* int start = 1;
-        int count = 10;
-        int range =50;
-
-        for (int i = (int) start; i < start + count + 1; i++) {
-            float mult = (range + 1);
-            float val = (float) (Math.random() * mult);
-
-
-            yVals1.add(new BarEntry(i, val+10));
-
-        }*/
 
         // prepare y-axis values
         yVals1 = prepareXYPairs(timePeriod, sportType);
 
         BarDataSet xyValuesSet;
 
-        /*int steps = -1;
-
-        if(timePeriod != 0) {
-    Calendar cal = Calendar.getInstance();
-    Date date = new Date();
-    TimelineDay d;
-    int dayOfMonth;
-    Date date1;
-    for (int i = 0; i < daysGLOBAL.size(); i++) {
-        d = daysGLOBAL.get(i);
-
-        cal.setTime(d.getMyDate());
-
-        dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-
-        if (dayOfMonth == 23) {
-
-            steps = d.getSteps();
-        }
-
-    }
-
-}*/
         xyValuesSet = new BarDataSet(yVals1, "DISTANCE "
         );
 
         xyValuesSet.setValueTextColor(Color.WHITE);
-//        xyValuesSet.setColor(Color.WHITE);
 
         xyValuesSet.setDrawIcons(false);
 
         xyValuesSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        // xyValuesSet.setBarBorderColor(Color.BLUE);
         ////////////////////
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         dataSets.add(xyValuesSet);
 
         BarData data = new BarData(dataSets);
         data.setValueTextSize(10f);
-        //data.setDrawValues(true);
         data.setValueTypeface(mTfLight);
         data.setBarWidth(0.9f);
 
         return data;
     }
 
-    public static double getSpeed(Entry e, int timePeriod, int sport, int x, int y) {
+    /**
+     * method provides speed for entry of the bar clicked in the bar chart
+     *
+     * @param e - entry in the chart that has been clicked
+     * @param timePeriod - time period of the bar chart
+     * @param sport - sport of the chart diagram
+     *
+     * @return speed for the clicked bar
+     */
+    public static double getSpeed(Entry e, int timePeriod, int sport) {
 
         // calculate speed
         switch(timePeriod) {
             case 0:
-                return getSpeedForHour(e, sport, x, y);
+                return getSpeedForHour(e, sport);
             case 1:
-                return getSpeedForDayOfWeek(e, sport, x, y);
+                return getSpeedForDayOfWeek(e, sport);
             case 2:
-                return getSpeedForDayOfMonth(e, sport, x, y);
+                return getSpeedForDayOfMonth(e, sport);
             default:
                 System.err.println("No such time period");
         }
@@ -274,8 +142,16 @@ public class TestDataGenerator_toBeRemoved {
         return 0;
     }
 
-    private static double getSpeedForDayOfMonth(Entry e, int sport, int x, int y) {
-
+    /**
+     * method provides speed for a day of the month
+     *
+     * @param e entry in the chart that has been clicked
+     * @param sport - sport of the chart diagram
+     *
+     * @return speed for the day with index x
+     */
+    private static double getSpeedForDayOfMonth(Entry e, int sport) {
+        int x = (int) e.getX();
 
         TimelineDay day = getTimelineDayFromWholeTimelineWithDayNumber(x);
 
@@ -299,7 +175,12 @@ public class TestDataGenerator_toBeRemoved {
         return day;
     }
 
-    public static Date getDateOfMonthWithDayNr(int dayNr) {
+    /**
+     * method calculates the date of the day of the month with the given index
+     * @param dayNr - index of the day of the month
+     * @return date of the day of the month with the given index
+     */
+    private static Date getDateOfMonthWithDayNr(int dayNr) {
         int dayIndex = dayNr;
         Calendar c = Calendar.getInstance();   // this takes current date
         c.set(Calendar.DAY_OF_MONTH, 1);
@@ -316,7 +197,18 @@ public class TestDataGenerator_toBeRemoved {
         return selectedDate;
     }
 
-    private static double getSpeedForDayOfWeek(Entry e, int sport, int x, int y) {
+    /**
+     * method provides speed for a day of the week
+     *
+     * @param e entry in the chart that has been clicked
+     * @param sport - sport of the chart diagram
+     *
+     * @return speed for the day with index x
+     */
+    private static double getSpeedForDayOfWeek(Entry e, int sport) {
+
+        int dayIndex = (int) e.getX();
+
         Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
         LinkedList<Date> datesWeek = timeline.getDatesOfThisWeek(new Date());
@@ -324,8 +216,6 @@ public class TestDataGenerator_toBeRemoved {
         Date beginingOfTheWeekDate = datesWeek.get(0);
 
         LinkedList<TimelineDay> daysWeek = timeline.getDaysOfWeekOrMonth(beginingOfTheWeekDate, 0);
-
-        int dayIndex = x;
 
         TimelineDay day = getTimelineDayFromWholeTimelineWithDayNumber(dayIndex);
 
@@ -336,19 +226,35 @@ public class TestDataGenerator_toBeRemoved {
     }
 
 
-    public static int getDistance(int timePeriod, int sport, int x, int y) {
-        return y;
+    /**
+     * method provides distance of the clicked bar
+     *
+     * @param e - entry of the bar that has been clicked
+     * @return distance of the clicked bar
+     */
+    public static int getDistance(Entry e) {
+        return (int) e.getY();
     }
 
-    public static long getDuration(Entry e, int timePeriod, int sport, int x, int y) {
+    /**
+     * method provides duration of the sport's activity of the bar clicked
+     * in the chart
+     *
+     * @param e - entry of the bar that has been clicked
+     * @param timePeriod - time period of the chart diagram
+     * @param sport - sport type of the chart
+     * @return duration of the sport's activity associated with the clicked bar
+     */
+    public static long getDuration(Entry e, int timePeriod, int sport) {
+
         // sum up all active times of the segments for given entry
         switch(timePeriod) {
             case 0:
-                return getDurationForHour(e, sport, x, y);
+                return getDurationForHour(e, sport);
             case 1:
-                return getDuranceForDayOfWeek(e, sport, x, y);
+                return getDuranceForDayOfWeek(e, sport);
             case 2:
-                return getDuranceForDayOfMonth(e, sport, x, y);
+                return getDuranceForDayOfMonth(e, sport);
             default:
                 System.err.println("No such time period");
         }
@@ -356,22 +262,19 @@ public class TestDataGenerator_toBeRemoved {
         return 0;
     }
 
-    private static long getDuranceForDayOfMonth(Entry e, int sport, int x, int y) {
+    /**
+     * method provides duration of the sport's activity of the bar clicked
+     * in the chart. The time period considered by the method is a month.
+     *
+     * @param e - entry of the bar that has been clicked
+     * @param sport - sport type of the chart
+     * @return duration of the sport's activity associated with the clicked bar
+     */
+    private static long getDuranceForDayOfMonth(Entry e, int sport) {
+
+        int x = (int) e.getX();
+
         TimelineDay day = getTimelineDayFromWholeTimelineWithDayNumber(x);
-
-       /* if(day != null) {
-            TimelineSegment se;
-            for (int i = 0; i < day.getMySegments().size(); i++) {
-                se = day.getMySegments().get(i);
-
-                if(se.getUserSteps() == 500)
-                    TimeperiodIndividualSportTabFragmentAdapter.DURANCE =
-                            String.valueOf(se.getID());
-
-            }
-
-
-        }*/
 
         if(day != null)
             return day.getDuration(sport);
@@ -379,7 +282,16 @@ public class TestDataGenerator_toBeRemoved {
             return 0;
     }
 
-    private static long getDuranceForDayOfWeek(Entry e, int sport, int x, int y) {
+    /**
+     * method provides duration of the sport's activity of the bar clicked
+     * in the chart. The time period considered by the method is a week.
+     *
+     * @param e - entry of the bar that has been clicked
+     * @param sport - sport type of the chart
+     * @return duration of the sport's activity associated with the clicked bar
+     */
+    private static long getDuranceForDayOfWeek(Entry e, int sport) {
+
         Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
         LinkedList<Date> datesWeek = timeline.getDatesOfThisWeek(new Date());
@@ -388,7 +300,7 @@ public class TestDataGenerator_toBeRemoved {
 
         LinkedList<TimelineDay> daysWeek = timeline.getDaysOfWeekOrMonth(beginingOfTheWeekDate, 0);
 
-        int dayIndex = x;
+        int dayIndex = (int) e.getX();
 
         TimelineDay day = getTimelineDayFromWholeTimelineWithDayNumber(dayIndex);
 
@@ -398,7 +310,17 @@ public class TestDataGenerator_toBeRemoved {
             return 0;
     }
 
-    private static long getDurationForHour(Entry e, int sport, int x, int y) {
+    /**
+     * method provides duration of the sport's activity of the bar clicked
+     * in the chart. The time period considered by the method are 24h of day.
+     *
+     * @param e - entry of the bar that has been clicked
+     * @param sport - sport type of the chart
+     * @return duration of the sport's activity associated with the clicked bar
+     */
+    private static long getDurationForHour(Entry e, int sport) {
+
+        int x = (int) e.getX();
 
         Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
@@ -417,12 +339,17 @@ public class TestDataGenerator_toBeRemoved {
     }
 
 
+    /**
+     * return the date of the bar clicked in the chart
+     *
+     * @param timePeriod - time period considered in the chart
+     * @return date of the bar clicked in the chart
+     */
+    public static Date getDate(Entry e, int timePeriod) {
 
+        int x = (int) e.getX();
 
-
-    public static Date getDate(int timePeriod, int sport, int x, int y) {
         // get date of the x entry
-
         switch(timePeriod) {
             case 0:
                 return new Date();
@@ -435,11 +362,14 @@ public class TestDataGenerator_toBeRemoved {
         }
 
         return null;
-
-
     }
 
-    public static Date getDateOfWeekWithDayNr(int x) {
+    /**
+     * method calculates the date of the day of the week with the given index
+     * @param x - index of the day of the week
+     * @return date of the day of the week with the given index
+     */
+    private static Date getDateOfWeekWithDayNr(int x) {
         Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
         LinkedList<Date> datesWeek = timeline.getDatesOfThisWeek(new Date());
@@ -447,7 +377,17 @@ public class TestDataGenerator_toBeRemoved {
         return datesWeek.get(x);
     }
 
-    public static double getSpeedForHour(Entry e, int sport, int x, int y) {
+    /**
+     * method provides speed for an hour of the day
+     *
+     * @param e entry in the chart that has been clicked
+     * @param sport - sport of the chart diagram
+     *
+     * @return speed for the day with index x
+     */
+    public static double getSpeedForHour(Entry e, int sport) {
+
+        int x = (int) e.getX();
 
         Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
@@ -465,6 +405,14 @@ public class TestDataGenerator_toBeRemoved {
         return speedHour;
     }
 
+    /**
+     * method prepares pairs of x/y for the bar chart of the given time period and
+     * sport type
+     * @param timePeriod - time period considered in the bar chart
+     * @param sportType - sport type considered in the bar chart
+     * @return pairs of x/y for the bar chart of the given time period and
+     * sport type
+     */
     public static ArrayList<BarEntry> prepareXYPairs(int timePeriod, int sportType) {
 
         ArrayList<BarEntry> xyReturnValues = new ArrayList<BarEntry>();
@@ -486,7 +434,7 @@ public class TestDataGenerator_toBeRemoved {
                 // size of x-axis for 24hours
                 xAxisMaxSize = 24;
 
-                xyPairs = getXYPairsForDay(xAxisMaxSize, timeline.getTimelineDay(timeline.getHistorySize() - 1), sportType);
+                xyPairs = getXYPairsForDay(timeline.getTimelineDay(timeline.getHistorySize() - 1), sportType);
                 break;
             case 1:
                 // calculate dates of the timelineDay of the current week
@@ -494,13 +442,11 @@ public class TestDataGenerator_toBeRemoved {
                 // get timelinedays from the db
                 days = timeline.getDaysOfWeekOrMonth(currDate, 0);
 
-                daysGLOBAL = days;
                 xyPairs = getXYPairsForWeek( dates, days, sportType);
                 break;
             case 2:
                 days = timeline.getDaysOfWeekOrMonth(currDate, 1);
 
-                daysGLOBAL = days;
                 // init calender
                 java.util.Date date = new Date();
                 Calendar cal = Calendar.getInstance();
@@ -534,9 +480,16 @@ public class TestDataGenerator_toBeRemoved {
         return xyReturnValues;
     }
 
-    public static LinkedList<TimelineDay> daysGLOBAL = new LinkedList<>();
 
-    private static LinkedHashMap<Integer, Integer> getXYPairsForDay(int xAxisMaxSize, TimelineDay timelineDay, int sportType) {
+    /**
+     * method prepares pairs of x/y for the bar chart of the given day and
+     * sport type
+     * @param timelineDay - day considered in the bar chart
+     * @param sportType - sport type considered in the bar chart
+     * @return pairs of x/y for the bar chart of the given day and
+     * sport type
+     */
+    private static LinkedHashMap<Integer, Integer> getXYPairsForDay(TimelineDay timelineDay, int sportType) {
 
         TimelineSegment segment;
         LinkedList<TimelineSegment> segmentList = timelineDay.filterDaySegmentsForActivity(sportType);
@@ -572,7 +525,8 @@ public class TestDataGenerator_toBeRemoved {
                 addedHours.add(segmentStartingHour);
         }
 
-        for (int hour = 0; hour < xAxisMaxSize; hour++) {
+        // for 24 h
+        for (int hour = 0; hour < 24; hour++) {
             if( ! addedHours.contains(hour) ) {
                 xyReturnPairs_unsorted.put(hour, 0);
             }
@@ -602,9 +556,16 @@ public class TestDataGenerator_toBeRemoved {
         return sortedReturn;
     }
 
-
-
-
+    /**
+     * method prepares pairs of x/y for the bar chart of the month and
+     * sport type
+     *
+     * @param xAxisMaxSize - amount of days inn the month
+     * @param days - days of the month
+     * @param sportType - sport type considered in the bar chart
+     * @return pairs of x/y for the bar chart of the given month and
+     * sport type
+     */
     private static LinkedHashMap<Integer, Integer> getXYPairsForMonth(
             int xAxisMaxSize, LinkedList<TimelineDay> days,
             int sportType) {
@@ -641,7 +602,15 @@ public class TestDataGenerator_toBeRemoved {
     }
 
 
-
+    /**
+     * method prepares pairs of x/y for the bar chart of the week and
+     * sport type
+     * @param dates - dates of the week
+     * @param days - days of the week
+     * @param sportType - sport type considered in the bar chart
+     * @return pairs of x/y for the bar chart of the given week and
+     * sport type
+     */
     private static LinkedHashMap<Integer, Integer> getXYPairsForWeek(
             LinkedList<Date> dates, LinkedList<TimelineDay> days, int sportType) {
 
@@ -650,8 +619,6 @@ public class TestDataGenerator_toBeRemoved {
         HashMap<Integer, Integer> xyPairsForAndWeek = new HashMap<>();
         int key, val;
         boolean found = false;
-        Calendar cal = Calendar.getInstance();
-        ArrayList<Integer> addedDays = new ArrayList<>();
         DetectedActivity detectedActivity = new DetectedActivity(sportType, 100);
 
 
@@ -680,14 +647,11 @@ public class TestDataGenerator_toBeRemoved {
 
             if( ! found ) {
                 // add date with val = 0
-                //cal.setTime(date);
                 key = xyPairsForAndWeek.size();
                 val = 0;
                 xyPairsForAndWeek.put(key, val);
             }
         }
-
-
 
         // sort by keys befor return
         return sortHashMapByKeys(xyPairsForAndWeek);

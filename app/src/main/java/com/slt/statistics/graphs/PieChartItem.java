@@ -1,32 +1,35 @@
-
 package com.slt.statistics.graphs;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
-
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.slt.R;
 import com.slt.data.Timeline;
 
-import java.text.DateFormatSymbols;
-import java.util.Calendar;
-import java.util.Date;
-
+/**
+ * class for objects bundling chart data and other additional meta data
+ * userful for the developer like typeface or type of chart data (e.g. bar or line data)
+ * @autor matze
+ */
 public class PieChartItem extends ChartItem {
 
+    /**
+     * typeface for the chart data
+     */
     private Typeface mTf;
+
+    /**
+     * text showed in the middle of the pie chart
+     */
     private SpannableString mCenterText;
 
     public PieChartItem(ChartData<?> cd, Context c) {
@@ -84,7 +87,6 @@ public class PieChartItem extends ChartItem {
 
 
         Legend l = holder.chart.getLegend();
-        //l.setEnabled(false);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
@@ -93,7 +95,6 @@ public class PieChartItem extends ChartItem {
         l.setYOffset(0f);
 
         // do not forget to refresh the chart
-        // holder.chart.invalidate();
         holder.chart.animateY(900);
 
         return convertView;
@@ -103,12 +104,6 @@ public class PieChartItem extends ChartItem {
 
     private SpannableString generateCenterText() {
         SpannableString s = new SpannableString("Overview for " + Timeline.getMonthForInt());
-        /*s.setSpan(new RelativeSizeSpan(1.6f), 0, 14, 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.VORDIPLOM_COLORS[0]), 0, 14, 0);
-        s.setSpan(new RelativeSizeSpan(.9f), 14, 25, 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, 25, 0);
-        s.setSpan(new RelativeSizeSpan(1.4f), 25, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), 25, s.length(), 0);*/
         return s;
     }
 

@@ -1,26 +1,22 @@
 package com.slt.data;
 
+import android.content.Intent;
 import android.location.Location;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.slt.control.AchievementCalculator;
 import com.slt.control.ApplicationController;
-import com.slt.control.DataProvider;
 import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
 
-import android.util.Log;
-
 import java.text.DateFormatSymbols;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
-
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 
 /**
  * A Timeline contains all data of a

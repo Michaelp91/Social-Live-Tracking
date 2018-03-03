@@ -1,11 +1,7 @@
 package com.slt.data;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.slt.R;
 import com.slt.definitions.Constants;
 
 import java.util.Calendar;
@@ -18,7 +14,7 @@ public class Achievement {
     /*
     * Tag for the Logger
     */
-    private static final String TAG = "Tupeln_AchievementImage_and_Info";
+    private static final String TAG = "Tupeln_AchiImg_and_Info";
 
     /**
      * Stores our achievement as an Integer

@@ -40,7 +40,6 @@ import com.slt.restapi.DataUpdater;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.UsefulMethods;
-import com.slt.statistics.StatisticsOverview;
 import com.slt.utils.Constants;
 import com.slt.data.User;
 import com.slt.network.RetrofitInterface;

@@ -3,19 +3,20 @@ package com.slt.statistics.graphs;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.view.LayoutInflater;
 import android.view.View;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.XAxis.XAxisPosition;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.ChartData;
-import com.github.mikephil.charting.data.LineData;
-import com.slt.R;
 
+/**
+ * class for objects bundling chart data and other additional meta data
+ * userful for the developer like typeface or type of chart data (e.g. bar or line data)
+ * @autor matze
+ */
 public class BarChartItem extends ChartItem {
 
+    /**
+     * typeface for the chart data
+     */
     private Typeface mTf;
 
     public BarChartItem(ChartData<?> cd, Context c) {

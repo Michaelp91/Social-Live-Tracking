@@ -1,6 +1,5 @@
 package com.slt.fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -16,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.slt.MainProfile;
 import com.slt.R;
 import com.slt.TimelineFriend;
 import com.slt.control.ApplicationController;
@@ -24,7 +22,7 @@ import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.restapi.OtherRestCalls;
-import com.slt.statistics.StatisticsOverview;
+import com.slt.statistics.StatisticsOverviewFragment;
 
 /**
  * The friend details fragment
@@ -181,7 +179,7 @@ public class FragmentFriendDetails  extends Fragment  {
          DataProvider.getInstance().syncTimelineToUser();
 
         android.support.v4.app.Fragment fragment123 = null;
-        fragment123 = new StatisticsOverview();
+        fragment123 = new StatisticsOverviewFragment();
 
         android.support.v4.app.FragmentTransaction fragmentTransaction =
                 this.fragmentManager_v4.beginTransaction();

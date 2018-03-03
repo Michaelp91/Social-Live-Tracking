@@ -29,11 +29,20 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-
+/**
+ * statistic's fragment for the sport chosen in the StatisticsOverviewFragment
+ *
+ * Fragment shows the statistics for three diferent period of time: day, week, month
+ * and also achievements
+ *
+ * Created by Maciej
+ */
 public class IndividualStatistics extends Fragment {
 
+    /**
+     * sport selected by the user in StatisticsOverviewFragment
+     */
     private static int selectedSportStatistics = Constants.TIMELINEACTIVITY.UNKNOWN;
-    public static android.app.FragmentManager fragmentManager = null;
 
 
     @Nullable
@@ -42,10 +51,8 @@ public class IndividualStatistics extends Fragment {
         super.onCreate(savedInstanceState);
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_view_statistics, container, false);
 
-        //setContentView(R.layout.activity_view_statistics);
         String[] periodNames = new String[]{"Today", "Week", "Month"};
         ViewPagerAdapter adapter;
-        Sport sport;
         ViewPager viewPager = (ViewPager) viewGroup.findViewById(R.id.pager);
         adapter = new ViewPagerAdapter(StatisticsOverviewAdapter.fragmentManager);
 
@@ -53,7 +60,6 @@ public class IndividualStatistics extends Fragment {
         for (int i = 0; i < periodNames.length; i++) {
 
             // line chart
-           // LineData lineData = //DataObjectsCollection.dataSupplier.getLineData(getApplicationContext(), i, IndividualStatistics.getSelectedSportStatistics());
             BarData barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(),i, IndividualStatistics.getSelectedSportStatistics());
             TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment = new TimeperiodIndividualSportTabFragment();
 
@@ -62,17 +68,10 @@ public class IndividualStatistics extends Fragment {
 
             timeperiodIndividualSportTabFragment.setSport(IndividualStatistics.getSelectedSportStatistics());
 
-            //timeperiodIndividualSportTabFragment.setLineData(lineData);
             timeperiodIndividualSportTabFragment.setBarData(barData);
 
             // infos
-            // TODO--------------------- replace with real date from data provider
             HashMap<String, String> infos = new HashMap<>();
-
-            for (int j = 0; j < 5; j++) {
-                infos.put("Blah " + j + ":", "blah " + j);
-            }
-            // TODO the end---------------------
 
             timeperiodIndividualSportTabFragment.setInfos(infos);
 
@@ -86,7 +85,6 @@ public class IndividualStatistics extends Fragment {
         }
 
         viewPager.setAdapter(adapter);
-        //viewPager.notifyAll();
         adapter.notifyDataSetChanged();
 
 
@@ -104,9 +102,32 @@ public class IndividualStatistics extends Fragment {
         IndividualStatistics.selectedSportStatistics = selectedSportStatistics;
     }
 
+    /**
+     * adapter filling ViewPager (tabs with day's, week's, month's statistics) with data
+     *
+     * it's needed for the tabs that can be swiped (notice the version v4)
+     */
     class ViewPagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
+
+        /**
+         * list with tab-fragments
+         */
         private final List<Fragment> mFragmentList = new ArrayList<>();
+
+        /**
+         * list with titles of the tab-fragments
+         */
         private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        /**
+         * list with tab-fragments
+         */
+        private List<Fragment> new_mFragmentList = new ArrayList<>();
+
+        /**
+         * list with titles of the tab-fragments
+         */
+        private List<String> new_mFragmentTitleList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -124,11 +145,21 @@ public class IndividualStatistics extends Fragment {
             return mFragmentList.size();
         }
 
+        /**
+         * adds the fragment to list, so that it can be showed as a tab
+         * @param fragment to be added
+         * @param title of the fragment
+         */
         public void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
 
+        /**
+         * removes the tab with the given title
+         * @param title of the tab to be removed
+         * @return list's index of the removed tab
+         */
         public int removeFragment(String title) {
             int index = -1;
 
@@ -143,8 +174,6 @@ public class IndividualStatistics extends Fragment {
             return index;
         }
 
-        List<Fragment> new_mFragmentList = new ArrayList<>();
-        List<String> new_mFragmentTitleList = new ArrayList<>();
 
         public void replaceFragment(String titelOld, String newTitel, Fragment newFragment) {
             new_mFragmentList.clear();

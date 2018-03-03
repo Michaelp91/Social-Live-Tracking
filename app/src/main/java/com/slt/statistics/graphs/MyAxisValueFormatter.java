@@ -5,6 +5,9 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 import java.text.DecimalFormat;
 
+/**
+ * formatter for axis values
+ */
 public class MyAxisValueFormatter implements IAxisValueFormatter
 {
 

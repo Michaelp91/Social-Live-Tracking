@@ -1,7 +1,8 @@
 package com.slt.statistics.adapter.details_infos_list;
 
-
-//another class to handle item's id and name
+/**
+ * class to handle item's id and name
+ */
 public class ObjectItem {
 
     public String valueOfLabel;
