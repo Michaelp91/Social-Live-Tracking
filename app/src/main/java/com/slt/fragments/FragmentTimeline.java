@@ -81,6 +81,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -242,6 +243,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         TextView tvDayOfWeek = (TextView) row.findViewById(R.id.tv_tday_dayofweek);
                         TextView tv_tday_date = (TextView) row.findViewById(R.id.tv_tday_date);
                         ImageView iv_arrow_forward = (ImageView) row.findViewById(R.id.iv_arrow_forward);
+                        LinearLayout ll_tday_border = (LinearLayout) row.findViewById(R.id.ll_tday_border);
 
                         Date date = t_d.getMyDate();
 
@@ -290,8 +292,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     double duration = t_d.getActiveTime(detectedActivity);
 
                                     String informations = "Type: Bicycle";
-                                    informations += "\nDistance: " + Double.toString(activeDistance) + " m";
-                                    informations += "\nDuration: " + Double.toString(duration) + " min";
+                                    informations += "\nDistance: " + Float.toString((float)activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString((float) duration) + " min";
 
                                     info.setText(informations);
                                     break;
@@ -305,9 +307,9 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     int userSteps = t_d.getUserSteps(detectedActivity);
 
                                     informations = "Type: On Foot";
-                                    informations += "\nDistance: " + Double.toString(activeDistance) + " m";
-                                    informations += "\nDuration: " + Double.toString(duration) + " min";
-                                    informations += "\nUser Steps: " + Double.toString(userSteps);
+                                    informations += "\nDistance: " + Float.toString((float) activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString((float) duration) + " min";
+                                    informations += "\nUser Steps: " + userSteps;
 
                                     info.setText(informations);
 
@@ -323,8 +325,8 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     userSteps = t_d.getUserSteps(detectedActivity);
 
                                     informations = "Type: Running";
-                                    informations += "\nActive Distance: " + Double.toString(activeDistance) + " m";
-                                    informations += "\nDuration: " + Double.toString(duration) + " min";
+                                    informations += "\nActive Distance: " + Float.toString((float)activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString((float)duration) + " min";
 
                                     info.setText(informations);
                                     break;
@@ -339,9 +341,24 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     userSteps = t_d.getUserSteps(detectedActivity);
 
                                     informations = "Type: Walking";
-                                    informations += "\nActive Distance: " + Double.toString(activeDistance) + " m";
-                                    informations += "\nDuration: " + Double.toString(duration) + " min";
-                                    informations += "\nUser Steps: " + Double.toString(userSteps);
+                                    informations += "\nActive Distance: " + Float.toString((float) activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString( (float) duration) + " min";
+                                    informations += "\nUser Steps: " + userSteps;
+
+                                    info.setText(informations);
+                                    break;
+
+                                case com.slt.definitions.Constants.TIMELINEACTIVITY.IN_VEHICLE:
+                                    activity_onVehicleIsDisplayed = true;
+
+                                    info = (TextView) row.findViewById(R.id.tv_tday_infoVehicle);
+                                    detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING, 100);
+                                    activeDistance = t_d.getActiveDistance(detectedActivity);
+                                    duration = t_d.getActiveTime(detectedActivity);
+
+                                    informations = "Type: Vehicle";
+                                    informations += "\nActive Distance: " + Float.toString((float) activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString( (float) duration) + " min";
 
                                     info.setText(informations);
                                     break;
@@ -376,10 +393,12 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         if (!activity_runningIsDisplayed) {
                             LinearLayout ll_tday_segment1Running = (LinearLayout) row.findViewById(R.id.ll_tday_segment1Running);
                             LinearLayout ll_tday_segment2Running = (LinearLayout) row.findViewById(R.id.ll_tday_segment2Running);
+                            LinearLayout ll_tday_segment3Running = (LinearLayout) row.findViewById(R.id.ll_tday_segment3Running);
                             LinearLayout ll_tday_boxRunning = (LinearLayout) row.findViewById(R.id.ll_tday_boxRunning);
 
                             ll_tday_segment1Running.setVisibility(View.GONE);
                             ll_tday_segment2Running.setVisibility(View.GONE);
+                            ll_tday_segment3Running.setVisibility(View.GONE);
                             ll_tday_boxRunning.setVisibility(View.GONE);
 
                         }
@@ -396,8 +415,22 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                             ll_tday_boxwalking.setVisibility(View.GONE);
                         }
 
-                        if(!activity_bikingIsDisplayed && !activity_onFootIsDisplayed && !activity_runningIsDisplayed && !activity_walkingIsDisplayed) {
+                        if (!activity_onVehicleIsDisplayed) {
+                            LinearLayout ll_tday_segment1Vehicle = (LinearLayout) row.findViewById(R.id.ll_tday_segment1Vehicle);
+                            LinearLayout ll_tday_segment2Vehicle = (LinearLayout) row.findViewById(R.id.ll_tday_segment2Vehicle);
+                            LinearLayout ll_tday_segment3Vehicle = (LinearLayout) row.findViewById(R.id.ll_tday_segment3Vehicle);
+                            LinearLayout ll_tday_boxvehicle = (LinearLayout) row.findViewById(R.id.ll_tday_boxVehicle);
+
+                            ll_tday_segment1Vehicle.setVisibility(View.GONE);
+                            ll_tday_segment2Vehicle.setVisibility(View.GONE);
+                            ll_tday_segment3Vehicle.setVisibility(View.GONE);
+                            ll_tday_boxvehicle.setVisibility(View.GONE);
+                        }
+
+                        if(!activity_bikingIsDisplayed && !activity_onFootIsDisplayed && !activity_runningIsDisplayed
+                                && !activity_walkingIsDisplayed && !activity_onVehicleIsDisplayed) {
                             iv_arrow_forward.setVisibility(View.GONE);
+                            ll_tday_border.setVisibility(View.GONE);
                         }
 
 

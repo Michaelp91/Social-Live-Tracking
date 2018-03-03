@@ -314,16 +314,16 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
 
                             view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
-                            TextView activeTime = (TextView) view_segment.findViewById(R.id.tv_activeTime);
-                            final TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
+                            TextView activeTime = null;
+                            final TextView activeDistance = null;
                             final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
                             final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
-                            final LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
-                            final ImageView iv_pictures = (ImageView) view_segment.findViewById(R.id.iv_addPicture);
-                            final ImageView iv_comments = (ImageView) view_segment.findViewById(R.id.iv_addComments);
-                            final ImageView iv_activity = (ImageView) view_segment.findViewById(R.id.iv_addActivity);
-                            iv_details = (ImageView) view_segment.findViewById(R.id.iv_addDetails);
-                            final TextView tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
+                            final LinearLayout ll_pictures = null;
+                            final ImageView iv_pictures = null;
+                            final ImageView iv_comments = null;
+                            final ImageView iv_activity = null;
+                            iv_details = null;
+                            final TextView tv_usercomments = null;
                             tv_usercomments.setTag(tSegment);
 
 
@@ -867,8 +867,8 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
         ImageView iv_pic1 = ll_pictures.findViewById(R.id.iv_pic1);
         ImageView iv_pic2 = ll_pictures.findViewById(R.id.iv_pic2);
-        ImageView iv_pic3 = ll_pictures.findViewById(R.id.iv_pic3);
-        TextView tv_noPicAvailable = ll_pictures.findViewById(R.id.tv_noPicAvailable);
+        ImageView iv_pic3 = null;
+        TextView tv_noPicAvailable = null;
 
         iv_pic1.setVisibility(View.GONE);
         iv_pic2.setVisibility(View.GONE);

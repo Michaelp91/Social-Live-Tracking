@@ -48,6 +48,7 @@ import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
+import com.slt.definitions.Constants;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.UsefulMethods;
 import com.slt.utils.FunctionalityLogger;
@@ -138,13 +139,12 @@ public class SegmentViewActivity extends AppCompatActivity {
                         int test = 2;
                     }
 
-                    LinearLayout ll_shortLine = null;
-
 
 
                     if (!locationEntries.isEmpty() && detectedActivity.getType() !=
                             com.slt.definitions.Constants.TIMELINEACTIVITY.TILTING
                             && detectedActivity.getType() != com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
+                            && detectedActivity.getType() != Constants.TIMELINEACTIVITY.UNKNOWN
                             && (lastType != detectedActivity.getType())  ) {
                         lastType = detectedActivity.getType();
 
@@ -168,7 +168,6 @@ public class SegmentViewActivity extends AppCompatActivity {
 
                         view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
                         TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
-                        ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
                         TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
 
                         if(fstPoint == null) {
@@ -192,234 +191,59 @@ public class SegmentViewActivity extends AppCompatActivity {
 
 
                             view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
-                            TextView activeTime = (TextView) view_segment.findViewById(R.id.tv_activeTime);
-                            final TextView activeDistance = (TextView) view_segment.findViewById(R.id.tv_activedistance);
-                            final ImageView activity = (ImageView) view_segment.findViewById(R.id.iv_activity);
-                            final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
-                            final LinearLayout ll_pictures = (LinearLayout) view_segment.findViewById(R.id.ll_pictures);
-                            final ImageView iv_pictures = (ImageView) view_segment.findViewById(R.id.iv_addPicture);
-                            final ImageView iv_comments = (ImageView) view_segment.findViewById(R.id.iv_addComments);
-                            final ImageView iv_activity = (ImageView) view_segment.findViewById(R.id.iv_addActivity);
-                            iv_details = (ImageView) view_segment.findViewById(R.id.iv_addDetails);
-                            final TextView tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
-                            tv_usercomments.setTag(tSegment);
+                            final TextView activityInfo = (TextView) view_segment.findViewById(R.id.tv_activityinfo);
 
-
-
-                            activeTime.setText(Double.toString(tSegment.getDuration()));
-                            activeDistance.setText(Double.toString(tSegment.getActiveDistance()));
-
-                            iv_activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_running, 100, 100)));
-                            iv_pictures.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_pictures, 100, 100)));
-                            iv_comments.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_comments, 100, 100)));
-                            iv_details.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_details, 100, 100)));
-                            AddPictures(ll_pictures, tSegment);
-
-                            ll_pictures.setTag(tSegment);
-                            iv_pictures.setTag(tSegment);
-
-                            picViews.put(tSegment.getID(), ll_pictures);
-                            AddUserComments(tSegment.getStrUserComments(), ll_line, tv_usercomments);
-
-
-                            iv_pictures.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    //choosedPicView = (LinearLayout) v;
-                                    TimelineSegment tSegment = (TimelineSegment) v.getTag();
-                                    choosedPicView = picViews.get(tSegment.getID());
-                                    selectImage();
-                                }
-                            });
-
-                            iv_activity.setTag(tSegment);
-                            final LinearLayout finalLl_shortLine1 = ll_shortLine;
-                            iv_activity.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    final Dialog commentDialog = new Dialog(context);
-                                    final TimelineSegment tSegment = (TimelineSegment) iv_activity.getTag();
-                                    commentDialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
-                                    commentDialog.setContentView(R.layout.popup_activity);
-
-                                    final Spinner spinner = (Spinner) commentDialog.findViewById(R.id.sp_activity);
-                                    Button btnOk = (Button) commentDialog.findViewById(R.id.btn_ok);
-
-                                    btnOk.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            final String IN_VEHICLE = "In Vehicle";
-                                            final String On_Bicycle = "On Bicycle";
-                                            final String On_Foot = "On Foot";
-                                            final String Walking = "Walking";
-                                            final String Running = "Running";
-
-                                            String strActivity = spinner.getSelectedItem().toString();
-                                            int intActivity = tSegment.getMyActivity().getType();
-
-
-
-                                            switch (strActivity) {
-                                                case IN_VEHICLE:
-                                                    intActivity = 0;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.in_vehicle, 50, 50)));
-                                                    ll_line.setBackgroundResource(R.color.md_red_500);
-                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_red_500);
-                                                    break;
-                                                case On_Bicycle:
-                                                    intActivity = 1;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.biking, 50, 50)));
-                                                    ll_line.setBackgroundResource(R.color.md_light_green_600);
-                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_light_green_600);
-                                                    break;
-
-                                                case On_Foot:
-                                                    intActivity = 2;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
-                                                    ll_line.setBackgroundResource(R.color.md_blue_400);
-                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_blue_400);
-                                                    break;
-
-                                                case Walking:
-                                                    intActivity = 7;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
-                                                    ll_line.setBackgroundColor(Color.GREEN);
-                                                    finalLl_shortLine1.setBackgroundColor(Color.GREEN);
-                                                    break;
-
-                                                case Running:
-                                                    intActivity = 8;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.running, 50, 50)));
-                                                    ll_line.setBackgroundResource(R.color.md_amber_800);
-                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_amber_800);
-                                                    break;
-
-                                            }
-
-                                            User user = DataProvider.getInstance().getOwnUser();
-                                            DetectedActivity detectedActivity = new DetectedActivity(intActivity, 100);
-                                            tSegment.setMyActivity(detectedActivity);
-
-
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    OtherRestCalls.updateTimelineSegmentForActivity(tSegment);
-
-                                                    context.runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            commentDialog.hide();
-                                                        }
-                                                    });
-                                                }
-                                            }).start();
-
-                                        }
-                                    });
-
-                                    commentDialog.show();
-                                }
-                            });
-
-                            iv_comments.setTag(tSegment);
-
-                            tv_usercomments.setTag(tSegment.getID());
-                            iv_comments.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    TimelineSegment test_tSegment = (TimelineSegment) iv_comments.getTag();
-                                    final Dialog commentDialog = new Dialog(context);
-                                    commentDialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
-                                    commentDialog.setContentView(R.layout.popup_usercomment);
-
-                                    final EditText editText = (EditText) commentDialog.findViewById(R.id.et_titel);
-                                    Button btnOk = (Button) commentDialog.findViewById(R.id.btn_ok);
-
-                                    btnOk.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            User user = DataProvider.getInstance().getOwnUser();
-                                            String email = user.getEmail();
-                                            String comment = "- " + email + " : " + editText.getText().toString() + "\n";
-                                            String comments = tv_usercomments.getText().toString();
-                                            comments += comment;
-                                            tSegment.addStrUserComment(comment);
-
-
-                                            final String finalComments = comments;
-
-                                            tv_usercomments.setText(finalComments);
-
-
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    OtherRestCalls.updateTimelineSegmentForComments(tSegment);
-
-                                                    context.runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            commentDialog.hide();
-                                                        }
-                                                    });
-                                                }
-                                            }).start();
-
-                                        }
-                                    });
-
-                                    commentDialog.show();
-
-                                }
-                            });
-
-
-                            final LinearLayout finalLl_shortLine = ll_shortLine;
+                            String informations = "";
 
                             switch (detectedActivity.getType()) {
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
-                                    ll_line.setBackgroundColor(Color.GREEN);
-                                    finalLl_shortLine.setBackgroundColor(Color.GREEN);
+
+                                    informations = "Type: Walking";
+                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + Float.toString((float) tSegment.getActiveTime()) + " min";
+                                    informations += "\nUser Steps: " + tSegment.getUserSteps();
+
                                     break;
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.running, 50, 50)));
-                                    ll_line.setBackgroundResource(R.color.md_amber_800);
-                                    finalLl_shortLine.setBackgroundResource(R.color.md_amber_800);
+
+                                    informations = "Type: Running";
+                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
+
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.IN_VEHICLE:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.in_vehicle, 50, 50)));
-                                    ll_line.setBackgroundResource(R.color.md_red_500);
-                                    finalLl_shortLine.setBackgroundResource(R.color.md_red_500);
+                                    informations = "Type: Vehicle";
+                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
-                                    ll_line.setBackgroundResource(R.color.md_blue_400);
-                                    finalLl_shortLine.setBackgroundResource(R.color.md_blue_400);
+                                    informations = "Type: On Foot";
+                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
+                                    informations += "\nUser Steps: " + tSegment.getUserSteps();
+
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.biking, 50, 50)));
-                                    ll_line.setBackgroundResource(R.color.md_light_green_600);
-                                    finalLl_shortLine.setBackgroundResource(R.color.md_light_green_600);
+                                    informations = "Type: Bicycle";
+                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN:
                                     unknownSegmentAdded = true;
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.unknown, 50, 50)));
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.STILL:
-                                    activity.setVisibility(View.GONE);
                                     break;
 
                                 default:
-                                    activity.setVisibility(View.GONE);
                                     break;
                             }
+
+                            activityInfo.setText(informations);
 
 
 
@@ -446,14 +270,12 @@ public class SegmentViewActivity extends AppCompatActivity {
                         LocationEntry fstPoint = locationEntries.get(0);
 
                         view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
-                        ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
                         TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
 
                         TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
 
                         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
                         String strDate = sdf.format(fstPoint.getMyEntryDate());
-                        ll_shortLine.setVisibility(View.INVISIBLE);
 
 
                         myEntryDate.setText(strDate);
@@ -468,14 +290,12 @@ public class SegmentViewActivity extends AppCompatActivity {
                         LocationEntry fstPoint = (locationEntries.size() > 0)? locationEntries.get(0): new LocationEntry(l, null, null, null);
 
                         view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
-                        ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
                         TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
 
                         TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
 
                         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
                         String strDate = (fstPoint.getMyEntryDate() != null)? sdf.format(fstPoint.getMyEntryDate()): "Unknown";
-                        ll_shortLine.setVisibility(View.INVISIBLE);
 
 
                         myEntryDate.setText(strDate);
