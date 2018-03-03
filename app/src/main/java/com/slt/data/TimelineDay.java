@@ -214,6 +214,25 @@ public class TimelineDay {
     }
 
     /**
+     * Get the userstep for a activity of the day
+     * @param activity The activity we want to have the userstep for
+     * @return The user step
+     */
+    public int getUserSteps(DetectedActivity activity){
+        int step = 0;
+        Log.i(TAG, "getUserSteps: In method.");
+
+        //loop over all segments to find all data for the selected activity
+        for(TimelineSegment segment : this.mySegments){
+            if(segment.compareActivities(activity) || activity == null) {
+                step += segment.getUserSteps();
+            }
+        }
+
+        return step;
+    }
+
+    /**
      * Insert Segement, used if Data is synchronized with the server
      * @param segment The segment we want to add
      * @param userID The DB ID of the user the Day is from

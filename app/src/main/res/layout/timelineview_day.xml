@@ -357,6 +357,7 @@
             </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/iv_arrow_forward"
                     android:layout_width="match_parent"
                     android:layout_height="100sp"
                     android:layout_gravity="center"

@@ -204,21 +204,6 @@ public class SegmentViewActivity extends AppCompatActivity {
                             final TextView tv_usercomments = (TextView) view_segment.findViewById(R.id.tv_usercomments);
                             tv_usercomments.setTag(tSegment);
 
-                            view_segment.setOnTouchListener(new OnSwipeTouchListener(context) {
-                                public void onSwipeTop() {
-                                    Toast.makeText(context, "top", Toast.LENGTH_SHORT).show();
-                                }
-                                public void onSwipeRight() {
-                                    Toast.makeText(context, "right", Toast.LENGTH_SHORT).show();
-                                }
-                                public void onSwipeLeft() {
-                                    Toast.makeText(context, "left", Toast.LENGTH_SHORT).show();
-                                }
-                                public void onSwipeBottom() {
-                                    Toast.makeText(context, "bottom", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
 
 
                             activeTime.setText(Double.toString(tSegment.getDuration()));

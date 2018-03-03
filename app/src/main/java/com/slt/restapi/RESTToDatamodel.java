@@ -131,6 +131,10 @@ public class RESTToDatamodel {
                 t_d.getActivity_totalUsersteps().put(t_s.getMyActivity().getType(), steps);
                 t_d.getActivity_totalDuration().put(t_s.getMyActivity().getType(), duration);
                 t_d.getActivity_totalDistance().put(t_s.getMyActivity().getType(), distance);
+            } else {
+                t_d.getActivity_totalUsersteps().put(t_s.getMyActivity().getType(), steps);
+                t_d.getActivity_totalDuration().put(t_s.getMyActivity().getType(), duration);
+                t_d.getActivity_totalDistance().put(t_s.getMyActivity().getType(), distance);
             }
 
             t_d.insertTimelineSegment(t_s, null);
