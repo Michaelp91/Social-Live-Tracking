@@ -25,4 +25,11 @@
 
     <color name="fragment_bg">#e5e5e5</color>
 
+
+    <!-- Timeline-->
+    <color name="timeline_backgroundscreen">#359DFC</color>
+    <color name="timeline_activitybackground">#A1D4FF</color>
+    <color name="timeline_box">#50B0FD</color>
+    <color name="timeline_line">#50B0FD</color>
+
 </resources>

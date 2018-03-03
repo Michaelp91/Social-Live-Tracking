@@ -1,6 +1,7 @@
 package com.slt.restapi;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.google.gson.Gson;
@@ -213,6 +214,17 @@ public class RetrieveOperations {
             t_s.setActiveDistance(r_t_s.activeDistance);
             t_s.setDuration(r_t_s.duration);
             t_s.setUserSteps(r_t_s.userSteps);
+
+
+            if(t_s.getID().equals("5a9150ede0b6c646f76d1236")) {
+                if (t_s.getActiveDistance() != 0) {
+                    boolean debug = false;
+                    debug = true;
+                    if (!debug) {
+                        Log.d("test", "Hello world");
+                    }
+                }
+            }
 
             for(REST_Achievement r_a: r_t_s.myAchievements) {
                 Achievement a = new Achievement(r_a.achievement, null);

@@ -7,11 +7,17 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.slt.MainProfile"
     tools:showIn="@layout/activity_segment_view"
-    android:background="@drawable/gradientbackground">
+    android:background="@color/timeline_backgroundscreen">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="230sp"
+            />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -19,6 +25,8 @@
             android:fillViewport="true">
 
             <LinearLayout
+                android:layout_marginLeft="5sp"
+
                 android:id="@+id/timeline_segments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

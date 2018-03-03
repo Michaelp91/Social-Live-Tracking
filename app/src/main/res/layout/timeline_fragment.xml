@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.slt.TimelineActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/timeline_backgroundscreen">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -12,6 +12,7 @@
         android:fillViewport="true">
 
     <LinearLayout
+        android:padding="5dp"
         android:id="@+id/timeline_days"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

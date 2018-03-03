@@ -319,64 +319,45 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         TextView tvAktivitaet = (TextView) findViewById(R.id.tv_aktivitaet);
         TextView tvDauer = (TextView) findViewById(R.id.tv_dauer);
         TextView tvStrecke = (TextView) findViewById(R.id.tv_strecke);
-        TextView tvPlace = (TextView) findViewById(R.id.tv_place);
-        TextView tvAddress = (TextView) findViewById(R.id.tv_address);
-        TextView tvSteps = (TextView) findViewById(R.id.tv_steps);
-        TextView tvStepsTitle = (TextView) findViewById(R.id.tv_steps_title);
 
         String duration = (choosedTimelineSegment.getActiveTime()/ (60*1000)) + "min / " +  (choosedTimelineSegment.getDuration()/ (60*1000)) + "min. ";
 
         tvDauer.setText(duration);
-        tvPlace.setText(choosedTimelineSegment.getPlace());
-        tvAddress.setText(choosedTimelineSegment.getAddress());
 
         String activity = "";
         if (choosedTimelineSegment.getMyActivity() != null) {
             switch (choosedTimelineSegment.getMyActivity().getType()) {
                 case DetectedActivity.RUNNING:
                     activity = "Running";
-                    tvSteps.setText(choosedTimelineSegment.getUserSteps() + " Steps");
                     break;
 
                 case DetectedActivity.IN_VEHICLE:
                     activity = "In Vehicle";
-                    tvSteps.setVisibility(View.GONE);
-                    tvStepsTitle.setVisibility(View.GONE);
                     break;
                 case DetectedActivity.ON_BICYCLE:
                     activity = "On Bicycle";
                     break;
                 case DetectedActivity.ON_FOOT:
                     activity = "On Foot";
-                    tvSteps.setText(choosedTimelineSegment.getUserSteps() + " Steps");
                     break;
 
                 case DetectedActivity.STILL:
                     activity = "Still";
-                    tvSteps.setVisibility(View.GONE);
-                    tvStepsTitle.setVisibility(View.GONE);
                     break;
                 case DetectedActivity.TILTING:
                     activity = "Tilting";
-                    tvSteps.setVisibility(View.GONE);
-                    tvStepsTitle.setVisibility(View.GONE);
                     break;
                 case DetectedActivity.UNKNOWN:
                     activity = "Unknown";
-                    tvSteps.setVisibility(View.GONE);
-                    tvStepsTitle.setVisibility(View.GONE);
                     break;
 
 
                 case DetectedActivity.WALKING:
                     activity = "Walking";
-                    tvSteps.setText(choosedTimelineSegment.getUserSteps() + " Steps");
                     break;
 
                 default:
                     activity = "Undefined";
-                    tvSteps.setVisibility(View.GONE);
-                    tvStepsTitle.setVisibility(View.GONE);
                     break;
             }
         }
