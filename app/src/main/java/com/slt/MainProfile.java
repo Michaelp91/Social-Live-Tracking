@@ -2,6 +2,7 @@ package com.slt;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -527,8 +528,20 @@ public class MainProfile extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+
+            FragmentManager fm = getFragmentManager();
+
+            fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                @Override
+                public void onBackStackChanged() {
+                    if(getFragmentManager().getBackStackEntryCount() == 0) finish();
+
+                }
+            });
             super.onBackPressed();
         }
+
+
     }
 
     /**

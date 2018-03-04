@@ -51,6 +51,7 @@ public class FragmentAchievements extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
         //getActivity().setTitle("My Achievements");
+        getActivity().onBackPressed();
     }
 
     private void initViews(View v){
@@ -73,8 +74,9 @@ public class FragmentAchievements extends Fragment {
 
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private synchronized void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(((AppCompatActivity)getActivity()).getSupportFragmentManager());
+
         adapter.addFragment(new WalkingFragment(), "Walking");
         adapter.addFragment(new RunningFragment(), "Running");
         adapter.addFragment(new BikingFragment(), "Biking");
@@ -87,5 +89,11 @@ public class FragmentAchievements extends Fragment {
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
     }
+
+
+
+
 }
+
+
 

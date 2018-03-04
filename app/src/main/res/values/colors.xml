@@ -14,7 +14,7 @@
     <color name="appBackground">#F6F7FB</color>
     <!--background-->
     <color name="colorBackground">#1c2a4a</color>
-    <color name="colorBackgroundLight">#b2dce4</color>
+    <color name="colorBackgroundLight">#6d84b7</color>
     <color name="colorButtonLogin">#43b05c</color>
     <color name="colorButtonReset">#7383bf</color>
     <color name="colorButtonSignUp">#ebba16</color>

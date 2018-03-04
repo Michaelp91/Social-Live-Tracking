@@ -65,6 +65,11 @@ public class User {
      */
     private String myCity;
 
+
+
+
+    private int rank = 0;
+
     /**
      * The last known location of the user
      */
@@ -103,6 +108,7 @@ public class User {
         this.lastLocationUpdateDate = null;
         this.lastLocation = null;
         this.ID = null;
+        this.rank = 0;
     }
 
     /**
@@ -123,6 +129,7 @@ public class User {
         this.lastLocationUpdateDate = null;
         this.lastLocation = null;
         this.ID = null;
+        this.rank = 0;
     }
 
     /**
@@ -145,6 +152,7 @@ public class User {
         this.myAge = age;
         this.myCity = city;
         this.ID = ID;
+        this.rank = 0;
     }
 
     /**
@@ -495,5 +503,14 @@ public class User {
      */
     public void setID(String ID) {
         this.ID = ID;
+    }
+
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }

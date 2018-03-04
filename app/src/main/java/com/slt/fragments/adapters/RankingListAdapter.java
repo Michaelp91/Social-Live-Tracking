@@ -3,8 +3,6 @@ package com.slt.fragments.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +14,17 @@ import android.widget.TextView;
 
 import com.slt.R;
 import com.slt.control.ApplicationController;
+import com.slt.data.Timeline;
 import com.slt.data.User;
+import com.slt.fragments.tabfragments.RunningFragment;
 
 import java.util.ArrayList;
+
 
 /**
  * List Adapter for showing a friend
  */
-public class FriendListAdapter extends ArrayAdapter<User> implements View.OnClickListener{
+public class RankingListAdapter extends ArrayAdapter<User> {
 
     /**
      * The data that should be shown
@@ -40,6 +41,14 @@ public class FriendListAdapter extends ArrayAdapter<User> implements View.OnClic
      */
     private int lastPosition = -1;
 
+
+    /**
+     * value for id of activity
+     */
+    int id;
+
+
+
     // View lookup cache
     private static class ViewHolder {
         /**
@@ -53,7 +62,7 @@ public class FriendListAdapter extends ArrayAdapter<User> implements View.OnClic
         /**
          * The email.
          */
-        TextView txtEmail;
+        TextView txtAchievement;
         /**
          * The age.
          */
@@ -62,32 +71,26 @@ public class FriendListAdapter extends ArrayAdapter<User> implements View.OnClic
          * The Picture.
          */
         ImageView picture;
+
+
     }
 
 
     /**
      * Instantiates a new Friend list adapter.
-     *
-     * @param data    The data that should be shown
+     * @param data The data that should be shown
      * @param context The context of the view
+     * @param id The ID of activity
+     *
      */
-    public FriendListAdapter(ArrayList<User> data, Context context) {
-        super(context, R.layout.friends_listitem, data);
+    public RankingListAdapter(ArrayList<User> data, Context context, int id) {
+        super(context, R.layout.ranking_listitem, data);
         this.dataSet = data;
         this.mContext=context;
-    }
+        this.id = id;
 
-    /**
-     * Overwritten onClick Method, does nothing
-     * @param v The view
-     */
-    @Override
-    public void onClick(View v) {
-        int position=(Integer) v.getTag();
-        Object object= getItem(position);
-        User dataModel=(User)object;
-    }
 
+    }
 
     /**
      * Overwritten getView Method, adds the data to the list item
@@ -98,8 +101,11 @@ public class FriendListAdapter extends ArrayAdapter<User> implements View.OnClic
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+
         // Get the data item for this position
         User dataModel = getItem(position);
+
 
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
@@ -111,13 +117,13 @@ public class FriendListAdapter extends ArrayAdapter<User> implements View.OnClic
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.friends_listitem, parent, false);
+            convertView = inflater.inflate(R.layout.ranking_listitem, parent, false);
 
-            viewHolder.txtUserName = (TextView) convertView.findViewById(R.id.friends_list_item_username);
-            viewHolder.txtName  = (TextView) convertView.findViewById(R.id.friends_list_item_name);
-            viewHolder.txtEmail  = (TextView) convertView.findViewById(R.id.friends_list_item_email);
-            viewHolder.txtAge  = (TextView) convertView.findViewById(R.id.friends_list_item_age);
-            viewHolder.picture = (ImageView) convertView.findViewById(R.id.friends_list_item_image);
+            viewHolder.txtUserName = (TextView) convertView.findViewById(R.id.ranking_list_item_username);
+            viewHolder.txtName  = (TextView) convertView.findViewById(R.id.ranking_list_item_name);
+            viewHolder.txtAchievement  = (TextView) convertView.findViewById(R.id.ranking_list_item_achievement);
+            viewHolder.txtAge  = (TextView) convertView.findViewById(R.id.ranking_list_item_place);
+            viewHolder.picture = (ImageView) convertView.findViewById(R.id.ranking_list_item_image);
 
             result=convertView;
             convertView.setTag(viewHolder);
@@ -132,12 +138,13 @@ public class FriendListAdapter extends ArrayAdapter<User> implements View.OnClic
         result.startAnimation(animation);
         lastPosition = position;
 
+
         //add the data
         viewHolder.txtUserName.setText(dataModel.getUserName());
         String name = dataModel.getForeName() + " " + dataModel.getLastName();
         viewHolder.txtName.setText(name);
-        viewHolder.txtEmail.setText(dataModel.getEmail());
-        viewHolder.txtAge.setText(String.valueOf(dataModel.getMyAge()));
+        viewHolder.txtAchievement.setText(String.valueOf( dataModel.getMyTimeline().getActiveDistanceForMonth(id) ));
+        viewHolder.txtAge.setText(String.valueOf(dataModel.getRank()));
 
         //if we have a picture show it
         if(dataModel.getMyImage() == null) {

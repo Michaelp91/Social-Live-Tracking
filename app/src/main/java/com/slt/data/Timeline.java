@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -664,7 +665,7 @@ public class Timeline {
             maximum = calendar.getActualMaximum(Calendar.DATE);
         }
 
-        LinkedList<TimelineDay> daysOfWeek = new LinkedList<>();
+        HashSet<TimelineDay> daysOfWeek = new HashSet<>();
 
         // get the TimelineDays
         for (int i = 0; i < maximum; i++) {
@@ -675,7 +676,11 @@ public class Timeline {
             }
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
-        return daysOfWeek;
+
+        LinkedList<TimelineDay> days = new LinkedList<>();
+        days.addAll(daysOfWeek);
+
+        return days;
     }
 
     public LinkedList<Date> getDatesOfThisWeek(Date referenceDate) {
@@ -780,6 +785,7 @@ public class Timeline {
      * @param activity The activity that was detected
      */
     public void addUserStatus(Location location, Date date, DetectedActivity activity) {
+        
         //check if we have a day already
         if (this.myHistory.size() == 0) {
             this.myHistory.add(new TimelineDay(date));
