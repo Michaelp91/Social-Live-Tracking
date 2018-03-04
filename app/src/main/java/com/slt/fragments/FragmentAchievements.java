@@ -1,7 +1,10 @@
 package com.slt.fragments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -13,12 +16,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.slt.MainProfile;
 import com.slt.R;
 
 import com.slt.ViewPagerAdapter;
+import com.slt.control.DataProvider;
+import com.slt.data.User;
 import com.slt.fragments.tabfragments.BikingFragment;
 import com.slt.fragments.tabfragments.RunningFragment;
 import com.slt.fragments.tabfragments.WalkingFragment;
+import com.slt.restapi.OtherRestCalls;
+
+import java.util.LinkedList;
 
 
 public class FragmentAchievements extends Fragment {
@@ -27,7 +36,20 @@ public class FragmentAchievements extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    /**
+     * Simple progress dialog
+     */
 
+    private ProgressDialog dialog ;
+
+    /**
+     * Handler for network transactions
+     */
+    private Handler handler;
+
+    /**
+     * icons for View Pager
+     */
     private int[] tabIcons = {
             R.drawable.ic_action_walking,
             R.drawable.ic_action_running,
@@ -46,12 +68,34 @@ public class FragmentAchievements extends Fragment {
     }
 
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
-        //getActivity().setTitle("My Achievements");
+        getActivity().setTitle("Ranking");
+
+
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+
+        tabLayout = (TabLayout) view.findViewById(R.id.tablayout);
+
+        //handler to wait for a network response
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+
+                setupViewPager(viewPager);
+                tabLayout.setupWithViewPager(viewPager);
+                setupTabIcons();
+                dialog.dismiss();
+                return false;
+            }
+        });
+
+        handler.post(runnableWalking);
         getActivity().onBackPressed();
+        dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
     }
 
     private void initViews(View v){
@@ -61,16 +105,8 @@ public class FragmentAchievements extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
 
-//        actionBar.setTitle( "Ranking" );
+//      actionBar.setTitle( "Ranking" );
         actionBar.hide();
-
-
-        viewPager = (ViewPager) v.findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-
-        tabLayout = (TabLayout) v.findViewById(R.id.tablayout);
-        tabLayout.setupWithViewPager(viewPager);
-        setupTabIcons();
 
     }
 
@@ -89,6 +125,33 @@ public class FragmentAchievements extends Fragment {
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
     }
+
+    /**
+     * Runnable to async load the friends from the server
+     */
+    public Runnable runnableWalking = new Runnable() {
+        @Override
+        public void run() {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    //retrieve and store friends via rest
+                    LinkedList<User> users = new LinkedList<>();
+                    OtherRestCalls.retrieveFriends();
+
+                    users.add( DataProvider.getInstance().getOwnUser()  );
+                    users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines() );
+
+                    DataProvider.getInstance().changeFriendList( users );
+
+                    handler.sendEmptyMessage( 0 );
+
+                }
+            }).start();
+
+        }
+    };
 
 
 

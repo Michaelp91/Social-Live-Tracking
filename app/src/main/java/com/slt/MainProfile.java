@@ -528,20 +528,17 @@ public class MainProfile extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-
-            FragmentManager fm = getFragmentManager();
-
-            fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-                @Override
-                public void onBackStackChanged() {
-                    if(getFragmentManager().getBackStackEntryCount() == 0) finish();
-
-                }
-            });
             super.onBackPressed();
         }
 
+        FragmentManager fm = getFragmentManager();
 
+        fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if(getFragmentManager().getBackStackEntryCount() == 0) finish();
+            }
+        });
     }
 
     /**

@@ -156,7 +156,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         view_timelineDays = (LinearLayout) view.findViewById(R.id.timeline_days);
         //you can set the title for your toolbar here for different fragments different titles
         getActivity().setTitle("Timeline");
-        getActivity().onBackPressed();
+
         //Thread t = new Thread(new TrackingSimulator());
         //t.start();
 
@@ -164,7 +164,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         RetrieveOperations.getInstance().context = this;
 
 
-        progressDialog = ProgressDialog.show(getActivity(), "Bitte warten Sie...", "", true);
+        progressDialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
 
         handler.postDelayed(runnable, 2000);
 

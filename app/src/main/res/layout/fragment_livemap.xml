@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,22 +10,43 @@
         android:id="@+id/live_layout"
         android:orientation="vertical">
 
+
         <TextView
             android:id="@+id/livemap_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/background_board"
+            android:layout_marginTop="3sp"
+            android:layout_marginBottom="3sp"
+            android:layout_marginLeft="1sp"
+            android:layout_marginRight="1sp"
             android:text="Live Map:"
-            android:textSize="36dp"
-            android:fontFamily="cursive"
+            android:textAlignment="center"
+            android:textSize="24sp"
             android:layout_gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#FFFFFF" />
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="250dp" />
+            android:layout_height="250dp"
+            android:background="@drawable/border_for_map"
+            />
 
+
+        <TextView
+            android:id="@+id/active_users"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_board"
+            android:layout_marginTop="3sp"
+            android:layout_marginLeft="1sp"
+            android:layout_marginRight="1sp"
+            android:text="Users On The Map:"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#FFFFFF" />
 
         <ProgressBar
             android:id="@+id/live_map_progressBar"
@@ -35,8 +55,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/button_margin"
             android:visibility="gone"/>
-
-
 
         <ListView
             android:id="@+id/live_map_listview"

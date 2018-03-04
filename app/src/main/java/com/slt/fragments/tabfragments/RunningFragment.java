@@ -102,19 +102,19 @@ public class RunningFragment extends Fragment {
 
 
         //handler to wait for a network response
-        handler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-
-                afterRetrieval();
-                return false;
-            }
-        });
+//        handler = new Handler(new Handler.Callback() {
+//            @Override
+//            public boolean handleMessage(Message msg) {
+//
+//                afterRetrieval();
+//                return false;
+//            }
+//        });
         mProgressBar.setVisibility(View.VISIBLE);
 
-        dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
+//        dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
 
-         handler.postDelayed(runnableRunning, 2000);
+//         handler.postDelayed(runnableRunning, 2000);
         //handler.post(runnableRunning);
 
 
@@ -141,36 +141,37 @@ public class RunningFragment extends Fragment {
         mylistView.setAdapter( ownadapter );
 
 
+        afterRetrieval();
 
     }
 
-    /**
-     * Runnable to async load the friends from the server
-     */
-    public Runnable runnableRunning = new Runnable() {
-        @Override
-        public void run() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    //retrieve and store friends via rest
-                    LinkedList<User> users = new LinkedList<>();
-                    OtherRestCalls.retrieveFriends();
-
-                    users.add( DataProvider.getInstance().getOwnUser()  );
-                    users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines());
-
-                    DataProvider.getInstance().changeFriendList(users);
-
-                    handler.sendEmptyMessage(0);
-
-
-                }
-            }).start();
-
-        }
-    };
+//    /**
+//     * Runnable to async load the friends from the server
+//     */
+//    public Runnable runnableRunning = new Runnable() {
+//        @Override
+//        public void run() {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    //retrieve and store friends via rest
+//                    LinkedList<User> users = new LinkedList<>();
+//                    OtherRestCalls.retrieveFriends();
+//
+//                    users.add( DataProvider.getInstance().getOwnUser()  );
+//                    users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines());
+//
+//                    DataProvider.getInstance().changeFriendList(users);
+//
+//                    handler.sendEmptyMessage(0);
+//
+//
+//                }
+//            }).start();
+//
+//        }
+//    };
 
     /**
      * After data was retrieved, search for fitting users
@@ -180,7 +181,7 @@ public class RunningFragment extends Fragment {
         //new ArrayList for data compare
         ArrayList<User> dataCompare = new ArrayList<>(  );
 
-        dialog.dismiss();
+     //   dialog.dismiss();
 
         dataModels.clear();
         myData.clear();
