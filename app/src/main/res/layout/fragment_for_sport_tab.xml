@@ -18,14 +18,14 @@
     </TextView>
 
     <RelativeLayout
+        android:id="@+id/month_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/last_timeperiod_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_back_black_24dp"/>
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/timeperiod_name"
@@ -37,7 +37,6 @@
             android:id="@+id/next_timeperiod_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_forward_black_24dp"
             android:layout_toRightOf="@id/timeperiod_name"/>
 
     </RelativeLayout>

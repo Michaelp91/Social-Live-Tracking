@@ -41,6 +41,10 @@ import java.util.TreeMap;
 
 public class StatisticsDataModelProvider {
 
+    /**
+     * date that is used es current, its default value is current date
+     */
+    public static Date dateUsedAsReference = new Date();
 
     /**
      * generates a random ChartData object with just one DataSet
@@ -442,6 +446,8 @@ public class StatisticsDataModelProvider {
                 // get timelinedays from the db
                 days = timeline.getDaysOfWeekOrMonth(currDate, 0);
 
+                //days.get(0).
+
                 xyPairs = getXYPairsForWeek( dates, days, sportType);
                 break;
             case 2:
@@ -636,7 +642,10 @@ public class StatisticsDataModelProvider {
                     //cal.setTime(date);
                     key = xyPairsForAndWeek.size();
 
-                    val = (int) timelineDay.getActiveDistance(detectedActivity);
+                    if(sportType == 0)
+                        val = timelineDay.getSteps();
+                    else
+                        val = (int) timelineDay.getActiveDistance(detectedActivity);
 
                     xyPairsForAndWeek.put(key, val);
 
