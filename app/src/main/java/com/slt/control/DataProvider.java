@@ -4,6 +4,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.slt.data.Achievement;
+import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 
@@ -167,7 +168,7 @@ public class DataProvider implements ServiceInterface {
      * detected but not used, 3 if the data was entered
      */
     public synchronized int updateActivity(DetectedActivity activity, Date timestamp) {
-
+    LinkedList<TimelineDay> days = this.userTimeline.getDaysOfWeekOrMonth(timestamp, 0);
         //return if we no longer have a user
         if (this.ownUser == null || this.userTimeline == null)
             return 0;
