@@ -1,25 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fragment_bg">
+    android:fillViewport="true"
+    android:background="@color/fragment_bg"
+    android:orientation="vertical"
+    >
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="148dp"
-        android:src="@drawable/ic_action_biking" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="1dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@drawable/customborder"
+        >
 
-    <TextView
+        <TextView
+            android:id="@+id/biking_ranking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2sp"
+            android:text="Ranking list:"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:background="@drawable/button_1"
+
+            android:layout_gravity="center_horizontal"
+
+            android:textColor="#FFFFFF" />
+
+        <ProgressBar
+            android:id="@+id/biking_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:visibility="gone"/>
+
+        <ListView
+            android:id="@+id/biking_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="10dp"
+            android:divider="@null"
+            android:layout_marginTop="6sp"/>
+
+
+        <!-- Button Search Friends-->
+
+
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView1"
-        android:gravity="center"
-        android:text="Biking"
-        android:textSize="30sp" />
+        android:orientation="vertical"
+        android:layout_margin="1dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/customborder">
+        >
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/mybiking_ranking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_login"
+            android:layout_marginTop="2sp"
+            android:text="My Ranking:"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#FFFFFF" />
+
+        <ListView
+            android:id="@+id/mybiking_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="10dp"
+            android:divider="@null"
+            android:layout_marginTop="6sp"/>
+
+    </LinearLayout>
+</LinearLayout>

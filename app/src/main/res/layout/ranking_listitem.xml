@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/activity_vertical_margin"
+    android:background="@drawable/background_friends"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!--Profile Pic-->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ranking_list_item_image"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center"
+            android:src="@drawable/profile_pic"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="2dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/relative_0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="2dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/relative_1"
+                    android:gravity="left">
+
+                    <!-- Username -->
+                    <TextView
+                        android:id="@+id/ranking_list_item_title_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Username"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:textStyle="italic|bold"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/ranking_list_item_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Username"
+                        android:textSize="16sp"
+                        android:layout_below="@id/ranking_list_item_title_username"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom"
+                    android:layout_below="@id/relative_1">
+
+                    <!-- Name -->
+                    <TextView
+                        android:id="@+id/ranking_list_item_title_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="italic|bold"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:text="Name"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/ranking_list_item_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:textSize="16sp"
+                        android:layout_below="@id/ranking_list_item_title_name"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="end">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/relative_3">
+                        <!--Achievement-->
+                        <TextView
+                            android:id="@+id/ranking_list_item_title_achievement"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:textStyle="italic|bold"
+                            android:text="Distance:"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/ranking_list_item_achievement"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Achivement:"
+                            android:textSize="16sp"
+                            android:layout_below="@id/ranking_list_item_title_achievement"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/relative_3"
+                        android:layout_alignStart="@id/relative_3"
+                        android:gravity="bottom">
+
+                        <!--Age -->
+                        <TextView
+                            android:id="@+id/ranking_list_item_title_place"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:textStyle="italic|bold"
+                            android:text="Rank:"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/ranking_list_item_place"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="23"
+                            android:textSize="16sp"
+                            android:layout_below="@id/ranking_list_item_title_place"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.slt.statistics;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,12 +28,14 @@ import java.util.ArrayList;
  */
 public class StatisticsOverviewFragment extends Fragment {
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_general_view_of_statistics, container, false);
 
         getActivity().setTitle("Statistics");
+
 
         // overview string with the name of the user
         String forename = DataProvider.getInstance().getOwnUser().getForeName();

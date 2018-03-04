@@ -118,6 +118,7 @@ public class FragmentFriends extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Friends and Co.");
 
+
         //set handler to wait for network response
         handler = new Handler(new Handler.Callback() {
             @Override

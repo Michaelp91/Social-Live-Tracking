@@ -1,7 +1,6 @@
 package com.slt.fragments.tabfragments;
 
-import android.app.FragmentTransaction;
-import android.graphics.Bitmap;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,50 +10,54 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+
 
 import com.slt.R;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
-import com.slt.fragments.FragmentFriendDetails;
-import com.slt.fragments.adapters.FriendListAdapter;
+
+import com.slt.fragments.adapters.RankingListAdapter;
 import com.slt.restapi.OtherRestCalls;
-import com.slt.restapi.TemporaryDB;
-import com.slt.restapi.UsefulMethods;
+
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
+
 
 public class WalkingFragment extends Fragment {
 
+    public WalkingFragment(){
 
+    }
     /**
-     * Data model with the users we want to show
+     * Tag for the logger
      */
-    ArrayList<User> dataModels;
+    public static final String TAG = WalkingFragment.class.getSimpleName();
 
     /**
-     * List view
+     * The data we want to show
+     */
+    ArrayList<User> dataModels, myData;
+
+    /**
+     * List view for the users
      */
     ListView listView, mylistView;
 
     /**
-     * The adapter for our list
+     * Adapter for the userlist
      */
-    private static FriendListAdapter adapter;
+    private static RankingListAdapter adapter, ownadapter;
+
 
     /**
-     * Button to search for friends
-     */
-    private Button SearchButton;
-
-    /**
-     * handler for waiting for network reponse
+     * Handler for network transactions
      */
     private Handler handler;
 
@@ -63,6 +66,12 @@ public class WalkingFragment extends Fragment {
      */
     private ProgressBar mProgressBar;
 
+
+    /**
+     * Simple progress dialog
+     */
+
+    private ProgressDialog dialog ;
 
 
     @Override
@@ -73,81 +82,88 @@ public class WalkingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.walking_fragment, container, false);
 
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.walking_fragment, container, false);
         SharedResources.getInstance().setUser(null);
-        mProgressBar =  (ProgressBar) view.findViewById(R.id.all_progress) ;
+
+        mProgressBar =  (ProgressBar) view.findViewById(R.id.walking_progress) ;
+
 
         return view;
+
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated( view, savedInstanceState );
 
-        //set handler to wait for network response
-        handler = new Handler( new Handler.Callback() {
+
+
+        //handler to wait for a network response
+        handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
+
                 afterRetrieval();
                 return false;
             }
         });
 
-        //Call Handler to retrieve REST User
         mProgressBar.setVisibility(View.VISIBLE);
-        handler.post(runnable);
 
-        //get the friends to show and add them to the adapter
+
+        //handler.post(runnableWalking);
+        dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
+
+        handler.postDelayed(runnableWalking, 1000);
+
+
+
+        //create a linked list for the users
         LinkedList<User> users = DataProvider.getInstance().getOwnUser().getUserList();
-        listView=(ListView) view.findViewById(R.id.all_listview);
 
-        mylistView=(ListView) view.findViewById(R.id.my_list);
+        //init the elements
+        listView=(ListView) view.findViewById(R.id.walking_listview);
+        mylistView = (ListView) view.findViewById( R.id.mywalking_list );
 
+
+        //add lists for the data
         dataModels= new ArrayList<>(users);
-        adapter= new FriendListAdapter(dataModels, ApplicationController.getContext());
+        myData = new ArrayList<>( users );
 
-        //add listener to transition to friends detail page
+
+        //init adapters
+        adapter= new RankingListAdapter(dataModels, ApplicationController.getContext(),7);
+        ownadapter = new RankingListAdapter(myData, ApplicationController.getContext(),7);
+
         listView.setAdapter(adapter);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//                User dataModel= dataModels.get(position);
-//                TemporaryDB.getInstance().setChoosedFriend(dataModel);
-//                SharedResources.getInstance().setUser(dataModel);
-//
-////                android.app.Fragment newFragment = new FragmentFriendDetails();
-////                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-////
-////                transaction.replace(R.id.content_main_frame, newFragment);
-////                transaction.addToBackStack(null);
-////                transaction.commit();
-//            }
-//        });
+        mylistView.setAdapter( ownadapter );
 
     }
 
 
-    public Runnable runnable = new Runnable() {
+    /**
+     * Runnable to async load the friends from the server
+     */
+    public Runnable runnableWalking = new Runnable() {
         @Override
         public void run() {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //retrieve and store friends via rest
-                    LinkedList<User> users = new LinkedList<>();
-                    users.addAll( OtherRestCalls.retrieveFriends());
 
-                    DataProvider.getInstance().changeFriendList(users);
+                        //retrieve and store friends via rest
+                        LinkedList<User> users = new LinkedList<>();
+                        OtherRestCalls.retrieveFriends();
 
-                    //load images
-                    for (User user : DataProvider.getInstance().getUserList()){
-                        Bitmap bitmap = UsefulMethods.LoadImage(user);
-                        user.setMyImage(bitmap);
-                    }
+                        users.add( DataProvider.getInstance().getOwnUser()  );
+                        users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines() );
 
-                    handler.sendEmptyMessage(0);
+                        DataProvider.getInstance().changeFriendList( users );
+
+                        handler.sendEmptyMessage( 0 );
 
                 }
             }).start();
@@ -155,14 +171,59 @@ public class WalkingFragment extends Fragment {
         }
     };
 
-
     /**
-     * After retrieval remove progress bar
+     * After data was retrieved, search for fitting users
      */
     public void afterRetrieval() {
+
+        //new ArrayList for data compare
+        ArrayList<User> dataCompare = new ArrayList<>(  );
+
+        dialog.dismiss();
+
         dataModels.clear();
-        dataModels.addAll(DataProvider.getInstance().getUserList());
+        myData.clear();
+
+        dataCompare.addAll(DataProvider.getInstance().getUserList());
+
+        //Distance compare
+        Collections.sort(dataCompare, new Comparator<User>() {
+            @Override
+            public int compare(User s1, User s2) {
+                return Double.compare(s2.getMyTimeline().getActiveDistanceForMonth( 7 ), s1.getMyTimeline().getActiveDistanceForMonth( 7 ));
+            } } );
+
+        //init int for rank number
+        int i = 1;
+
+        //assign a rank to the user
+        for (User user : dataCompare ){
+            user.setRank( i );
+            i++;
+        }
+
+        dataModels.addAll(dataCompare);
+        myData.add( DataProvider.getInstance().getOwnUser() );
+
+
+
         mProgressBar.setVisibility(View.GONE);
+
         adapter.notifyDataSetChanged();
+        ownadapter.notifyDataSetChanged();
+
     }
+
+    @Override
+    public void onPause() {
+        handler.removeCallbacks( runnableWalking );
+        super.onPause();
+
+    }
+
+
+
+
 }
+
+

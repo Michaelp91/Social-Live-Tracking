@@ -83,12 +83,17 @@ public class FragmentLiveMap extends Fragment {
                 public void run() {
                     restUsers = OtherRestCalls.retrieveFriends();
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            googleMap.clear();
-                        }
-                    });
+                    try {
+
+                        getActivity().runOnUiThread( new Runnable() {
+                            @Override
+                            public void run() {
+                                googleMap.clear();
+                            }
+                        } );
+                    }catch (NullPointerException e){
+
+                    }
 
                     ShowFriends();
                     handler.postDelayed(runnable, 2000);
@@ -107,6 +112,9 @@ public class FragmentLiveMap extends Fragment {
                 list_friends.clear();
                 list_friends.addAll(restUsers);
 
+                try {
+
+
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -115,13 +123,20 @@ public class FragmentLiveMap extends Fragment {
                         mProgressBar.setVisibility(View.GONE);
                     }
                 });
+                }
+                    catch (NullPointerException e){
+
+                }
 
                 for(final User u: list_friends) {
                     Location location = u.getLastLocation();
                     final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     //final Bitmap bmp = UsefulMethods.LoadImage(u);
                     final Bitmap bmp = null;
-                    getActivity().runOnUiThread(new Runnable() {
+
+                    try{
+
+                        getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Marker marker = null;
@@ -136,6 +151,10 @@ public class FragmentLiveMap extends Fragment {
                             boolean debug = true;
                         }
                     });
+                    }
+                        catch (NullPointerException e){
+
+                    }
 
                 }
     }
@@ -145,6 +164,7 @@ public class FragmentLiveMap extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Live Map");
+        getActivity().onBackPressed();
 
         listView=(ListView) view.findViewById(R.id.live_map_listview);
 
