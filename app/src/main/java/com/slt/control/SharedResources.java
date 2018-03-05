@@ -80,6 +80,41 @@ public class SharedResources {
      * Profile in the nav bar for updates
      */
     private ImageView navProfilePhoto;
+    /**
+     * User to pass along between segments
+     */
+    private User myUser;
+    /**
+     * Our notification Manager
+     */
+    private NotificationManager mNotificationManager;
+    /**
+     * Notification Compat Builder
+     */
+    private NotificationCompat.Builder cBuilder = null;
+    /**
+     * Normal notification Builder
+     */
+    private Notification.Builder builder = null;
+
+    /**
+     * Private constructor
+     */
+    private SharedResources() {
+        myGoogleApiClient = null;
+        foregroundNotification = null;
+        myUser = null;
+
+    }
+
+    /**
+     * Get the instance of the shared resources
+     *
+     * @return The instance of the shared resources
+     */
+    public static SharedResources getInstance() {
+        return ourInstance;
+    }
 
     /**
      * Get the nav bar TextView for the username
@@ -118,15 +153,6 @@ public class SharedResources {
     }
 
     /**
-     * Get the instance of the shared resources
-     *
-     * @return The instance of the shared resources
-     */
-    public static SharedResources getInstance() {
-        return ourInstance;
-    }
-
-    /**
      * Get the instance of the API Client
      *
      * @return The stored instance of the Google API Client
@@ -134,26 +160,6 @@ public class SharedResources {
     public GoogleApiClient getMyGoogleApiClient() {
         return myGoogleApiClient;
     }
-
-    /**
-     * User to pass along between segments
-     */
-    private User myUser;
-
-    /**
-     * Our notification Manager
-     */
-    private NotificationManager mNotificationManager;
-
-    /**
-     * Notification Compat Builder
-     */
-    private NotificationCompat.Builder cBuilder = null;
-
-    /**
-     * Normal notification Builder
-     */
-    private Notification.Builder builder = null;
 
     /**
      * Set the instance of the Google API Client
@@ -181,15 +187,6 @@ public class SharedResources {
     }
 
     /**
-     * Store a timeline segment that should be shared between segments
-     *
-     * @param onclickedTimelineSegment The Timeline segment to store
-     */
-    public void setOnClickedTimelineSegmentForDetails(TimelineSegment onclickedTimelineSegment) {
-        this.onclickedTimelineSegment = onclickedTimelineSegment;
-    }
-
-    /**
      * Get the stored timeline segment
      *
      * @return The stored timeline segment
@@ -198,15 +195,22 @@ public class SharedResources {
         return onclickedTimelineSegment;
     }
 
-
-    public void setSegmentBitmaps(LinkedList<Bitmap> segmentBitmaps) {
-        this.segmentBitmaps = segmentBitmaps;
+    /**
+     * Store a timeline segment that should be shared between segments
+     *
+     * @param onclickedTimelineSegment The Timeline segment to store
+     */
+    public void setOnClickedTimelineSegmentForDetails(TimelineSegment onclickedTimelineSegment) {
+        this.onclickedTimelineSegment = onclickedTimelineSegment;
     }
 
     public LinkedList<Bitmap> getSegmentBitmaps() {
         return segmentBitmaps;
     }
 
+    public void setSegmentBitmaps(LinkedList<Bitmap> segmentBitmaps) {
+        this.segmentBitmaps = segmentBitmaps;
+    }
 
     /**
      * Get the foreground notification
@@ -288,6 +292,7 @@ public class SharedResources {
         return foregroundNotification;
     }
 
+
     /**
      * Changes the Detected Activity to a custom string
      *
@@ -327,9 +332,8 @@ public class SharedResources {
     }
 
 
-    /**
-     * Updates the notification to show changes in the data
-     * TODO: might want to remove after debugging
+
+    /* Updates the notification to show changes in the data
      *
      * @param location The GPS location
      * @param data     The data of the last segment
@@ -340,14 +344,15 @@ public class SharedResources {
 
         //retrive data and build information strings
         String locationString = "Location: Unknown";
-        String segmentDataHeader = "Current Segment: None";
-        String segmentData = "";
-        String segmentDataTwo = "None";
+        String segmentDataHeader = "Activity: " + "None";
+        String segmentData = "Start: " + "None";
+        String segmentDataTwo = "End: " + "None";
         String activityData = "Detected Activity: None";
 
-        String segment2DataHeader = "Current Segment: None";
-        String segment2Data = "";
-        String segment2DataTwo = "None";
+        String segment2DataHeader = "Dur: " + 0.0 + "s";
+        String segment2Data = "Steps: " + 0;
+        String segment2DataTwo = "Distance: " + 0 + "m";
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
         // check if a activity is set
@@ -357,7 +362,7 @@ public class SharedResources {
 
         //check if a location is set
         if (location != null) {
-            locationString = "Loc: " + location.getLatitude() + "- Lat, " + location.getLongitude() + "-Long";
+            locationString = "Location: " + location.getLatitude() + "-Lat, " + location.getLongitude() + "-Long";
         }
 
         //check if we have segment data available
@@ -380,93 +385,67 @@ public class SharedResources {
                         (data.getMySegments().getLast().getActiveDistance()
                                 + data.getMySegments().getLast().getInactiveDistance()));
 
-                segmentDataHeader = "CSt: " + this.activityToString(data.getMySegments().getLast().getMyActivity()) +
-                        " - " + data.getMySegments().size() + ". Seg, " + data.getMySegments().getLast().getPlace() + ", " + data.getMySegments().getLast().getAddress();
-                segmentData = "Start: " + sDate + " - End: " + eDate + " - Points: " + data.getMySegments().getLast().getLocationPoints().size();
-                segmentDataTwo = "Dur: " + Double.toString(data.getMySegments().getLast().getDuration() / 1000) + "s, Steps: "
-                        + Integer.toString(data.getMySegments().getLast().getUserSteps()) +
-                        " Dist: " + distance + "m";
+                segmentDataHeader = "Activity: " + this.activityToString(data.getMySegments().getLast().getMyActivity());
+                segmentData = "Start: " + sDate;
+                segmentDataTwo = "End: " + eDate;
+                segment2DataHeader = "Dur: " + Double.toString(data.getMySegments().getLast().getDuration() / 1000) + "s";
+                segment2Data = "Steps: " + Integer.toString(data.getMySegments().getLast().getUserSteps());
+                segment2DataTwo = " Distance: " + distance + "m";
             }
 
-            //check if we have a previous segment
-            if (data.getMySegments().size() > 1) {
-                int index = data.getMySegments().size() - 2;
 
-                TimelineSegment seg = data.getMySegments().get(index);
-                if (seg.getLocationPoints().getFirst() != null) {
-                    sDate = simpleDateFormat.format(seg.getLocationPoints().getFirst().getMyEntryDate());
-                }
-
-                String eDate = "None";
-                if (seg.getLocationPoints().getLast() != null) {
-                    eDate = simpleDateFormat.format(seg.getLocationPoints().getLast().getMyEntryDate());
-                }
-
-                String distance2 = String.format("%.2f", (seg.getActiveDistance()));
+            String dateString = simpleDateFormat.format(date) + " - Current Activity:";
 
 
-                String distance = String.format("%.2f", (seg.getActiveDistance() + seg.getInactiveDistance()));
+            //select which notification type we have depending on the android version
+            if (cBuilder != null) {
 
-                segment2DataHeader = "CSt: " + this.activityToString(seg.getMyActivity()) +
-                        " - " + (data.getMySegments().size() - 1) + ". Seg, " + seg.getPlace() + ", " + seg.getAddress();
-                segment2Data = "Start: " + sDate + " - End: " + eDate + " - Points: " + seg.getLocationPoints().size();
-                segment2DataTwo = "Dur: " + Double.toString(seg.getDuration() / 1000) + "s, Steps: "
-                        + Integer.toString(seg.getUserSteps()) +
-                        " Dist: " + distance + "m";
+                NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
+                //Sets a title for the Inbox in expanded layout
+                inboxStyle.setBigContentTitle(dateString);
+
+                //add aditional information
+                inboxStyle.addLine(locationString);
+                inboxStyle.addLine(segmentDataHeader);
+                inboxStyle.addLine(segmentData);
+                inboxStyle.addLine(segmentDataTwo);
+                inboxStyle.addLine(segment2DataHeader);
+                inboxStyle.addLine(segment2Data);
+                inboxStyle.addLine(segment2DataTwo);
+
+                cBuilder.setStyle(inboxStyle);
+
+                foregroundNotification = cBuilder.build();
             }
+
+            if (builder != null) {
+
+                Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
+
+                //Sets a title for the Inbox in expanded layout
+                inboxStyle.setBigContentTitle(dateString);
+
+                //add aditional information
+                inboxStyle.addLine(locationString);
+                inboxStyle.addLine(segmentDataHeader);
+                inboxStyle.addLine(segmentData);
+                inboxStyle.addLine(segmentDataTwo);
+                inboxStyle.addLine(segment2DataHeader);
+                inboxStyle.addLine(segment2Data);
+                inboxStyle.addLine(segment2DataTwo);
+
+                builder.setStyle(inboxStyle);
+
+
+                foregroundNotification = builder.build();
+            }
+
+
+            mNotificationManager.notify(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, foregroundNotification);
         }
-
-        String dateString = simpleDateFormat.format(date) + " - detected Details:";
-
-
-        //select which notification type we have depending on the android version
-        if (cBuilder != null) {
-
-            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-
-            //Sets a title for the Inbox in expanded layout
-            inboxStyle.setBigContentTitle(dateString);
-
-            //add aditional information
-            inboxStyle.addLine(locationString + activityData);
-            inboxStyle.addLine(segmentDataHeader);
-            inboxStyle.addLine(segmentData);
-            inboxStyle.addLine(segmentDataTwo);
-            inboxStyle.addLine(segment2DataHeader);
-            inboxStyle.addLine(segment2Data);
-            inboxStyle.addLine(segment2DataTwo);
-
-            cBuilder.setStyle(inboxStyle);
-
-            foregroundNotification = cBuilder.build();
-        }
-
-        if (builder != null) {
-
-            Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
-
-            //Sets a title for the Inbox in expanded layout
-            inboxStyle.setBigContentTitle(dateString);
-
-            //add aditional information
-            inboxStyle.addLine(locationString + activityData);
-            inboxStyle.addLine(segmentDataHeader);
-            inboxStyle.addLine(segmentData);
-            inboxStyle.addLine(segmentDataTwo);
-            inboxStyle.addLine(segment2DataHeader);
-            inboxStyle.addLine(segment2Data);
-            inboxStyle.addLine(segment2DataTwo);
-
-            builder.setStyle(inboxStyle);
-
-
-            foregroundNotification = builder.build();
-        }
-
-
-        mNotificationManager.notify(Constants.NOTIFICATION_ID.DATA_PROVIDER_SERVICE, foregroundNotification);
     }
+
 
     /**
      * Use to remove notification bar
@@ -497,6 +476,10 @@ public class SharedResources {
      *
      * @param user The user to set
      */
+
+
+
+
     public synchronized void setUser(User user) {
         this.myUser = user;
     }
@@ -508,15 +491,5 @@ public class SharedResources {
      */
     public synchronized User getSelectedUser() {
         return this.myUser;
-    }
-
-    /**
-     * Private constructor
-     */
-    private SharedResources() {
-        myGoogleApiClient = null;
-        foregroundNotification = null;
-        myUser = null;
-
     }
 }

@@ -145,7 +145,7 @@ public class RegisterFragment extends Fragment {
 
                 setError();
 
-                String name = mEtName.getText().toString();
+                String name = "-";
                 String email = mEtEmail.getText().toString();
                 String password = mEtPassword.getText().toString();
 
@@ -204,7 +204,7 @@ public class RegisterFragment extends Fragment {
 
         setError();
 
-        String name = mEtName.getText().toString();
+        String name = "-";
         String email = mEtEmail.getText().toString();
         String password = mEtPassword.getText().toString();
 
