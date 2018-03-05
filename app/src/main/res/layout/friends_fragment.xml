@@ -17,13 +17,14 @@
 
         <TextView
             android:id="@+id/friends_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/background_board"
+            android:layout_marginTop="3sp"
             android:text="Your Friends:"
-            android:textSize="36dp"
-            android:fontFamily="cursive"
+            android:textAlignment="center"
+            android:textSize="24sp"
             android:layout_gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#FFFFFF" />
 
         <ProgressBar

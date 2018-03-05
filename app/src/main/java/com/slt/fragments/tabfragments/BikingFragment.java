@@ -100,21 +100,21 @@ public class BikingFragment extends Fragment {
 
 
 
-        //handler to wait for a network response
-        handler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-
-                afterRetrieval();
-                return false;
-            }
-        });
+//        //handler to wait for a network response
+//        handler = new Handler(new Handler.Callback() {
+//            @Override
+//            public boolean handleMessage(Message msg) {
+//
+//                afterRetrieval();
+//                return false;
+//            }
+//        });
         mProgressBar.setVisibility(View.VISIBLE);
 
-        dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
+//        dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
 
-        handler.postDelayed(runnableBiking, 3000);
-        //handler.post(runnableBiking);
+//        handler.postDelayed(runnableBiking, 3000);
+//        handler.post(runnableBiking);
 
 
 
@@ -139,6 +139,7 @@ public class BikingFragment extends Fragment {
         mylistView.setAdapter( ownadapter );
 
 
+        afterRetrieval();
 
     }
 
@@ -181,7 +182,7 @@ public class BikingFragment extends Fragment {
         //new ArrayList for data compare
         ArrayList<User> dataCompare = new ArrayList<>(  );
 
-        dialog.dismiss();
+  //      dialog.dismiss();
 
         dataModels.clear();
         myData.clear();

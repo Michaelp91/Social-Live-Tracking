@@ -135,8 +135,7 @@ public class FragmentLiveMap extends Fragment {
                     final Bitmap bmp = null;
 
                     try{
-
-                        getActivity().runOnUiThread(new Runnable() {
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Marker marker = null;
@@ -152,7 +151,7 @@ public class FragmentLiveMap extends Fragment {
                         }
                     });
                     }
-                        catch (NullPointerException e){
+                    catch (NullPointerException e){
 
                     }
 
