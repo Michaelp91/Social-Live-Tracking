@@ -451,7 +451,7 @@ public class StatisticsDataModelProvider {
                 xyPairs = getXYPairsForWeek( dates, days, sportType);
                 break;
             case 2:
-                days = timeline.getDaysOfWeekOrMonth(currDate, 1);
+                days = timeline.getDaysOfWeekOrMonth(StatisticsDataModelProvider.dateUsedAsReference, 1);
 
                 // init calender
                 java.util.Date date = new Date();
