@@ -180,7 +180,6 @@ public class FragmentAchievements extends Fragment  {
                     users.add( DataProvider.getInstance().getOwnUser()  );
                     users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines() );
 
-
                     DataProvider.getInstance().changeFriendList( users );
 
                     handler.sendEmptyMessage( 0 );
