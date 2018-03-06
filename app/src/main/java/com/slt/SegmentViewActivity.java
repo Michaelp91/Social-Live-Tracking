@@ -135,33 +135,37 @@ public class SegmentViewActivity extends AppCompatActivity {
 
                 for(TimelineSegment t: choosedTimelineSegments) {
 
-                    LinkedList<LocationEntry> locationEntries = t.getLocationPoints();
+                    if (t.getMyActivity().getType() != Constants.TIMELINEACTIVITY.UNKNOWN &&
+                            t.getMyActivity().getType() != Constants.TIMELINEACTIVITY.STILL &&
+                            t.getMyActivity().getType() != Constants.TIMELINEACTIVITY.TILTING) {
+                        LinkedList<LocationEntry> locationEntries = t.getLocationPoints();
 
-                    if (locationEntries.size() >= 2) {
-                        first = locationEntries.getFirst();
+                        if (locationEntries.size() >= 2) {
+                            first = locationEntries.getFirst();
 
-                        for (LocationEntry entry : locationEntries) {
-                            if (last != null) {
+                            for (LocationEntry entry : locationEntries) {
+                                if (last != null) {
 
-                                LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
-                                LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
+                                    LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
+                                    LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
 
 
-                                googleMap.moveCamera(CameraUpdateFactory.newLatLng(end));
-                                addLines(start, end);
-                            } else {
-                                LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
-                                googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                                    //googleMap.moveCamera(CameraUpdateFactory.newLatLng(end));
+                                    addLines(start, end);
+                                } else {
+                                    LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
+                                    // googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                                }
+                                last = entry;
                             }
-                            last = entry;
+
+
+                        } else if (locationEntries.size() > 0) {
+                            last = locationEntries.get(0);
+                            //LatLng start = new LatLng(locationEntries.get(0).getLatitude(), locationEntries.get(0).getLongitude());
+                            //googleMap.addMarker(new MarkerOptions().position(start).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_start)).title(""));
+                            //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, zoomLevel));
                         }
-
-
-                    } else if(locationEntries.size() > 0){
-                        last = locationEntries.get(0);
-                        LatLng start = new LatLng(locationEntries.get(0).getLatitude(), locationEntries.get(0).getLongitude());
-                        googleMap.addMarker(new MarkerOptions().position(start).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_start)).title(""));
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, zoomLevel));
                     }
                 }
 
@@ -198,7 +202,7 @@ public class SegmentViewActivity extends AppCompatActivity {
                     googleMap.animateCamera(cu, new GoogleMap.CancelableCallback(){
                         public void onCancel(){}
                         public void onFinish(){
-                            CameraUpdate zout = CameraUpdateFactory.zoomBy((float) -3.0);
+                            CameraUpdate zout = CameraUpdateFactory.zoomBy((float) -4.0);
                             googleMap.animateCamera(zout);
                         }
                     });
@@ -340,8 +344,8 @@ public class SegmentViewActivity extends AppCompatActivity {
                                     iv.setImageBitmap(bmp);
 
                                     informations = "Type: Walking";
-                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
-                                    informations += "\nDuration: " + Float.toString((float) tSegment.getActiveTime()) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) tSegment.getDuration()) + " min";
                                     informations += "\nUser Steps: " + tSegment.getUserSteps();
 
                                     break;
@@ -354,8 +358,8 @@ public class SegmentViewActivity extends AppCompatActivity {
                                     iv.setImageBitmap(bmp);
 
                                     informations = "Type: Running";
-                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
-                                    informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) tSegment.getDuration()) + " min";
 
                                     break;
 
@@ -368,8 +372,8 @@ public class SegmentViewActivity extends AppCompatActivity {
                                     iv.setImageBitmap(bmp);
 
                                     informations = "Type: Vehicle";
-                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
-                                    informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) tSegment.getDuration()) + " min";
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
@@ -381,8 +385,8 @@ public class SegmentViewActivity extends AppCompatActivity {
                                     iv.setImageBitmap(bmp);
 
                                     informations = "Type: On Foot";
-                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
-                                    informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) tSegment.getDuration()) + " min";
                                     informations += "\nUser Steps: " + tSegment.getUserSteps();
 
                                     break;
@@ -397,8 +401,8 @@ public class SegmentViewActivity extends AppCompatActivity {
                                     iv_bicycle.setImageBitmap(bmp);
 
                                     informations = "Type: Bicycle";
-                                    informations += "\nDistance: " + Float.toString((float) tSegment.getActiveDistance()) + " m";
-                                    informations += "\nDuration: " + Float.toString( (float) tSegment.getActiveTime() ) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float) tSegment.getActiveDistance()) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) tSegment.getDuration()) + " min";
                                     break;
 
                                 case com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN:

@@ -47,9 +47,9 @@ public class Timeline {
             if (d1.equals(d2))
                 return 0;
             if (d1.after(d2))
-                return -1;
-            else
                 return 1;
+            else
+                return -1;
         }
     }
 
@@ -159,10 +159,10 @@ public class Timeline {
 
     }
 
-        /**
-         * Get the number of achievements in the last week
-         * @return The number of achievements
-         */
+    /**
+     * Get the number of achievements in the last week
+     * @return The number of achievements
+     */
     public int getAchievementsForWeek() {
         int achievementPoints = 0;
         Date current = new Date();
@@ -226,10 +226,10 @@ public class Timeline {
         return achievements;//AchievementCalculator.calculateMonthAchievements(month, new LinkedList<Achievement>(), monthLength);
     }
 
-        /**
-         * Get the number of achievements in the last month
-         * @return The number of achievements
-         */
+    /**
+     * Get the number of achievements in the last month
+     * @return The number of achievements
+     */
     public int getAchievementsForMonth() {
         int achievementPoints = 0;
         Date current = new Date();
@@ -275,10 +275,8 @@ public class Timeline {
 
        /* TimelineDay t_d = timeline.getTimelineDay(0);
         TimelineSegment t_s = t_d.getSegment(0);
-
         DetectedActivity activity = t_s.getMyActivity();
         int intActivity = activity.getType();
-
         switch(intActivity) {
             case Constants.TIMELINEACTIVITY.RUNNING:
                 //RUNNING

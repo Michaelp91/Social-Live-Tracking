@@ -83,6 +83,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
     private TextView tv_usercomments;
 
     private ProgressDialog progressDialog;
+    private final String NO_COMMENTS_AVAILABLE = "No Comments Available";
 
 
     @Override
@@ -205,6 +206,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
                         String email = user.getEmail();
                         String comment = "- " + email + " : " + editText.getText().toString() + "\n";
                         String comments = tv_usercomments.getText().toString();
+                        comments = (comments.equals(NO_COMMENTS_AVAILABLE))?"": comments;
                         comments += comment;
                         choosedTimelineSegment.addStrUserComment(comment);
 
