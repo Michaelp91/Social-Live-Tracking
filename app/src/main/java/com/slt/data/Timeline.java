@@ -10,6 +10,7 @@ import com.slt.control.AchievementCalculator;
 import com.slt.control.ApplicationController;
 import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
+import com.slt.statistics.data.StatisticsDataModelProvider;
 
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
@@ -135,7 +136,7 @@ public class Timeline {
      * @return achievements from last week
      */
     public LinkedList<Achievement> getAchievementsListForWeek() {
-        Date current = new Date();
+        Date current = StatisticsDataModelProvider.dateUsedAsReference;
 
         // get days of week
         LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
@@ -149,7 +150,7 @@ public class Timeline {
     }
 
     public LinkedList<Achievement> getAchievementsListForDay() {
-        Date current = new Date();
+        Date current = StatisticsDataModelProvider.dateUsedAsReference;
 
         if(this.myHistory.getLast().isSameDay(current))
             return this.myHistory.getLast().getMyAchievements();
@@ -158,10 +159,10 @@ public class Timeline {
 
     }
 
-        /**
-         * Get the number of achievements in the last week
-         * @return The number of achievements
-         */
+    /**
+     * Get the number of achievements in the last week
+     * @return The number of achievements
+     */
     public int getAchievementsForWeek() {
         int achievementPoints = 0;
         Date current = new Date();
@@ -208,10 +209,10 @@ public class Timeline {
      */
     public LinkedList<Achievement> getAchievementsListForMonth() {
         int achievementPoints = 0;
-        Date current = new Date();
+        Date current = StatisticsDataModelProvider.dateUsedAsReference;
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(current);
         //get days of week
         LinkedList<TimelineDay> month = this.getDaysOfWeekOrMonth(current, 1);
 
@@ -225,10 +226,10 @@ public class Timeline {
         return achievements;//AchievementCalculator.calculateMonthAchievements(month, new LinkedList<Achievement>(), monthLength);
     }
 
-        /**
-         * Get the number of achievements in the last month
-         * @return The number of achievements
-         */
+    /**
+     * Get the number of achievements in the last month
+     * @return The number of achievements
+     */
     public int getAchievementsForMonth() {
         int achievementPoints = 0;
         Date current = new Date();
@@ -274,10 +275,8 @@ public class Timeline {
 
        /* TimelineDay t_d = timeline.getTimelineDay(0);
         TimelineSegment t_s = t_d.getSegment(0);
-
         DetectedActivity activity = t_s.getMyActivity();
         int intActivity = activity.getType();
-
         switch(intActivity) {
             case Constants.TIMELINEACTIVITY.RUNNING:
                 //RUNNING

@@ -228,9 +228,11 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                 } catch (NullPointerException e) {
                     return;
                 }
-                counter_timelinedays = 0;
+                counter_timelinedays = timeLineDays.size() - 1;
                 //view_timelineDays.removeAllViews();
-                for (TimelineDay t_d : timeLineDays) {
+                for (int i = timeLineDays.size() - 1; i >= 0; i--) {
+                    TimelineDay t_d = timeLineDays.get(i);
+
                     activity_runningIsDisplayed = false;
                     activity_walkingIsDisplayed = false;
                     activity_bikingIsDisplayed = false;
@@ -293,11 +295,11 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     iv_bicycle.setImageBitmap(bmp);
                                     DetectedActivity detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE, 100);
                                     double activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    double duration = t_d.getActiveTime(detectedActivity);
+                                    double duration = t_d.getDuration(detectedActivity.getType());
 
                                     String informations = "Type: Bicycle";
-                                    informations += "\nDistance: " + Float.toString((float)activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString((float) duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float)activeDistance) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) duration) + " min";
 
                                     info.setText(informations);
                                     break;
@@ -310,12 +312,12 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                                     iv.setImageBitmap(bmp);
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    duration = t_d.getActiveTime(detectedActivity);
+                                    duration = t_d.getDuration(detectedActivity.getType());
                                     int userSteps = t_d.getUserSteps(detectedActivity);
 
                                     informations = "Type: On Foot";
-                                    informations += "\nDistance: " + Float.toString((float) activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString((float) duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float) activeDistance) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) duration) + " min";
                                     informations += "\nUser Steps: " + userSteps;
 
                                     info.setText(informations);
@@ -333,12 +335,12 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    duration = t_d.getActiveTime(detectedActivity);
+                                    duration = t_d.getDuration(detectedActivity.getType());
                                     userSteps = t_d.getUserSteps(detectedActivity);
 
                                     informations = "Type: Running";
-                                    informations += "\nActive Distance: " + Float.toString((float)activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString((float)duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float)activeDistance) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float)duration) + " min";
 
                                     info.setText(informations);
                                     break;
@@ -353,12 +355,12 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    duration = t_d.getActiveTime(detectedActivity);
+                                    duration = t_d.getDuration(detectedActivity.getType());
                                     userSteps = t_d.getUserSteps(detectedActivity);
 
                                     informations = "Type: Walking";
-                                    informations += "\nActive Distance: " + Float.toString((float) activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString( (float) duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f",(float) activeDistance) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) duration) + " min";
                                     informations += "\nUser Steps: " + userSteps;
 
                                     info.setText(informations);
@@ -374,11 +376,10 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    duration = t_d.getActiveTime(detectedActivity);
+                                    duration = t_d.getDuration(detectedActivity.getType());
 
                                     informations = "Type: Vehicle";
-                                    informations += "\nActive Distance: " + Float.toString((float) activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString( (float) duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float) activeDistance) + " m";
 
                                     info.setText(informations);
                                     break;
@@ -480,7 +481,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                         });
 
 
-                        counter_timelinedays++;
+                        counter_timelinedays--;
                     }
 
                     //TODO: Problem with updating TimelineView, look at this problem later
@@ -584,6 +585,7 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                     LinearLayout tday = list_TimelineDays.get(v.getId());
                     choosedChildren = (LinearLayout) tday.findViewById(R.id.ll_all_locations);
                     choosedTimelineDay = timeLineDays.get(v.getId());
+                    LinkedList<TimelineSegment> choosedSegments = choosedTimelineDay.getMySegments();
                     DataProvider.getInstance().setChoosedTimelineSegments(choosedTimelineDay.getMySegments());
                     Intent i = new Intent(this.getActivity(), SegmentViewActivity.class);
                     startActivity(i);

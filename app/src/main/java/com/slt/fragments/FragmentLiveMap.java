@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.slt.R;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
+import com.slt.data.TimelineDay;
 import com.slt.data.User;
 import com.slt.fragments.adapters.LiveMapListAdapter;
 import com.slt.restapi.OtherRestCalls;
@@ -33,6 +34,7 @@ import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.UsefulMethods;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -47,7 +49,6 @@ public class FragmentLiveMap extends Fragment {
     private static LiveMapListAdapter adapter;
 
     private Button SearchButton;
-    private ProgressBar mProgressBar;
 
     public Handler handler = new Handler();
 
@@ -58,7 +59,12 @@ public class FragmentLiveMap extends Fragment {
     private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
     private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
     private ArrayList<User> list_friends = new ArrayList<>();
+    private HashMap<String, User> h_viewedFriends = new HashMap<>();
 
+
+    public boolean FriendIsNotViewed(String id) {
+        return (h_viewedFriends.get(id) == null)? true:false;
+    }
 
     @Nullable
     @Override
@@ -66,7 +72,6 @@ public class FragmentLiveMap extends Fragment {
         //returning our layout file
         //change R.layout.yourlayoutfilename for each of your fragments
         View view = inflater.inflate(R.layout.fragment_livemap, container, false);
-        mProgressBar =  (ProgressBar) view.findViewById(R.id.live_map_progressBar) ;
 
 
 
@@ -83,18 +88,6 @@ public class FragmentLiveMap extends Fragment {
                 public void run() {
                     restUsers = OtherRestCalls.retrieveFriends();
 
-                    try {
-
-                        getActivity().runOnUiThread( new Runnable() {
-                            @Override
-                            public void run() {
-                                googleMap.clear();
-                            }
-                        } );
-                    }catch (NullPointerException e){
-
-                    }
-
                     ShowFriends();
                     handler.postDelayed(runnable, 2000);
 
@@ -109,50 +102,56 @@ public class FragmentLiveMap extends Fragment {
         final ArrayList<Marker> markers = new ArrayList<>();
 
                 restUsers = OtherRestCalls.retrieveFriends();
-                list_friends.clear();
-                list_friends.addAll(restUsers);
+                //list_friends.clear();
+                //list_friends.addAll(restUsers);
 
                 try {
 
 
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                        mProgressBar.setVisibility(View.GONE);
-                    }
-                });
+
                 }
                     catch (NullPointerException e){
 
                 }
 
-                for(final User u: list_friends) {
-                    Location location = u.getLastLocation();
-                    final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    //final Bitmap bmp = UsefulMethods.LoadImage(u);
-                    final Bitmap bmp = null;
+                for(final User u: restUsers) {
 
-                    try{
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Marker marker = null;
 
-                            if (bmp != null)
-                                marker = googleMap.addMarker(new MarkerOptions().position(latLng)
-                                        .title(u.getEmail()).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-                            else
-                                marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(u.getEmail()).icon(BitmapDescriptorFactory.fromResource( R.drawable.pegman )));
+                    if(FriendIsNotViewed(u.getID())) {
+                        h_viewedFriends.put(u.getID(), u);
+                        list_friends.add(u);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
 
-                            markers.add(marker);
-                            boolean debug = true;
+                        Location location = u.getLastLocation();
+                        final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        //final Bitmap bmp = UsefulMethods.LoadImage(u);
+                        final Bitmap bmp = null;
+
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Marker marker = null;
+
+                                    if (bmp != null)
+                                        marker = googleMap.addMarker(new MarkerOptions().position(latLng)
+                                                .title(u.getEmail()).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+                                    else
+                                        marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(u.getEmail()).icon(BitmapDescriptorFactory.fromResource(R.drawable.pegman)));
+
+                                    markers.add(marker);
+                                    boolean debug = true;
+                                }
+                            });
+                        } catch (NullPointerException e) {
+
                         }
-                    });
-                    }
-                    catch (NullPointerException e){
-
                     }
 
                 }
@@ -192,7 +191,6 @@ public class FragmentLiveMap extends Fragment {
             }
         });
 
-        mProgressBar.setVisibility(View.VISIBLE);
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 

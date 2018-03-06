@@ -20,6 +20,7 @@ import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.definitions.Constants;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -100,8 +101,15 @@ public class StatisticsDataModelProvider {
 
         BarDataSet xyValuesSet;
 
-        xyValuesSet = new BarDataSet(yVals1, "DISTANCE "
-        );
+        String legendStr = "";
+
+        if(sportType == 0)
+            legendStr = "STEPS";
+        else
+            legendStr = "DISTANCE";
+
+
+        xyValuesSet = new BarDataSet( yVals1, legendStr );
 
         xyValuesSet.setValueTextColor(Color.WHITE);
 
@@ -179,27 +187,7 @@ public class StatisticsDataModelProvider {
         return day;
     }
 
-    /**
-     * method calculates the date of the day of the month with the given index
-     * @param dayNr - index of the day of the month
-     * @return date of the day of the month with the given index
-     */
-    private static Date getDateOfMonthWithDayNr(int dayNr) {
-        int dayIndex = dayNr;
-        Calendar c = Calendar.getInstance();   // this takes current date
-        c.set(Calendar.DAY_OF_MONTH, 1);
-        Calendar currCal = Calendar.getInstance();
-        currCal.setTime(new Date());
 
-
-        c.set(Calendar.DAY_OF_MONTH, dayIndex);
-        c.set(Calendar.MONTH, currCal.get(Calendar.MONTH));
-        c.set(Calendar.YEAR, currCal.get(Calendar.YEAR));
-
-        Date selectedDate = c.getTime();
-
-        return selectedDate;
-    }
 
     /**
      * method provides speed for a day of the week
@@ -237,6 +225,16 @@ public class StatisticsDataModelProvider {
      * @return distance of the clicked bar
      */
     public static int getDistance(Entry e) {
+        return (int) e.getY();
+    }
+
+    /**
+     * method provides steps of the clicked bar
+     *
+     * @param e - entry of the bar that has been clicked
+     * @return steps of the clicked bar
+     */
+    public static int getSteps(Entry e) {
         return (int) e.getY();
     }
 
@@ -342,44 +340,18 @@ public class StatisticsDataModelProvider {
         return durance;
     }
 
-
-    /**
-     * return the date of the bar clicked in the chart
-     *
-     * @param timePeriod - time period considered in the chart
-     * @return date of the bar clicked in the chart
-     */
-    public static Date getDate(Entry e, int timePeriod) {
-
-        int x = (int) e.getX();
-
-        // get date of the x entry
-        switch(timePeriod) {
-            case 0:
-                return new Date();
-            case 1:
-                return getDateOfWeekWithDayNr(x);
-            case 2:
-                return getDateOfMonthWithDayNr(x);
-            default:
-                System.err.println("No such time period");
+    private static String getMonthForInt(int num) {
+        String month = "wrong";
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        String[] months = dfs.getMonths();
+        if (num >= 0 && num <= 11 ) {
+            month = months[num];
         }
-
-        return null;
+        return month;
     }
 
-    /**
-     * method calculates the date of the day of the week with the given index
-     * @param x - index of the day of the week
-     * @return date of the day of the week with the given index
-     */
-    private static Date getDateOfWeekWithDayNr(int x) {
-        Timeline timeline = DataProvider.getInstance().getUserTimeline();
 
-        LinkedList<Date> datesWeek = timeline.getDatesOfThisWeek(new Date());
 
-        return datesWeek.get(x);
-    }
 
     /**
      * method provides speed for an hour of the day
@@ -511,7 +483,6 @@ public class StatisticsDataModelProvider {
         for (int i = 0; i < segmentList.size(); i++) {
             segment = segmentList.get(i);
 
-
             startTime = segment.getStartTime();
             calendar.setTime(startTime);
 
@@ -589,7 +560,12 @@ public class StatisticsDataModelProvider {
             cal.setTime(date);
             key = cal.get(Calendar.DAY_OF_MONTH);
 
-            val = (int) timelineDay.getActiveDistance(detectedActivity);
+            if(sportType == Constants.TIMELINEACTIVITY.WALKING
+                    || sportType == Constants.TIMELINEACTIVITY.ON_FOOT)
+                val = timelineDay.getSteps();
+            else
+                val = (int) timelineDay.getActiveDistance(detectedActivity);
+
 
             xyPairsForMonth.put(key, val);
 
@@ -642,7 +618,8 @@ public class StatisticsDataModelProvider {
                     //cal.setTime(date);
                     key = xyPairsForAndWeek.size();
 
-                    if(sportType == 0)
+                    if(sportType == Constants.TIMELINEACTIVITY.WALKING
+                            || sportType == Constants.TIMELINEACTIVITY.ON_FOOT)
                         val = timelineDay.getSteps();
                     else
                         val = (int) timelineDay.getActiveDistance(detectedActivity);

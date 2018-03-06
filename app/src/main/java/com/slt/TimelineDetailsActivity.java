@@ -79,11 +79,11 @@ public class TimelineDetailsActivity extends AppCompatActivity {
     /**
      * Progress Bar
      */
-    private ProgressBar mProgressBar;
     private Activity context;
     private TextView tv_usercomments;
 
     private ProgressDialog progressDialog;
+    private final String NO_COMMENTS_AVAILABLE = "No Comments Available";
 
 
     @Override
@@ -94,9 +94,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
 
 
         choosedTimelineSegment = SharedResources.getInstance().getOnClickedTimelineSegmentForDetails();
-        entryStart = SharedResources.getInstance().getEntryStart();
         mMapView = (MapView) findViewById(R.id.mapView);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress);
         iv_pic1 = (ImageView) findViewById(R.id.iv_pic1);
         iv_pic2 = (ImageView) findViewById(R.id.iv_pic2);
         ImageView iv_editActivity = (ImageView) findViewById(R.id.iv_editActivity);
@@ -194,7 +192,6 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         addComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mProgressBar.setVisibility(View.VISIBLE);
                 final Dialog commentDialog = new Dialog(context);
                 commentDialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
                 commentDialog.setContentView(R.layout.popup_usercomment);
@@ -209,12 +206,14 @@ public class TimelineDetailsActivity extends AppCompatActivity {
                         String email = user.getEmail();
                         String comment = "- " + email + " : " + editText.getText().toString() + "\n";
                         String comments = tv_usercomments.getText().toString();
+                        comments = (comments.equals(NO_COMMENTS_AVAILABLE))?"": comments;
                         comments += comment;
                         choosedTimelineSegment.addStrUserComment(comment);
 
 
                         final String finalComments = comments;
 
+                        tv_usercomments.setText("");
                         tv_usercomments.setText(finalComments);
 
 
@@ -264,36 +263,26 @@ public class TimelineDetailsActivity extends AppCompatActivity {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
-               // googleMap.getUiSettings().setZoomControlsEnabled(true);
                 LocationEntry last = null;
-                LocationEntry first = entryStart;
+
                 if (locationEntries.size() >= 2) {
-                    first = locationEntries.getFirst();
-                    last = locationEntries.getLast();
-
-
-
+                    LocationEntry first = locationEntries.getFirst();
 
                     for (LocationEntry entry : locationEntries) {
+                        if(last != null){
+
                             LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
                             LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
 
 
-                            //googleMap.moveCamera(CameraUpdateFactory.newLatLng(end));
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(end));
                             addLines(start, end);
+                        } else {
+                            LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
+                            googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                        }
                         last = entry;
                     }
-
-                    /*
-                    LatLng start = new LatLng(first.getLatitude(), first.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(start).icon( BitmapDescriptorFactory.fromResource( R.mipmap.ic_start ) )
-                            .title( "START" ));
-
-                    LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource( R.mipmap.ic_finish ))
-                            .title("FINISH"));
-                            */
-
 
                     LatLng start = new LatLng(first.getLatitude(), first.getLongitude());
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(start));
@@ -304,6 +293,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
                     googleMap.addMarker(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource( R.mipmap.ic_finish ))
                             .title("FINISH"));
                     ZoomCamera(start, end);
+
 
                 } else {
                     LatLng start = new LatLng(locationEntries.get(0).getLatitude(), locationEntries.get(0).getLongitude());
@@ -320,7 +310,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         TextView tvDauer = (TextView) findViewById(R.id.tv_dauer);
         TextView tvStrecke = (TextView) findViewById(R.id.tv_strecke);
 
-        String duration = (choosedTimelineSegment.getActiveTime()/ (60*1000)) + "min / " +  (choosedTimelineSegment.getDuration()/ (60*1000)) + "min. ";
+        String duration = Long.toString(choosedTimelineSegment.getDuration());
 
         tvDauer.setText(duration);
 
@@ -369,7 +359,6 @@ public class TimelineDetailsActivity extends AppCompatActivity {
 
         tvStrecke.setText( dist);
 
-        mProgressBar.setVisibility(View.VISIBLE);
         AddUserComments(choosedTimelineSegment.getStrUserComments());
         new Thread(new Runnable() {
             @Override
@@ -419,7 +408,6 @@ public class TimelineDetailsActivity extends AppCompatActivity {
             @Override
             public void run() {
                 ShowImages();
-                mProgressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -562,6 +550,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
     }
 
     private void uploadImage(final Bitmap bitmap) {
+        progressDialog = ProgressDialog.show(context, "Bitte warten Sie...", "", true);
         Toast.makeText(this, "Image is uploaded successfully.", Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
@@ -576,7 +565,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mProgressBar.setVisibility(View.GONE);
+                        progressDialog.hide();
                     }
                 });
 
@@ -603,7 +592,6 @@ public class TimelineDetailsActivity extends AppCompatActivity {
                 //this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
 
                 bmps.add(bitmap);
-                mProgressBar.setVisibility(View.VISIBLE);
                 ShowImages();
 
                 uploadImage(bitmap);
@@ -627,7 +615,7 @@ public class TimelineDetailsActivity extends AppCompatActivity {
                 bmps = (bmps == null)? new LinkedList<Bitmap>(): bmps;
 
                 bmps.add(bitmap);
-
+                ShowImages();
                 uploadImage(bitmap);
 
             } catch (Exception e) {

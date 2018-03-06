@@ -33,9 +33,9 @@ import java.util.LinkedList;
 
 /**
  * fragment for individual tab with specific sport and time period
- *
+ * <p>
  * for example: tab-fragment for the week with running statistics
- *
+ * <p>
  * Created by Maciej
  */
 public class TimeperiodIndividualSportTabFragment extends Fragment {
@@ -79,7 +79,6 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
      * list with data fo the tab adapter
      */
     //public static ArrayList<Object> listWithData_month = null;
-
     public TimeperiodIndividualSportTabFragment() {
         // Required empty public constructor
     }
@@ -93,12 +92,11 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
         String month = "wrong";
         DateFormatSymbols dfs = new DateFormatSymbols();
         String[] months = dfs.getMonths();
-        if (num >= 0 && num <= 11 ) {
+        if (num >= 0 && num <= 11) {
             month = months[num];
         }
         return month;
     }
-
 
 
     @Override
@@ -109,7 +107,7 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
 
         showMonth_textView = (TextView) viewGroup.findViewById(R.id.timeperiod_name);
 
-        if(period == 2) {
+        if (period == 2) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(StatisticsDataModelProvider.dateUsedAsReference);
             String month = getMonthForInt(cal.get(Calendar.MONTH));
@@ -132,11 +130,9 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
                     int year = cal.get(Calendar.YEAR);
                     showMonth_textView.setText(month + " " + year);
 
-                    //IndividualStatistics.adapter.removeFragment("Month");
-                    //IndividualStatistics.adapter.notifyDataSetChanged();
 
                     ///////
-                    BarData barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(),2, IndividualStatistics.getSelectedSportStatistics());
+                    BarData barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(), 2, IndividualStatistics.getSelectedSportStatistics());
                     TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment = new TimeperiodIndividualSportTabFragment();
 
                     timeperiodIndividualSportTabFragment.setPeriod(2);
@@ -158,35 +154,15 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
 
                     FragmentTransaction trans = getFragmentManager()
                             .beginTransaction();
-				/*
-				 * IMPORTANT: We use the "root frame" defined in
-				 * "root_fragment.xml" as the reference to replace fragment
-				 */
+
                     trans.replace(R.id.root_frame, timeperiodIndividualSportTabFragment);
 
-				/*
-				 * IMPORTANT: The following lines allow us to add the fragment
-				 * to the stack and return to it later, by pressing back
-				 */
+
                     trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     trans.addToBackStack(null);
 
                     trans.commit();
-                    //IndividualStatistics.adapter.replaceFragment("Month", "Month123", timeperiodIndividualSportTabFragment);
-                    //IndividualStatistics.adapter.notifyDataSetChanged();
 
-                    /////////
-
-
-                   /* TimeperiodIndividualSportTabFragment.listWithData_month.remove(0);
-
-                    TimeperiodIndividualSportTabFragment.listWithData_month.add(0,
-                            new BarChartItem(barData, getActivity().getApplicationContext()));
-
-                    adapterMonth.notifyDataSetChanged();*/
-
-                    //StatisticsDataModelProvider.dateUsedAsReference = new
-                   // StatisticsDataModelProvider.dateUsedAsReference = new Date();
                 }
             });
 
@@ -206,7 +182,7 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
                     showMonth_textView.setText(month + " " + year);
 
                     ///////
-                    BarData barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(),2, IndividualStatistics.getSelectedSportStatistics());
+                    BarData barData = DataObjectsCollection.dataSupplier.getBarData(getActivity().getApplicationContext(), 2, IndividualStatistics.getSelectedSportStatistics());
                     TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment = new TimeperiodIndividualSportTabFragment();
 
                     timeperiodIndividualSportTabFragment.setPeriod(2);
@@ -228,16 +204,10 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
 
                     FragmentTransaction trans = getFragmentManager()
                             .beginTransaction();
-				/*
-				 * IMPORTANT: We use the "root frame" defined in
-				 * "root_fragment.xml" as the reference to replace fragment
-				 */
+
                     trans.replace(R.id.root_frame, timeperiodIndividualSportTabFragment);
 
-				/*
-				 * IMPORTANT: The following lines allow us to add the fragment
-				 * to the stack and return to it later, by pressing back
-				 */
+
                     trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     trans.addToBackStack(null);
 
@@ -248,7 +218,6 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
             RelativeLayout relativeLayout = viewGroup.findViewById(R.id.month_switch);
             relativeLayout.setVisibility(View.INVISIBLE);
         }
-
 
 
         TextView textView = (TextView) viewGroup.findViewById(R.id.activity_name);
@@ -285,20 +254,12 @@ public class TimeperiodIndividualSportTabFragment extends Fragment {
         // achivements
         listWithData.add(this.achievements);
 
-        /*if(this.period == 2
-                && TimeperiodIndividualSportTabFragment.listWithData_month == null)
-            TimeperiodIndividualSportTabFragment.listWithData_month = listWithData;
-*/
         // adapter for the details within time period
         TimeperiodIndividualSportTabFragmentAdapter adapter = new TimeperiodIndividualSportTabFragmentAdapter(getActivity().getApplicationContext(), listWithData);
 
         adapter.setPeriod(this.period);
 
         adapter.setSport(this.sport);
-
-        /*if(TimeperiodIndividualSportTabFragment.adapterMonth == null
-                && this.period == 2)
-            TimeperiodIndividualSportTabFragment.adapterMonth = adapter;*/
 
         l.setAdapter(adapter);
 
