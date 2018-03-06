@@ -14,43 +14,82 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by Usman Ahmad on 30.12.2017.
+ * Updates all the tracking data in database, also called Tracker Updater
  */
 
 public class DataUpdater implements Runnable{
+
+    /**
+     * singleton: ourInstance
+     */
     private static final DataUpdater ourInstance = new DataUpdater();
+
+    /**
+     * tracker updater thread
+     */
     private Thread updater;
 
+    /**
+     * list of location entries to be stored in the database
+     */
     private ArrayList<REST_LocationEntry> queue_locationEntries;
+
+    /**
+     * timeline object to be stored into the database
+     */
     private Timeline timeline;
+
+    /**
+     * rest_timeline
+     */
     private REST_Timeline rest_timeline;
+
+    /**
+     * list of timeline days to be stored in the database
+     */
     private ArrayList<REST_TimelineDay> queue_timelineDays;
+
+
+    /**
+     * list of timeline segments to be stored into the database
+     */
     private ArrayList<REST_TimelineSegment> queue_timeLineSegments;
+
+    /**
+     * flag for checking if the data updater thread has to be terminated
+     */
     private boolean isAlive;
 
-    //TODO:Hashmap <TrackingObject, RestObject>
-
-    //For Creates
+    /**
+     * Hashmaps for create Requests
+     */
     private HashMap<LocationEntry, REST_LocationEntry> h_queue_locationEntries = new HashMap<>();
     private HashMap<TimelineSegment, REST_TimelineSegment> h_queue_timelineSegments = new HashMap<>();
     private HashMap<TimelineDay, REST_TimelineDay> h_queue_timelineDays = new HashMap<>();
     private HashMap<TimelineSegment, REST_TimelineSegment> h_queue_timelinesegments = new HashMap<>();
     private HashMap<User, REST_User_Functionalities> h_queue_user_functionalities = new HashMap<>();
 
-    //For Updates
+    /**
+     * Hashmaps for update requests
+     */
     private HashMap<LocationEntry, REST_LocationEntry> h_queue_locationEntries_update = new HashMap<>();
     private HashMap<TimelineSegment, REST_TimelineSegment> h_queue_timelineSegments_update = new HashMap<>();
     private HashMap<TimelineDay, REST_TimelineDay> h_queue_timelineDays_update = new HashMap<>();
     private HashMap<TimelineSegment, REST_TimelineSegment> h_queue_timelinesegments_update = new HashMap<>();
     private HashMap<User, REST_User_Functionalities> h_queue_user_functionalities_update = new HashMap<>();
 
-    //For Deletes
+    /**
+     * Hashmaps for deleting requests
+     */
     private HashMap<LocationEntry, REST_LocationEntry> h_queue_locationEntries_delete = new HashMap<>();
     private HashMap<TimelineSegment, REST_TimelineSegment> h_queue_timelineSegments_delete = new HashMap<>();
     private HashMap<TimelineDay, REST_TimelineDay> h_queue_timelineDays_delete = new HashMap<>();
     private HashMap<TimelineSegment, REST_TimelineSegment> h_queue_timelinesegments_delete = new HashMap<>();
     private HashMap<User, REST_User_Functionalities> h_queue_user_functionalities_delete = new HashMap<>();
 
+    /**
+     * clear all the collections
+     */
     private void clearOtherCollections() {
         h_queue_locationEntries = new HashMap<>();
         h_queue_timelineSegments = new HashMap<>();
@@ -72,10 +111,17 @@ public class DataUpdater implements Runnable{
 
     }
 
+    /**
+     * getter
+     * @return ourInstance
+     */
     public static DataUpdater getInstance() {
         return ourInstance;
     }
 
+    /**
+     * constructor
+     */
     private DataUpdater() {
         isAlive = true;
 
@@ -85,6 +131,9 @@ public class DataUpdater implements Runnable{
         queue_timeLineSegments = new ArrayList<>();
     }
 
+    /**
+     * start the thread
+     */
     public void Start() {
         isAlive = true;
         timeline = null;
@@ -92,6 +141,9 @@ public class DataUpdater implements Runnable{
         updater.start();
     }
 
+    /**
+     * terminates the thread
+     */
     public void Terminate() {
         clearOtherCollections();
         TemporaryDB.getInstance().initCollections();
@@ -106,7 +158,10 @@ public class DataUpdater implements Runnable{
     }
 
 
-
+    /**
+     * create requests for all the tracking objects from the "create hashmap queue"
+     * @throws InterruptedException
+     */
     public void create() throws InterruptedException {
         boolean requestSuccessful = true;
 
@@ -213,6 +268,9 @@ public class DataUpdater implements Runnable{
 
     }
 
+    /**
+     * update requests for all the tracking objects from the "update hashmap queue"
+     */
     public void update() {
         REST_Timeline timeLine = TemporaryDB.getInstance().getTimeline();
 
@@ -263,6 +321,9 @@ public class DataUpdater implements Runnable{
         }
     }
 
+    /**
+     * delete requests for all the tracking objects from the "delete hashmap queue"
+     */
     public void delete() {
         REST_Timeline timeLine = TemporaryDB.getInstance().getTimeline();
 
@@ -311,6 +372,9 @@ public class DataUpdater implements Runnable{
         }
     }
 
+    /**
+     * method which is executed by the tracking updater thread
+     */
     public void run() {
         if(!isAlive) {
 
@@ -344,11 +408,11 @@ public class DataUpdater implements Runnable{
     }
 
 
-    public ArrayList<REST_LocationEntry> getQueue_locationEntries() {
-        return queue_locationEntries;
-    }
-
-
+    /**
+     * add location entry to the queue for the create request and notifies the updater thread
+     * @param l
+     * @param t_s
+     */
     public void addLocationEntry(LocationEntry l, TimelineSegment t_s) { //TODO: Tracking Object as a parameter
         //TODO: create REST Object and insert it into hashmap
         REST_TimelineSegment r_t_s =  TemporaryDB.getInstance().h_timelineSegments.get(t_s);
@@ -366,6 +430,10 @@ public class DataUpdater implements Runnable{
 
     }
 
+    /**
+     * add location entry to the queue for the delete request and notify the thread
+     * @param l_e
+     */
     public void deleteLocationEntry(LocationEntry l_e) {
         REST_LocationEntry r_l_e = TemporaryDB.getInstance().h_locationEntries.get(l_e);
         h_queue_locationEntries_delete.put(l_e, r_l_e);
@@ -374,6 +442,10 @@ public class DataUpdater implements Runnable{
         }
     }
 
+    /**
+     * getter
+     * @return rest_timeline
+     */
     public REST_Timeline getTimeline() {
         return rest_timeline;
     }
@@ -397,10 +469,10 @@ public class DataUpdater implements Runnable{
         }
     }
 
-    public ArrayList<REST_TimelineDay> getQueue_timelineDays() {
-        return queue_timelineDays;
-    }
-
+    /**
+     * add timeline day to the queue for the create request and notify the updater thread
+     * @param t_d timeline day
+     */
     public void addTimelineDay(TimelineDay t_d) {
 
 
@@ -414,6 +486,10 @@ public class DataUpdater implements Runnable{
 
     }
 
+    /**
+     * add timeline day to the queue for the update request and notify the updater thread
+     * @param t_d
+     */
     public void updateTimelineDay(TimelineDay t_d) {
         REST_TimelineDay r_t_d = TemporaryDB.getInstance().h_timelineDays.get(t_d);
 
@@ -437,10 +513,11 @@ public class DataUpdater implements Runnable{
         }
     }
 
-    public ArrayList<REST_TimelineSegment> getQueue_timeLineSegments() {
-        return queue_timeLineSegments;
-    }
-
+    /**
+     * add timeline segment to the queue for create request and notify the updater thread
+     * @param t_s
+     * @param t_d
+     */
     public void addTimeLineSegment(TimelineSegment t_s, TimelineDay t_d) {
         REST_TimelineDay r_t_d = TemporaryDB.getInstance().h_timelineDays.get(t_d);
 
@@ -455,6 +532,10 @@ public class DataUpdater implements Runnable{
 
     }
 
+    /**
+     * add timeline segment to the queue for delete request and notify the updater thread
+     * @param t_s
+     */
     public void deleteTimelineSegment(TimelineSegment t_s) {
         REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
         h_queue_timelinesegments_delete.put(t_s, r_t_s);
@@ -463,6 +544,10 @@ public class DataUpdater implements Runnable{
         }
     }
 
+    /**
+     * add the timeline segment to the queue and notify the updater thread
+     * @param t_s
+     */
     public void updateTimelineSegment(TimelineSegment t_s) {
         REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
         r_t_s.activeDistance = t_s.getActiveDistance();

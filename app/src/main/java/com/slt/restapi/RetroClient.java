@@ -10,14 +10,10 @@ import static com.slt.utils.Constants.BASE_URL;
 import static com.slt.utils.Constants.BASE_URL_ONLINE_SERVER;
 
 /**
- * Created by Usman Ahmad on 20.12.2017.
+ * Retroclient
  */
 
 public class RetroClient {
-    /********
-     * URLS
-     *******/
-    private static final String ROOT_URL = "http://pratikbutani.x10.mx";
 
     /**
      * Get Retrofit Instance

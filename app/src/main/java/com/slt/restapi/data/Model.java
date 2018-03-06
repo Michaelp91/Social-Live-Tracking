@@ -1,7 +1,7 @@
 package com.slt.restapi.data;
 
 /**
- * Created by Usman Ahmad on 27.12.2017.
+ * Model
  */
 
 public interface Model {

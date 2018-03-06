@@ -15,11 +15,16 @@ import java.io.ByteArrayOutputStream;
 import retrofit2.Call;
 
 /**
- * Created by Usman Ahmad on 07.01.2018.
+ * Other useful methods
  */
 
 public class UsefulMethods {
 
+    /**
+     * download image from user
+     * @param user
+     * @return bitmap
+     */
     public static Bitmap LoadImage(User user) {
         if (user.getMyImageName() == null) {
             return null;
@@ -56,6 +61,11 @@ public class UsefulMethods {
         }
     }
 
+    /**
+     * download image via imageName
+     * @param imageName
+     * @return bitmap
+     */
     public static Bitmap LoadImage(String imageName) {
         if (imageName == null) {
             return null;
@@ -90,6 +100,12 @@ public class UsefulMethods {
         }
     }
 
+    /**
+     * upload image view
+     * @param bitmap
+     * @param imagename
+     * @return true if successful, otherwise false
+     */
     public static boolean UploadImageView(Bitmap bitmap, String imagename) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);

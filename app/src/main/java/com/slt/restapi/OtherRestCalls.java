@@ -20,7 +20,6 @@ import com.slt.restapi.data.REST_LocationEntry;
 import com.slt.restapi.data.REST_Timeline;
 import com.slt.restapi.data.REST_TimelineDay;
 import com.slt.restapi.data.REST_TimelineSegment;
-import com.slt.restapi.data.REST_User;
 import com.slt.restapi.data.REST_User_Functionalities;
 
 import java.lang.reflect.Array;
@@ -34,11 +33,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by Usman Ahmad on 13.01.2018.
+ * other rest calls
  */
 
 public class OtherRestCalls {
 
+    /**
+     * update activity of the specific timeline segment
+     * @param t_s
+     * @return true, if the request is successfull, otherwise false
+     */
     public static boolean updateTimelineSegmentForActivity(TimelineSegment t_s) {
         REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
         r_t_s.myActivity = t_s.getMyActivity().getType();
@@ -57,6 +61,11 @@ public class OtherRestCalls {
         return true;
     }
 
+    /**
+     * update comments of the specific timeline segment
+     * @param t_s
+     * @return true, if the request is successfull, otherwise false
+     */
     public static boolean updateTimelineSegmentForComments(TimelineSegment t_s) {
         REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
         LinkedList<String> userComments =  t_s.getStrUserComments();
@@ -76,6 +85,11 @@ public class OtherRestCalls {
         return true;
     }
 
+    /**
+     * update image informations of the specific timeline segment
+     * @param t_s
+     * @return true, if the request is successfull, otherwise false
+     */
     public static boolean updateTimelineSegmentForImages(TimelineSegment t_s) {
         REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
         LinkedList<String> images =  t_s.getMyImages();
@@ -95,6 +109,11 @@ public class OtherRestCalls {
         return true;
     }
 
+    /**
+     * create user
+     * @param email
+     * @return user, if the request is successfull, otherwise null
+     */
     public static User createUser_Functionalities(String email) {
 
         REST_User_Functionalities r_u_f = new REST_User_Functionalities();
@@ -130,6 +149,11 @@ public class OtherRestCalls {
     }
 
 
+    /**
+     * retrieve user
+     * @param email
+     * @return user, if the request is successfull, otherwise null
+     */
     public static User retrieveUser_Functionalities(final String email) {
 
         REST_User_Functionalities r_u_f = new REST_User_Functionalities();
@@ -166,6 +190,10 @@ public class OtherRestCalls {
         }
     }
 
+    /**
+     * retrieve friends
+     * @return array list of riends, if the request is successfull, otherwise empty array list
+     */
     public static ArrayList<User> retrieveFriends() {
         TemporaryDB.getInstance().h_rest_userResolver = new HashMap<>();
         TemporaryDB.getInstance().h_userResolver = new HashMap<>();
@@ -209,6 +237,10 @@ public class OtherRestCalls {
         return friends;
     }
 
+    /**
+     * retrieve timelines of friends
+     * @return array list of timeline, if the request is successfull, otherwise empty array list
+     */
     public static ArrayList<User> retrieveFriendsIncludingTimelines() {
 
         TemporaryDB.getInstance().h_rest_timelineResolver = new HashMap<>();
@@ -306,11 +338,11 @@ public class OtherRestCalls {
         return friends;
     }
 
-    /**
-     *
-     * @param includeFriendsUpdate
-     */
 
+    /**
+     * update user
+     * @param includeFriendsUpdate true, if the friends update is included
+     */
     public static void updateUser(boolean includeFriendsUpdate) {
 
 
@@ -375,11 +407,10 @@ public class OtherRestCalls {
         }
     }
 
-    //Delete User
     /**
-     *
+     * delete location entries by timeline segment
      * @param t_s
-     * @return
+     * @return true, if successfull, otherwise false
      */
     public static boolean deleteLocationEntriesByTimelineSegment(TimelineSegment t_s) {
         REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
@@ -398,6 +429,12 @@ public class OtherRestCalls {
         return true;
     }
 
+    /**
+     * delete timeline segments from timeline day
+     * @param t_d
+     * @return true if successfull, otherwise false
+     */
+
     public static boolean deleteTimelineSegmentByTimelineDay(TimelineDay t_d) {
         REST_TimelineDay r_t_d = TemporaryDB.getInstance().h_timelineDays.get(t_d);
         Endpoints api = RetroClient.getApiService();
@@ -415,6 +452,11 @@ public class OtherRestCalls {
         return true;
     }
 
+    /**
+     * delete timelinedays from timeline
+     * @param t
+     * @return true if successfull, otherwise false
+     */
     public static boolean deleteTimelineDayByTimeline(Timeline t) {
         REST_Timeline r_t = TemporaryDB.getInstance().getTimeline();
         Endpoints api = RetroClient.getApiService();
@@ -432,6 +474,11 @@ public class OtherRestCalls {
         return true;
     }
 
+    /**
+     * delete timeline
+     * @param u
+     * @return true if successfull, otherwise not
+     */
     public static boolean deleteTimeline(User u) {
         REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
         Endpoints api = RetroClient.getApiService();
@@ -449,6 +496,11 @@ public class OtherRestCalls {
         return true;
     }
 
+    /**
+     * delete user
+     * @param u
+     * @return true if successfull, otherwise false
+     */
     public static boolean deleteUser_Functionalities(User u) {
         REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
         Endpoints api = RetroClient.getApiService();
@@ -464,6 +516,12 @@ public class OtherRestCalls {
         return true;
     }
 
+
+    /**
+     * delete user
+     * @param u
+     * @return true if successfull, otherwise false
+     */
     public static boolean deleteUsers(User u) {
         REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
         Endpoints api = RetroClient.getApiService();

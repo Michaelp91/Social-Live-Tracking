@@ -20,22 +20,20 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by Usman Ahmad on 14.01.2018.
+ * Convert rest classes into the tracking data model
  */
 
 public class RESTToDatamodel {
 
-    public User buildUserObject(REST_User_Functionalities r_u_f) {
-        //TODO: :(
-        User user = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, r_u_f._id);
 
-        return user;
-    }
-
+    /**
+     * build user object
+     * @param rest_users
+     * @return list of users
+     */
     public static ArrayList<User> buildUsersObject(ArrayList<REST_User_Functionalities> rest_users) {
         ArrayList<User> users = new ArrayList<>();
         for(REST_User_Functionalities r_u_f: rest_users) {
-            //TODO: :(
             User u = new User(r_u_f.userName, r_u_f.email, r_u_f.foreName, r_u_f.lastName, null, r_u_f.myAge, r_u_f.myCity, r_u_f._id);
             users.add(u);
         }
@@ -43,6 +41,10 @@ public class RESTToDatamodel {
         return users;
     }
 
+    /**
+     * build user objects including timeline data
+     * @return list of users
+     */
     public static ArrayList<User> buildCompleteUserObjects() {
 
         ArrayList<User> timelineUsers = new ArrayList<>();
@@ -120,6 +122,10 @@ public class RESTToDatamodel {
         return timelineUsers;
     }
 
+    /**
+     * build complete timeline object
+     * @return timeline object
+     */
     public static Timeline buildCompleteTimelineObject() {
         Timeline t = new Timeline();
         try {

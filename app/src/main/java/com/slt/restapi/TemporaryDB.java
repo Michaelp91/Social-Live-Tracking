@@ -16,19 +16,49 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
- * Created by Usman Ahmad on 30.12.2017.
+ * Helper Singleton
  */
-
 public class TemporaryDB {
+    /**
+     * singleton
+     */
     private static final TemporaryDB ourInstance = new TemporaryDB();
 
+    /**
+     * list of locationEntries
+     */
     private ArrayList<REST_LocationEntry> locationEntries;
+
+    /**
+     * timeline
+     */
     private REST_Timeline timeline;
+
+    /**
+     * list of timeline days
+     */
     private ArrayList<REST_TimelineDay> timelineDays;
+
+    /**
+     * list of timeline segments
+     */
     private ArrayList<REST_TimelineSegment> timeLineSegments;
+
+    /**
+     * rest user object
+     */
     private REST_User_Functionalities appUser;
+
+    /**
+     * user object
+     */
     private User model_appUser;
 
+    private User friend;
+
+    /**
+     * all the hashmaps for mapping non rest -> rest objects
+     */
     public HashMap<LocationEntry, REST_LocationEntry> h_locationEntries = new HashMap<>();
     public HashMap<TimelineDay, REST_TimelineDay> h_timelineDays = new HashMap<>();
     public HashMap<TimelineSegment, REST_TimelineSegment> h_timelineSegments = new HashMap<>();
@@ -53,9 +83,10 @@ public class TemporaryDB {
     public HashMap<String, REST_TimelineSegment> h_rest_timelinesegmentResolver = new HashMap<>();
     public HashMap<String, REST_LocationEntry> h_rest_locationentryResolver = new HashMap<>();
 
-    private User friend;
 
-
+    /**
+     * initialize collections
+     */
     public void initCollections() {
         h_locationEntries = new HashMap<>();
         h_timelineDays = new HashMap<>();
@@ -83,16 +114,27 @@ public class TemporaryDB {
     }
 
 
+    /**
+     * getter
+     * @return ourInstance
+     */
     public static TemporaryDB getInstance() {
         return ourInstance;
     }
 
+    /**
+     * Constructor
+     */
     private TemporaryDB() {
         locationEntries = new ArrayList<>();
         timelineDays = new ArrayList<>();
         timeLineSegments = new ArrayList<>();
     }
 
+    /**
+     * setter
+     * @param locationEntries
+     */
     public void setLocationEntries(ArrayList<REST_LocationEntry> locationEntries) {
 
         for(REST_LocationEntry r_l: locationEntries) {
@@ -104,6 +146,10 @@ public class TemporaryDB {
         }
     }
 
+    /**
+     * setter
+     * @param timelineDays
+     */
     public void setTimelineDays(ArrayList<REST_TimelineDay> timelineDays) {
 
         for(REST_TimelineDay r_t_d: timelineDays) {
@@ -113,6 +159,10 @@ public class TemporaryDB {
         }
     }
 
+    /**
+     * setter
+     * @param timeLineSegments
+     */
     public void setTimeLineSegments(ArrayList<REST_TimelineSegment> timeLineSegments) {
 
         for(REST_TimelineSegment r_t_s: timeLineSegments) {
@@ -122,18 +172,34 @@ public class TemporaryDB {
         }
     }
 
+    /**
+     * add timeline segment
+     * @param r_t_s
+     */
     public void addTimeLineSegment(REST_TimelineSegment r_t_s) {
         this.timeLineSegmentsByTags.put(r_t_s.int_TAG, r_t_s);
     }
 
+    /**
+     * setter
+     * @param timeline
+     */
     public void setTimeline(REST_Timeline timeline) {
         this.timeline = timeline;
     }
 
+    /**
+     * getter
+     * @return
+     */
     public REST_Timeline getTimeline() {
         return timeline;
     }
 
+    /**
+     * add timeline day
+     * @param t
+     */
     public void addTimelineDay(REST_TimelineDay t) {
         int tag = t.int_TAG;
 
@@ -141,6 +207,11 @@ public class TemporaryDB {
         this.timelineDays.add(t);
     }
 
+    /**
+     * find timeline day by object
+     * @param search
+     * @return
+     */
     public REST_TimelineDay findTimeLineDayByObject(REST_TimelineDay search) {
 
         REST_TimelineDay toSearch = timelineDaysByTags.get(search.int_TAG);
@@ -153,7 +224,11 @@ public class TemporaryDB {
     }
 
 
-
+    /**
+     * find timeline segment by object
+     * @param search
+     * @return rest timeline segment object
+     */
     public REST_TimelineSegment findTimeLineSegmentByObject(REST_TimelineSegment search) {
         if(search == null) {
             Log.i("TemporaryDB: ", "----------------------------- REST Null Timeline Segment");
@@ -169,30 +244,53 @@ public class TemporaryDB {
         }
     }
 
-    public ArrayList<REST_TimelineSegment> getTimeLineSegments() {
-        return timeLineSegments;
-    }
+
+    /**
+     * getter
+     * @return user
+     */
 
     public User getChoosedFriend() {
         return friend;
     }
 
+    /**
+     * setter
+     * @param u
+     */
     public void setChoosedFriend(User u) {
         this.friend = u;
     }
 
+    /**
+     * getter
+     * @return
+     */
     public REST_User_Functionalities getAppUser() {
         return appUser;
     }
 
 
+    /**
+     * setter
+     * @param appUser
+     */
     public void setAppUser(REST_User_Functionalities appUser) {
         this.appUser = appUser;
     }
 
+    /**
+     * setter
+     * @param u
+     */
     public void setModel_AppUser(User u){
         this.model_appUser = u;
     }
+
+    /**
+     * getter
+     * @return
+     */
     public User getModel_AppUser() {
         return model_appUser;
     }

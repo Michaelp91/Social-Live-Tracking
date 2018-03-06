@@ -13,12 +13,17 @@ import java.util.ArrayList;
 import retrofit2.Call;
 
 /**
- * Created by Usman Ahmad on 27.12.2017.
+ * create and update requests
  */
 
 public class UpdateOperations_Synchron {
 
 
+    /**
+     * create request: add timeline into the database
+     * @param timeline
+     * @return true if successfull, otherwise false
+     */
     public static boolean createTimeLine(REST_Timeline timeline) {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createTimeLine(timeline);
@@ -36,6 +41,11 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    /**
+     * create timeline segment manually
+     * @param t
+     * @return true if successfull, otherwise false
+     */
     public static boolean createTimeLineManually(Timeline t) {
         REST_User_Functionalities r_u_f = TemporaryDB.getInstance().getAppUser();
         REST_Timeline r_t = new REST_Timeline(r_u_f._id, new ArrayList<REST_Achievement>());
@@ -55,6 +65,12 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    /**
+     * create timeline day manually
+     * @param t_d
+     * @param timeLineDay
+     * @return true if successfull, otherwise false
+     */
     public static boolean createTimeLineDay(TimelineDay t_d, REST_TimelineDay timeLineDay)  {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.createTimeLineDay(timeLineDay);
@@ -76,6 +92,12 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    /**
+     * update timeline day
+     * @param t_d
+     * @param timelineDay
+     * @return true if successfull, otherwise not
+     */
     public static boolean updateTimelineDay(TimelineDay t_d, REST_TimelineDay timelineDay) {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.updateTimelineDay(timelineDay);
@@ -92,6 +114,11 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    /**
+     * update timelinesegment manually
+     * @param t_s
+     * @return true if successful, otherwise false
+     */
     public static boolean updateTimelineSegmentManually(TimelineSegment t_s) {
         REST_TimelineSegment r_t_s = TemporaryDB.getInstance().h_timelineSegments.get(t_s);
         Endpoints api = RetroClient.getApiService();
@@ -109,6 +136,12 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    /**
+     * update timeline segment
+     * @param t_s
+     * @param timelineSegment
+     * @return true if successfull, otherwise false
+     */
     public static boolean updateTimelineSegment(TimelineSegment t_s, REST_TimelineSegment timelineSegment) {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.updateTimelineSegment(timelineSegment);
@@ -125,6 +158,12 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    /**
+     * delete timeline segment
+     * @param t_s
+     * @param timelineSegment
+     * @return true if successful, otherwise false
+     */
     public static boolean deleteTimelineSegment(TimelineSegment t_s, REST_TimelineSegment timelineSegment) {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.deleteTimelineSegment(timelineSegment);
@@ -143,6 +182,12 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    /**
+     * create timeline segment
+     * @param t_s
+     * @param timelineSegment
+     * @return true if successful, otherwise false
+     */
     public static boolean createTimeLineSegment(TimelineSegment t_s, REST_TimelineSegment timelineSegment) {
 
         Endpoints api = RetroClient.getApiService();
@@ -166,6 +211,12 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    /**
+     * create location entry
+     * @param l_e
+     * @param locationEntry
+     * @return true if successful, otherwise false
+     */
     public static boolean createLocationEntry(LocationEntry l_e, REST_LocationEntry locationEntry) {
 
         Endpoints api = RetroClient.getApiService();
@@ -188,6 +239,12 @@ public class UpdateOperations_Synchron {
         return true;
     }
 
+    /**
+     * delete location entry
+     * @param l_e
+     * @param r_l_e
+     * @return true if successful, otherwise false
+     */
     public static boolean deleteLocationEntry(LocationEntry l_e, REST_LocationEntry r_l_e) {
         Endpoints api = RetroClient.getApiService();
         Call<JsonObject> call = api.deleteLocationEntry(r_l_e);

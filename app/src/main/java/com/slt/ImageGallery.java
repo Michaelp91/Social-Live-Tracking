@@ -14,11 +14,25 @@ import com.slt.control.SharedResources;
 import java.util.LinkedList;
 import java.util.zip.Inflater;
 
+/**
+ * Show more pictures in gallery
+ */
 public class ImageGallery extends AppCompatActivity {
 
+    /**
+     * pictures for the specific segment
+     */
     private LinkedList<Bitmap> segmentBitmaps;
+
+    /**
+     * ll_gallery
+     */
     private LinearLayout ll_gallery;
 
+    /**
+     * overwritten onCreate Method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +42,9 @@ public class ImageGallery extends AppCompatActivity {
         ShowImages();
     }
 
+    /**
+     * display images
+     */
     private void ShowImages() {
         final LayoutInflater inflater = LayoutInflater.from(this);
         ImageView[] ivPics = new ImageView[2];

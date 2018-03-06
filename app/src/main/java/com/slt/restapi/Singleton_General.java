@@ -1,17 +1,31 @@
 package com.slt.restapi;
 
 /**
- * Created by Usman Ahmad on 30.12.2017.
+ * Singleton_General
  */
 
 public class Singleton_General {
+    /**
+     * ourInstance
+     */
     private static final Singleton_General ourInstance = new Singleton_General();
+
+    /**
+     * counter
+     */
     public int counter;
 
+    /**
+     * getter
+     * @return singleton instance
+     */
     public static Singleton_General getInstance() {
         return ourInstance;
     }
 
+    /**
+     * constructor
+     */
     private Singleton_General() {
         counter = 0;
     }

@@ -1,11 +1,22 @@
 package com.slt.restapi.data;
 
 /**
- * Created by Usman Ahmad on 07.01.2018.
+ * Image
  */
 
 public class Image {
+    /**
+     * byte array with image data
+     */
     public byte[] imageByteArray;
+
+    /**
+     * string
+     */
     public String string;
+
+    /**
+     * title of the image
+     */
     public String filename;
 }

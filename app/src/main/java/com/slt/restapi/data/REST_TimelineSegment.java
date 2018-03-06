@@ -7,31 +7,108 @@ import java.util.Date;
 import java.util.LinkedList;
 
 /**
- * Created by Usman Ahmad on 11.01.2018.
+ * REST_TimelineSegment
  */
 
-public class REST_TimelineSegment implements Model{
+public class REST_TimelineSegment implements Model {
+
+    /**
+     * TAG
+     */
     public String TAG;
+
+    /**
+     * myActivity
+     */
     public int myActivity;
+
+    /**
+     * int_TAG
+     */
     public int int_TAG;
+
+    /**
+     * _id
+     */
     public String _id;
+
+    /**
+     * startAddress
+     */
     public String startAddress;
-    public double POI;
+
+
+    /**
+     * activeDistance
+     */
     public double activeDistance;
+
+    /**
+     * inactiveDistance
+     */
     public double inactiveDistance;
+
+    /**
+     * activeTime
+     */
     public double activeTime;
+
+    /**
+     * inactiveTime
+     */
     public double inactiveTime;
+
+    /**
+     * userSteps
+     */
     public int userSteps;
+
+    /**
+     * startPlace
+     */
     public String startPlace;
+
+    /**
+     * startTime
+     */
     public Date startTime;
+
+    /**
+     * duration
+     */
     public double duration;
-    //private String pictures;
+
+    /**
+     * timeline day Id
+     */
     public String timeLineDay;
+
+    /**
+     * timelineday object
+     */
     public REST_TimelineDay timeLineDayObject;
+
+    /**
+     * list of achievements
+     */
     public ArrayList<REST_Achievement> myAchievements;
+
+    /**
+     * list of user comments
+     */
     public LinkedList<String> usercomments;
+
+    /**
+     * list of images
+     */
     public LinkedList<String> images;
 
+    /**
+     * Constructor
+     * @param startTime
+     * @param myActivity
+     * @param timeLineDayObject
+     */
     public REST_TimelineSegment(Date startTime, int myActivity, REST_TimelineDay timeLineDayObject) {
         this.int_TAG = Singleton_General.getInstance().counter;
         this.TAG = "TimelineSegment";

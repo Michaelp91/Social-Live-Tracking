@@ -57,7 +57,6 @@ import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.UsefulMethods;
-import com.slt.restapi.data.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;

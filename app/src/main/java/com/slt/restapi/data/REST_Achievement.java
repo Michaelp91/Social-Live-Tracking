@@ -1,13 +1,24 @@
 package com.slt.restapi.data;
 
 /**
- * Created by Usman Ahmad on 11.01.2018.
+ * REST_Achievment
  */
 
 public class REST_Achievement {
+    /**
+     * achievment
+     */
     public int achievement;
+
+    /**
+     * achievment id
+     */
     public String _id;
 
+    /**
+     * save the achievment
+     * @param achievement
+     */
     public REST_Achievement(int achievement) {
         this.achievement = achievement;
     }
