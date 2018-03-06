@@ -51,7 +51,26 @@ public class DataUpdater implements Runnable{
     private HashMap<TimelineSegment, REST_TimelineSegment> h_queue_timelinesegments_delete = new HashMap<>();
     private HashMap<User, REST_User_Functionalities> h_queue_user_functionalities_delete = new HashMap<>();
 
+    private void clearOtherCollections() {
+        h_queue_locationEntries = new HashMap<>();
+        h_queue_timelineSegments = new HashMap<>();
+        h_queue_timelineDays = new HashMap<>();
+        h_queue_timelinesegments = new HashMap<>();
+        h_queue_user_functionalities = new HashMap<>();
 
+        h_queue_locationEntries_update = new HashMap<>();
+        h_queue_timelineSegments_update = new HashMap<>();
+        h_queue_timelineDays_update = new HashMap<>();
+        h_queue_timelinesegments_update = new HashMap<>();
+        h_queue_user_functionalities_update = new HashMap<>();
+
+        h_queue_locationEntries_delete = new HashMap<>();
+        h_queue_timelineSegments_delete = new HashMap<>();
+        h_queue_timelineDays_delete = new HashMap<>();
+        h_queue_timelinesegments_delete = new HashMap<>();
+        h_queue_user_functionalities_delete = new HashMap<>();
+
+    }
 
     public static DataUpdater getInstance() {
         return ourInstance;
@@ -74,9 +93,19 @@ public class DataUpdater implements Runnable{
     }
 
     public void Terminate() {
-        isAlive = false;
-        Locks.getInstance().lock.notifyAll();
+        clearOtherCollections();
+        TemporaryDB.getInstance().initCollections();
+
+        synchronized (Locks.getInstance().lock) {
+            isAlive = false;
+            if (updater.isAlive()) {
+                boolean debug = true;
+                Locks.getInstance().lock.notifyAll();
+            }
+        }
     }
+
+
 
     public void create() throws InterruptedException {
         boolean requestSuccessful = true;

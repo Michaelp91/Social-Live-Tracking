@@ -52,6 +52,7 @@ import com.slt.fragments.FragmentEditSettings;
 import com.slt.fragments.FragmentFriends;
 import com.slt.fragments.FragmentLiveMap;
 import com.slt.fragments.FragmentTimeline;
+import com.slt.restapi.DataUpdater;
 import com.slt.services.ActivityService;
 import com.slt.services.LocationService;
 import com.slt.statistics.StatisticsOverviewFragment;
@@ -666,6 +667,7 @@ public class MainProfile extends AppCompatActivity
         //if logout was selected
         if (id == R.id.nav_btn_logout) {
             DataProvider.getInstance().clearData();
+            DataUpdater.getInstance().Terminate();
 
             //Disconnect Activity Listener if App has been stopped
             if (SharedResources.getInstance().getMyGoogleApiClient().isConnected()) {
