@@ -22,6 +22,8 @@ import com.slt.fragments.tabfragments.RunningFragment;
 
 import java.util.ArrayList;
 
+import static com.slt.SegmentViewActivity.decodeSampledBitmapFromResource;
+
 
 /**
  * List Adapter for showing a friend
@@ -152,7 +154,6 @@ public class RankingListAdapter extends ArrayAdapter<User> {
         String name = dataModel.getForeName() + " " + dataModel.getLastName();
         viewHolder.txtName.setText(name);
 
-
         //Choose period for Active Distance
         if (period == 0) {
             viewHolder.txtAchievement.setText( String.valueOf( dataModel.getMyTimeline().getActiveDistanceForMonth( id ) ) );
@@ -163,13 +164,14 @@ public class RankingListAdapter extends ArrayAdapter<User> {
         }
         viewHolder.txtAge.setText(String.valueOf(dataModel.getRank()));
 
-        //if we have a picture show it
-        if(dataModel.getMyImage() == null) {
-            Bitmap image = BitmapFactory.decodeResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic);
-            viewHolder.picture.setImageBitmap(image);
-        }
-        else {
+        //if user have a picture show it
+        if(dataModel.getMyImage() != null){
             viewHolder.picture.setImageBitmap(dataModel.getMyImage());
+        } else
+        {
+//            Bitmap image = decodeSampledBitmapFromResource(ApplicationController.getContext().getResources(), R.drawable.profile_pic_small,96,96);
+//            viewHolder.picture.setImageBitmap(image);
+              viewHolder.picture.setImageResource( R.drawable.profile_pic_small );
         }
 
         // Return the completed view to render on screen

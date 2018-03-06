@@ -23,7 +23,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_gravity="center"
-            android:src="@drawable/profile_pic"
+            android:src="@drawable/profile_pic_small"
             android:paddingBottom="2dp"
             android:paddingTop="2dp"
             android:paddingRight="4dp"
