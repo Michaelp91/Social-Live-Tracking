@@ -71,42 +71,51 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+/**
+ * SegmentViewActivity for viewing the Segments of The Timeline Day
+ */
 public class SegmentViewActivity extends AppCompatActivity {
 
+    /**
+     * Timeline Segments from the clicked Timeline Day
+     */
     private LinkedList<TimelineSegment> choosedTimelineSegments;
 
+    /**
+     * TAG "FragmentTimeline"
+     */
     private static final String TAG = "FragmentTimeline";
-    private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
-    private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
-    public Handler handler = new Handler();
-    //@BindView(R.id.toolbar)
-    //public Toolbar toolBar;
-    private ArrayList<LinearLayout> list_TimelineSegments;
+
+
+
     private LinearLayout choosedChildren;
-    private int counter_timelinedays;
-    private int counter_timelinechildren;
-    private final String TAG_TIMELINESEGMENT = "timelinesegment";
-    private View view;
-    private Timeline t;
-    private LinkedList<Integer> randomPositions = new LinkedList<>();
-    private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
-    private Bitmap bitmap;
 
-    ImageView tmpImageView;
-    private LinearLayout choosedPicView;
-    private HashMap<String, LinearLayout> picViews = new HashMap<>();
-    private HashMap<String, LinkedList<Bitmap>>  downloadedImagesByTSegmentId = new HashMap<>();
 
-    private int loggerCounter = 0;
+    /**
+     * Context
+     */
     private Activity context;
+
+    /**
+     * firstLocationEntry Object, useful for Clustering
+     */
     private LocationEntry firstLocationEntry;
 
-    private GoogleMap googleMap;
-    MapView mMapView;
-    private float zoomLevel = 17.0f;
-    private LocationEntry start = null;
-    private LocationEntry end = null;
 
+    /**
+     * googleMap Object for Map View
+     */
+    private GoogleMap googleMap;
+
+    /**
+     * mMapView Object
+     */
+    MapView mMapView;
+
+    /**
+     * Overwritten onCreate Method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,12 +158,9 @@ public class SegmentViewActivity extends AppCompatActivity {
                                     LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
                                     LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
 
-
-                                    //googleMap.moveCamera(CameraUpdateFactory.newLatLng(end));
                                     addLines(start, end);
                                 } else {
                                     LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
-                                    // googleMap.addMarker(new MarkerOptions().position(start).title(""));
                                 }
                                 last = entry;
                             }
@@ -162,9 +168,6 @@ public class SegmentViewActivity extends AppCompatActivity {
 
                         } else if (locationEntries.size() > 0) {
                             last = locationEntries.get(0);
-                            //LatLng start = new LatLng(locationEntries.get(0).getLatitude(), locationEntries.get(0).getLongitude());
-                            //googleMap.addMarker(new MarkerOptions().position(start).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_start)).title(""));
-                            //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, zoomLevel));
                         }
                     }
                 }
@@ -183,8 +186,14 @@ public class SegmentViewActivity extends AppCompatActivity {
             }
         });
         context = this;
-        //initTimelineView();
     }
+
+
+    /**
+     * Method for zooming in, Google Map
+     * @param start start Location
+     * @param end end Location
+     */
 
     private void ZoomCamera(final LatLng start, final LatLng end) {
 
@@ -211,6 +220,13 @@ public class SegmentViewActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Add lines in the Map
+     * @param start start Location
+     * @param end end Location
+     */
+
+
     private void addLines(LatLng start, LatLng end) {
         googleMap.addPolyline((new PolylineOptions())
                 .add(start, end).width(5).color(Color.GRAY)
@@ -233,7 +249,9 @@ public class SegmentViewActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * view the timeline segments of the timeline day
+     */
     public void initTimelineView() {
 
 /*
@@ -277,15 +295,6 @@ public class SegmentViewActivity extends AppCompatActivity {
                             com.slt.definitions.Constants.TIMELINEACTIVITY.TILTING
                             && detectedActivity.getType() != com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
                             && detectedActivity.getType() != Constants.TIMELINEACTIVITY.UNKNOWN) {
-
-                        FunctionalityLogger.getInstance().AddLog("\nTimeline Segment: ");
-                        FunctionalityLogger.getInstance().AddLog("Number: " + loggerCounter);
-                        FunctionalityLogger.getInstance().AddLog("ObjectId: " + tSegment.getID());
-                        FunctionalityLogger.getInstance().AddLog("Activity(IN_VEHICLE, ON_BICYCLE, ON_FOOT, STILL, UNKNOWN, TILTING, WALKING, RUNNING): " + tSegment.getMyActivity().getType());
-                        FunctionalityLogger.getInstance().AddLog("Start: " + tSegment.getAddress());
-
-                        FunctionalityLogger.getInstance().AddLog("");
-                        loggerCounter++;
 
 
                         isAdded = true;
@@ -417,24 +426,6 @@ public class SegmentViewActivity extends AppCompatActivity {
                             }
 
                             activityInfo.setText(informations);
-
-
-
-                        /*
-                        view_LastPoint = (RelativeLayout)inflater.inflate(R.layout.timeline_locationpoint, null);
-                        TextView placeAndaddress_endlocation = (TextView) view_LastPoint.findViewById(R.id.tv_placeAndaddress);
-                        TextView myEntryDate_endlocation = (TextView) view_LastPoint.findViewById(R.id.tv_myEntryDate);
-
-                        sdf = new SimpleDateFormat("dd.MM.yyyy");
-                        strDate = sdf.format(sndPoint.myEntryDate);
-
-
-                        myEntryDate_endlocation.setText(strDate);
-                        placeAndaddress_endlocation.setText("");
-                        */
-
-                        } else {
-                            //ll_shortLine.setVisibility(View.INVISIBLE);
                         }
 
                     } else if (timeLineSegments.indexOf(tSegment) == timeLineSegments.size() - 1 && !locationEntries.isEmpty()
@@ -546,6 +537,18 @@ public class SegmentViewActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * this Method is invoked for Clustering the Location Points which are near to the start Location.
+     * Compare the distance between the current Location Point  and the last drawed location Point
+     * Calculate the distance between current Location Point and the last location Point
+     * if the distance exceeds the threshold of 850 m, the current Location Point will be drawed,
+     * otherwise, the current location point will be clustered.
+     *
+     * @param locationEntry current location point
+     * @param lastLocationEntry last drawed location point
+     * @param currentSegment the current timeline segment
+     * @return null, if the location point has to be clustered, otherwise the location point has to be drawed
+     */
     private LocationEntry tobeClustered(LocationEntry locationEntry, LocationEntry lastLocationEntry, TimelineSegment currentSegment) {
         int TOLERANZ = 3;
 
@@ -569,7 +572,14 @@ public class SegmentViewActivity extends AppCompatActivity {
 
         return null;
     }
-
+    /**
+     * Resize Image from Drawable
+     * @param res
+     * @param resId Image Resource Id
+     * @param reqWidth Required Image With
+     * @param reqHeight Required Image Height
+     * @return new scaled Bitmap
+     */
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
 
@@ -586,16 +596,13 @@ public class SegmentViewActivity extends AppCompatActivity {
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
-    private Bitmap resizeImage(byte[] input, int width, int height) {
-        Bitmap original = BitmapFactory.decodeByteArray(input , 0, input.length);
-        Bitmap resized = Bitmap.createScaledBitmap(original, width, height, true);
-
-        ByteArrayOutputStream blob = new ByteArrayOutputStream();
-        resized.compress(Bitmap.CompressFormat.JPEG, 100, blob);
-
-        return resized;
-    }
-
+    /**
+     * Helper Method for resizing the Bitmap
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return the inSampleSize Value
+     */
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
@@ -619,321 +626,9 @@ public class SegmentViewActivity extends AppCompatActivity {
         return inSampleSize;
     }
 
-    public Drawable resizeImage(int imageResource) {// R.drawable.icon
-        // Get device dimensions
-        Display display = getWindowManager().getDefaultDisplay();
-        double deviceWidth = display.getWidth();
-
-        BitmapDrawable bd = (BitmapDrawable) this.getResources().getDrawable(
-                imageResource);
-        double imageHeight = bd.getBitmap().getHeight();
-        double imageWidth = bd.getBitmap().getWidth();
-
-        double ratio = deviceWidth / imageWidth;
-        int newImageHeight = (int) (imageHeight * ratio);
-
-        Bitmap bMap = BitmapFactory.decodeResource(getResources(), imageResource);
-        Drawable drawable = new BitmapDrawable(this.getResources(),
-                getResizedBitmap2(bMap, newImageHeight, (int) deviceWidth));
-
-        return drawable;
-    }
-
-    /************************ Resize Bitmap *********************************/
-    public Bitmap getResizedBitmap2(Bitmap bm, int newHeight, int newWidth) {
-
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-
-        // create a matrix for the manipulation
-        Matrix matrix = new Matrix();
-
-        // resize the bit map
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // recreate the new Bitmap
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height,
-                matrix, false);
-
-        return resizedBitmap;
-    }
-
-    private void AddUserComments(LinkedList<String> strUserComments, LinearLayout ll_line, TextView tv_usercomments) {
-
-        /*
-        String comments = (strUserComments.size() > 0)? "": "Keine Kommentare vorhanden";
-
-
-        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics());
-        int heightToAdd = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-        for(String u: strUserComments) {
-            comments += u;
-            heightToAdd += heightToAdd;
-            boolean debug = true;
-        }
-
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)  ll_line.getLayoutParams();
-        params.height += heightToAdd;
-        ll_line.setLayoutParams(params);
-
-
-        tv_usercomments.setText(comments);
-        */
-    }
-
-    private void selectImage() {
-        try {
-            if (ContextCompat.checkSelfPermission(view.getContext(),
-                    android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(view.getContext());
-                builder.setTitle("Select Option");
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (options[item].equals("Take Photo")) {
-                            dialog.dismiss();
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, PICK_IMAGE_CAMERA);
-                        } else if (options[item].equals("Choose From Gallery")) {
-                            dialog.dismiss();
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
-                        } else if (options[item].equals("Cancel")) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                builder.show();
-            } else
-                Toast.makeText(ApplicationController.getContext(), "Camera Permission error", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(ApplicationController.getContext(), "Camera Permission error", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_CAMERA) {
-            try {
-                bitmap = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-
-                //compress the picture -> reduces the quality to 90%
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                byte[] BYTE = bytes.toByteArray();
-                bitmap = resizeImage(BYTE, 100, 100);
-
-                //this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
-
-                //this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
-                TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
-                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(timelineSegment.getID());
-                bmps = (bmps == null)? new LinkedList<Bitmap>(): bmps;
-
-                bmps.add(bitmap);
-                downloadedImagesByTSegmentId.put(timelineSegment.getID(), bmps);
-
-                uploadImage(bitmap);
-
-                Log.e(TAG, "Pick from Camera::>>> ");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == PICK_IMAGE_GALLERY) {
-            Uri selectedImage = data.getData();
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(ApplicationController.getContext().getContentResolver(), selectedImage);
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-
-                //compress the picture -> reduces the quality to 90%
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                byte[] BYTE = bytes.toByteArray();
-                bitmap = resizeImage(BYTE, 100, 100);
-
-                //this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
-
-                //this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
-                TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
-                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(timelineSegment.getID());
-                bmps = (bmps == null)? new LinkedList<Bitmap>(): bmps;
-
-                bmps.add(bitmap);
-                downloadedImagesByTSegmentId.put(timelineSegment.getID(), bmps);
-
-                uploadImage(bitmap);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-
-    public static Bitmap rotateImageIfRequired(Bitmap img, Context context, Uri selectedImage) throws IOException {
-
-        if (selectedImage.getScheme().equals("content")) {
-            String[] projection = { MediaStore.Images.ImageColumns.ORIENTATION };
-            Cursor c = context.getContentResolver().query(selectedImage, projection, null, null, null);
-            if (c.moveToFirst()) {
-                final int rotation = c.getInt(0);
-                c.close();
-                return rotateImage(img, rotation);
-            }
-            return img;
-        } else {
-            ExifInterface ei = new ExifInterface(selectedImage.getPath());
-            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            Log.i( TAG, " orientation: " + orientation);
-
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    return rotateImage(img, 90);
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    return rotateImage(img, 180);
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    return rotateImage(img, 270);
-                default:
-                    return img;
-            }
-        }
-    }
-
-    private static Bitmap rotateImage(Bitmap img, int degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-        return rotatedImg;
-    }
-
-
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap( bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
-
-    private void uploadImage(final Bitmap bitmap) {
-
-        final TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
-        AddPictures(choosedPicView, timelineSegment);
-        Toast.makeText(this, "Image is uploaded successfully.", Toast.LENGTH_SHORT).show();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(timelineSegment.getID());
-                Integer imageId = bmps.size() + 1;
-
-
-                final boolean uploaded = UsefulMethods.UploadImageView(bitmap, imageId.toString() + ".png");
-
-                timelineSegment.addImage(imageId.toString() + ".png");
-                final boolean timelinesegmentUpdated = OtherRestCalls.updateTimelineSegmentForImages(timelineSegment);
-            }
-        }).start();
-    }
-
-    private void DownloadPictures(TimelineSegment tSegment) {
-
-        //For Debug Purposes
-        if(tSegment.getMyImages().size() != 0) {
-            boolean debug = true;
-        }
-
-        ArrayList<Integer> numbersInUse = new ArrayList<>();
-        for(String image: tSegment.getMyImages()) {
-            Bitmap bmp = UsefulMethods.LoadImage(image);
-
-            if(bmp != null) {
-                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(tSegment.getID());
-
-                bmps = (bmps == null)? new LinkedList<Bitmap>():bmps;
-                bmps.add(bmp);
-                downloadedImagesByTSegmentId.put(tSegment.getID(), bmps);
-            }
-        }
-
-        /*
-        if(max == 0) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    final LinearLayout ll_nonpicture = (LinearLayout) inflater.inflate(R.layout.timelinesegment_nopictures, null);
-                    ll_pictures.addView(ll_nonpicture);
-                }
-            });
-        }
-        */
-
-
-    }
-
-    private LinearLayout AddPictures(LinearLayout ll_pictures, TimelineSegment tSegment) {
-        /*
-        LinkedList<Bitmap> downloadedImages =  downloadedImagesByTSegmentId.get(tSegment.getID());
-
-        ImageView iv_pic1 = ll_pictures.findViewById(R.id.iv_pic1);
-        ImageView iv_pic2 = ll_pictures.findViewById(R.id.iv_pic2);
-        ImageView iv_pic3 = ll_pictures.findViewById(R.id.iv_pic3);
-        TextView tv_noPicAvailable = ll_pictures.findViewById(R.id.tv_noPicAvailable);
-
-        iv_pic1.setVisibility(View.GONE);
-        iv_pic2.setVisibility(View.GONE);
-        iv_pic3.setVisibility(View.GONE);
-        tv_noPicAvailable.setVisibility(View.VISIBLE);
-
-        if (downloadedImages != null) {
-            int max = (downloadedImages.size() >= 3) ? 3 : downloadedImages.size();
-
-
-            for (int i = 0; i < max; i++) {
-
-                Bitmap bmp = downloadedImages.get(i);
-
-
-                switch (i) {
-                    case 0:
-                        tv_noPicAvailable.setVisibility(View.GONE);
-                        iv_pic1.setVisibility(View.VISIBLE);
-                        iv_pic1.setImageBitmap(bmp);
-                        break;
-                    case 1:
-                        tv_noPicAvailable.setVisibility(View.GONE);
-                        iv_pic2.setVisibility(View.VISIBLE);
-                        iv_pic2.setImageBitmap(bmp);
-                        break;
-                    case 2:
-                        tv_noPicAvailable.setVisibility(View.GONE);
-                        iv_pic3.setVisibility(View.VISIBLE);
-                        iv_pic3.setImageBitmap(bmp);
-                        break;
-                }
-            }
-        }
-
-*/
-
-        return ll_pictures;
-    }
-
+    /**
+     * Overwritten onResume Method
+     */
     @Override
     protected void onResume() {
         super.onResume();
