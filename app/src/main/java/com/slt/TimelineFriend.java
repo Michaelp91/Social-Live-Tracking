@@ -3,6 +3,7 @@ package com.slt;
 import android.*;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.vision.text.Line;
 import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
@@ -44,6 +46,7 @@ import com.slt.data.TimelineSegment;
 import com.slt.data.User;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
+import com.slt.restapi.TemporaryDB;
 import com.slt.restapi.UsefulMethods;
 import com.slt.utils.FunctionalityLogger;
 
@@ -90,39 +93,26 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
     private int loggerCounter = 0;
     private Activity context;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline_friend);
-        view_timelineDays = findViewById(R.id.timeline_days);
 
-        setTitle("Timeline By Friend");
+        User friend = TemporaryDB.getInstance().getChoosedFriend();
+        t = friend.getMyTimeline();
+
+        view_timelineDays = (LinearLayout) findViewById(R.id.friend_timeline_days);
+        TextView friendTitle = (TextView) findViewById(R.id.toolbar_friendEmail);
+        friendTitle.setText("Friend: " + friend.getEmail());
         //Thread t = new Thread(new TrackingSimulator());
         //t.start();
         context = this;
-        handler.postDelayed(runnable, 2000);
+
+
+        updateTimelineDays();
     }
-
-    public Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-      /* do what you need to do */
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    User user = DataProvider.getInstance().getOwnUser();
-                    if(user != null) {
-                        t = RetrieveOperations.getInstance().getCompleteTimelineByFriend();
-                        updateTimelineDays();
-                    }
-                    handler.postDelayed(runnable, 2000);
-                }
-            }).start();
-
-      /* and here comes the "trick" */
-        }
-    };
 
     public boolean timelinedayIsNotViewed(String id) {
         return (h_viewedTimelineDays.get(id) == null)? true:false;
@@ -161,9 +151,11 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                 } catch (NullPointerException e) {
                     return;
                 }
-                counter_timelinedays = 0;
+                counter_timelinedays = timeLineDays.size() - 1;
                 //view_timelineDays.removeAllViews();
-                for (TimelineDay t_d : timeLineDays) {
+                for (int i = timeLineDays.size() - 1; i >= 0; i--) {
+                    TimelineDay t_d = timeLineDays.get(i);
+
                     activity_runningIsDisplayed = false;
                     activity_walkingIsDisplayed = false;
                     activity_bikingIsDisplayed = false;
@@ -226,11 +218,11 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                                     iv_bicycle.setImageBitmap(bmp);
                                     DetectedActivity detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE, 100);
                                     double activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    double duration = t_d.getActiveTime(detectedActivity);
+                                    double duration = t_d.getDuration(detectedActivity.getType());
 
                                     String informations = "Type: Bicycle";
-                                    informations += "\nDistance: " + Float.toString((float)activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString((float) duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float)activeDistance) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) duration) + " min";
 
                                     info.setText(informations);
                                     break;
@@ -243,12 +235,12 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                                     iv.setImageBitmap(bmp);
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    duration = t_d.getActiveTime(detectedActivity);
+                                    duration = t_d.getDuration(detectedActivity.getType());
                                     int userSteps = t_d.getUserSteps(detectedActivity);
 
                                     informations = "Type: On Foot";
-                                    informations += "\nDistance: " + Float.toString((float) activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString((float) duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float) activeDistance) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) duration) + " min";
                                     informations += "\nUser Steps: " + userSteps;
 
                                     info.setText(informations);
@@ -266,12 +258,12 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    duration = t_d.getActiveTime(detectedActivity);
+                                    duration = t_d.getDuration(detectedActivity.getType());
                                     userSteps = t_d.getUserSteps(detectedActivity);
 
                                     informations = "Type: Running";
-                                    informations += "\nActive Distance: " + Float.toString((float)activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString((float)duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float)activeDistance) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float)duration) + " min";
 
                                     info.setText(informations);
                                     break;
@@ -286,12 +278,12 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    duration = t_d.getActiveTime(detectedActivity);
+                                    duration = t_d.getDuration(detectedActivity.getType());
                                     userSteps = t_d.getUserSteps(detectedActivity);
 
                                     informations = "Type: Walking";
-                                    informations += "\nActive Distance: " + Float.toString((float) activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString( (float) duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f",(float) activeDistance) + " m";
+                                    informations += "\nDuration: " + String.format("%.2f", (float) duration) + " min";
                                     informations += "\nUser Steps: " + userSteps;
 
                                     info.setText(informations);
@@ -307,11 +299,10 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
                                     detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING, 100);
                                     activeDistance = t_d.getActiveDistance(detectedActivity);
-                                    duration = t_d.getActiveTime(detectedActivity);
+                                    duration = t_d.getDuration(detectedActivity.getType());
 
                                     informations = "Type: Vehicle";
-                                    informations += "\nActive Distance: " + Float.toString((float) activeDistance) + " m";
-                                    informations += "\nDuration: " + Float.toString( (float) duration) + " min";
+                                    informations += "\nDistance: " + String.format("%.2f", (float) activeDistance) + " m";
 
                                     info.setText(informations);
                                     break;
@@ -404,7 +395,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                         row.setId(counter_timelinedays);
                         row.setOnClickListener(this);
 
-                        this.runOnUiThread(new Runnable() {
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 view_timelineDays.addView(row);
@@ -413,7 +404,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                         });
 
 
-                        counter_timelinedays++;
+                        counter_timelinedays--;
                     }
 
                     //TODO: Problem with updating TimelineView, look at this problem later
@@ -437,14 +428,6 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                         */
 
                 }
-
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                });
 
                 //TODO: Problem with updating TimelineView, look at this problem later
                     /*
@@ -517,6 +500,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                     LinearLayout tday = list_TimelineDays.get(v.getId());
                     choosedChildren = (LinearLayout) tday.findViewById(R.id.ll_all_locations);
                     choosedTimelineDay = timeLineDays.get(v.getId());
+                    LinkedList<TimelineSegment> choosedSegments = choosedTimelineDay.getMySegments();
                     DataProvider.getInstance().setChoosedTimelineSegments(choosedTimelineDay.getMySegments());
                     Intent i = new Intent(this, SegmentViewActivity.class);
                     startActivity(i);
@@ -575,7 +559,6 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onPause() {
         super.onPause();
-        handler.removeCallbacks(runnable);
     }
 
     @Override

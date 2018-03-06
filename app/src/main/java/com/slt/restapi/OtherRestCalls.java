@@ -263,6 +263,7 @@ public class OtherRestCalls {
                 }
                 TemporaryDB.getInstance().h_rest_timelinedayResolver.put(r_t_d._id, r_t_d);
                 TemporaryDB.getInstance().h_timelinedayResolver.put(t_d.getID(), t_d);
+                TemporaryDB.getInstance().h_timelineDays.put(t_d, r_t_d);
             }
 
             for(REST_TimelineSegment r_t_s: rest_timelinesegments) {
@@ -285,6 +286,7 @@ public class OtherRestCalls {
 
                 TemporaryDB.getInstance().h_rest_timelinesegmentResolver.put(r_t_s._id, r_t_s);
                 TemporaryDB.getInstance().h_timelinesegmentResolver.put(t_s.getID(), t_s);
+                TemporaryDB.getInstance().h_timelineSegments.put(t_s, r_t_s);
             }
 
             for(REST_LocationEntry r_l_e: rest_locationEntries) {
@@ -295,6 +297,7 @@ public class OtherRestCalls {
                 l_e.setID(r_l_e._id);
                 TemporaryDB.getInstance().h_rest_locationentryResolver.put(r_l_e._id, r_l_e);
                 TemporaryDB.getInstance().h_locationentryResolver.put(l_e.getID(), l_e);
+                TemporaryDB.getInstance().h_locationEntries.put(l_e, r_l_e);
             }
 
             friends = RESTToDatamodel.buildCompleteUserObjects();
