@@ -326,7 +326,9 @@ public class TimelineDay {
         for (int i = 0; i < segments.size(); i++) {
             seg = segments.get(i);
 
-            if(seg.getMyActivity().getType() != sport)
+            if(seg.getMyActivity().getType() != sport
+                    || ! ( sport == Constants.TIMELINEACTIVITY.ON_FOOT
+                    && seg.getMyActivity().getType() == Constants.TIMELINEACTIVITY.ON_FOOT))
                 continue;
 
             segSpeed = seg.getSpeed();
@@ -352,7 +354,9 @@ public class TimelineDay {
             seg = segments.get(i);
 
             // only segments for the given sport
-            if(seg.getMyActivity().getType() != sport)
+            if(seg.getMyActivity().getType() != sport
+                    || ! (sport == Constants.TIMELINEACTIVITY.ON_FOOT
+                    && seg.getMyActivity().getType() == Constants.TIMELINEACTIVITY.ON_FOOT ))
                 continue;
 
             cal.setTime(seg.getStartTime());
@@ -426,6 +430,11 @@ public class TimelineDay {
         for (int i = 0; i < segmentList.size(); i++) {
             segment = segmentList.get(i);
 
+            if (sportType == Constants.TIMELINEACTIVITY.WALKING
+                    && segment.getMyActivity().getType() == Constants.TIMELINEACTIVITY.ON_FOOT) {
+                filteredSegments.add(segment);
+                continue;
+            }
             // check if the segment-activity is the one that should be displayed ins statistics
             if (segment.getMyActivity().getType() != sportType)
                 continue;

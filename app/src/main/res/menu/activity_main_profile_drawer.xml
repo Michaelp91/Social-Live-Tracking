@@ -25,7 +25,7 @@
         <item
             android:id="@+id/nav_achievements"
             android:icon="@drawable/ic_all_inclusive_black_24dp"
-            android:title="My Achievements" />
+            android:title="Ranking" />
     </group>
 
     <item android:title="Others">

@@ -10,6 +10,7 @@ import com.slt.control.AchievementCalculator;
 import com.slt.control.ApplicationController;
 import com.slt.definitions.Constants;
 import com.slt.restapi.DataUpdater;
+import com.slt.statistics.data.StatisticsDataModelProvider;
 
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
@@ -135,7 +136,7 @@ public class Timeline {
      * @return achievements from last week
      */
     public LinkedList<Achievement> getAchievementsListForWeek() {
-        Date current = new Date();
+        Date current = StatisticsDataModelProvider.dateUsedAsReference;
 
         // get days of week
         LinkedList<TimelineDay> week = this.getDaysOfWeekOrMonth(current, 0);
@@ -149,7 +150,7 @@ public class Timeline {
     }
 
     public LinkedList<Achievement> getAchievementsListForDay() {
-        Date current = new Date();
+        Date current = StatisticsDataModelProvider.dateUsedAsReference;
 
         if(this.myHistory.getLast().isSameDay(current))
             return this.myHistory.getLast().getMyAchievements();
@@ -208,10 +209,10 @@ public class Timeline {
      */
     public LinkedList<Achievement> getAchievementsListForMonth() {
         int achievementPoints = 0;
-        Date current = new Date();
+        Date current = StatisticsDataModelProvider.dateUsedAsReference;
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(current);
         //get days of week
         LinkedList<TimelineDay> month = this.getDaysOfWeekOrMonth(current, 1);
 
@@ -785,7 +786,7 @@ public class Timeline {
      * @param activity The activity that was detected
      */
     public void addUserStatus(Location location, Date date, DetectedActivity activity) {
-        
+
         //check if we have a day already
         if (this.myHistory.size() == 0) {
             this.myHistory.add(new TimelineDay(date));

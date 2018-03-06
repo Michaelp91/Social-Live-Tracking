@@ -67,6 +67,12 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
     public static String DISTANCE = "Distance:";
 
     /**
+     * steps description for the info box
+     */
+    public static String STEPS = "Steps:";
+
+
+    /**
      * speed description for the info box
      */
     public static String SPEED =    "Speed:";
@@ -205,16 +211,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
             layout.addView(imageView, layoutParams);
         }
 
-        layout.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(getContext().getApplicationContext(), "Button1 clicked.", Toast.LENGTH_SHORT).show();
-
-                    }
-                }
-        );
-
 
         return rowView;
     }
@@ -236,9 +232,14 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         List<ObjectItem> objectItemData = new ArrayList<>();
 
         objectItemData.add(new ObjectItem(SPEED, "select bar in chart"));
-        objectItemData.add(new ObjectItem(DISTANCE, "select bar in chart"));
+
+        if(this.sport == Constants.TIMELINEACTIVITY.WALKING
+                || this.sport == Constants.TIMELINEACTIVITY.ON_FOOT) {
+            objectItemData.add(new ObjectItem(STEPS, "select bar in chart"));
+        } else
+            objectItemData.add(new ObjectItem(DISTANCE, "select bar in chart"));
+
         objectItemData.add(new ObjectItem(DURANCE, "select bar in chart"));
-        objectItemData.add(new ObjectItem(DATE, "select bar in chart"));
 
         // our adapter instance
         adapter = new ArrayAdapterItem(getContext(), objectItemData);
@@ -326,7 +327,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
                 public String getFormattedValue(float value, AxisBase axis) {
 
                     Calendar cal = Calendar.getInstance();
-                    cal.setTime(new Date());
+                    cal.setTime(StatisticsDataModelProvider.dateUsedAsReference);
                     int month = cal.get(Calendar.MONTH);
 
                     String monthStr = getMonthForInt(month);
@@ -450,7 +451,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         l.setTextSize(11f);
         l.setXEntrySpace(4f);
 
-        XYMarkerView mv = new XYMarkerView(getContext(), xAxisFormatter, this.period);
+        XYMarkerView mv = new XYMarkerView(getContext(), xAxisFormatter, this.period, this.sport);
         mv.setChartView(mChart); // For bounds control
         mChart.setMarker(mv); // Set the marker to the chart
 
@@ -491,15 +492,31 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
 
         // convert x and y to data
         double speed =  StatisticsDataModelProvider.getSpeed(e, this.period, this.sport);
-        int distance =  StatisticsDataModelProvider.getDistance(e);
+        int distance = 0;
+        int steps = 0;
         long durance =  StatisticsDataModelProvider.getDuration(e, this.period, this.sport);;
-        Date date =     StatisticsDataModelProvider.getDate(e, this.period);;
+
+        adapter.getItem(0).setLabelAndVal(SPEED,    String.valueOf( speed * ( 3600 / 1000 ) ) + " km/h");
+
+        String unit = "";
+
+        if(this.sport == Constants.TIMELINEACTIVITY.WALKING
+                || this.sport == Constants.TIMELINEACTIVITY.ON_FOOT) {
+            steps =  StatisticsDataModelProvider.getSteps(e);
+
+            unit = "steps";
+
+            adapter.getItem(1).setLabelAndVal(STEPS, String.valueOf( steps ) + unit);
+
+        } else {
+            unit = "m";
+            distance =  StatisticsDataModelProvider.getDistance(e);
+            adapter.getItem(1).setLabelAndVal(DISTANCE, String.valueOf( distance ) + unit);
+
+        }
 
         // update info boxes
-        adapter.getItem(0).setLabelAndVal(SPEED,    String.valueOf( speed * ( 3600 / 1000 ) ) + " km/h");
-        adapter.getItem(1).setLabelAndVal(DISTANCE, String.valueOf( distance ) + " m");
         adapter.getItem(2).setLabelAndVal(DURANCE,  String.valueOf( durance ) + " min");
-        adapter.getItem(3).setLabelAndVal(DATE,     date.toString());
 
         adapter.notifyDataSetChanged();
     }
@@ -514,7 +531,6 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         adapter.getItem(0).setLabelAndVal(SPEED,    "select bar in chart");
         adapter.getItem(1).setLabelAndVal(DISTANCE, "select bar in chart");
         adapter.getItem(2).setLabelAndVal(DURANCE,  "select bar in chart");
-        adapter.getItem(3).setLabelAndVal(DATE,     "select bar in chart");
 
         adapter.notifyDataSetChanged();
     }

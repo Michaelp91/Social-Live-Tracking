@@ -9,6 +9,8 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.slt.R;
+import com.slt.definitions.Constants;
+import com.slt.statistics.data.StatisticsDataModelProvider;
 
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
@@ -26,11 +28,14 @@ public class XYMarkerView extends MarkerView {
 
     private DecimalFormat format;
     private int period = -1;
+    private int sport = -1;
 
-    public XYMarkerView(Context context, IAxisValueFormatter xAxisValueFormatter, int period) {
+
+    public XYMarkerView(Context context, IAxisValueFormatter xAxisValueFormatter, int period, int sport) {
         super(context, R.layout.custom_marker_view);
 
         this.period = period;
+        this.sport = sport;
         this.xAxisValueFormatter = xAxisValueFormatter;
         tvContent = (TextView) findViewById(R.id.tvContent);
         format = new DecimalFormat("###");
@@ -43,7 +48,7 @@ public class XYMarkerView extends MarkerView {
 
         String  str = ": ";
         Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
+        cal.setTime(StatisticsDataModelProvider.dateUsedAsReference);
         int month = cal.get(Calendar.MONTH);
 
         switch(this.period) {
@@ -61,8 +66,16 @@ public class XYMarkerView extends MarkerView {
                 System.err.println("No such period.");
         }
 
-        tvContent.setText(xAxisValueFormatter.getFormattedValue(e.getX(), null) + str + (int) e.getY());
+        String unit = "";
 
+        if(this.sport == Constants.TIMELINEACTIVITY.WALKING
+                || this.sport == Constants.TIMELINEACTIVITY.ON_FOOT)
+            unit = "steps";
+        else
+            unit = "m";
+
+
+        tvContent.setText(xAxisValueFormatter.getFormattedValue(e.getX(), null) + str + (int) e.getY() + unit);
 
         super.refreshContent(e, highlight);
     }

@@ -15,13 +15,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:background="@drawable/gradientbackground"
         android:textSize="20dp">
     </TextView>
 
     <RelativeLayout
         android:id="@+id/month_switch"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradientbackground"
+        >
 
         <Button
             android:id="@+id/last_timeperiod_button"
@@ -32,7 +35,9 @@
             android:id="@+id/timeperiod_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/last_timeperiod_button"/>
+            android:textColor="#FFFFFF"
+            android:layout_toRightOf="@id/last_timeperiod_button"
+            android:layout_centerHorizontal="true"/>
 
         <Button
             android:id="@+id/next_timeperiod_button"
@@ -47,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@drawable/gradientbackground"
+        android:background="@drawable/background_main"
         android:drawSelectorOnTop="false" />
 
 
