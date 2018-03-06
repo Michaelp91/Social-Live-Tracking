@@ -90,6 +90,7 @@ public class FragmentFriends extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //returning our layout file
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
+        getActivity().setTitle("Friends and Co.");
         SharedResources.getInstance().setUser(null);
         mProgressBar =  (ProgressBar) view.findViewById(R.id.friends_progress) ;
 

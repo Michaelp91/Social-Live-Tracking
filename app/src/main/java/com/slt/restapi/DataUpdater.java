@@ -95,9 +95,14 @@ public class DataUpdater implements Runnable{
     public void Terminate() {
         clearOtherCollections();
         TemporaryDB.getInstance().initCollections();
-        
-        isAlive = false;
-        Locks.getInstance().lock.notifyAll();
+
+        synchronized (Locks.getInstance().lock) {
+            isAlive = false;
+            if (updater.isAlive()) {
+                boolean debug = true;
+                Locks.getInstance().lock.notifyAll();
+            }
+        }
     }
 
 
