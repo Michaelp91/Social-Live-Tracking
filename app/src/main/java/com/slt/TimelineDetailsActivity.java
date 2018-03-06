@@ -63,28 +63,76 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-//TODO: Test Timeline Details
+/**
+ * Show the Details of the specific Timeline Segment
+ */
 public class TimelineDetailsActivity extends AppCompatActivity {
-    private GoogleMap googleMap;
-    MapView mMapView;
-    private float zoomLevel = 17.0f;
-    private LocationEntry entryStart = null;
 
+    /**
+     * googleMap Object for viewing the Google Map
+     */
+    private GoogleMap googleMap;
+
+    /**
+     * mMapView
+     */
+    MapView mMapView;
+
+    /**
+     * zoomLevel for GoogleMap
+     */
+    private float zoomLevel = 17.0f;
+
+    /**
+     * location entries of the choosed timeline segment
+     */
     private LinkedList<LocationEntry> locationEntries;
+
+    /**
+     * Constants for checking the mode of inserting an Image(Camera Mode or Gallery Mode)
+     */
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
+
+    /**
+     * Bitmaps of all viewed Images
+     */
     private LinkedList<Bitmap> bmps;
+
+    /**
+     * choosed timeline segment
+     */
     private TimelineSegment choosedTimelineSegment;
+
+    /**
+     * Imageviews for showing the first two pictures
+     */
     private ImageView iv_pic1, iv_pic2;
 
     /**
-     * Progress Bar
+     * Activity context
      */
     private Activity context;
+
+    /**
+     * Text View for showing the user comments
+     */
     private TextView tv_usercomments;
 
+
+    /**
+     * progress dialog
+     */
     private ProgressDialog progressDialog;
+
+    /**
+     * Constant
+     */
     private final String NO_COMMENTS_AVAILABLE = "No Comments Available";
 
+    /**
+     * overwritten onCreate Method
+     * @param savedInstanceState the saved Instance State
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -368,6 +416,10 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         }).start();
     }
 
+    /**
+     * Method for viewing the User Comments
+     * @param strUserComments all comments to be viewed
+     */
     private void AddUserComments(LinkedList<String> strUserComments) {
 
 
@@ -383,6 +435,9 @@ public class TimelineDetailsActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Downloads all the images from the Server
+     */
     private void DownloadImages() {
 
         runOnUiThread(new Runnable() {
@@ -412,6 +467,9 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Show the first two Images
+     */
     private void ShowImages() {
         for(Bitmap bmp: bmps) {
             if(iv_pic1.getVisibility() == View.GONE) {
@@ -426,22 +484,13 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         progressDialog.hide();
     }
 
-    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-                                                         int reqWidth, int reqHeight) {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
-    }
-
+    /**
+     * resize Image for lower resolution
+     * @param input image data as byte array
+     * @param width required width of the image
+     * @param height required height of the image
+     * @return the resized bitmap
+     */
     private Bitmap resizeImage(byte[] input, int width, int height) {
         Bitmap original = BitmapFactory.decodeByteArray(input , 0, input.length);
         Bitmap resized = Bitmap.createScaledBitmap(original, width, height, true);
@@ -452,71 +501,9 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         return resized;
     }
 
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    public Drawable resizeImage(int imageResource) {// R.drawable.icon
-        // Get device dimensions
-        Display display = getWindowManager().getDefaultDisplay();
-        double deviceWidth = display.getWidth();
-
-        BitmapDrawable bd = (BitmapDrawable) this.getResources().getDrawable(
-                imageResource);
-        double imageHeight = bd.getBitmap().getHeight();
-        double imageWidth = bd.getBitmap().getWidth();
-
-        double ratio = deviceWidth / imageWidth;
-        int newImageHeight = (int) (imageHeight * ratio);
-
-        Bitmap bMap = BitmapFactory.decodeResource(getResources(), imageResource);
-        Drawable drawable = new BitmapDrawable(this.getResources(),
-                getResizedBitmap2(bMap, newImageHeight, (int) deviceWidth));
-
-        return drawable;
-    }
-
-    /************************ Resize Bitmap *********************************/
-    public Bitmap getResizedBitmap2(Bitmap bm, int newHeight, int newWidth) {
-
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-
-        // create a matrix for the manipulation
-        Matrix matrix = new Matrix();
-
-        // resize the bit map
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // recreate the new Bitmap
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height,
-                matrix, false);
-
-        return resizedBitmap;
-    }
-
+    /**
+     * choose the image selecting mode
+     */
     private void selectImage() {
         try {
             if (ContextCompat.checkSelfPermission(this,
@@ -549,6 +536,10 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * upload the image to the server
+     * @param bitmap bitmap to be uploaded
+     */
     private void uploadImage(final Bitmap bitmap) {
         progressDialog = ProgressDialog.show(context, "Bitte warten Sie...", "", true);
         Toast.makeText(this, "Image is uploaded successfully.", Toast.LENGTH_SHORT).show();
@@ -573,6 +564,12 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         }).start();
     }
 
+    /**
+     * Overwritten onActivityResult Method
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -624,6 +621,11 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method for zooming in, Google Map
+     * @param start start Location
+     * @param end end Location
+     */
     private void ZoomCamera(final LatLng start, final LatLng end) {
 
         googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
@@ -649,6 +651,11 @@ public class TimelineDetailsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Add lines in the Map
+     * @param start start Location
+     * @param end end Location
+     */
     private void addLines(LatLng start, LatLng end) {
         googleMap.addPolyline((new PolylineOptions())
                 .add(start, end).width(5).color(Color.GRAY)
@@ -669,31 +676,4 @@ public class TimelineDetailsActivity extends AppCompatActivity {
 
 
     }
-
-/*
-    @Override
-    public void onResume() {
-        super.onResume();
-        mMapView.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mMapView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mMapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
-    }
-
-    */
 }

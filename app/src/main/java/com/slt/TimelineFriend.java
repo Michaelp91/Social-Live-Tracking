@@ -122,7 +122,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
     private HashMap<String, TimelineDay> h_viewedTimelineDays = new HashMap<>();
 
     /**
-     *
+     * overwritten onCreate Method
      * @param savedInstanceState the saved Instance State
      */
 
