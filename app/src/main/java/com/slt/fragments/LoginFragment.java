@@ -398,15 +398,6 @@ public class LoginFragment extends Fragment {
                             DataProvider.getInstance().getOwnUser().setTimeline(timeline);
                             DataProvider.getInstance().syncTimelineToUser();
 
-                            //Load friends including timelines
-                            LinkedList<User> users = new LinkedList<>();
-                            OtherRestCalls.retrieveFriends();
-
-                            users.add(DataProvider.getInstance().getOwnUser());
-                            users.addAll(OtherRestCalls.retrieveFriendsIncludingTimelines());
-
-                            DataProvider.getInstance().changeFriendList(users);
-
 
 
                             //start the REST Updater
