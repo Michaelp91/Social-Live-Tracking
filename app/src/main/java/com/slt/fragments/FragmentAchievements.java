@@ -26,22 +26,31 @@ import com.slt.restapi.OtherRestCalls;
 import java.util.LinkedList;
 
 
-
+/**
+ * Fragment to show the ranking list of user's friends
+ *
+ */
 public class FragmentAchievements extends Fragment  {
 
 
     /**
-     * ViewPager configurations
+     * toolbar configurations
      */
-
     private Toolbar toolbar;
+
+    /**
+     * TabLayout configurations
+     */
     private TabLayout tabLayout;
+
+    /**
+     * view pager configurations
+     */
     private ViewPager viewPager;
 
     /**
      * Simple progress dialog
      */
-
     private ProgressDialog dialog ;
 
     /**
@@ -49,11 +58,8 @@ public class FragmentAchievements extends Fragment  {
      */
     private Handler handler;
 
-
-
-
     /**
-     * icons for View Pager
+     * icons set for ViewPager
      */
     private int[] tabIcons = {
             R.drawable.ic_action_walking,
@@ -101,8 +107,10 @@ public class FragmentAchievements extends Fragment  {
         //you can set the title for your toolbar here for different fragments different titles
         //getActivity().setTitle("Ranking");
 
-        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
 
+        //init viewPager
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        //init TabLayout
         tabLayout = (TabLayout) view.findViewById(R.id.tablayout);
 
         //handler to wait for a network response
@@ -118,7 +126,9 @@ public class FragmentAchievements extends Fragment  {
             }
         });
 
+        //post runnable
         handler.post(runnableWalking);
+        //onBackPressed() method
         getActivity().onBackPressed();
 
         // progress dialog configuration
@@ -126,12 +136,10 @@ public class FragmentAchievements extends Fragment  {
 
     }
 
-
     /**
      * Initializes the view
      * @param v The view to initialize
      */
-
     private void initViews(View v){
 
         toolbar = (Toolbar) v.findViewById(R.id.toolbar1);
@@ -150,6 +158,7 @@ public class FragmentAchievements extends Fragment  {
     private synchronized void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(((AppCompatActivity)getActivity()).getSupportFragmentManager());
 
+        //adding fragments to the adapter
         adapter.addFragment(new WalkingFragment(), "Walking");
         adapter.addFragment(new RunningFragment(), "Running");
         adapter.addFragment(new BikingFragment(), "Biking");
