@@ -54,6 +54,7 @@
                     android:drawablePadding="12dp"
                     android:padding="8dp"
                     android:hint="Name"
+                    android:visibility="gone"
                     android:textColorHint="#fff"
                     android:maxLines="1"
                     android:drawableStart="@drawable/ic_person"
@@ -64,6 +65,7 @@
                     />
                 <View
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="1dp"
                     android:background="#D3D3D3" />
             </android.support.design.widget.TextInputLayout>

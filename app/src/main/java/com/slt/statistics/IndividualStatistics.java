@@ -6,20 +6,18 @@ import android.support.design.widget.TabLayout;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
 import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.LineData;
 import com.slt.R;
 import com.slt.control.DataProvider;
 import com.slt.data.Achievement;
 import com.slt.definitions.Constants;
+import com.slt.fragments.RootMonthTabStatisticFragment;
 import com.slt.fragments.TimeperiodIndividualSportTabFragment;
 import com.slt.statistics.adapter.StatisticsOverviewAdapter;
 import com.slt.statistics.data.DataObjectsCollection;
@@ -39,11 +37,16 @@ import java.util.List;
  */
 public class IndividualStatistics extends Fragment {
 
+    public static ViewPagerAdapter adapter;
+
+    ViewPager viewPager;
+
     /**
      * sport selected by the user in StatisticsOverviewFragment
      */
     private static int selectedSportStatistics = Constants.TIMELINEACTIVITY.UNKNOWN;
 
+    public static TimeperiodIndividualSportTabFragment timeperiodIndividualSportTabFragment_month = null;
 
     @Nullable
     @Override
@@ -52,8 +55,7 @@ public class IndividualStatistics extends Fragment {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_view_statistics, container, false);
 
         String[] periodNames = new String[]{"Today", "Week", "Month"};
-        ViewPagerAdapter adapter;
-        ViewPager viewPager = (ViewPager) viewGroup.findViewById(R.id.pager);
+        viewPager = (ViewPager) viewGroup.findViewById(R.id.pager);
         adapter = new ViewPagerAdapter(StatisticsOverviewAdapter.fragmentManager);
 
         // draw tabs today, week, month
@@ -65,10 +67,10 @@ public class IndividualStatistics extends Fragment {
 
             timeperiodIndividualSportTabFragment.setPeriod(i);
 
-
             timeperiodIndividualSportTabFragment.setSport(IndividualStatistics.getSelectedSportStatistics());
 
             timeperiodIndividualSportTabFragment.setBarData(barData);
+
 
             // infos
             HashMap<String, String> infos = new HashMap<>();
@@ -86,6 +88,11 @@ public class IndividualStatistics extends Fragment {
 
         viewPager.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        //adapter.removeFragment("Month");
+        //adapter.notifyDataSetChanged();
+
+
 
 
         TabLayout tabLayout = (TabLayout) viewGroup.findViewById(R.id.tabs_in_view_statistics);
@@ -107,7 +114,8 @@ public class IndividualStatistics extends Fragment {
      *
      * it's needed for the tabs that can be swiped (notice the version v4)
      */
-    class ViewPagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
+     public class ViewPagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
+
 
         /**
          * list with tab-fragments
@@ -136,7 +144,11 @@ public class IndividualStatistics extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
+
+            if(position < 2)
             return mFragmentList.get(position);
+            else
+                return new RootMonthTabStatisticFragment();
         }
 
 
@@ -154,6 +166,8 @@ public class IndividualStatistics extends Fragment {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
+
+
 
         /**
          * removes the tab with the given title

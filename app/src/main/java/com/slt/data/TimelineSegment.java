@@ -270,6 +270,9 @@ public class TimelineSegment {
 
         //REST Call to add the point to the server
         DataUpdater.getInstance().addLocationEntry(newEntry, this);
+        DataUpdater.getInstance().updateTimelineSegment(this);
+
+
 
         //Send intent to inform about update
         Intent intent = new Intent();

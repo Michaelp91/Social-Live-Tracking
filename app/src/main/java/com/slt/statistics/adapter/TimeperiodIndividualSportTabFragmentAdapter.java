@@ -487,8 +487,7 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         MPPointF.recycleInstance(position);
 
         // ----- updating info box
-        int xEntry = (int) e.getX();
-        int yEntry = (int) e.getY();
+
 
         // convert x and y to data
         double speed =  StatisticsDataModelProvider.getSpeed(e, this.period, this.sport);
@@ -497,9 +496,9 @@ public class TimeperiodIndividualSportTabFragmentAdapter extends ArrayAdapter
         Date date =     StatisticsDataModelProvider.getDate(e, this.period);;
 
         // update info boxes
-        adapter.getItem(0).setLabelAndVal(SPEED,    String.valueOf( speed ));
-        adapter.getItem(1).setLabelAndVal(DISTANCE, String.valueOf( distance ));
-        adapter.getItem(2).setLabelAndVal(DURANCE,  String.valueOf( durance ));
+        adapter.getItem(0).setLabelAndVal(SPEED,    String.valueOf( speed * ( 3600 / 1000 ) ) + " km/h");
+        adapter.getItem(1).setLabelAndVal(DISTANCE, String.valueOf( distance ) + " m");
+        adapter.getItem(2).setLabelAndVal(DURANCE,  String.valueOf( durance ) + " min");
         adapter.getItem(3).setLabelAndVal(DATE,     date.toString());
 
         adapter.notifyDataSetChanged();

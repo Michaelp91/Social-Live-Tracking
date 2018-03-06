@@ -22,6 +22,7 @@ import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.restapi.OtherRestCalls;
+import com.slt.restapi.TemporaryDB;
 import com.slt.statistics.StatisticsOverviewFragment;
 
 /**
@@ -177,6 +178,8 @@ public class FragmentFriendDetails  extends Fragment  {
     private void showStatistics(){
          DataProvider.getInstance().setOwnUser(shownUser);
          DataProvider.getInstance().syncTimelineToUser();
+
+
 
         android.support.v4.app.Fragment fragment123 = null;
         fragment123 = new StatisticsOverviewFragment();
