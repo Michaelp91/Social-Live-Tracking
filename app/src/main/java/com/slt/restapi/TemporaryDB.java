@@ -56,6 +56,31 @@ public class TemporaryDB {
     private User friend;
 
 
+    public void initCollections() {
+        h_locationEntries = new HashMap<>();
+        h_timelineDays = new HashMap<>();
+        h_timelineSegments = new HashMap<>();
+        h_users = new HashMap<>();
+
+        timelineDaysByTags = new HashMap<>();
+        timeLineSegmentsByTags = new HashMap<>();
+        locationEntriesByTags = new HashMap<>();
+
+
+        //Identifying Data model object, after that edit this identified object by adding children
+        h_userResolver = new HashMap<>();
+        h_timelineResolver = new HashMap<>();
+        h_timelinedayResolver = new HashMap<>();
+        h_timelinesegmentResolver = new HashMap<>();
+        h_locationentryResolver = new HashMap<>();
+
+        //For loops
+        h_rest_userResolver = new HashMap<>();
+        h_rest_timelineResolver = new HashMap<>();
+        h_rest_timelinedayResolver = new HashMap<>();
+        h_rest_timelinesegmentResolver = new HashMap<>();
+        h_rest_locationentryResolver = new HashMap<>();
+    }
 
 
     public static TemporaryDB getInstance() {
