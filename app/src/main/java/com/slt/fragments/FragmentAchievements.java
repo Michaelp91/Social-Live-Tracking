@@ -2,6 +2,7 @@ package com.slt.fragments;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,10 +12,17 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.slt.MainProfile;
 import com.slt.R;
@@ -28,9 +36,12 @@ import com.slt.fragments.tabfragments.WalkingFragment;
 import com.slt.restapi.OtherRestCalls;
 
 import java.util.LinkedList;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
-public class FragmentAchievements extends Fragment {
+public class FragmentAchievements extends Fragment  {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -43,9 +54,18 @@ public class FragmentAchievements extends Fragment {
     private ProgressDialog dialog ;
 
     /**
+     * Clock for show/hide ActionBar
+     */
+    private ScheduledThreadPoolExecutor clock = new ScheduledThreadPoolExecutor( 2 );
+    private ScheduledFuture hide_timer;
+
+    /**
      * Handler for network transactions
      */
     private Handler handler;
+
+
+
 
     /**
      * icons for View Pager
@@ -55,6 +75,12 @@ public class FragmentAchievements extends Fragment {
             R.drawable.ic_action_running,
             R.drawable.ic_action_biking
     };
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate( savedInstanceState );
+
+    }
 
     @Nullable
     @Override
@@ -67,14 +93,11 @@ public class FragmentAchievements extends Fragment {
         return view;
     }
 
-
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
-        getActivity().setTitle("Ranking");
-
+        //getActivity().setTitle("Ranking");
 
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
 
@@ -96,16 +119,29 @@ public class FragmentAchievements extends Fragment {
         handler.post(runnableWalking);
         getActivity().onBackPressed();
         dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
+
+
+
+
     }
+
+
+
 
     private void initViews(View v){
 
-        toolbar = (Toolbar) v.findViewById(R.id.toolbar);
+        toolbar = (Toolbar) v.findViewById(R.id.toolbar1);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
+//
+//        actionBar.setDisplayShowCustomEnabled(true);
+//        actionBar.setDisplayShowTitleEnabled(false);
+//
+//        LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService( Context.LAYOUT_INFLATER_SERVICE);
+//        View view = inflator.inflate(R.layout.button_for_action_bar, null);
+//        actionBar.setCustomView(view);
 
-//      actionBar.setTitle( "Ranking" );
         actionBar.hide();
 
     }
@@ -119,6 +155,7 @@ public class FragmentAchievements extends Fragment {
         viewPager.setAdapter(adapter);
 
     }
+
 
     private void setupTabIcons() {
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
@@ -143,6 +180,7 @@ public class FragmentAchievements extends Fragment {
                     users.add( DataProvider.getInstance().getOwnUser()  );
                     users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines() );
 
+
                     DataProvider.getInstance().changeFriendList( users );
 
                     handler.sendEmptyMessage( 0 );
@@ -152,8 +190,6 @@ public class FragmentAchievements extends Fragment {
 
         }
     };
-
-
 
 
 }

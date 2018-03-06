@@ -3,6 +3,7 @@ package com.slt.fragments.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.slt.R;
@@ -46,6 +48,10 @@ public class RankingListAdapter extends ArrayAdapter<User> {
      * value for id of activity
      */
     int id;
+
+    int period;
+
+
 
 
 
@@ -88,6 +94,7 @@ public class RankingListAdapter extends ArrayAdapter<User> {
         this.dataSet = data;
         this.mContext=context;
         this.id = id;
+//        this.period = period;
 
 
     }
@@ -143,7 +150,13 @@ public class RankingListAdapter extends ArrayAdapter<User> {
         viewHolder.txtUserName.setText(dataModel.getUserName());
         String name = dataModel.getForeName() + " " + dataModel.getLastName();
         viewHolder.txtName.setText(name);
-        viewHolder.txtAchievement.setText(String.valueOf( dataModel.getMyTimeline().getActiveDistanceForMonth(id) ));
+
+        viewHolder.txtAchievement.setText( String.valueOf( dataModel.getMyTimeline().getActiveDistanceForMonth( id ) ) );
+
+
+//        else if (period == 1){
+//            viewHolder.txtAchievement.setText( String.valueOf( dataModel.getMyTimeline().getActiveDistanceForWeek( id ) ) );
+//        }
         viewHolder.txtAge.setText(String.valueOf(dataModel.getRank()));
 
         //if we have a picture show it

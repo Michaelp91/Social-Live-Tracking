@@ -5,6 +5,8 @@
     android:fillViewport="true"
     android:background="@color/fragment_bg"
     android:orientation="vertical"
+    android:id="@+id/walkingID"
+
     >
 
     <LinearLayout

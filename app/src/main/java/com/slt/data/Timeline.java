@@ -786,7 +786,7 @@ public class Timeline {
      * @param activity The activity that was detected
      */
     public void addUserStatus(Location location, Date date, DetectedActivity activity) {
-        
+
         //check if we have a day already
         if (this.myHistory.size() == 0) {
             this.myHistory.add(new TimelineDay(date));
