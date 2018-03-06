@@ -143,36 +143,36 @@ public class BikingFragment extends Fragment {
 
     }
 
-    /**
-     * Runnable to async load the friends from the server
-     */
-    public Runnable runnableBiking = new Runnable() {
-        @Override
-        public void run() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    //retrieve and store friends via rest
-                    LinkedList<User> users = new LinkedList<>();
-                    OtherRestCalls.retrieveFriends();
-
-                    users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines());
-                    users.add( DataProvider.getInstance().getOwnUser());
-
-
-                    DataProvider.getInstance().changeFriendList(users);
-
-
-
-                    handler.sendEmptyMessage(0);
-
-
-                }
-            }).start();
-
-        }
-    };
+//    /**
+//     * Runnable to async load the friends from the server
+//     */
+//    public Runnable runnableBiking = new Runnable() {
+//        @Override
+//        public void run() {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    //retrieve and store friends via rest
+//                    LinkedList<User> users = new LinkedList<>();
+//                    OtherRestCalls.retrieveFriends();
+//
+//                    users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines());
+//                    users.add( DataProvider.getInstance().getOwnUser());
+//
+//
+//                    DataProvider.getInstance().changeFriendList(users);
+//
+//
+//
+//                    handler.sendEmptyMessage(0);
+//
+//
+//                }
+//            }).start();
+//
+//        }
+//    };
 
     /**
      * After data was retrieved, search for fitting users

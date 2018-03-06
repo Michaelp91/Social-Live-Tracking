@@ -112,11 +112,6 @@ public class RunningFragment extends Fragment {
 //        });
         mProgressBar.setVisibility(View.VISIBLE);
 
-//        dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
-
-//         handler.postDelayed(runnableRunning, 2000);
-        //handler.post(runnableRunning);
-
 
 
         //create a linked list for the users

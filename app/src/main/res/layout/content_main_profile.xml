@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.slt.MainProfile"
     tools:showIn="@layout/app_bar_main_profile"
-    android:background="@drawable/gradientbackground">
+    android:background="@drawable/background_main">
     <FrameLayout
         android:id="@+id/content_main_frame"
         android:layout_width="match_parent"
