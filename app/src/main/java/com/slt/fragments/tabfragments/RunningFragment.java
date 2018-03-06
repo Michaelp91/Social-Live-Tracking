@@ -3,7 +3,6 @@ package com.slt.fragments.tabfragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,12 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.slt.R;
 import com.slt.control.ApplicationController;
@@ -25,8 +21,6 @@ import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.fragments.adapters.RankingListAdapter;
-import com.slt.restapi.OtherRestCalls;
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +30,9 @@ import java.util.LinkedList;
 
 public class RunningFragment extends Fragment {
 
+    /**
+     * empty constructor for Fragment
+     */
     public RunningFragment(){
 
     }
@@ -59,21 +56,10 @@ public class RunningFragment extends Fragment {
      */
     private static RankingListAdapter adapter, ownadapter;
 
-
-    /**
-     * Handler for network transactions
-     */
-    private Handler handler;
-
     /**
      * Progress Bar
      */
     private ProgressBar mProgressBar;
-
-    /**
-     * Simple progress dialog
-     */
-    private ProgressDialog dialog ;
 
     /**
      * spinner for choose Month or Week
@@ -86,12 +72,22 @@ public class RunningFragment extends Fragment {
     private int choosePeriod;
 
 
-
+    /**
+     * Overwritten onCreate Method
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Overwritten onCreateView Method
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -106,6 +102,11 @@ public class RunningFragment extends Fragment {
 
     }
 
+    /**
+     * Overwritten onViewCreated Method
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated( view, savedInstanceState );
@@ -157,7 +158,7 @@ public class RunningFragment extends Fragment {
         //init adapters
         refreshAdapter();
 
-
+        //after data was retrieved, search for fitting users
         afterRetrieval();
 
     }
@@ -215,14 +216,25 @@ public class RunningFragment extends Fragment {
 
     }
 
+    /**
+     * Getter for choosePeriod value
+     * @return
+     */
     public int getChoosePeriod() {
         return choosePeriod;
     }
 
+    /**
+     * Setter for choosePeriod value
+     * @param choosePeriod
+     */
     public void setChoosePeriod(int choosePeriod) {
         this.choosePeriod = choosePeriod;
     }
 
+    /**
+     * Method for initialize and refresh adapter
+     */
     public void refreshAdapter(){
 
         adapter= new RankingListAdapter(dataModels, ApplicationController.getContext(),8,getChoosePeriod());

@@ -1,9 +1,6 @@
 package com.slt.fragments.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +8,16 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.slt.R;
-import com.slt.control.ApplicationController;
-import com.slt.data.Timeline;
 import com.slt.data.User;
-import com.slt.fragments.tabfragments.RunningFragment;
-
 import java.util.ArrayList;
 
-import static com.slt.SegmentViewActivity.decodeSampledBitmapFromResource;
 
 
 /**
- * List Adapter for showing a friend
+ * List Adapter for showing a ranking
  */
 public class RankingListAdapter extends ArrayAdapter<User> {
 
@@ -90,6 +81,7 @@ public class RankingListAdapter extends ArrayAdapter<User> {
      * @param data The data that should be shown
      * @param context The context of the view
      * @param id The ID of activity
+     * @param period The period of
      *
      */
     public RankingListAdapter(ArrayList<User> data, Context context, int id, int period) {
