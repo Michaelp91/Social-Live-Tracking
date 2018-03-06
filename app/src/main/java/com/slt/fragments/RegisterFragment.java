@@ -25,10 +25,8 @@ import com.slt.network.NetworkUtil;
 import com.slt.restapi.DataUpdater;
 import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.Singleton;
-import com.slt.restapi.UpdateOperations;
 import com.slt.restapi.UpdateOperations_Synchron;
 import com.slt.restapi.data.REST_Timeline;
-import com.slt.restapi.data.REST_User;
 import com.slt.restapi.data.REST_User_Functionalities;
 
 import java.io.IOException;
