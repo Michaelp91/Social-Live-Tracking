@@ -2,7 +2,6 @@ package com.slt.fragments;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,21 +11,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-
-import com.slt.MainProfile;
 import com.slt.R;
-
 import com.slt.ViewPagerAdapter;
 import com.slt.control.DataProvider;
 import com.slt.data.User;
@@ -36,12 +24,15 @@ import com.slt.fragments.tabfragments.WalkingFragment;
 import com.slt.restapi.OtherRestCalls;
 
 import java.util.LinkedList;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+
 
 
 public class FragmentAchievements extends Fragment  {
+
+
+    /**
+     * ViewPager configurations
+     */
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -52,12 +43,6 @@ public class FragmentAchievements extends Fragment  {
      */
 
     private ProgressDialog dialog ;
-
-    /**
-     * Clock for show/hide ActionBar
-     */
-    private ScheduledThreadPoolExecutor clock = new ScheduledThreadPoolExecutor( 2 );
-    private ScheduledFuture hide_timer;
 
     /**
      * Handler for network transactions
@@ -76,12 +61,23 @@ public class FragmentAchievements extends Fragment  {
             R.drawable.ic_action_biking
     };
 
+    /**
+     * Overwritten onCreate Method
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
 
     }
 
+    /**
+     * Overwritten onCreateView Method
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -93,9 +89,15 @@ public class FragmentAchievements extends Fragment  {
         return view;
     }
 
+    /**
+     * Overwritten onViewCreated Method
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         //you can set the title for your toolbar here for different fragments different titles
         //getActivity().setTitle("Ranking");
 
@@ -118,15 +120,17 @@ public class FragmentAchievements extends Fragment  {
 
         handler.post(runnableWalking);
         getActivity().onBackPressed();
+
+        // progress dialog configuration
         dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
-
-
-
 
     }
 
 
-
+    /**
+     * Initializes the view
+     * @param v The view to initialize
+     */
 
     private void initViews(View v){
 
@@ -134,18 +138,15 @@ public class FragmentAchievements extends Fragment  {
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
-//
-//        actionBar.setDisplayShowCustomEnabled(true);
-//        actionBar.setDisplayShowTitleEnabled(false);
-//
-//        LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService( Context.LAYOUT_INFLATER_SERVICE);
-//        View view = inflator.inflate(R.layout.button_for_action_bar, null);
-//        actionBar.setCustomView(view);
-
+        // hide action bar
         actionBar.hide();
 
     }
 
+    /**
+     * ViewPager setup
+     * @param viewPager The ViewPager to initialize
+     */
     private synchronized void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(((AppCompatActivity)getActivity()).getSupportFragmentManager());
 
@@ -156,7 +157,9 @@ public class FragmentAchievements extends Fragment  {
 
     }
 
-
+    /**
+     * Icons customize for ViewPager
+     */
     private void setupTabIcons() {
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);

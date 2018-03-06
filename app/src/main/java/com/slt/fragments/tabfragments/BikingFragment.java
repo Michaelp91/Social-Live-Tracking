@@ -1,9 +1,7 @@
 package com.slt.fragments.tabfragments;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,12 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.slt.R;
 import com.slt.control.ApplicationController;
@@ -25,7 +20,6 @@ import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
 import com.slt.fragments.adapters.RankingListAdapter;
-import com.slt.restapi.OtherRestCalls;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +29,9 @@ import java.util.LinkedList;
 
 public class BikingFragment extends Fragment {
 
+    /**
+     * empty constructor for Fragment
+     */
     public BikingFragment(){
 
     }
@@ -70,12 +67,6 @@ public class BikingFragment extends Fragment {
 
 
     /**
-     * Simple progress dialog
-     */
-
-    private ProgressDialog dialog ;
-
-    /**
      * spinner for choose Month or Week
      */
     private Spinner spinner;
@@ -85,28 +76,42 @@ public class BikingFragment extends Fragment {
      */
     private int choosePeriod;
 
-
+    /**
+     * Overwritten onCreate Method
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
 
+    /**
+     * Overwritten onCreateView Method
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.biking_fragment, container, false);
         SharedResources.getInstance().setUser(null);
 
         mProgressBar =  (ProgressBar) view.findViewById(R.id.biking_progress) ;
 
-
         return view;
-
 
     }
 
+    /**
+     * Overwritten onViewCreated Method
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated( view, savedInstanceState );
@@ -136,9 +141,6 @@ public class BikingFragment extends Fragment {
                 refreshAdapter();
                 afterRetrieval();
 
-
-
-
             }
 
             @Override
@@ -156,7 +158,7 @@ public class BikingFragment extends Fragment {
         //init adapters
         refreshAdapter();
 
-
+        //after data was retrieved, search for fitting users
         afterRetrieval();
 
     }
@@ -216,15 +218,25 @@ public class BikingFragment extends Fragment {
 
     }
 
-
+    /**
+     * Getter for choosePeriod value
+     * @return
+     */
     public int getChoosePeriod() {
         return choosePeriod;
     }
 
+    /**
+     * Setter for choosePeriod value
+     * @param choosePeriod
+     */
     public void setChoosePeriod(int choosePeriod) {
         this.choosePeriod = choosePeriod;
     }
 
+    /**
+     * Method for initialize and refresh adapter
+     */
     public void refreshAdapter(){
         //init adapters
         adapter= new RankingListAdapter(dataModels, ApplicationController.getContext(),1,getChoosePeriod());
