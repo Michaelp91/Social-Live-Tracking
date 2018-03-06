@@ -39,33 +39,70 @@ import java.util.LinkedList;
 
 /**
  * Created by Usman Ahmad on 20.01.2018.
+ *
+ * show all the friends in the live map
  */
 
 public class FragmentLiveMap extends Fragment {
+
+    /**
+     * googleMap Object for the Map View
+     */
     private GoogleMap googleMap;
+
+    /**
+     * mMapView
+     */
     MapView mMapView;
 
+    /**
+     * list view
+     */
     ListView listView;
+
+    /**
+     * adapter for notify changes
+     */
     private static LiveMapListAdapter adapter;
 
-    private Button SearchButton;
-
+    /**
+     * handler for retrieving data from the server for every 2 sec.
+     */
     public Handler handler = new Handler();
 
+    /**
+     * list of user friends
+     */
     private ArrayList<User> restUsers;
 
-
-
-    private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
-    private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
+    /**
+     * list of user friends
+     */
     private ArrayList<User> list_friends = new ArrayList<>();
+
+
+    /**
+     * hashmap for storing the viewed friends
+     */
     private HashMap<String, User> h_viewedFriends = new HashMap<>();
 
 
+    /**
+     * check if the friend is not viewed
+     * @param id current friend with object id
+     * @return true if the friend is not viewed, otherwise false
+     */
     public boolean FriendIsNotViewed(String id) {
         return (h_viewedFriends.get(id) == null)? true:false;
     }
 
+    /**
+     * overwritten onCreateView Method
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,6 +116,9 @@ public class FragmentLiveMap extends Fragment {
 
     }
 
+    /**
+     * runnable for retrieving friends in every 2 sec.
+     */
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -98,6 +138,9 @@ public class FragmentLiveMap extends Fragment {
         }
     };
 
+    /**
+     * display all the friends
+     */
     private void ShowFriends() {
         final ArrayList<Marker> markers = new ArrayList<>();
 
@@ -158,6 +201,11 @@ public class FragmentLiveMap extends Fragment {
     }
 
 
+    /**
+     * overwritten onViewCreated
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
