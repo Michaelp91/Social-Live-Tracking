@@ -56,7 +56,6 @@ import com.slt.restapi.DataUpdater;
 import com.slt.services.ActivityService;
 import com.slt.services.LocationService;
 import com.slt.statistics.StatisticsOverviewFragment;
-import com.slt.utils.FunctionalityLogger;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -467,7 +466,6 @@ public class MainProfile extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        FunctionalityLogger.getInstance().FinishFileWriting();
     }
 
     /**

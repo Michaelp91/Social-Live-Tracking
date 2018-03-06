@@ -1,42 +1,20 @@
 package com.slt;
 
-import android.*;
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.media.ExifInterface;
-import android.net.Uri;
-import android.os.Handler;
-import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.maps.CameraUpdate;
@@ -51,24 +29,13 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.LocationEntry;
-import com.slt.data.Timeline;
-import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
-import com.slt.data.User;
 import com.slt.definitions.Constants;
-import com.slt.restapi.OtherRestCalls;
-import com.slt.restapi.UsefulMethods;
-import com.slt.utils.FunctionalityLogger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -319,11 +286,6 @@ public class SegmentViewActivity extends AppCompatActivity {
 
                         String strDate = (fstPoint != null)? sdf.format(fstPoint.getMyEntryDate()): "";
 
-                        FunctionalityLogger.getInstance().AddLog("Start: " + strDate);
-
-                        if(fstPoint != null)
-                          FunctionalityLogger.getInstance().AddLog("Location Point(Longitude, Lattitude): " + fstPoint.getLongitude() + ", " + fstPoint.getLatitude());
-
                         String[] strAddress = tSegment.getStartAddress().split(",");
 
                         myEntryDate.setText(strDate + " Uhr");
@@ -532,7 +494,7 @@ public class SegmentViewActivity extends AppCompatActivity {
 
 
         }catch(Exception e) {
-            FunctionalityLogger.getInstance().AddErrorLog("UpdateTimelineView(): " + e.getMessage().toString());
+
         }
 
     }

@@ -1,144 +1,102 @@
 package com.slt.fragments;
 
-import android.Manifest;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
-import android.text.Layout;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.location.DetectedActivity;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.vision.text.Line;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.slt.MainProfile;
 import com.slt.R;
 import com.slt.SegmentViewActivity;
-import com.slt.TimelineDetailsActivity;
-import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
-import com.slt.control.SharedResources;
-import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
-import com.slt.model.Response;
-import com.slt.network.NetworkUtil;
-import com.slt.restapi.OtherRestCalls;
 import com.slt.restapi.RetrieveOperations;
-import com.slt.restapi.TemporaryDB;
-import com.slt.restapi.UsefulMethods;
-import com.slt.restapi.data.Image;
-import com.slt.restapi.data.REST_LocationEntry;
-import com.slt.restapi.data.REST_TimelineDay;
-import com.slt.restapi.data.REST_TimelineSegment;
-import com.slt.utils.Constants;
-import com.slt.utils.FunctionalityLogger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
-import retrofit2.adapter.rxjava.HttpException;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
-
-import static com.slt.utils.Validation.validateEmail;
-import static com.slt.utils.Validation.validateFields;
-
-
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-
+/**
+ * Show the Timeline of the logged in user
+ */
 public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
-    private static final String TAG = "FragmentTimeline";
-    private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
-    private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
+
+    /**
+     *Handler for callbacks
+     */
     public Handler handler = new Handler();
-    //@BindView(R.id.toolbar)
-    //public Toolbar toolBar;
 
+    /**
+     * ChoosedTimelineDay
+     */
     private TimelineDay choosedTimelineDay;
-    private TimelineDay tmpTimelineDay = null;
-    private ArrayList<LinearLayout> list_TimelineDays = new ArrayList<>();
-    private ArrayList<LinearLayout> list_TimelineSegments;
-    private LinearLayout view_timelineDays;
-    private LinearLayout choosedChildren;
-    private int counter_timelinedays;
-    private int counter_timelinechildren;
-    private final String TAG_TIMELINEDAY = "timelineday";
-    private final String TAG_TIMELINESEGMENT = "timelinesegment";
-    private LinkedList<TimelineDay> timeLineDays;
-    private View view;
-    private Timeline t;
-    private HashMap<String, TimelineDay> h_viewedTimelineDays = new HashMap<>();
-    private HashMap<String, TimelineSegment> h_viewedTimelineSegments = new HashMap<>();
-    private HashMap<String, TimelineDay> h_alreadyChoosedDay = new HashMap<>();
-    private LinkedList<Integer> randomPositions = new LinkedList<>();
-    private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
-    private Bitmap bitmap;
-    ImageView tmpImageView;
-    private LinearLayout choosedPicView;
-    private HashMap<String, LinearLayout> picViews = new HashMap<>();
-    private HashMap<String, LinkedList<Bitmap>>  downloadedImagesByTSegmentId = new HashMap<>();
 
-    private int loggerCounter = 0;
+    /**
+     * list_TimelineDays
+     */
+    private ArrayList<LinearLayout> list_TimelineDays = new ArrayList<>();
+
+
+    /**
+     * view_timelineDays
+     */
+    private LinearLayout view_timelineDays;
+
+    /**
+     * counter_timelinedays
+     */
+    private int counter_timelinedays;
+
+    /**
+     * TAG_TIMELINEDAY
+     */
+    private final String TAG_TIMELINEDAY = "timelineday";
+
+
+    /**
+     * timeLine Days
+     */
+    private LinkedList<TimelineDay> timeLineDays;
+
+
+    /**
+     * Timeline from the logged in User
+     */
+    private Timeline t;
+
+
+    /**
+     * HashMap to check if the specific Timeline Day is already viewed.
+     */
+    private HashMap<String, TimelineDay> h_viewedTimelineDays = new HashMap<>();
+
+
+    /**
+     * Overwritten onCreateView Method
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
 
     @Nullable
     @Override
@@ -150,6 +108,11 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     }
 
 
+    /**
+     * Overwritten onViewCreated Method
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -169,12 +132,15 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
             handler.postDelayed(runnable, 2000);
 
-            this.view = view;
+
         }catch (Exception e) {
 
         }
     }
 
+    /**
+     * callback for retrieving the timeline data every 2 sec.
+     */
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -195,14 +161,19 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         }
     };
 
+
+    /**
+     * check if the Timeline Day is not viewed.
+     * @param id check the Timeline Day with this object id
+     * @return true: if timeline day is not viewed, else: false
+     */
     public boolean timelinedayIsNotViewed(String id) {
         return (h_viewedTimelineDays.get(id) == null)? true:false;
     }
 
-    public boolean timelinesegmentIsNotViewed(String id) {
-        return (h_viewedTimelineSegments.get(id) == null)? true:false;
-    }
-
+    /**
+     * Update the Timeline Day View
+     */
     public void updateTimelineDays() {
         boolean activity_runningIsDisplayed = false;
         boolean activity_walkingIsDisplayed = false;
@@ -278,12 +249,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
                             }
 
                         }
-
-
-
-              //          TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
-//            ImageView imageView = (ImageView) row.findViewById(R.id.iv_activity);
-//            UsefulMethods.UploadImageView(imageView);
 
                         Set<Integer> activities =  t_d.getActivity_totalUsersteps().keySet();
 
@@ -510,39 +475,25 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                     }
 
-/*
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressDialog.hide();
-                        }
-                    });
-*/
-                //TODO: Problem with updating TimelineView, look at this problem later
-                    /*
-                    if (choosedChildren != null && choosedTimelineDay != null) {
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                updateTimelineView();
-                            }
-                        });
-                    }
-                    */
-
                 }
 
 
 
 
         }catch(Exception e) {
-            FunctionalityLogger.getInstance().AddErrorLog("UpdateTimelineDay(): " + e.getMessage().toString());
+
         }
 
     }
 
+    /**
+     * Resize Image from Drawable
+     * @param res
+     * @param resId Image Resource Id
+     * @param reqWidth Required Image With
+     * @param reqHeight Required Image Height
+     * @return new scaled Bitmap
+     */
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
 
@@ -559,6 +510,13 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
+    /**
+     * Helper Method for resizing the Bitmap
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return the inSampleSize Value
+     */
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -581,6 +539,10 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         return inSampleSize;
     }
 
+    /**
+     * Check if the specific Timeline Day is clicked
+     * @param v the Timeline Day View which is clicked
+     */
     @Override
     public void onClick(View v) {
 
@@ -589,7 +551,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
             switch ((String) v.getTag()) {
                 case TAG_TIMELINEDAY:
                     LinearLayout tday = list_TimelineDays.get(v.getId());
-                    choosedChildren = (LinearLayout) tday.findViewById(R.id.ll_all_locations);
                     choosedTimelineDay = timeLineDays.get(v.getId());
                     LinkedList<TimelineSegment> choosedSegments = choosedTimelineDay.getMySegments();
                     DataProvider.getInstance().setChoosedTimelineSegments(choosedTimelineDay.getMySegments());
@@ -643,19 +604,16 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
             }
         }catch (Exception e) {
-            FunctionalityLogger.getInstance().AddErrorLog("OnClick on TimelineDay: " +  e.getMessage().toString());
         }
     }
 
+    /**
+     * overwritten onPause Method to remove the Callback
+     */
     @Override
     public void onPause() {
         super.onPause();
         handler.removeCallbacks(runnable);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
 }

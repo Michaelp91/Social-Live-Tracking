@@ -1,56 +1,27 @@
 package com.slt;
 
-import android.*;
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Handler;
-import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.DetectedActivity;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.vision.text.Line;
-import com.slt.control.ApplicationController;
 import com.slt.control.DataProvider;
-import com.slt.control.SharedResources;
-import com.slt.data.LocationEntry;
 import com.slt.data.Timeline;
 import com.slt.data.TimelineDay;
 import com.slt.data.TimelineSegment;
 import com.slt.data.User;
-import com.slt.restapi.OtherRestCalls;
-import com.slt.restapi.RetrieveOperations;
 import com.slt.restapi.TemporaryDB;
-import com.slt.restapi.UsefulMethods;
-import com.slt.utils.FunctionalityLogger;
 
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,6 +30,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
+/**
+ * Show the Timeline of the choosed friend
+ */
 public class TimelineFriend extends AppCompatActivity implements View.OnClickListener {
 
 
@@ -84,11 +58,6 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
      * view_timelineDays
      */
     private LinearLayout view_timelineDays;
-
-    /**
-     * choosedChildren
-     */
-    private LinearLayout choosedChildren;
 
 
     /**
@@ -447,7 +416,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
 
         }catch(Exception e) {
-            FunctionalityLogger.getInstance().AddErrorLog("UpdateTimelineDay(): " + e.getMessage().toString());
+
         }
 
     }
@@ -526,7 +495,6 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
             }
         }catch (Exception e) {
-            FunctionalityLogger.getInstance().AddErrorLog("OnClick on TimelineDay: " +  e.getMessage().toString());
         }
     }
 
