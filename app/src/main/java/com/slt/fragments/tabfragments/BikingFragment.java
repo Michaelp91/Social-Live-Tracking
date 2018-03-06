@@ -10,10 +10,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.slt.R;
@@ -72,6 +75,16 @@ public class BikingFragment extends Fragment {
 
     private ProgressDialog dialog ;
 
+    /**
+     * spinner for choose Month or Week
+     */
+    private Spinner spinner;
+
+    /**
+     * value for period
+     */
+    private int choosePeriod;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,25 +111,7 @@ public class BikingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated( view, savedInstanceState );
 
-
-
-//        //handler to wait for a network response
-//        handler = new Handler(new Handler.Callback() {
-//            @Override
-//            public boolean handleMessage(Message msg) {
-//
-//                afterRetrieval();
-//                return false;
-//            }
-//        });
         mProgressBar.setVisibility(View.VISIBLE);
-
-//        dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
-
-//        handler.postDelayed(runnableBiking, 3000);
-//        handler.post(runnableBiking);
-
-
 
         //create a linked list for the users
         LinkedList<User> users = DataProvider.getInstance().getOwnUser().getUserList();
@@ -126,53 +121,46 @@ public class BikingFragment extends Fragment {
         mylistView = (ListView) view.findViewById( R.id.mybiking_list );
 
 
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(),
+                R.array.settings_array, R.layout.spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner = (Spinner) view.findViewById(R.id.spinnerBiking);
+        spinner.setAdapter(adapter1);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                choosePeriod = Integer.valueOf( position );
+                setChoosePeriod( choosePeriod );
+
+                refreshAdapter();
+                afterRetrieval();
+
+
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                choosePeriod = 0;
+                setChoosePeriod( choosePeriod );
+            }
+        });
+
+
         //add lists for the data
         dataModels= new ArrayList<>(users);
         myData = new ArrayList<>( users );
 
         //init adapters
-
-        adapter= new RankingListAdapter(dataModels, ApplicationController.getContext(),1);
-        ownadapter = new RankingListAdapter(myData, ApplicationController.getContext(),1);
-
-        listView.setAdapter(adapter);
-        mylistView.setAdapter( ownadapter );
+        refreshAdapter();
 
 
         afterRetrieval();
 
     }
 
-//    /**
-//     * Runnable to async load the friends from the server
-//     */
-//    public Runnable runnableBiking = new Runnable() {
-//        @Override
-//        public void run() {
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//                    //retrieve and store friends via rest
-//                    LinkedList<User> users = new LinkedList<>();
-//                    OtherRestCalls.retrieveFriends();
-//
-//                    users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines());
-//                    users.add( DataProvider.getInstance().getOwnUser());
-//
-//
-//                    DataProvider.getInstance().changeFriendList(users);
-//
-//
-//
-//                    handler.sendEmptyMessage(0);
-//
-//
-//                }
-//            }).start();
-//
-//        }
-//    };
 
     /**
      * After data was retrieved, search for fitting users
@@ -182,19 +170,31 @@ public class BikingFragment extends Fragment {
         //new ArrayList for data compare
         ArrayList<User> dataCompare = new ArrayList<>(  );
 
-  //      dialog.dismiss();
 
         dataModels.clear();
         myData.clear();
 
         dataCompare.addAll(DataProvider.getInstance().getUserList());
 
-        //Distance compare
-        Collections.sort(dataCompare, new Comparator<User>() {
-            @Override
-            public int compare(User s1, User s2) {
-                return Double.compare(s2.getMyTimeline().getActiveDistanceForMonth( 1 ), s1.getMyTimeline().getActiveDistanceForMonth( 1 ));
-            } } );
+        //Distance compare for Month or Week
+        if (getChoosePeriod() == 0) {
+            //Distance compare
+            Collections.sort(dataCompare, new Comparator<User>() {
+                @Override
+                public int compare(User s1, User s2) {
+                    return Double.compare(s2.getMyTimeline().getActiveDistanceForMonth( 1 ), s1.getMyTimeline().getActiveDistanceForMonth( 1 ));
+                } } );
+        }
+
+        else if (getChoosePeriod() == 1){
+            //Distance compare
+            Collections.sort(dataCompare, new Comparator<User>() {
+                @Override
+                public int compare(User s1, User s2) {
+                    return Double.compare(s2.getMyTimeline().getActiveDistanceForWeek( 1 ), s1.getMyTimeline().getActiveDistanceForWeek( 1 ));
+                } } );
+        }
+
 
         //init int for rank number
         int i = 1;
@@ -209,13 +209,29 @@ public class BikingFragment extends Fragment {
         dataModels.addAll(dataCompare);
         myData.add( DataProvider.getInstance().getOwnUser() );
 
-        //dataModels.add( DataProvider.getInstance().getOwnUser() );
-
         mProgressBar.setVisibility(View.GONE);
 
         adapter.notifyDataSetChanged();
         ownadapter.notifyDataSetChanged();
 
+    }
+
+
+    public int getChoosePeriod() {
+        return choosePeriod;
+    }
+
+    public void setChoosePeriod(int choosePeriod) {
+        this.choosePeriod = choosePeriod;
+    }
+
+    public void refreshAdapter(){
+        //init adapters
+        adapter= new RankingListAdapter(dataModels, ApplicationController.getContext(),1,getChoosePeriod());
+        ownadapter = new RankingListAdapter(myData, ApplicationController.getContext(),1,getChoosePeriod());
+
+        listView.setAdapter(adapter);
+        mylistView.setAdapter( ownadapter );
     }
 
 

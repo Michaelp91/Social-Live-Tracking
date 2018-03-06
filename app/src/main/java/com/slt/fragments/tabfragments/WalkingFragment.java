@@ -7,11 +7,15 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 
 
 import com.slt.R;
@@ -20,6 +24,7 @@ import com.slt.control.DataProvider;
 import com.slt.control.SharedResources;
 import com.slt.data.User;
 
+import com.slt.fragments.FragmentAchievements;
 import com.slt.fragments.adapters.RankingListAdapter;
 import com.slt.restapi.OtherRestCalls;
 
@@ -35,6 +40,12 @@ public class WalkingFragment extends Fragment {
     public WalkingFragment(){
 
     }
+
+    // TODO: Rename and change types and number of parameters
+    public static WalkingFragment newInstance() {
+        return new WalkingFragment();
+    }
+
     /**
      * Tag for the logger
      */
@@ -73,6 +84,16 @@ public class WalkingFragment extends Fragment {
 
     private ProgressDialog dialog ;
 
+    /**
+     * spinner for choose Month or Week
+     */
+    private Spinner spinner;
+
+    /**
+     * value for period
+     */
+    private int choosePeriod;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,8 +121,6 @@ public class WalkingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated( view, savedInstanceState );
 
-
-
 //        //handler to wait for a network response
 //        handler = new Handler(new Handler.Callback() {
 //            @Override
@@ -117,10 +136,6 @@ public class WalkingFragment extends Fragment {
 
 //        handler.post(runnableWalking);
 //        dialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
-//
-//        handler.postDelayed(runnableWalking, 1000);
-
-
 
         //create a linked list for the users
         LinkedList<User> users = DataProvider.getInstance().getOwnUser().getUserList();
@@ -130,19 +145,46 @@ public class WalkingFragment extends Fragment {
         mylistView = (ListView) view.findViewById( R.id.mywalking_list );
 
 
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(),
+                R.array.settings_array, R.layout.spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner = (Spinner) view.findViewById(R.id.spinnerWalking);
+        spinner.setAdapter(adapter1);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                choosePeriod = Integer.valueOf( position );
+                setChoosePeriod( choosePeriod );
+
+                refreshAdapter();
+                afterRetrieval();
+
+
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                choosePeriod = 0;
+                setChoosePeriod( choosePeriod );
+            }
+        });
+
+
+
         //add lists for the data
         dataModels= new ArrayList<>(users);
         myData = new ArrayList<>( users );
 
 
         //init adapters
-        adapter= new RankingListAdapter(dataModels, ApplicationController.getContext(),7);
-        ownadapter = new RankingListAdapter(myData, ApplicationController.getContext(),7);
-
-        listView.setAdapter(adapter);
-        mylistView.setAdapter( ownadapter );
+        refreshAdapter();
 
         afterRetrieval();
+
+
 
     }
 
@@ -189,12 +231,25 @@ public class WalkingFragment extends Fragment {
 
         dataCompare.addAll(DataProvider.getInstance().getUserList());
 
-        //Distance compare
-        Collections.sort(dataCompare, new Comparator<User>() {
-            @Override
-            public int compare(User s1, User s2) {
-                return Double.compare(s2.getMyTimeline().getActiveDistanceForMonth( 7 ), s1.getMyTimeline().getActiveDistanceForMonth( 7 ));
-            } } );
+
+        //Distance compare for Month or Week
+        if (getChoosePeriod() == 0) {
+            //Distance compare
+            Collections.sort(dataCompare, new Comparator<User>() {
+                @Override
+                public int compare(User s1, User s2) {
+                    return Double.compare(s2.getMyTimeline().getActiveDistanceForMonth( 7 ), s1.getMyTimeline().getActiveDistanceForMonth( 7 ));
+                } } );
+        }
+
+        else if (getChoosePeriod() == 1){
+            //Distance compare
+            Collections.sort(dataCompare, new Comparator<User>() {
+                @Override
+                public int compare(User s1, User s2) {
+                    return Double.compare(s2.getMyTimeline().getActiveDistanceForWeek( 7 ), s1.getMyTimeline().getActiveDistanceForWeek( 7 ));
+                } } );
+        }
 
         //init int for rank number
         int i = 1;
@@ -219,13 +274,27 @@ public class WalkingFragment extends Fragment {
 
     @Override
     public void onPause() {
-//       handler.removeCallbacks( runnableWalking );
         super.onPause();
 
     }
 
+    public int getChoosePeriod() {
+        return choosePeriod;
+    }
 
+    public void setChoosePeriod(int choosePeriod) {
+        this.choosePeriod = choosePeriod;
+    }
 
+    //refresh adapters
+    public void refreshAdapter(){
+
+        adapter= new RankingListAdapter(dataModels, ApplicationController.getContext(),7,getChoosePeriod());
+        ownadapter = new RankingListAdapter(myData, ApplicationController.getContext(),7,getChoosePeriod());
+
+        listView.setAdapter(adapter);
+        mylistView.setAdapter( ownadapter );
+    }
 
 }
 
