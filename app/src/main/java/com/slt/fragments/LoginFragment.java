@@ -48,6 +48,7 @@ import android.view.View.OnClickListener;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedList;
 
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
@@ -397,6 +398,17 @@ public class LoginFragment extends Fragment {
                             DataProvider.getInstance().getOwnUser().setTimeline(timeline);
                             DataProvider.getInstance().syncTimelineToUser();
 
+                            //Load friends including timelines
+                            LinkedList<User> users = new LinkedList<>();
+                            OtherRestCalls.retrieveFriends();
+
+                            users.add(DataProvider.getInstance().getOwnUser());
+                            users.addAll(OtherRestCalls.retrieveFriendsIncludingTimelines());
+
+                            DataProvider.getInstance().changeFriendList(users);
+
+
+
                             //start the REST Updater
                             DataUpdater.getInstance().Start();
 
@@ -426,6 +438,9 @@ public class LoginFragment extends Fragment {
                                     }
                                 }
                             }
+
+
+
                         } else {
                             showSnackBarMessage("Error retrieving User!");
                         }

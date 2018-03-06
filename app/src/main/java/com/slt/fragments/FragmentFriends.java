@@ -172,16 +172,22 @@ public class FragmentFriends extends Fragment {
                 @Override
                 public void run() {
                         //retrieve and store friends via rest
+
+                    try {
                         LinkedList<User> users = new LinkedList<>();
                         OtherRestCalls.retrieveFriends();
+
                         users.addAll(OtherRestCalls.retrieveFriendsIncludingTimelines());
 
                         DataProvider.getInstance().changeFriendList(users);
 
                         //load images
-                        for (User user : DataProvider.getInstance().getUserList()){
+                        for (User user : DataProvider.getInstance().getUserList()) {
                             Bitmap bitmap = UsefulMethods.LoadImage(user);
                             user.setMyImage(bitmap);
+                        }
+                       } catch(Exception e) {
+
                         }
 
                         handler.sendEmptyMessage(0);

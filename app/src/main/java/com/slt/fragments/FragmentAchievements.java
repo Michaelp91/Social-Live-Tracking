@@ -176,14 +176,18 @@ public class FragmentAchievements extends Fragment  {
                 @Override
                 public void run() {
 
-                    //retrieve and store friends via rest
-                    LinkedList<User> users = new LinkedList<>();
-                    OtherRestCalls.retrieveFriends();
+                    try {
+                        //retrieve and store friends via rest
+                        LinkedList<User> users = new LinkedList<>();
+                        OtherRestCalls.retrieveFriends();
 
-                    users.add( DataProvider.getInstance().getOwnUser()  );
-                    users.addAll( OtherRestCalls.retrieveFriendsIncludingTimelines() );
+                        users.add(DataProvider.getInstance().getOwnUser());
+                        users.addAll(OtherRestCalls.retrieveFriendsIncludingTimelines());
 
-                    DataProvider.getInstance().changeFriendList( users );
+                        DataProvider.getInstance().changeFriendList(users);
+                    }catch(Exception e) {
+
+                    }
 
                     handler.sendEmptyMessage( 0 );
 
