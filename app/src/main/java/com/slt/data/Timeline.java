@@ -46,9 +46,9 @@ public class Timeline {
             if (d1.equals(d2))
                 return 0;
             if (d1.after(d2))
-                return 1;
-            else
                 return -1;
+            else
+                return 1;
         }
     }
 

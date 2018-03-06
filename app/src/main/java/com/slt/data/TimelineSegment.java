@@ -37,8 +37,8 @@ public class TimelineSegment {
         @Override
         public int compare(LocationEntry loc1, LocationEntry loc2) {
             //get the values
-           Date d1 = loc1.getMyEntryDate();
-           Date d2 = loc2.getMyEntryDate();
+            Date d1 = loc1.getMyEntryDate();
+            Date d2 = loc2.getMyEntryDate();
 
             //return the comparision results
             if(d1.equals(d2))
@@ -270,6 +270,9 @@ public class TimelineSegment {
 
         //REST Call to add the point to the server
         DataUpdater.getInstance().addLocationEntry(newEntry, this);
+        DataUpdater.getInstance().updateTimelineSegment(this);
+
+
 
         //Send intent to inform about update
         Intent intent = new Intent();
@@ -355,14 +358,12 @@ public class TimelineSegment {
     public void addUserComment(String userComment, String user) {
         /*
         UserComment newComment = null;
-
         //check if we have a comment from the user
         for(UserComment com : this.userComments){
             if(com.getUserName().equals(user)){
                 newComment = com;
             }
         }
-
         //check if we have to create a new comment
         if(newComment == null){
             newComment = new UserComment(user, userComment);
@@ -381,7 +382,6 @@ public class TimelineSegment {
     public void addUserComment(UserComment comment, String id) {
         /*
         this.userComments.add(comment);
-
         //Send intent to inform about update
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT.TIMELINE_SEGMENT_INTENT_OTHER_INFO_CHANGED);
@@ -689,7 +689,7 @@ public class TimelineSegment {
      * @param startPlace The start Place to set
      */
     public void setStartPlace(String startPlace) {
-         this.startPlace = startPlace;
+        this.startPlace = startPlace;
     }
 
     /**
@@ -699,7 +699,7 @@ public class TimelineSegment {
     public String getStartAddress() {
 
         if(startAddress != null )
-          return startAddress;
+            return startAddress;
         else
             return "Unknown";
     }
@@ -807,4 +807,3 @@ public class TimelineSegment {
         this.ID = ID;
     }
 }
-

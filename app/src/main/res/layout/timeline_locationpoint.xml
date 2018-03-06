@@ -15,25 +15,27 @@
             android:orientation="vertical" />
 
 
+        <TextView
+            android:textColor="@color/timeline_activitybackground"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/ll_circle"
+            android:id="@+id/tv_startPlace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""/>
+
     <TextView
         android:layout_marginTop="5sp"
         android:textColor="@color/timeline_activitybackground"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/ll_circle"
         android:id="@+id/tv_placeOraddress"
+        android:layout_below="@id/tv_startPlace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="City Gallerie"/>
+        android:text=""/>
 
-        <TextView
-            android:textColor="@color/timeline_activitybackground"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/ll_circle"
-            android:layout_below="@id/tv_placeOraddress"
-            android:id="@+id/tv_startAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="City Gallerie"/>
+
 
     <TextView
         android:textColor="@color/timeline_activitybackground"

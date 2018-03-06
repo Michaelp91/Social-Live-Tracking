@@ -118,21 +118,6 @@ public class SegmentViewActivity extends AppCompatActivity {
 
         boolean failed = false;
 
-
-        try {
-            start = choosedTimelineSegments.getFirst().getLocationPoints().getFirst();
-            failed = true;
-        }catch(Exception e) {
-            failed = false;
-        }
-
-        try{
-            end = choosedTimelineSegments.getLast().getLocationPoints().getLast();
-            failed = true;
-        }catch (Exception e) {
-            failed = false;
-        }
-
         mMapView.onResume(); // needed to get the map to display immediately
 
         try {
@@ -145,40 +130,51 @@ public class SegmentViewActivity extends AppCompatActivity {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
-                // googleMap.getUiSettings().setZoomControlsEnabled(true);
                 LocationEntry first = null;
                 LocationEntry last = null;
-                if (start != null && end != null) {
-                    first = start;
-                    last = end;
 
-                    /*
-                    LatLng start = new LatLng(first.getLatitude(), first.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(start).icon( BitmapDescriptorFactory.fromResource( R.mipmap.ic_start ) )
-                            .title( "START" ));
+                for(TimelineSegment t: choosedTimelineSegments) {
 
-                    LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource( R.mipmap.ic_finish ))
-                            .title("FINISH"));
-                            */
+                    LinkedList<LocationEntry> locationEntries = t.getLocationPoints();
+
+                    if (locationEntries.size() >= 2) {
+                        first = locationEntries.getFirst();
+
+                        for (LocationEntry entry : locationEntries) {
+                            if (last != null) {
+
+                                LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
+                                LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
 
 
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLng(end));
+                                addLines(start, end);
+                            } else {
+                                LatLng start = new LatLng(entry.getLatitude(), entry.getLongitude());
+                                googleMap.addMarker(new MarkerOptions().position(start).title(""));
+                            }
+                            last = entry;
+                        }
+
+
+                    } else if(locationEntries.size() > 0){
+                        last = locationEntries.get(0);
+                        LatLng start = new LatLng(locationEntries.get(0).getLatitude(), locationEntries.get(0).getLongitude());
+                        googleMap.addMarker(new MarkerOptions().position(start).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_start)).title(""));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, zoomLevel));
+                    }
+                }
+
+                if (first != null && last != null) {
                     LatLng start = new LatLng(first.getLatitude(), first.getLongitude());
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(start));
-                    Marker m = googleMap.addMarker(new MarkerOptions().position(start).icon( BitmapDescriptorFactory.fromResource( R.mipmap.ic_start ) ).title("START"));
+                    Marker m = googleMap.addMarker(new MarkerOptions().position(start).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_start)).title("START"));
                     m.showInfoWindow();
 
                     LatLng end = new LatLng(last.getLatitude(), last.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource( R.mipmap.ic_finish ))
+                    googleMap.addMarker(new MarkerOptions().position(end).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_finish))
                             .title("FINISH"));
                     ZoomCamera(start, end);
-
-                    addLines(start, end);
-
-                } else {
-                    LatLng startLatLng = new LatLng(start.getLatitude(), start.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(startLatLng).icon( BitmapDescriptorFactory.fromResource( R.mipmap.ic_start ) ).title(""));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, zoomLevel));
                 }
             }
         });
@@ -253,7 +249,6 @@ public class SegmentViewActivity extends AppCompatActivity {
             LinkedList<TimelineSegment> timeLineSegments = choosedTimelineSegments;
             boolean isAdded = false;
             boolean unknownSegmentAdded = false;
-            int lastType = -1;
             LocationEntry lastLocationEntry = null;
 
             for (final TimelineSegment tSegment : timeLineSegments) {
@@ -277,9 +272,7 @@ public class SegmentViewActivity extends AppCompatActivity {
                     if (!locationEntries.isEmpty() && detectedActivity.getType() !=
                             com.slt.definitions.Constants.TIMELINEACTIVITY.TILTING
                             && detectedActivity.getType() != com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
-                            && detectedActivity.getType() != Constants.TIMELINEACTIVITY.UNKNOWN
-                            && (lastType != detectedActivity.getType())  ) {
-                        lastType = detectedActivity.getType();
+                            && detectedActivity.getType() != Constants.TIMELINEACTIVITY.UNKNOWN) {
 
                         FunctionalityLogger.getInstance().AddLog("\nTimeline Segment: ");
                         FunctionalityLogger.getInstance().AddLog("Number: " + loggerCounter);
@@ -300,8 +293,10 @@ public class SegmentViewActivity extends AppCompatActivity {
 
 
                         view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
-                        TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
+                        TextView address = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
                         TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
+                        TextView startPlace = (TextView) view_FirstPoint.findViewById(R.id.tv_startPlace);
+
 
                         if(fstPoint == null) {
                             view_FirstPoint.setVisibility(View.GONE);
@@ -316,9 +311,16 @@ public class SegmentViewActivity extends AppCompatActivity {
                         if(fstPoint != null)
                           FunctionalityLogger.getInstance().AddLog("Location Point(Longitude, Lattitude): " + fstPoint.getLongitude() + ", " + fstPoint.getLatitude());
 
+                        String[] strAddress = tSegment.getStartAddress().split(",");
 
                         myEntryDate.setText(strDate + " Uhr");
-                        placeAndaddress.setText(tSegment.getStartPlace());
+
+                        try {
+                            address.setText(strAddress[0]);
+                            startPlace.setText(tSegment.getStartPlace());
+                        }catch(Exception e) {
+                            address.setText("");
+                        }
 
                         if (timeLineSegments.indexOf(tSegment) < timeLineSegments.size() - 1) { //Draw Segment and the Endpoint
 
@@ -446,7 +448,23 @@ public class SegmentViewActivity extends AppCompatActivity {
 
 
                         myEntryDate.setText(strDate);
-                        placeAndaddress.setText(tSegment.getStartAddress());
+
+                        TextView address = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
+                        TextView startPlace = (TextView) view_FirstPoint.findViewById(R.id.tv_startPlace);
+
+                        myEntryDate.setText(strDate);
+                        startPlace.setText(tSegment.getStartAddress());
+                        String[] strAddress = tSegment.getStartAddress().split(",");
+
+                        try {
+                            address.setText(strAddress[0]);
+                            startPlace.setText(tSegment.getStartPlace());
+                        }catch(Exception e) {
+                            address.setText("");
+                            startPlace.setText("");
+                        }
+
+
                     } else if (timeLineSegments.indexOf(tSegment) == timeLineSegments.size() - 1
                             && (tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
                             || tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN)) {
@@ -457,16 +475,28 @@ public class SegmentViewActivity extends AppCompatActivity {
                         LocationEntry fstPoint = (locationEntries.size() > 0)? locationEntries.get(0): new LocationEntry(l, null, null, null);
 
                         view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
-                        TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
+
 
                         TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
 
                         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
                         String strDate = (fstPoint.getMyEntryDate() != null)? sdf.format(fstPoint.getMyEntryDate()): "Unknown";
+                        String[] strAddress = tSegment.getStartAddress().split(",");
 
+                        TextView address = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
+                        TextView startPlace = (TextView) view_FirstPoint.findViewById(R.id.tv_startPlace);
 
                         myEntryDate.setText(strDate);
-                        placeAndaddress.setText(tSegment.getStartAddress());
+                        startPlace.setText(tSegment.getStartAddress());
+
+
+                        try {
+                            address.setText(strAddress[0]);
+                            startPlace.setText(tSegment.getStartPlace());
+                        }catch(Exception e) {
+                            address.setText("");
+                            startPlace.setText("");
+                        }
                     }
 
 
@@ -485,7 +515,6 @@ public class SegmentViewActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 TimelineSegment tSegment = (TimelineSegment) view.getTag();
-                                SharedResources.getInstance().setEntryStart(firstLocationEntry);
                                 SharedResources.getInstance().setOnClickedTimelineSegmentForDetails(tSegment);
                                 Intent intent = new Intent(context, TimelineDetailsActivity.class);
                                 startActivity(intent);

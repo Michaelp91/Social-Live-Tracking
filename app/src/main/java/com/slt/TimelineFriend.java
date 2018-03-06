@@ -50,9 +50,11 @@ import com.slt.utils.FunctionalityLogger;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class TimelineFriend extends AppCompatActivity implements View.OnClickListener {
 
@@ -131,6 +133,12 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
     }
 
     public void updateTimelineDays() {
+        boolean activity_runningIsDisplayed = false;
+        boolean activity_walkingIsDisplayed = false;
+        boolean activity_bikingIsDisplayed = false;
+        boolean activity_onFootIsDisplayed = false;
+        boolean activity_onVehicleIsDisplayed = false;
+        String[] weekdays = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
         /*
         getActivity().runOnUiThread(new Runnable() {
@@ -141,6 +149,8 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
         });
         */
         try {
+
+
 
             if (this != null) {
                 LayoutInflater inflater = LayoutInflater.from(this);
@@ -154,27 +164,247 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                 counter_timelinedays = 0;
                 //view_timelineDays.removeAllViews();
                 for (TimelineDay t_d : timeLineDays) {
+                    activity_runningIsDisplayed = false;
+                    activity_walkingIsDisplayed = false;
+                    activity_bikingIsDisplayed = false;
+                    activity_onFootIsDisplayed = false;
+                    activity_onVehicleIsDisplayed = false;
 
                     if (timelinedayIsNotViewed(t_d.getID())) {
-                        h_viewedTimelineDays.put(t_d.getID(), t_d);
-                        final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.timeline_day, null);
-                        TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
-//            ImageView imageView = (ImageView) row.findViewById(R.id.iv_activity);
-//            UsefulMethods.UploadImageView(imageView);
 
+                        h_viewedTimelineDays.put(t_d.getID(), t_d);
+                        final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.timelineview_day, null);
+                        TextView tvDayOfWeek = (TextView) row.findViewById(R.id.tv_tday_dayofweek);
+                        TextView tv_tday_date = (TextView) row.findViewById(R.id.tv_tday_date);
+                        ImageView iv_arrow_forward = (ImageView) row.findViewById(R.id.iv_arrow_forward);
+                        LinearLayout ll_tday_border = (LinearLayout) row.findViewById(R.id.ll_tday_border);
 
                         Date date = t_d.getMyDate();
+
+                        Date today = new Date();
 
                         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
                         String strDate = sdf.format(date);
 
-                        myDate.setText(strDate);
+                        SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
+                        String strToday = sdf1.format(today);
+
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(date);
+                        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+
+                        if(strDate.equals(strToday)) {
+                            boolean debug = true;
+
+                            debug = false;
+                            int test = 2;
+                            test = 4;
+
+                            if(test == 4) {
+                                Log.d("t", "Hello World");
+                            }
+
+                        }
+
+
+
+                        //          TextView myDate = (TextView) row.findViewById(R.id.tv_myDate);
+//            ImageView imageView = (ImageView) row.findViewById(R.id.iv_activity);
+//            UsefulMethods.UploadImageView(imageView);
+
+                        Set<Integer> activities =  t_d.getActivity_totalUsersteps().keySet();
+
+                        //Filling Timeline Informations
+                        for(Integer a: activities) {
+                            switch (a) {
+                                case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE:
+                                    activity_bikingIsDisplayed = true;
+
+                                    TextView info = (TextView) row.findViewById(R.id.tv_tday_infoBicycle);
+                                    ImageView iv_bicycle = (ImageView) row.findViewById(R.id.iv_bicycle);
+                                    Bitmap bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_biking, 100, 100);
+                                    iv_bicycle.setImageBitmap(bmp);
+                                    DetectedActivity detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE, 100);
+                                    double activeDistance = t_d.getActiveDistance(detectedActivity);
+                                    double duration = t_d.getActiveTime(detectedActivity);
+
+                                    String informations = "Type: Bicycle";
+                                    informations += "\nDistance: " + Float.toString((float)activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString((float) duration) + " min";
+
+                                    info.setText(informations);
+                                    break;
+
+                                case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
+                                    activity_onFootIsDisplayed = true;
+                                    info = (TextView) row.findViewById(R.id.tv_tday_infoOnfoot);
+                                    ImageView iv = (ImageView) row.findViewById(R.id.iv_onfoot);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_walking, 100, 100);
+                                    iv.setImageBitmap(bmp);
+                                    detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT, 100);
+                                    activeDistance = t_d.getActiveDistance(detectedActivity);
+                                    duration = t_d.getActiveTime(detectedActivity);
+                                    int userSteps = t_d.getUserSteps(detectedActivity);
+
+                                    informations = "Type: On Foot";
+                                    informations += "\nDistance: " + Float.toString((float) activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString((float) duration) + " min";
+                                    informations += "\nUser Steps: " + userSteps;
+
+                                    info.setText(informations);
+
+                                    break;
+
+                                case com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING:
+                                    activity_runningIsDisplayed = true;
+
+                                    info = (TextView) row.findViewById(R.id.tv_tday_infoRunning);
+                                    iv = (ImageView) row.findViewById(R.id.iv_running);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_running, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
+
+                                    detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING, 100);
+                                    activeDistance = t_d.getActiveDistance(detectedActivity);
+                                    duration = t_d.getActiveTime(detectedActivity);
+                                    userSteps = t_d.getUserSteps(detectedActivity);
+
+                                    informations = "Type: Running";
+                                    informations += "\nActive Distance: " + Float.toString((float)activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString((float)duration) + " min";
+
+                                    info.setText(informations);
+                                    break;
+
+                                case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
+                                    activity_walkingIsDisplayed = true;
+
+                                    info = (TextView) row.findViewById(R.id.tv_tday_infoWalking);
+                                    iv = (ImageView) row.findViewById(R.id.iv_walking);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_walking, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
+                                    detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING, 100);
+                                    activeDistance = t_d.getActiveDistance(detectedActivity);
+                                    duration = t_d.getActiveTime(detectedActivity);
+                                    userSteps = t_d.getUserSteps(detectedActivity);
+
+                                    informations = "Type: Walking";
+                                    informations += "\nActive Distance: " + Float.toString((float) activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString( (float) duration) + " min";
+                                    informations += "\nUser Steps: " + userSteps;
+
+                                    info.setText(informations);
+                                    break;
+
+                                case com.slt.definitions.Constants.TIMELINEACTIVITY.IN_VEHICLE:
+                                    activity_onVehicleIsDisplayed = true;
+
+                                    info = (TextView) row.findViewById(R.id.tv_tday_infoVehicle);
+                                    iv = (ImageView) row.findViewById(R.id.iv_vehicle);
+                                    bmp = decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_vehicle, 100, 100);
+                                    iv.setImageBitmap(bmp);
+
+                                    detectedActivity = new DetectedActivity(com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING, 100);
+                                    activeDistance = t_d.getActiveDistance(detectedActivity);
+                                    duration = t_d.getActiveTime(detectedActivity);
+
+                                    informations = "Type: Vehicle";
+                                    informations += "\nActive Distance: " + Float.toString((float) activeDistance) + " m";
+                                    informations += "\nDuration: " + Float.toString( (float) duration) + " min";
+
+                                    info.setText(informations);
+                                    break;
+                            }
+                        }
+
+                        //Invisible inrelevant Parts
+                        if (!activity_bikingIsDisplayed) {
+                            LinearLayout ll_tday_segment1Biking = (LinearLayout) row.findViewById(R.id.ll_tday_segment1OnBicycle);
+                            LinearLayout ll_tday_segment2Biking = (LinearLayout) row.findViewById(R.id.ll_tday_segment2OnBicycle);
+                            LinearLayout ll_tday_segment3Biking = (LinearLayout) row.findViewById(R.id.ll_tday_segment3OnBicycle);
+                            LinearLayout ll_tday_boxbicycle = (LinearLayout) row.findViewById(R.id.ll_tday_boxbicycle);
+
+                            ll_tday_segment1Biking.setVisibility(View.GONE);
+                            ll_tday_segment2Biking.setVisibility(View.GONE);
+                            ll_tday_segment3Biking.setVisibility(View.GONE);
+                            ll_tday_boxbicycle.setVisibility(View.GONE);
+
+                        }
+
+                        if (!activity_onFootIsDisplayed) {
+                            LinearLayout ll_tday_segment1OnFoot = (LinearLayout) row.findViewById(R.id.ll_tday_segment1OnFoot);
+                            LinearLayout ll_tday_segment2OnFoot = (LinearLayout) row.findViewById(R.id.ll_tday_segment2OnFoot);
+                            LinearLayout ll_tday_boxonfoot = (LinearLayout) row.findViewById(R.id.ll_tday_boxonfoot);
+
+                            ll_tday_segment1OnFoot.setVisibility(View.GONE);
+                            ll_tday_segment2OnFoot.setVisibility(View.GONE);
+                            ll_tday_boxonfoot.setVisibility(View.GONE);
+
+                        }
+
+                        if (!activity_runningIsDisplayed) {
+                            LinearLayout ll_tday_segment1Running = (LinearLayout) row.findViewById(R.id.ll_tday_segment1Running);
+                            LinearLayout ll_tday_segment2Running = (LinearLayout) row.findViewById(R.id.ll_tday_segment2Running);
+                            LinearLayout ll_tday_segment3Running = (LinearLayout) row.findViewById(R.id.ll_tday_segment3Running);
+                            LinearLayout ll_tday_boxRunning = (LinearLayout) row.findViewById(R.id.ll_tday_boxRunning);
+
+                            ll_tday_segment1Running.setVisibility(View.GONE);
+                            ll_tday_segment2Running.setVisibility(View.GONE);
+                            ll_tday_segment3Running.setVisibility(View.GONE);
+                            ll_tday_boxRunning.setVisibility(View.GONE);
+
+                        }
+
+                        if (!activity_walkingIsDisplayed) {
+                            LinearLayout ll_tday_segment1Walking = (LinearLayout) row.findViewById(R.id.ll_tday_segment1Walking);
+                            LinearLayout ll_tday_segment2Walking = (LinearLayout) row.findViewById(R.id.ll_tday_segment2Walking);
+                            LinearLayout ll_tday_segment3Walking = (LinearLayout) row.findViewById(R.id.ll_tday_segment3Walking);
+                            LinearLayout ll_tday_boxwalking = (LinearLayout) row.findViewById(R.id.ll_tday_boxwalking);
+
+                            ll_tday_segment1Walking.setVisibility(View.GONE);
+                            ll_tday_segment2Walking.setVisibility(View.GONE);
+                            ll_tday_segment3Walking.setVisibility(View.GONE);
+                            ll_tday_boxwalking.setVisibility(View.GONE);
+                        }
+
+                        if (!activity_onVehicleIsDisplayed) {
+                            LinearLayout ll_tday_segment1Vehicle = (LinearLayout) row.findViewById(R.id.ll_tday_segment1Vehicle);
+                            LinearLayout ll_tday_segment2Vehicle = (LinearLayout) row.findViewById(R.id.ll_tday_segment2Vehicle);
+                            LinearLayout ll_tday_segment3Vehicle = (LinearLayout) row.findViewById(R.id.ll_tday_segment3Vehicle);
+                            LinearLayout ll_tday_boxvehicle = (LinearLayout) row.findViewById(R.id.ll_tday_boxVehicle);
+
+                            ll_tday_segment1Vehicle.setVisibility(View.GONE);
+                            ll_tday_segment2Vehicle.setVisibility(View.GONE);
+                            ll_tday_segment3Vehicle.setVisibility(View.GONE);
+                            ll_tday_boxvehicle.setVisibility(View.GONE);
+                        }
+
+                        if(!activity_bikingIsDisplayed && !activity_onFootIsDisplayed && !activity_runningIsDisplayed
+                                && !activity_walkingIsDisplayed && !activity_onVehicleIsDisplayed) {
+                            iv_arrow_forward.setVisibility(View.GONE);
+                            ll_tday_border.setVisibility(View.GONE);
+                        }
+
+
+
+
+
+
+                        tv_tday_date.setText(strDate);
+
+                        if(strDate.equals(strToday))
+                            tvDayOfWeek.setText("Today");
+                        else
+                            tvDayOfWeek.setText(weekdays[dayOfWeek - 1]);
+
+                        // myDate.setText(strDate);
 
                         row.setTag(TAG_TIMELINEDAY);
                         row.setId(counter_timelinedays);
                         row.setOnClickListener(this);
 
-                        runOnUiThread(new Runnable() {
+                        this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 view_timelineDays.addView(row);
@@ -208,6 +438,14 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
                 }
 
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+
                 //TODO: Problem with updating TimelineView, look at this problem later
                     /*
                     if (choosedChildren != null && choosedTimelineDay != null) {
@@ -231,400 +469,6 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    public void updateTimelineView() {
-
-/*
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                choosedChildren.removeAllViews();
-            }
-        });
-
-        */
-
-        try {
-
-            final LayoutInflater inflater = LayoutInflater.from(this);
-
-            LinkedList<TimelineSegment> timeLineSegments = choosedTimelineDay.getMySegments();
-            boolean isAdded = false;
-            boolean unknownSegmentAdded = false;
-
-            for (final TimelineSegment tSegment : timeLineSegments) {
-
-
-                if (timelinesegmentIsNotViewed(tSegment.getID())) {
-
-                    LinkedList<LocationEntry> locationEntries = tSegment.getLocationPoints();
-
-                    RelativeLayout view_FirstPoint = null;
-                    RelativeLayout view_segment = null;
-                    RelativeLayout view_LastPoint = null;
-                    ImageView iv_details = null;
-                    final DetectedActivity detectedActivity = tSegment.getMyActivity();
-
-                    //For Debug Purpose:
-                    if (detectedActivity.getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT) {
-                        boolean debug = true;
-                        int test = 2;
-                    }
-
-                    LinearLayout ll_shortLine = null;
-
-
-
-                    if (!locationEntries.isEmpty() && detectedActivity.getType() !=
-                            com.slt.definitions.Constants.TIMELINEACTIVITY.TILTING
-                            && detectedActivity.getType() != com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
-                            && (!unknownSegmentAdded || detectedActivity.getType() != com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN)  ) {
-                        unknownSegmentAdded = false;
-                        FunctionalityLogger.getInstance().AddLog("\nTimeline Segment: ");
-                        FunctionalityLogger.getInstance().AddLog("Number: " + loggerCounter);
-                        FunctionalityLogger.getInstance().AddLog("ObjectId: " + tSegment.getID());
-                        FunctionalityLogger.getInstance().AddLog("Activity(IN_VEHICLE, ON_BICYCLE, ON_FOOT, STILL, UNKNOWN, TILTING, WALKING, RUNNING): " + tSegment.getMyActivity().getType());
-                        FunctionalityLogger.getInstance().AddLog("Start: " + tSegment.getAddress());
-
-                        FunctionalityLogger.getInstance().AddLog("");
-                        loggerCounter++;
-
-
-                        isAdded = true;
-                        h_viewedTimelineSegments.put(tSegment.getID(), tSegment);
-
-
-                        LocationEntry fstPoint = locationEntries.get(0);
-
-                        view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
-                        TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
-                        ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
-                        TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
-
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                        String strDate = sdf.format(fstPoint.getMyEntryDate());
-
-                        FunctionalityLogger.getInstance().AddLog("Start: " + strDate);
-                        FunctionalityLogger.getInstance().AddLog("Location Point(Longitude, Lattitude): " + fstPoint.getLongitude() + ", " + fstPoint.getLatitude());
-
-
-                        myEntryDate.setText(strDate + " Uhr");
-                        placeAndaddress.setText(tSegment.getStartPlace());
-
-                        if (timeLineSegments.indexOf(tSegment) < timeLineSegments.size() - 1) { //Draw Segment and the Endpoint
-
-
-                            view_segment = (RelativeLayout) inflater.inflate(R.layout.timeline_segment, null);
-                            TextView activeTime = null;
-                            final TextView activeDistance = null;
-                            final ImageView activity = null;
-                            final LinearLayout ll_line = (LinearLayout) view_segment.findViewById(R.id.ll_line);
-                            final LinearLayout ll_pictures = null;
-                            final ImageView iv_pictures = null;
-                            final ImageView iv_comments = null;
-                            final ImageView iv_activity = null;
-                            iv_details = null;
-                            final TextView tv_usercomments = null;
-                            tv_usercomments.setTag(tSegment);
-
-
-
-                            activeTime.setText(Double.toString(tSegment.getDuration()));
-                            activeDistance.setText(Double.toString(tSegment.getActiveDistance()));
-
-                            iv_activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_running, 100, 100)));
-                            iv_pictures.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_pictures, 100, 100)));
-                            iv_comments.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_comments, 100, 100)));
-                            iv_details.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.timeline_details, 100, 100)));
-                            AddPictures(ll_pictures, tSegment);
-
-                            ll_pictures.setTag(tSegment);
-                            iv_pictures.setTag(tSegment);
-
-                            picViews.put(tSegment.getID(), ll_pictures);
-                            AddUserComments(tSegment.getStrUserComments(), ll_line, tv_usercomments);
-
-
-                            iv_pictures.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    //choosedPicView = (LinearLayout) v;
-                                    TimelineSegment tSegment = (TimelineSegment) v.getTag();
-                                    choosedPicView = picViews.get(tSegment.getID());
-                                    selectImage();
-                                }
-                            });
-
-                            iv_activity.setTag(tSegment);
-                            final LinearLayout finalLl_shortLine1 = ll_shortLine;
-                            iv_activity.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    final Dialog commentDialog = new Dialog(context);
-                                    final TimelineSegment tSegment = (TimelineSegment) iv_activity.getTag();
-                                    commentDialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
-                                    commentDialog.setContentView(R.layout.popup_activity);
-
-                                    final Spinner spinner = (Spinner) commentDialog.findViewById(R.id.sp_activity);
-                                    Button btnOk = (Button) commentDialog.findViewById(R.id.btn_ok);
-
-                                    btnOk.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            final String IN_VEHICLE = "In Vehicle";
-                                            final String On_Bicycle = "On Bicycle";
-                                            final String On_Foot = "On Foot";
-                                            final String Walking = "Walking";
-                                            final String Running = "Running";
-
-                                            String strActivity = spinner.getSelectedItem().toString();
-                                            int intActivity = tSegment.getMyActivity().getType();
-
-
-
-                                            switch (strActivity) {
-                                                case IN_VEHICLE:
-                                                    intActivity = 0;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.in_vehicle, 50, 50)));
-                                                    ll_line.setBackgroundResource(R.color.md_red_500);
-                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_red_500);
-                                                    break;
-                                                case On_Bicycle:
-                                                    intActivity = 1;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.biking, 50, 50)));
-                                                    ll_line.setBackgroundResource(R.color.md_light_green_600);
-                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_light_green_600);
-                                                    break;
-
-                                                case On_Foot:
-                                                    intActivity = 2;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
-                                                    ll_line.setBackgroundResource(R.color.md_blue_400);
-                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_blue_400);
-                                                    break;
-
-                                                case Walking:
-                                                    intActivity = 7;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
-                                                    ll_line.setBackgroundColor(Color.GREEN);
-                                                    finalLl_shortLine1.setBackgroundColor(Color.GREEN);
-                                                    break;
-
-                                                case Running:
-                                                    intActivity = 8;
-                                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.running, 50, 50)));
-                                                    ll_line.setBackgroundResource(R.color.md_amber_800);
-                                                    finalLl_shortLine1.setBackgroundResource(R.color.md_amber_800);
-                                                    break;
-
-                                            }
-
-                                            User user = DataProvider.getInstance().getOwnUser();
-                                            DetectedActivity detectedActivity = new DetectedActivity(intActivity, 100);
-                                            tSegment.setMyActivity(detectedActivity);
-
-
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    OtherRestCalls.updateTimelineSegmentForActivity(tSegment);
-
-                                                    runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            commentDialog.hide();
-                                                        }
-                                                    });
-                                                }
-                                            }).start();
-
-                                        }
-                                    });
-
-                                    commentDialog.show();
-                                }
-                            });
-
-                            iv_comments.setTag(tSegment);
-
-                            tv_usercomments.setTag(tSegment.getID());
-                            iv_comments.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    TimelineSegment test_tSegment = (TimelineSegment) iv_comments.getTag();
-                                    final Dialog commentDialog = new Dialog(context);
-                                    commentDialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
-                                    commentDialog.setContentView(R.layout.popup_usercomment);
-
-                                    final EditText editText = (EditText) commentDialog.findViewById(R.id.et_titel);
-                                    Button btnOk = (Button) commentDialog.findViewById(R.id.btn_ok);
-
-                                    btnOk.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            User user = DataProvider.getInstance().getOwnUser();
-                                            String email = user.getEmail();
-                                            String comment = "- " + email + " : " + editText.getText().toString() + "\n";
-                                            String comments = tv_usercomments.getText().toString();
-                                            comments += comment;
-                                            tSegment.addStrUserComment(comment);
-
-
-                                            final String finalComments = comments;
-
-                                            tv_usercomments.setText(finalComments);
-
-
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    OtherRestCalls.updateTimelineSegmentForComments(tSegment);
-
-                                                    runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            commentDialog.hide();
-                                                        }
-                                                    });
-                                                }
-                                            }).start();
-
-                                        }
-                                    });
-
-                                    commentDialog.show();
-
-                                }
-                            });
-
-
-                            final LinearLayout finalLl_shortLine = ll_shortLine;
-
-                            switch (detectedActivity.getType()) {
-                                case com.slt.definitions.Constants.TIMELINEACTIVITY.WALKING:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
-                                    ll_line.setBackgroundColor(Color.GREEN);
-                                    finalLl_shortLine.setBackgroundColor(Color.GREEN);
-                                    break;
-                                case com.slt.definitions.Constants.TIMELINEACTIVITY.RUNNING:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.running, 50, 50)));
-                                    ll_line.setBackgroundResource(R.color.md_amber_800);
-                                    finalLl_shortLine.setBackgroundResource(R.color.md_amber_800);
-                                    break;
-
-                                case com.slt.definitions.Constants.TIMELINEACTIVITY.IN_VEHICLE:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.in_vehicle, 50, 50)));
-                                    ll_line.setBackgroundResource(R.color.md_red_500);
-                                    finalLl_shortLine.setBackgroundResource(R.color.md_red_500);
-                                    break;
-
-                                case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_FOOT:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.walking, 50, 50)));
-                                    ll_line.setBackgroundResource(R.color.md_blue_400);
-                                    finalLl_shortLine.setBackgroundResource(R.color.md_blue_400);
-                                    break;
-
-                                case com.slt.definitions.Constants.TIMELINEACTIVITY.ON_BICYCLE:
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.biking, 50, 50)));
-                                    ll_line.setBackgroundResource(R.color.md_light_green_600);
-                                    finalLl_shortLine.setBackgroundResource(R.color.md_light_green_600);
-                                    break;
-
-                                case com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN:
-                                    unknownSegmentAdded = true;
-                                    activity.setImageDrawable(new BitmapDrawable(getResources(), decodeSampledBitmapFromResource(getResources(), R.drawable.unknown, 50, 50)));
-                                    break;
-
-                                case com.slt.definitions.Constants.TIMELINEACTIVITY.STILL:
-                                    activity.setVisibility(View.GONE);
-                                    break;
-
-                                default:
-                                    activity.setVisibility(View.GONE);
-                                    break;
-                            }
-
-
-
-                        /*
-                        view_LastPoint = (RelativeLayout)inflater.inflate(R.layout.timeline_locationpoint, null);
-                        TextView placeAndaddress_endlocation = (TextView) view_LastPoint.findViewById(R.id.tv_placeAndaddress);
-                        TextView myEntryDate_endlocation = (TextView) view_LastPoint.findViewById(R.id.tv_myEntryDate);
-
-                        sdf = new SimpleDateFormat("dd.MM.yyyy");
-                        strDate = sdf.format(sndPoint.myEntryDate);
-
-
-                        myEntryDate_endlocation.setText(strDate);
-                        placeAndaddress_endlocation.setText("");
-                        */
-
-                        } else {
-                            ll_shortLine.setVisibility(View.INVISIBLE);
-                        }
-
-                    } else if (timeLineSegments.indexOf(tSegment) == timeLineSegments.size() - 1 && !locationEntries.isEmpty()
-                            && (tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.STILL
-                            || tSegment.getMyActivity().getType() == com.slt.definitions.Constants.TIMELINEACTIVITY.UNKNOWN)) {
-                        LocationEntry fstPoint = locationEntries.get(0);
-
-                        view_FirstPoint = (RelativeLayout) inflater.inflate(R.layout.timeline_locationpoint, null);
-                        ll_shortLine = (LinearLayout) view_FirstPoint.findViewById(R.id.ll_line);
-                        TextView placeAndaddress = (TextView) view_FirstPoint.findViewById(R.id.tv_placeOraddress);
-
-                        TextView myEntryDate = (TextView) view_FirstPoint.findViewById(R.id.tv_myEntryDate);
-
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-                        String strDate = sdf.format(fstPoint.getMyEntryDate());
-                        ll_shortLine.setVisibility(View.INVISIBLE);
-
-
-                        myEntryDate.setText(strDate);
-                        placeAndaddress.setText(tSegment.getStartAddress());
-                    }
-
-
-                    final RelativeLayout finalView_FirstPoint = view_FirstPoint;
-                    final RelativeLayout finalView_segment = view_segment;
-                    final ImageView finalIv_details = iv_details;
-
-                    if (finalView_FirstPoint != null)
-                        choosedChildren.addView(finalView_FirstPoint);
-
-
-                    if (finalView_segment != null) {
-                        finalIv_details.setTag(tSegment);
-                        finalIv_details.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                TimelineSegment tSegment = (TimelineSegment) view.getTag();
-                                SharedResources.getInstance().setOnClickedTimelineSegmentForDetails(tSegment);
-                                Intent intent = new Intent(context, TimelineDetailsActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-
-                        choosedChildren.addView(finalView_segment);
-                    }
-
-
-                }
-
-            }
-
-
-            if (isAdded) {
-                LinearLayout whiteSpace = (LinearLayout) inflater.inflate(R.layout.timeline_whitespace, null);
-                choosedChildren.addView(whiteSpace);
-            }
-
-
-        }catch(Exception e) {
-            FunctionalityLogger.getInstance().AddErrorLog("UpdateTimelineView(): " + e.getMessage().toString());
-        }
-
-    }
-
-
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
 
@@ -641,18 +485,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
-    private Bitmap resizeImage(byte[] input, int width, int height) {
-        Bitmap original = BitmapFactory.decodeByteArray(input , 0, input.length);
-        Bitmap resized = Bitmap.createScaledBitmap(original, width, height, true);
-
-        ByteArrayOutputStream blob = new ByteArrayOutputStream();
-        resized.compress(Bitmap.CompressFormat.JPEG, 100, blob);
-
-        return resized;
-    }
-
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -674,242 +507,9 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
         return inSampleSize;
     }
 
-    /************************ Resize Bitmap *********************************/
-    public Bitmap getResizedBitmap2(Bitmap bm, int newHeight, int newWidth) {
-
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-
-        // create a matrix for the manipulation
-        Matrix matrix = new Matrix();
-
-        // resize the bit map
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // recreate the new Bitmap
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height,
-                matrix, false);
-
-        return resizedBitmap;
-    }
-
-    private void AddUserComments(LinkedList<String> strUserComments, LinearLayout ll_line, TextView tv_usercomments) {
-        String comments = (strUserComments.size() > 0)? "": "Keine Kommentare vorhanden";
-
-
-        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics());
-        int heightToAdd = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-        for(String u: strUserComments) {
-            comments += u;
-            heightToAdd += heightToAdd;
-            boolean debug = true;
-        }
-
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)  ll_line.getLayoutParams();
-        params.height += heightToAdd;
-        ll_line.setLayoutParams(params);
-
-
-        tv_usercomments.setText(comments);
-    }
-
-    private void selectImage() {
-        try {
-            if (ContextCompat.checkSelfPermission(this,
-                    android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                builder.setTitle("Select Option");
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (options[item].equals("Take Photo")) {
-                            dialog.dismiss();
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, PICK_IMAGE_CAMERA);
-                        } else if (options[item].equals("Choose From Gallery")) {
-                            dialog.dismiss();
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
-                        } else if (options[item].equals("Cancel")) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                builder.show();
-            } else
-                Toast.makeText(ApplicationController.getContext(), "Camera Permission error", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(ApplicationController.getContext(), "Camera Permission error", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_CAMERA) {
-            try {
-                bitmap = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-
-                //compress the picture -> reduces the quality to 90%
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                byte[] BYTE = bytes.toByteArray();
-                bitmap = resizeImage(BYTE, 100, 100);
-
-                //this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
-
-                //this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
-                TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
-                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(timelineSegment.getID());
-                bmps = (bmps == null)? new LinkedList<Bitmap>(): bmps;
-
-                bmps.add(bitmap);
-                downloadedImagesByTSegmentId.put(timelineSegment.getID(), bmps);
-
-                uploadImage(bitmap);
-
-                Log.e(TAG, "Pick from Camera::>>> ");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == PICK_IMAGE_GALLERY) {
-            Uri selectedImage = data.getData();
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(ApplicationController.getContext().getContentResolver(), selectedImage);
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-
-                //compress the picture -> reduces the quality to 90%
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                byte[] BYTE = bytes.toByteArray();
-                bitmap = resizeImage(BYTE, 100, 100);
-
-                //this.bitmap = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
-
-                //this.bitmap = rotateImageIfRequired(this.bitmap, ApplicationController.getContext(), selectedImage);
-                TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
-                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(timelineSegment.getID());
-                bmps = (bmps == null)? new LinkedList<Bitmap>(): bmps;
-
-                bmps.add(bitmap);
-                downloadedImagesByTSegmentId.put(timelineSegment.getID(), bmps);
-
-                uploadImage(bitmap);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void uploadImage(final Bitmap bitmap) {
-
-        final TimelineSegment timelineSegment = (TimelineSegment) choosedPicView.getTag();
-        AddPictures(choosedPicView, timelineSegment);
-        Toast.makeText(context, "Image is uploaded successfully.", Toast.LENGTH_SHORT).show();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(timelineSegment.getID());
-                Integer imageId = bmps.size() + 1;
-
-
-                final boolean uploaded = UsefulMethods.UploadImageView(bitmap, imageId.toString() + ".png");
-
-                timelineSegment.addImage(imageId.toString() + ".png");
-                final boolean timelinesegmentUpdated = OtherRestCalls.updateTimelineSegmentForImages(timelineSegment);
-            }
-        }).start();
-    }
-
-    private void DownloadPictures(TimelineSegment tSegment) {
-
-        //For Debug Purposes
-        if(tSegment.getMyImages().size() != 0) {
-            boolean debug = true;
-        }
-
-        ArrayList<Integer> numbersInUse = new ArrayList<>();
-        for(String image: tSegment.getMyImages()) {
-            Bitmap bmp = UsefulMethods.LoadImage(image);
-
-            if(bmp != null) {
-                LinkedList<Bitmap> bmps = downloadedImagesByTSegmentId.get(tSegment.getID());
-
-                bmps = (bmps == null)? new LinkedList<Bitmap>():bmps;
-                bmps.add(bmp);
-                downloadedImagesByTSegmentId.put(tSegment.getID(), bmps);
-            }
-        }
-
-        /*
-        if(max == 0) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    final LinearLayout ll_nonpicture = (LinearLayout) inflater.inflate(R.layout.timelinesegment_nopictures, null);
-                    ll_pictures.addView(ll_nonpicture);
-                }
-            });
-        }
-        */
-
-
-    }
-
-    private LinearLayout AddPictures(LinearLayout ll_pictures, TimelineSegment tSegment) {
-        LinkedList<Bitmap> downloadedImages =  downloadedImagesByTSegmentId.get(tSegment.getID());
-
-        ImageView iv_pic1 = ll_pictures.findViewById(R.id.iv_pic1);
-        ImageView iv_pic2 = ll_pictures.findViewById(R.id.iv_pic2);
-        ImageView iv_pic3 = null;
-        TextView tv_noPicAvailable = null;
-
-        iv_pic1.setVisibility(View.GONE);
-        iv_pic2.setVisibility(View.GONE);
-        iv_pic3.setVisibility(View.GONE);
-        tv_noPicAvailable.setVisibility(View.VISIBLE);
-
-        if (downloadedImages != null) {
-            int max = (downloadedImages.size() >= 3) ? 3 : downloadedImages.size();
-
-
-            for (int i = 0; i < max; i++) {
-
-                Bitmap bmp = downloadedImages.get(i);
-
-
-                switch (i) {
-                    case 0:
-                        tv_noPicAvailable.setVisibility(View.GONE);
-                        iv_pic1.setVisibility(View.VISIBLE);
-                        iv_pic1.setImageBitmap(bmp);
-                        break;
-                    case 1:
-                        tv_noPicAvailable.setVisibility(View.GONE);
-                        iv_pic2.setVisibility(View.VISIBLE);
-                        iv_pic2.setImageBitmap(bmp);
-                        break;
-                    case 2:
-                        tv_noPicAvailable.setVisibility(View.GONE);
-                        iv_pic3.setVisibility(View.VISIBLE);
-                        iv_pic3.setImageBitmap(bmp);
-                        break;
-                }
-            }
-        }
-
-
-        return ll_pictures;
-    }
-
     @Override
     public void onClick(View v) {
+
         try {
 
             switch ((String) v.getTag()) {
@@ -917,6 +517,11 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                     LinearLayout tday = list_TimelineDays.get(v.getId());
                     choosedChildren = (LinearLayout) tday.findViewById(R.id.ll_all_locations);
                     choosedTimelineDay = timeLineDays.get(v.getId());
+                    DataProvider.getInstance().setChoosedTimelineSegments(choosedTimelineDay.getMySegments());
+                    Intent i = new Intent(this, SegmentViewActivity.class);
+                    startActivity(i);
+
+                    /*
                     choosedChildren.removeAllViews();
                     h_viewedTimelineSegments = new HashMap<>();
 
@@ -940,7 +545,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                                 FunctionalityLogger.getInstance().AddLog("Tag: " + strDate1 + "\n");
                                 FunctionalityLogger.getInstance().AddLog("Timeline Daten: ");
 
-                                runOnUiThread(new Runnable() {
+                                getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         updateTimelineView();
@@ -958,7 +563,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
                         choosedChildren = null;
                     }
 
-
+*/
                     break;
 
             }
@@ -977,4 +582,5 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
     public void onDestroy() {
         super.onDestroy();
     }
+
 }
