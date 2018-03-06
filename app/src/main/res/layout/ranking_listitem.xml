@@ -20,13 +20,13 @@
         <!--Profile Pic-->
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ranking_list_item_image"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_gravity="center"
             android:src="@drawable/profile_pic"
             android:paddingBottom="2dp"
             android:paddingTop="2dp"
-            android:paddingRight="8dp"
+            android:paddingRight="4dp"
             android:paddingLeft="2dp"/>
 
         <LinearLayout
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="2dp"
+                android:layout_margin="1dp"
 
                 >
 
@@ -58,7 +58,7 @@
                         android:text="Username"
                         android:fontFamily="sans-serif-smallcaps"
                         android:textStyle="italic|bold"
-                        android:textSize="12sp"
+                        android:textSize="8sp"
                         android:textColor="@color/buttonForeground"
                         />
 
@@ -67,7 +67,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Username"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:layout_below="@id/ranking_list_item_title_username"
                         android:textColor="@color/buttonForeground"
                         />
@@ -87,7 +87,7 @@
                         android:textStyle="italic|bold"
                         android:fontFamily="sans-serif-smallcaps"
                         android:text="Name"
-                        android:textSize="12sp"
+                        android:textSize="8sp"
                         android:textColor="@color/buttonForeground"
                         />
 
@@ -96,7 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:layout_below="@id/ranking_list_item_title_name"
                         android:textColor="@color/buttonForeground"
                         />
@@ -118,7 +118,7 @@
                             android:fontFamily="sans-serif-smallcaps"
                             android:textStyle="italic|bold"
                             android:text="Distance:"
-                            android:textSize="12sp"
+                            android:textSize="8sp"
                             android:textColor="@color/buttonForeground"
                             />
 
@@ -127,7 +127,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Achivement:"
-                            android:textSize="16sp"
+                            android:textSize="12sp"
                             android:layout_below="@id/ranking_list_item_title_achievement"
                             android:textColor="@color/buttonForeground"
                             />
@@ -148,7 +148,7 @@
                             android:fontFamily="sans-serif-smallcaps"
                             android:textStyle="italic|bold"
                             android:text="Rank:"
-                            android:textSize="12sp"
+                            android:textSize="8sp"
                             android:textColor="@color/buttonForeground"
                             />
 
@@ -157,7 +157,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="23"
-                            android:textSize="16sp"
+                            android:textSize="12sp"
                             android:layout_below="@id/ranking_list_item_title_place"
                             android:textColor="@color/buttonForeground"
                             />

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="settings_array">
+        <item>Ranking list For Month</item>
+        <item>Ranking list For Week</item>
+    </string-array>
+
+
+</resources>

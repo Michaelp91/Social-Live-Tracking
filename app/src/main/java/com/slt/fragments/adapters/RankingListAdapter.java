@@ -49,9 +49,10 @@ public class RankingListAdapter extends ArrayAdapter<User> {
      */
     int id;
 
+    /**
+     * value for the period of distance we want to show *Month/Week*
+     */
     int period;
-
-
 
 
 
@@ -89,12 +90,12 @@ public class RankingListAdapter extends ArrayAdapter<User> {
      * @param id The ID of activity
      *
      */
-    public RankingListAdapter(ArrayList<User> data, Context context, int id) {
+    public RankingListAdapter(ArrayList<User> data, Context context, int id, int period) {
         super(context, R.layout.ranking_listitem, data);
         this.dataSet = data;
         this.mContext=context;
         this.id = id;
-//        this.period = period;
+        this.period = period;
 
 
     }
@@ -151,12 +152,15 @@ public class RankingListAdapter extends ArrayAdapter<User> {
         String name = dataModel.getForeName() + " " + dataModel.getLastName();
         viewHolder.txtName.setText(name);
 
-        viewHolder.txtAchievement.setText( String.valueOf( dataModel.getMyTimeline().getActiveDistanceForMonth( id ) ) );
 
+        //Choose period for Active Distance
+        if (period == 0) {
+            viewHolder.txtAchievement.setText( String.valueOf( dataModel.getMyTimeline().getActiveDistanceForMonth( id ) ) );
+        }
 
-//        else if (period == 1){
-//            viewHolder.txtAchievement.setText( String.valueOf( dataModel.getMyTimeline().getActiveDistanceForWeek( id ) ) );
-//        }
+        else if (period == 1){
+            viewHolder.txtAchievement.setText( String.valueOf( dataModel.getMyTimeline().getActiveDistanceForWeek( id ) ) );
+        }
         viewHolder.txtAge.setText(String.valueOf(dataModel.getRank()));
 
         //if we have a picture show it
