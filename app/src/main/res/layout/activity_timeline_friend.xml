@@ -1,26 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.slt.TimelineFriend"
-    android:background="@drawable/background_main"
-    android:orientation="vertical">
+    tools:context="com.slt.SegmentViewActivity">
 
-    <ScrollView
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:theme="@style/Social_Live_Theme.AppBarOverlay">
 
-        <LinearLayout
-            android:id="@+id/timeline_days"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/Social_Live_Theme.PopupOverlay">
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/toolbar_friendEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Timeline"
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"/>
 
-    </ScrollView>
 
 
-</LinearLayout>
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_timeline_friend" />
+
+    <!--
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:theme="@style/Social_Live_Theme"/>-->
+
+</android.support.design.widget.CoordinatorLayout>

@@ -606,7 +606,7 @@ public class MainProfile extends AppCompatActivity
             android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
             fragmentTransaction.replace(R.id.content_main_frame, fragment123);
-            fragmentTransaction.addToBackStack(null);
+            //fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
 
         } else {
@@ -617,7 +617,7 @@ public class MainProfile extends AppCompatActivity
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
 
                 ft.replace(R.id.content_main_frame, fragment);
-                ft.addToBackStack(null);
+                //ft.addToBackStack(null);
                 ft.commit();
             }
         }

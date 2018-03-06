@@ -139,7 +139,6 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
     private HashMap<String, LinkedList<Bitmap>>  downloadedImagesByTSegmentId = new HashMap<>();
 
     private int loggerCounter = 0;
-    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -160,15 +159,20 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
         //Thread t = new Thread(new TrackingSimulator());
         //t.start();
 
+        try {
 
-        RetrieveOperations.getInstance().context = this;
+            RetrieveOperations.getInstance().context = this;
 
+            t = DataProvider.getInstance().getUserTimeline();
+            if(t != null)
+              updateTimelineDays();
 
-        progressDialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
+            handler.postDelayed(runnable, 2000);
 
-        handler.postDelayed(runnable, 2000);
+            this.view = view;
+        }catch (Exception e) {
 
-        this.view = view;
+        }
     }
 
     public Runnable runnable = new Runnable() {
@@ -506,14 +510,14 @@ public class FragmentTimeline extends Fragment implements View.OnClickListener {
 
                     }
 
-
+/*
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             progressDialog.hide();
                         }
                     });
-
+*/
                 //TODO: Problem with updating TimelineView, look at this problem later
                     /*
                     if (choosedChildren != null && choosedTimelineDay != null) {

@@ -108,11 +108,6 @@ public class LoginFragment extends Fragment {
      */
     private TextInputLayout mTiPassword;
 
-    /**
-     * Progress Bar
-     */
-    private ProgressBar mProgressBar;
-
 
     /**
      * Progress Dialog
@@ -186,7 +181,6 @@ public class LoginFragment extends Fragment {
         mBtLogin = (Button) v.findViewById(R.id.btn_login);
         mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_email);
         mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
-        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
         mTvRegister = (TextView) v.findViewById(R.id.tv_register);
         mTvForgotPassword = (TextView) v.findViewById(R.id.tv_forgot_password);
         checkBox = (CheckBox) v.findViewById(R.id.saveLoginCheckBox);
@@ -243,7 +237,9 @@ public class LoginFragment extends Fragment {
                     threadEmail = email;
                     loginProcess(email, password);
                     //mProgressBar.setVisibility(View.VISIBLE);
-                    progressDialog = ProgressDialog.show(getActivity(), "Please Wait...", "", true);
+                    progressDialog = new ProgressDialog(context.getActivity());
+                    progressDialog.setTitle("Please wait...");
+                    progressDialog.show();
 
                 } else {
                     showSnackBarMessage("Enter Valid Details !");
@@ -311,7 +307,6 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void call(Response response) {
                         //on success
-                        mProgressBar.setVisibility(View.GONE);
 
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
                         editor.putString(Constants.TOKEN, response.getToken());
@@ -342,7 +337,6 @@ public class LoginFragment extends Fragment {
                         }
 
                         //Call Handler to retrieve REST User
-                        mProgressBar.setVisibility(View.VISIBLE);
                         handler.post(runnable);
 
                         }
@@ -350,7 +344,6 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void call(Throwable error) {
                         //on error
-                        mProgressBar.setVisibility(View.GONE);
 
                         if (error instanceof HttpException) {
 
@@ -446,7 +439,6 @@ public class LoginFragment extends Fragment {
      * After we have loaded the Data go to our main activity
      */
     private void afterRetrival() {
-        mProgressBar.setVisibility(View.GONE);
         progressDialog.hide();
 
         Intent intent = new Intent(getActivity(), MainProfile.class);

@@ -74,4 +74,5 @@ dependencies {
     //Animated splash screen
     compile 'com.felipecsl:gifimageview:2.1.0'
     compile 'commons-io:commons-io:2.4'
+
 }
