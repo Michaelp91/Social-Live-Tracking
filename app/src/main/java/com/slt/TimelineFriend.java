@@ -61,39 +61,71 @@ import java.util.Set;
 
 public class TimelineFriend extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "FragmentTimeline";
-    private static final LatLng DARMSTADT_NORD = new LatLng(50.0042304, 9.0658932);
-    private static final LatLng WILLYBRANDTPLATZ = new LatLng(49.9806625, 9.1355554);
+
+
+    /**
+     *Handler for callbacks
+     */
     public Handler handler = new Handler();
     //@BindView(R.id.toolbar)
     //public Toolbar toolBar;
 
+    /**
+     * ChoosedTimelineDay
+     */
     private TimelineDay choosedTimelineDay;
-    private TimelineDay tmpTimelineDay = null;
-    private ArrayList<LinearLayout> list_TimelineDays = new ArrayList<>();
-    private ArrayList<LinearLayout> list_TimelineSegments;
-    private LinearLayout view_timelineDays;
-    private LinearLayout choosedChildren;
-    private int counter_timelinedays;
-    private int counter_timelinechildren;
-    private final String TAG_TIMELINEDAY = "timelineday";
-    private final String TAG_TIMELINESEGMENT = "timelinesegment";
-    private LinkedList<TimelineDay> timeLineDays;
-    private Timeline t;
-    private HashMap<String, TimelineDay> h_viewedTimelineDays = new HashMap<>();
-    private HashMap<String, TimelineSegment> h_viewedTimelineSegments = new HashMap<>();
-    private HashMap<String, TimelineDay> h_alreadyChoosedDay = new HashMap<>();
-    private LinkedList<Integer> randomPositions = new LinkedList<>();
-    private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
-    private Bitmap bitmap;
-    ImageView tmpImageView;
-    private LinearLayout choosedPicView;
-    private HashMap<String, LinearLayout> picViews = new HashMap<>();
-    private HashMap<String, LinkedList<Bitmap>>  downloadedImagesByTSegmentId = new HashMap<>();
 
-    private int loggerCounter = 0;
-    private Activity context;
-    private ProgressDialog progressDialog;
+    /**
+     * list_TimelineDays
+     */
+    private ArrayList<LinearLayout> list_TimelineDays = new ArrayList<>();
+
+    /**
+     * view_timelineDays
+     */
+    private LinearLayout view_timelineDays;
+
+    /**
+     * choosedChildren
+     */
+    private LinearLayout choosedChildren;
+
+
+    /**
+     * counter_timelinedays
+     */
+    private int counter_timelinedays;
+
+    /**
+     * TAG_TIMELINEDAY
+     */
+    private final String TAG_TIMELINEDAY = "timelineday";
+
+    /**
+     * TAG_TIMELINESEGMENT
+     */
+    private final String TAG_TIMELINESEGMENT = "timelinesegment";
+
+    /**
+     * timeLine Days
+     */
+    private LinkedList<TimelineDay> timeLineDays;
+
+    /**
+     * Timeline from the logged in User
+     */
+    private Timeline t;
+
+    /**
+     * HashMap to check if the specific Timeline Day is already viewed.
+     */
+    private HashMap<String, TimelineDay> h_viewedTimelineDays = new HashMap<>();
+
+    /**
+     *
+     * @param savedInstanceState the saved Instance State
+     */
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,19 +140,22 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
         friendTitle.setText("Friend: " + friend.getEmail());
         //Thread t = new Thread(new TrackingSimulator());
         //t.start();
-        context = this;
-
 
         updateTimelineDays();
     }
 
+    /**
+     * check if the Timeline Day is not viewed.
+     * @param id check the Timeline Day with this object id
+     * @return true: if timeline day is not viewed, else: false
+     */
     public boolean timelinedayIsNotViewed(String id) {
         return (h_viewedTimelineDays.get(id) == null)? true:false;
     }
 
-    public boolean timelinesegmentIsNotViewed(String id) {
-        return (h_viewedTimelineSegments.get(id) == null)? true:false;
-    }
+    /**
+     * Update the Timeline Day View
+     */
 
     public void updateTimelineDays() {
         boolean activity_runningIsDisplayed = false;
@@ -406,42 +441,7 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
                         counter_timelinedays--;
                     }
-
-                    //TODO: Problem with updating TimelineView, look at this problem later
-                    /*
-                    else if (choosedTimelineDay != null) {
-
-                        if(t_d.getID().equals(choosedTimelineDay.getID()) && t_d.getMySegments().size() != choosedTimelineDay.getMySegments().size()
-                                && t_d.getMySegments().getLast().getMyLocationPoints().size() != 0) {
-
-                            picViews = new HashMap<>();
-                            h_viewedTimelineSegments = new HashMap<>();
-                            choosedTimelineDay = t_d;
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    choosedChildren.removeAllViews();
-                                }
-                            });
-                        }
-                        */
-
                 }
-
-                //TODO: Problem with updating TimelineView, look at this problem later
-                    /*
-                    if (choosedChildren != null && choosedTimelineDay != null) {
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                updateTimelineView();
-                            }
-                        });
-                    }
-                    */
 
             }
 
@@ -452,6 +452,14 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    /**
+     * Resize Image from Drawable
+     * @param res
+     * @param resId Image Resource Id
+     * @param reqWidth Required Image With
+     * @param reqHeight Required Image Height
+     * @return new scaled Bitmap
+     */
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
 
@@ -468,6 +476,14 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
+
+    /**
+     * Helper Method for resizing the Bitmap
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return the inSampleSize Value
+     */
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -490,6 +506,10 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
         return inSampleSize;
     }
 
+    /**
+     * Check if the specific Timeline Day is clicked
+     * @param v the Timeline Day View which is clicked
+     */
     @Override
     public void onClick(View v) {
 
@@ -497,73 +517,17 @@ public class TimelineFriend extends AppCompatActivity implements View.OnClickLis
 
             switch ((String) v.getTag()) {
                 case TAG_TIMELINEDAY:
-                    LinearLayout tday = list_TimelineDays.get(v.getId());
-                    choosedChildren = (LinearLayout) tday.findViewById(R.id.ll_all_locations);
                     choosedTimelineDay = timeLineDays.get(v.getId());
                     LinkedList<TimelineSegment> choosedSegments = choosedTimelineDay.getMySegments();
                     DataProvider.getInstance().setChoosedTimelineSegments(choosedTimelineDay.getMySegments());
                     Intent i = new Intent(this, SegmentViewActivity.class);
                     startActivity(i);
-
-                    /*
-                    choosedChildren.removeAllViews();
-                    h_viewedTimelineSegments = new HashMap<>();
-
-                    if (h_alreadyChoosedDay.get(choosedTimelineDay.getID()) == null) {
-                        h_alreadyChoosedDay = new HashMap<>();
-                        h_alreadyChoosedDay.put(choosedTimelineDay.getID(), choosedTimelineDay);
-
-
-                        final LinkedList<TimelineSegment> tSegments = choosedTimelineDay.getMySegments();
-
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                for (TimelineSegment t : tSegments) {
-                                    DownloadPictures(t);
-                                }
-
-                                SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
-                                String strDate1 = sdf1.format(choosedTimelineDay.getMyDate());
-
-                                FunctionalityLogger.getInstance().AddLog("Tag: " + strDate1 + "\n");
-                                FunctionalityLogger.getInstance().AddLog("Timeline Daten: ");
-
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateTimelineView();
-                                    }
-                                });
-
-                            }
-                        }).start();
-
-
-                    } else {
-                        h_alreadyChoosedDay = new HashMap<>();
-                        downloadedImagesByTSegmentId = new HashMap<>();
-                        choosedTimelineDay = null;
-                        choosedChildren = null;
-                    }
-
-*/
                     break;
 
             }
         }catch (Exception e) {
             FunctionalityLogger.getInstance().AddErrorLog("OnClick on TimelineDay: " +  e.getMessage().toString());
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
 }
